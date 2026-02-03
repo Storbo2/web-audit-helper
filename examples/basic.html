@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>WAH - Basic Example</title>
+</head>
+
+<body>
+
+    <h1>WAH Test</h1>
+
+    <!-- Problemas intencionales -->
+    <p style="font-size: 10px; color: #aaa; background: #fff;">
+        Texto con fuente pequeña y bajo contraste
+    </p>
+
+    <div>
+        <div>
+            <div>Muchos divs</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { runWAH } from "../dist/index.mjs";
+
+        runWAH({
+            overlay: {
+                enabled: true,
+                position: "bottom-right",
+                theme: "dark"
+            },
+            reporters: ["console"]
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+:root {
+    --wah-bg: #0f172a;
+    --wah-text: #e5e7eb;
+    --wah-accent: #38bdf8;
+    --wah-warning: #f59e0b;
+    --wah-error: #ef4444;
+
+    --wah-font-size: 14px;
+    --wah-width: 320px;
+    --wah-z-index: 99999;
+}
+
+.wah-overlay {
+    position: fixed;
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    font-size: var(--wah-font-size);
+    width: var(--wah-width);
+    z-index: var(--wah-z-index);
+    border-radius: 8px;
+    padding: 12px;
+}
