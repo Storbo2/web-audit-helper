@@ -1,13 +1,17 @@
 import type { WAHConfig } from "../core/types";
 
+
 export const defaultConfig: WAHConfig = {
+    logs: true,
+    logLevel: "all",
+
     overlay: {
         enabled: true,
         position: "bottom-right",
         theme: "dark"
     },
 
-    warningsLevel: "blocking",
+    warningsLevel: "all",
 
     accessibility: {
         minFontSize: 12,

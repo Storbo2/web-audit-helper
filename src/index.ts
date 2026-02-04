@@ -6,19 +6,32 @@ import type { WAHConfig } from "./core/types";
 export function runWAH(userConfig: Partial<WAHConfig> = {}) {
     console.log("WAH initialized");
 
-    const config = {
+    const config: WAHConfig = {
         ...defaultConfig,
-        ...userConfig
+        ...userConfig,
     };
 
-    const result = runCoreAudit(config);
+    const results = runCoreAudit(config);
 
-    if (config.overlay.enabled) {
-        createOverlay(result, config);
-    }
+    // Top 3 críticos
+    const criticalIssues = results.issues
+        .filter(i => i.severity === "critical")
+        .slice(0, 3);
 
-    console.log("[WAH] Issues:", result.issues);
-    console.log("[WAH] Score:", result.score);
+    // Log amigable (si ya tienes logs configurables, adapta a tu flag)
+    console.group(`%cWAH Audit Report`, "color:#38bdf8;font-weight:bold;");
+    console.log("Score:", results.score + "%");
+    console.log("Issues:", results.issues.length);
+    console.table(results.issues.map(i => ({
+        rule: i.rule,
+        severity: i.severity,
+        message: i.message,
+        selector: i.selector ?? "-"
+    })));
+    console.groupEnd();
 
-    return result;
+    // Pasamos criticalIssues al overlay
+    createOverlay({ ...results, criticalIssues }, config);
+
+    return results;
 }

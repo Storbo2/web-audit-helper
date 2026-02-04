@@ -8,11 +8,32 @@ export function checkFontSize(minSize: number): AuditIssue[] {
         const fontSize = parseFloat(style.fontSize);
 
         if (!isNaN(fontSize) && fontSize < minSize) {
+            const severity: AuditIssue["severity"] =
+                fontSize <= 10 ? "critical" : "warning";
+
             issues.push({
                 rule: "font-size",
                 message: `Font size too small (${fontSize}px)`,
-                level: "blocking",
+                severity,
                 element: el as HTMLElement
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkMissingAlt(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("img").forEach((img) => {
+        const alt = img.getAttribute("alt");
+        if (!alt || alt.trim() === "") {
+            issues.push({
+                rule: "img-alt",
+                message: "Image missing alt attribute",
+                severity: "critical",
+                element: img as HTMLElement
             });
         }
     });

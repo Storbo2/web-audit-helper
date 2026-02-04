@@ -1,0 +1,58 @@
+:root {
+    --wah-bg: #0f172a;
+    --wah-text: #e5e7eb;
+    --wah-border: #38bdf8;
+
+    --wah-score-excellent: #38bdf8;
+    --wah-score-good: #22c55e;
+    --wah-score-warning: #f59e0b;
+    --wah-score-bad: #ef4444;
+
+    --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+#wah-overlay {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    width: 260px;
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    border: 1px solid var(--wah-border);
+    border-radius: 10px;
+    font-family: var(--wah-font);
+}
+
+.wah-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid var(--wah-border);
+}
+
+.wah-content {
+    padding: 10px;
+    text-align: center;
+}
+
+.wah-score {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.score-excellent {
+    color: var(--wah-score-excellent);
+}
+
+.score-good {
+    color: var(--wah-score-good);
+}
+
+.score-warning {
+    color: var(--wah-score-warning);
+}
+
+.score-bad {
+    color: var(--wah-score-bad);
+}
