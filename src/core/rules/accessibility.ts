@@ -1,4 +1,5 @@
 import type { AuditIssue } from "../types";
+import { getCssSelector } from "../../utils/dom";
 
 export function checkFontSize(minSize: number): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -15,7 +16,8 @@ export function checkFontSize(minSize: number): AuditIssue[] {
                 rule: "font-size",
                 message: `Font size too small (${fontSize}px)`,
                 severity,
-                element: el as HTMLElement
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
             });
         }
     });
@@ -33,7 +35,8 @@ export function checkMissingAlt(): AuditIssue[] {
                 rule: "img-alt",
                 message: "Image missing alt attribute",
                 severity: "critical",
-                element: img as HTMLElement
+                element: img as HTMLElement,
+                selector: getCssSelector(img)
             });
         }
     });

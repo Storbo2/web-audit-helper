@@ -19,6 +19,7 @@
 # production
 /build
 /dist
+src/overlay/wahCss.ts
 
 # misc
 .DS_Store

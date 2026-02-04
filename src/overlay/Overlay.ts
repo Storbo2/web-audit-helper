@@ -17,6 +17,30 @@ function logIssueDetail(issue: AuditIssue) {
     console.groupEnd();
 }
 
+function focusIssueElement(issue: AuditIssue) {
+    const el = issue.element;
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+    el.classList.add("wah-highlight");
+    requestAnimationFrame(() => {
+        el.classList.add("wah-highlight--on");
+    });
+
+    const key = "__wahHighlightTimeout";
+    const anyEl = el as any;
+
+    if (anyEl[key]) clearTimeout(anyEl[key]);
+
+    anyEl[key] = setTimeout(() => {
+        el.classList.remove("wah-highlight--on");
+        setTimeout(() => el.classList.remove("wah-highlight"), 240);
+        anyEl[key] = null;
+    }, 1400);
+
+}
+
 function getScoreClass(score: number) {
     if (score >= 95) return "score-excellent";
     if (score >= 85) return "score-good";
@@ -66,23 +90,25 @@ export function createOverlay(results: OverlayAuditResult, config: WAHConfig) {
 
     document.body.appendChild(overlay);
 
-    // Toggle
     const toggleBtn = overlay.querySelector(".wah-toggle") as HTMLButtonElement;
-    const content = overlay.querySelector(".wah-content") as HTMLElement;
 
     let minimized = false;
+
     toggleBtn.addEventListener("click", () => {
         minimized = !minimized;
-        content.style.display = minimized ? "none" : "block";
+
+        overlay.classList.toggle("wah-collapsed", minimized);
         toggleBtn.textContent = minimized ? "+" : "–";
     });
 
-    // Click en issue → log detallado
     overlay.querySelectorAll(".wah-issues li").forEach((li) => {
         li.addEventListener("click", () => {
             const idx = Number((li as HTMLElement).dataset.index);
             const issue = results.criticalIssues[idx];
-            if (issue) logIssueDetail(issue);
+            if (!issue) return;
+
+            logIssueDetail(issue);
+            focusIssueElement(issue);
         });
     });
 }

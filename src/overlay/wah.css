@@ -2,6 +2,7 @@
     --wah-bg: #0f172a;
     --wah-text: #e5e7eb;
     --wah-border: #38bdf8;
+    --wah-shawdow: rgba(239, 68, 68, 0);
 
     --wah-score-excellent: #38bdf8;
     --wah-score-good: #22c55e;
@@ -22,23 +23,68 @@
     border: 1px solid var(--wah-border);
     border-radius: 10px;
     font-family: var(--wah-font);
+    overflow: hidden;
+    transition: height 220ms ease;
+}
+
+#wah-overlay .wah-content {
+    max-height: 280px;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        max-height 220ms ease,
+        opacity 180ms ease,
+        transform 220ms ease;
+}
+
+#wah-overlay.wah-collapsed .wah-content {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    display: block;
 }
 
 .wah-header {
     display: flex;
     justify-content: space-between;
     padding: 8px;
-    border-bottom: 1px solid var(--wah-border);
 }
 
 .wah-content {
     padding: 10px;
     text-align: center;
+    border-top: 1px solid var(--wah-border);
 }
 
 .wah-score {
     font-size: 22px;
     font-weight: bold;
+}
+
+.wah-toggle {
+    background: none;
+    border: none;
+    color: var(--wah-text);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.wah-toggle:focus {
+    font-weight: bold;
+}
+
+.wah-highlight {
+    border-radius: 3px;
+    box-shadow: 0 0 0 0 var(--wah-shawdow);
+    transition:
+        box-shadow 220ms ease,
+        transform 220ms ease;
+}
+
+.wah-highlight.wah-highlight--on {
+    box-shadow: 0 0 0 4px var(--wah-score-bad);
 }
 
 .score-excellent {
@@ -55,4 +101,31 @@
 
 .score-bad {
     color: var(--wah-score-bad);
+}
+
+.wah-critical {
+    margin-top: 10px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.wah-issues {
+    margin: 6px 0 0;
+    padding-left: 16px;
+}
+
+.wah-issues li {
+    cursor: pointer;
+    margin-bottom: 6px;
+    color: var(--wah-score-bad);
+    transition: opacity .15s ease;
+}
+
+.wah-issues li:hover {
+    text-decoration: underline;
+}
+
+.wah-ok {
+    margin: 6px 0 0;
+    color: var(--wah-score-good);
 }
