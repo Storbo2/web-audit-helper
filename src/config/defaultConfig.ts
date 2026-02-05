@@ -11,7 +11,7 @@ export const defaultConfig: WAHConfig = {
         theme: "dark"
     },
 
-    warningsLevel: "all",
+    issueLevel: "all",
 
     accessibility: {
         minFontSize: 12,

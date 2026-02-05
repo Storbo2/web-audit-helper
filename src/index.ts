@@ -13,12 +13,10 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
 
     const results = runCoreAudit(config);
 
-    // Top 3 críticos
     const criticalIssues = results.issues
         .filter(i => i.severity === "critical")
         .slice(0, 3);
 
-    // Log amigable (si ya tienes logs configurables, adapta a tu flag)
     console.group(`%cWAH Audit Report`, "color:#38bdf8;font-weight:bold;");
     console.log("Score:", results.score + "%");
     console.log("Issues:", results.issues.length);
@@ -30,7 +28,6 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
     })));
     console.groupEnd();
 
-    // Pasamos criticalIssues al overlay
     createOverlay({ ...results, criticalIssues }, config);
 
     return results;

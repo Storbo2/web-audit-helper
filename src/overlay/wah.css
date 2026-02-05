@@ -8,6 +8,7 @@
     --wah-score-good: #22c55e;
     --wah-score-warning: #f59e0b;
     --wah-score-bad: #ef4444;
+    --wah-badges-symbols: #ffffff;
 
     --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Arial, sans-serif;
@@ -17,7 +18,7 @@
     position: fixed;
     bottom: 16px;
     right: 16px;
-    width: 260px;
+    width: 300px;
     background: var(--wah-bg);
     color: var(--wah-text);
     border: 1px solid var(--wah-border);
@@ -28,7 +29,7 @@
 }
 
 #wah-overlay .wah-content {
-    max-height: 280px;
+    max-height: min(300px, 50vh);
     opacity: 1;
     transform: translateY(0);
     transition:
@@ -84,7 +85,7 @@
 }
 
 .wah-highlight.wah-highlight--on {
-    box-shadow: 0 0 0 4px var(--wah-score-bad);
+    box-shadow: 0 0 0 4px var(--wah-hl, var(--wah-score-bad));
 }
 
 .score-excellent {
@@ -104,9 +105,57 @@
 }
 
 .wah-critical {
-    margin-top: 10px;
     text-align: left;
     font-size: 12px;
+    color: var(--wah-score-bad);
+}
+
+.wah-all-toggle {
+    width: 100%;
+    margin-top: 10px;
+    padding: 6px 8px;
+    border: 1px solid var(--wah-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--wah-text);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.wah-all-panel {
+    margin-top: 6px;
+    max-height: 140px;
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.wah-all-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issue-item {
+    cursor: pointer;
+    padding: 6px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 12px;
+}
+
+.wah-issue-item:last-child {
+    border-bottom: none;
+}
+
+.wah-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-recommendation {
+    color: var(--wah-text);
+    opacity: .85;
 }
 
 .wah-issues {
@@ -128,4 +177,107 @@
 .wah-ok {
     margin: 6px 0 0;
     color: var(--wah-score-good);
+}
+
+.wah-filter {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 8px;
+}
+
+.wah-chip {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--wah-text);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.wah-chip.is-active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--wah-border);
+    opacity: 1;
+}
+
+.wah-panel {
+    max-height: 150px;
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.wah-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issue-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 12px;
+}
+
+.wah-issue-item:last-child {
+    border-bottom: none;
+}
+
+.wah-msg {
+    line-height: 1.25;
+}
+
+.wah-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.wah-badge .wah-badge-symbol {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-badge.wah-critical {
+    color: var(--wah-score-bad);
+}
+
+.wah-badge.wah-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-badge.wah-recommendation {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-panel::-webkit-scrollbar {
+    width: 10px;
+}
+
+.wah-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.wah-panel::-webkit-scrollbar-thumb {
+    background: rgba(229, 231, 235, 0.18);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.wah-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 231, 235, 0.28);
+    border: 2px solid transparent;
+    background-clip: content-box;
 }

@@ -43,3 +43,50 @@ export function checkMissingAlt(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkInputsWithoutLabel(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const inputs = Array.from(document.querySelectorAll("input, select, textarea"));
+
+    for (const el of inputs) {
+        const input = el as HTMLInputElement;
+        const id = input.id;
+        const hasLabelByFor = id ? !!document.querySelector(`label[for="${CSS.escape(id)}"]`) : false;
+        const wrappedByLabel = !!input.closest("label");
+        const hasAria = !!(input.getAttribute("aria-label") || input.getAttribute("aria-labelledby"));
+
+        if (!hasLabelByFor && !wrappedByLabel && !hasAria) {
+            issues.push({
+                rule: "input-label",
+                message: "Form control missing accessible label",
+                severity: "critical",
+                element: input,
+                selector: getCssSelector(input)
+            });
+        }
+    }
+
+    return issues;
+}
+
+export function checkVagueLinks(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const bad = ["click aquí", "click here", "aquí", "here", "ver más", "leer más",
+        "more", "read more", "más", "more info", "info"];
+
+    document.querySelectorAll("a").forEach((a) => {
+        const text = (a.textContent || "").trim().toLowerCase();
+        if (bad.includes(text)) {
+            issues.push({
+                rule: "link-text",
+                message: `Link text is vague: "${(a.textContent || "").trim()}"`,
+                severity: "recommendation",
+                element: a as HTMLElement,
+                selector: getCssSelector(a)
+            });
+        }
+    });
+
+    return issues;
+}

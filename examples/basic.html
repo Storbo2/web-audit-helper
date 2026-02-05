@@ -1,46 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-
 <head>
     <meta charset="UTF-8" />
-    <title>WAH - Basic Example</title>
+    <title></title> <!-- title vacío -> critical -->
+    <!-- sin meta description -> warning -->
+    <!-- sin viewport -> warning -->
 </head>
 
 <body>
-
     <h1>WAH Test</h1>
+    <h1>Second H1</h1> <!-- multiple-h1 -> warning -->
 
-    <!-- Problemas intencionales -->
     <p style="font-size: 10px; color: #aaa; background: #fff;">
         Texto con fuente pequeña y bajo contraste
     </p>
+
+    <a href="#">Click aquí</a> <!-- link-text -> recommendation -->
+
+    <input type="text" placeholder="Nombre" /> <!-- input-label -> critical -->
 
     <div>
         <div>
             <div>Muchos divs</div>
         </div>
-    </div>
+    </div> <!-- semantic-tags -> recommendation (según tu umbral) -->
 
-    <img src="./../src/favicon-32x32.png">
-
-    <!-- muchos saltos de línea para probar el scroll -->
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <img src="./../src/favicon-32x32.png"> <!-- img-alt -> critical -->
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";
-
-        runWAH({
-            overlay: {
-                enabled: true,
-                position: "bottom-right",
-                theme: "dark"
-            },
-            reporters: ["console"]
-        });
+        runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });
     </script>
-
 </body>
-
-</html>

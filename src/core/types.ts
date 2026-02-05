@@ -1,11 +1,10 @@
-export type Severity = "info" | "warning" | "critical";
+export type Severity = "critical" | "warning" | "recommendation";
+
 export type LogLevel = "none" | "critical" | "all";
+
 export type ContrastLevel = "AA" | "AAA";
-export type WarningsLevel =
-    | "critical"
-    | "recommended"
-    | "info"
-    | "all";
+
+export type IssueLevel = "critical" | "warnings" | "all";
 
 export interface AuditIssue {
     rule: string;
@@ -20,22 +19,16 @@ export interface AuditResult {
     score: number;
 }
 
-export interface AuditIssue {
-    rule: string;
-    message: string;
-    severity: Severity;
-    element?: HTMLElement;
-}
-
-export interface AuditResult {
-    issues: AuditIssue[];
-    score: number;
-}
-
 export interface WAHConfig {
     logs: boolean;
     logLevel?: LogLevel;
-    warningsLevel: WarningsLevel;
+
+    issueLevel: IssueLevel;
+
+    accessibility: {
+        minFontSize: number;
+        contrastLevel: ContrastLevel;
+    };
 
     overlay: {
         enabled: boolean;
@@ -44,11 +37,5 @@ export interface WAHConfig {
     };
 
     reporters: ("console" | "json" | "text")[];
-
-    accessibility: {
-        minFontSize: number;
-        contrastLevel: ContrastLevel;
-    };
-
     breakpoints: Record<string, number>;
 }
