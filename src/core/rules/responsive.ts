@@ -9,7 +9,8 @@ export function checkMissingViewportMeta(): AuditIssue[] {
         issues.push({
             rule: "viewport-meta",
             message: "Missing or incomplete viewport meta tag",
-            severity: "warning"
+            severity: "warning",
+            category: "responsive",
         });
     }
 
@@ -29,6 +30,7 @@ export function checkLargeFixedWidths(): AuditIssue[] {
                 rule: "fixed-width",
                 message: `Large fixed width detected (${Math.round(px)}px)`,
                 severity: "recommendation",
+                category: "responsive",
                 element: el as HTMLElement,
                 selector: getCssSelector(el)
             });

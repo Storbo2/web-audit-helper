@@ -6,9 +6,11 @@
 
     --wah-score-excellent: #38bdf8;
     --wah-score-good: #22c55e;
-    --wah-score-warning: #f59e0b;
-    --wah-score-bad: #ef4444;
+    --wah-score-medium: #ffe100;
+    --wah-score-warning: #ff9f0e;
+    --wah-score-bad: #ed4141;
     --wah-badges-symbols: #ffffff;
+    --wah-dark-border: rgba(255, 255, 255, 0.08);
 
     --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Arial, sans-serif;
@@ -126,7 +128,7 @@
     margin-top: 6px;
     max-height: 140px;
     overflow: auto;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--wah-dark-border);
     border-radius: 8px;
     padding: 6px 8px;
     text-align: left;
@@ -141,7 +143,7 @@
 .wah-issue-item {
     cursor: pointer;
     padding: 6px 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--wah-dark-border);
     font-size: 12px;
 }
 
@@ -206,9 +208,9 @@
 .wah-panel {
     max-height: 150px;
     overflow: auto;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--wah-dark-border);
     border-radius: 8px;
-    padding: 6px 8px;
+    padding: 0px 8px;
     text-align: left;
 }
 
@@ -224,7 +226,7 @@
     align-items: flex-start;
     cursor: pointer;
     padding: 8px 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--wah-dark-border);
     font-size: 12px;
 }
 
@@ -280,4 +282,91 @@
     background: rgba(229, 231, 235, 0.28);
     border: 2px solid transparent;
     background-clip: content-box;
+}
+
+.wah-legend {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    font-size: 11px;
+    opacity: 0.9;
+    margin: 6px 0 2px;
+}
+
+.wah-legend-item {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.wah-legend-sym {
+    font-size: 15px;
+}
+
+.wah-counts {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15px;
+    margin-top: 6px;
+    opacity: 0.9;
+}
+
+.wah-counts .c {
+    color: var(--wah-score-bad);
+}
+
+.wah-counts .w {
+    color: var(--wah-score-warning);
+}
+
+.wah-counts .r {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-adv {
+    display: flex;
+    justify-content: center;
+    margin: 6px 0 6px;
+    position: relative;
+}
+
+.wah-adv-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 189, 248, 0.55);
+    background: transparent;
+    color: var(--wah-text);
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.wah-adv-btn:hover {
+    opacity: 1;
+}
+
+.wah-adv-panel {
+    position: absolute;
+    top: 32px;
+    width: 220px;
+    background: rgba(2, 6, 23, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 999999;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.wah-adv-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    padding: 6px 4px;
+    cursor: pointer;
+}
+
+.wah-adv-item input {
+    accent-color: var(--wah-accent);
 }

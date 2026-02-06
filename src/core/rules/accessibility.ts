@@ -16,6 +16,7 @@ export function checkFontSize(minSize: number): AuditIssue[] {
                 rule: "font-size",
                 message: `Font size too small (${fontSize}px)`,
                 severity,
+                category: "accessibility",
                 element: el as HTMLElement,
                 selector: getCssSelector(el)
             });
@@ -35,6 +36,7 @@ export function checkMissingAlt(): AuditIssue[] {
                 rule: "img-alt",
                 message: "Image missing alt attribute",
                 severity: "critical",
+                category: "accessibility",
                 element: img as HTMLElement,
                 selector: getCssSelector(img)
             });
@@ -61,6 +63,7 @@ export function checkInputsWithoutLabel(): AuditIssue[] {
                 rule: "input-label",
                 message: "Form control missing accessible label",
                 severity: "critical",
+                category: "accessibility",
                 element: input,
                 selector: getCssSelector(input)
             });
@@ -82,6 +85,7 @@ export function checkVagueLinks(): AuditIssue[] {
                 rule: "link-text",
                 message: `Link text is vague: "${(a.textContent || "").trim()}"`,
                 severity: "recommendation",
+                category: "accessibility",
                 element: a as HTMLElement,
                 selector: getCssSelector(a)
             });

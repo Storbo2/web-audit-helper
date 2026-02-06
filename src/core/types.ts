@@ -6,10 +6,13 @@ export type ContrastLevel = "AA" | "AAA";
 
 export type IssueLevel = "critical" | "warnings" | "all";
 
+export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive";
+
 export interface AuditIssue {
     rule: string;
     message: string;
     severity: Severity;
+    category?: IssueCategory;
     selector?: string;
     element?: HTMLElement;
 }

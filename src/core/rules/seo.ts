@@ -8,7 +8,8 @@ export function checkMissingTitle(): AuditIssue[] {
         issues.push({
             rule: "seo-title",
             message: "Missing or empty <title>",
-            severity: "critical"
+            severity: "critical",
+            category: "seo"
         });
     }
 
@@ -23,7 +24,8 @@ export function checkMissingMetaDescription(): AuditIssue[] {
         issues.push({
             rule: "seo-description",
             message: "Missing meta description",
-            severity: "warning"
+            severity: "warning",
+            category: "seo"
         });
     }
 
