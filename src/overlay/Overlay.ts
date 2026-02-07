@@ -1,87 +1,11 @@
 import { injectOverlayStyles } from "./overlayStyles";
+import { logIssueDetail, focusIssueElement } from "./overlayHighlight";
+import { getScoreClass } from "./overlayUtils";
+import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./overlayRenderer";
+import { positionPop, closePop, openPopover, type PopoverType } from "./overlayPopover";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
-let lastHighlighted: HTMLElement | null = null;
-let hideTimer: number | null = null;
-let cleanupTimer: number | null = null;
-
-const HIGHLIGHT_DURATION = 750;
-const TRANSITION_MS = 250;
-
-function logIssueDetail(issue: AuditIssue) {
-    console.groupCollapsed(
-        `%cWAH Issue → ${issue.rule}`,
-        "color:#ef4444;font-weight:bold;"
-    );
-    console.log("Message:", issue.message);
-    console.log("Severity:", issue.severity);
-    console.log("Selector:", issue.selector ?? "-");
-    console.log("Element:", issue.element ?? null);
-    console.log("Full issue:", issue);
-    console.groupEnd();
-}
-
-function focusIssueElement(issue: AuditIssue) {
-    const el = issue.element as HTMLElement | undefined;
-    if (!el) return;
-
-    if (hideTimer !== null) {
-        window.clearTimeout(hideTimer);
-        hideTimer = null;
-    }
-    if (cleanupTimer !== null) {
-        window.clearTimeout(cleanupTimer);
-        cleanupTimer = null;
-    }
-
-    if (lastHighlighted && lastHighlighted !== el) {
-        const prev = lastHighlighted;
-        prev.classList.remove("wah-highlight--on");
-
-        window.setTimeout(() => {
-            prev.classList.remove("wah-highlight");
-            prev.style.removeProperty("--wah-hl");
-        }, TRANSITION_MS);
-    }
-
-    const color =
-        issue.severity === "critical" ? "var(--wah-score-bad)" :
-            issue.severity === "warning" ? "var(--wah-score-warning)" :
-                "var(--wah-score-medium)";
-
-    el.style.setProperty("--wah-hl", color);
-
-    el.classList.add("wah-highlight");
-    void el.offsetHeight;
-
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    requestAnimationFrame(() => {
-        el.classList.add("wah-highlight--on");
-    });
-
-    lastHighlighted = el;
-
-    const current = el;
-
-    hideTimer = window.setTimeout(() => {
-        current.classList.remove("wah-highlight--on");
-
-        cleanupTimer = window.setTimeout(() => {
-            current.classList.remove("wah-highlight");
-            current.style.removeProperty("--wah-hl");
-        }, TRANSITION_MS);
-
-    }, HIGHLIGHT_DURATION);
-}
-
-function getScoreClass(score: number) {
-    if (score >= 95) return "score-excellent";
-    if (score >= 85) return "score-good";
-    if (score >= 70) return "score-warning";
-    return "score-bad";
-}
 
 export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
     if (document.getElementById("wah-overlay")) return;
@@ -100,32 +24,19 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
         </div>
 
         <div class="wah-content">
-            <div class="wah-score ${scoreClass}">Score: ${results.score}%</div>
-            <div class="wah-counts"></div>
+            <div class="wah-top">
+                <div class="wah-top-left">
+                    <div class="wah-score ${scoreClass}">Score: ${results.score}%</div>
+                    <div class="wah-counts"></div>
+                </div>
 
-            <div class="wah-adv">
-                <button class="wah-adv-btn" type="button">Filters ▾</button>
-
-                <div class="wah-adv-panel" hidden>
-                    <label class="wah-adv-item">
-                        <input type="checkbox" data-cat="accessibility" checked>
-                            Accessibility
-                    </label>
-
-                    <label class="wah-adv-item">
-                        <input type="checkbox" data-cat="semantic" checked>
-                            Semantic
-                    </label>
-
-                    <label class="wah-adv-item">
-                        <input type="checkbox" data-cat="seo" checked>
-                            SEO
-                    </label>
-
-                    <label class="wah-adv-item">
-                        <input type="checkbox" data-cat="responsive" checked>
-                            Responsive
-                    </label>
+                <div class="wah-top-right">
+                    <div class="wah-toolbar" aria-label="WAH toolbar">
+                    <button class="wah-tool" type="button" data-pop="filters" title="Filters">🔎</button>
+                    <button class="wah-tool" type="button" data-pop="rules" title="Rules">⚙️</button>
+                    <button class="wah-tool" type="button" data-pop="ui" title="UI">🎨</button>
+                    <button class="wah-tool" type="button" data-pop="export" title="Export">📥</button>
+                    </div>
                 </div>
             </div>
 
@@ -136,13 +47,17 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
             </div>
 
             <div class="wah-panel" id="wah-panel"></div>
+            <div class="wah-pop" id="wah-pop" hidden>
+                <div class="wah-pop-title" style="margin-bottom: 10px; font-weight: bold;"></div>
+                <div class="wah-pop-body" id="wah-pop-body"></div>
+            </div>
         </div>
     `;
 
-
     document.body.appendChild(overlay);
+
     type UIFilter = "critical" | "warning" | "recommendation";
-    const ORDER: UIFilter[] = ["critical", "warning", "recommendation"];
+    const active = new Set<UIFilter>(["critical"]);
     const catActive = new Set<IssueCategory>([
         "accessibility",
         "semantic",
@@ -150,130 +65,51 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
         "responsive"
     ]);
 
+    let openPop: PopoverType = null;
+
     const panel = overlay.querySelector("#wah-panel") as HTMLElement | null;
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
     const chips = Array.from(overlay.querySelectorAll(".wah-chip")) as HTMLButtonElement[];
+    const pop = overlay.querySelector("#wah-pop") as HTMLElement | null;
+    const popBody = overlay.querySelector("#wah-pop-body") as HTMLElement | null;
+    const popTitle = overlay.querySelector(".wah-pop-title") as HTMLElement | null;
+    const tools = Array.from(overlay.querySelectorAll(".wah-tool")) as HTMLButtonElement[];
 
-    const active = new Set<UIFilter>(["critical"]);
+    const setOpenPop = (state: PopoverType) => {
+        openPop = state;
+    };
 
-    const advBtn = overlay.querySelector(".wah-adv-btn") as HTMLButtonElement | null;
-    const advPanel = overlay.querySelector(".wah-adv-panel") as HTMLElement | null;
+    const handleFilterChange = (type: "severity" | "category", value: string, checked: boolean) => {
+        if (type === "severity") {
+            const sev = value as UIFilter;
+            if (checked) active.add(sev);
+            else active.delete(sev);
+        } else {
+            const cat = value as IssueCategory;
+            if (checked) catActive.add(cat);
+            else catActive.delete(cat);
+        }
+        refresh();
+    };
 
-    if (advBtn && advPanel) {
-        advBtn.addEventListener("click", () => {
-            const isHidden = advPanel.hasAttribute("hidden");
-            if (isHidden) advPanel.removeAttribute("hidden");
-            else advPanel.setAttribute("hidden", "");
+    function refresh() {
+        if (!panel || !countsEl) return;
+        const list = getFilteredIssues(results.issues, active, catActive);
+
+        countsEl.innerHTML = renderCounts(results.issues);
+        panel.innerHTML = renderList(list);
+        attachIssueItemListeners(panel, list, (issue) => {
+            logIssueDetail(issue);
+            focusIssueElement(issue);
         });
-
-        document.addEventListener("click", (e) => {
-            if (!advPanel) return;
-            const target = e.target as Node;
-            const clickedInside = overlay.contains(target);
-            if (!clickedInside) advPanel.setAttribute("hidden", "");
-        });
-    }
-
-    if (advPanel) {
-        advPanel.querySelectorAll('input[type="checkbox"][data-cat]').forEach((cb) => {
-            cb.addEventListener("change", () => {
-                const input = cb as HTMLInputElement;
-                const cat = input.dataset.cat as IssueCategory;
-
-                if (input.checked) catActive.add(cat);
-                else catActive.delete(cat);
-
-                refresh();
-            });
-        });
-    }
-
-    function getFilteredIssues(): AuditIssue[] {
-        if (active.size === 0) return [];
-
-        const filtered = results.issues.filter(i => {
-            const sevOk = active.has(i.severity as UIFilter);
-            const catOk = !i.category || catActive.has(i.category);
-            return sevOk && catOk;
-        });
-
-        filtered.sort((a, b) => ORDER.indexOf(a.severity as UIFilter) - ORDER.indexOf(b.severity as UIFilter));
-        return filtered;
-    }
-
-    function escapeHtml(s: string) {
-        return s.replace(/[&<>"']/g, (c) => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-        }[c]!));
-    }
-
-    function badgeSymbol(sev: AuditIssue["severity"]) {
-        if (sev === "critical") return "⛔";
-        if (sev === "warning") return "⚠️";
-        return "❕";
     }
 
     const toggleBtn = overlay.querySelector(".wah-toggle") as HTMLButtonElement | null;
-
     if (toggleBtn) {
         toggleBtn.addEventListener("click", () => {
             const collapsed = overlay.classList.toggle("wah-collapsed");
             toggleBtn.textContent = collapsed ? "+" : "–";
         });
-    }
-
-    function renderList(list: AuditIssue[]) {
-        if (list.length === 0) return `<div class="wah-empty">No issues selected</div>`;
-
-        return `
-            <ul class="wah-list">
-                ${list.map((issue, i) => `
-                    <li title="Click to focus" class="wah-issue-item wah-${issue.severity}" data-idx="${i}">
-                        <span class="wah-badge wah-${issue.severity}" title="${issue.severity}">
-                            <span class="wah-badge-symbol">
-                                ${badgeSymbol(issue.severity)}
-                            </span>
-                        </span>
-                        <span class="wah-msg">${escapeHtml(issue.message)}</span>
-                    </li>
-                `).join("")}
-            </ul>
-        `;
-    }
-
-    function attachIssueItemListeners(list: AuditIssue[]) {
-        if (!panel) return;
-        panel.querySelectorAll(".wah-issue-item").forEach((li) => {
-            li.addEventListener("click", () => {
-                const idx = Number((li as HTMLElement).dataset.idx);
-                const issue = list[idx];
-                if (!issue) return;
-                logIssueDetail(issue);
-                focusIssueElement(issue);
-            });
-        });
-    }
-
-    function refresh() {
-        if (!panel) return;
-        if (!countsEl) return;
-        const list = getFilteredIssues();
-
-        const totalC = results.issues.filter(i => i.severity === "critical").length;
-        const totalW = results.issues.filter(i => i.severity === "warning").length;
-        const totalR = results.issues.filter(i => i.severity === "recommendation").length;
-
-        countsEl.innerHTML = `
-            <span class="c">⛔ ${totalC}</span>
-            <span class="w">⚠️ ${totalW}</span>
-            <span class="r">❕ ${totalR}</span>
-        `;
-        panel.innerHTML = renderList(list);
-        attachIssueItemListeners(list);
     }
 
     chips.forEach((btn) => {
@@ -290,6 +126,42 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
 
             refresh();
         });
+    });
+
+    tools.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const type = btn.dataset.pop as PopoverType;
+
+            if (openPop === type && pop && !pop.hasAttribute("hidden")) {
+                closePop(pop, tools, setOpenPop);
+                return;
+            }
+
+            if (!pop || !popTitle || !popBody) return;
+            openPopover(type, pop, popTitle, popBody, btn, tools, active, catActive, handleFilterChange, setOpenPop);
+        });
+    });
+
+    const popClose = overlay.querySelector(".wah-pop-close") as HTMLButtonElement | null;
+    popClose?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closePop(pop, tools, setOpenPop);
+    });
+
+    document.addEventListener("pointerdown", (e) => {
+        if (!pop || pop.hasAttribute("hidden")) return;
+        const t = e.target as Node;
+
+        const clickedPop = pop.contains(t);
+        const clickedTool = tools.some(b => b.contains(t));
+        if (!clickedPop && !clickedTool) closePop(pop, tools, setOpenPop);
+    }, true);
+
+    window.addEventListener("resize", () => {
+        if (!pop || pop.hasAttribute("hidden")) return;
+        const activeBtn = tools.find(b => b.dataset.pop === openPop);
+        if (activeBtn) positionPop(pop, activeBtn);
     });
 
     refresh();
