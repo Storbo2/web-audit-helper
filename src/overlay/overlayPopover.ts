@@ -1,92 +1,136 @@
 import type { IssueCategory } from "../core/types";
+export type UIFilter = "critical" | "warning" | "recommendation";
 
-export type PopoverType = "filters" | "rules" | "ui" | "export" | null;
+type SetupPopoverArgs = {
+    overlay: HTMLElement;
+    active: Set<UIFilter>;
+    catActive: Set<IssueCategory>;
+    onChange: () => void;
+};
 
-export function positionPop(pop: HTMLElement, anchor: HTMLElement) {
-    const r = anchor.getBoundingClientRect();
-    const left = Math.max(8, Math.round(r.left + r.width / 2 - 130));
-    const top = Math.round(r.bottom + 10);
-    pop.style.left = `${left}px`;
-    pop.style.top = `${top}px`;
-}
+export function setupPopover({ overlay, active, catActive, onChange }: SetupPopoverArgs) {
+    const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
 
-export function closePop(
-    pop: HTMLElement | null,
-    tools: HTMLButtonElement[],
-    setOpenPop: (state: PopoverType) => void
-) {
-    if (!pop) return;
-    pop.setAttribute("hidden", "");
-    setOpenPop(null);
-    tools.forEach(b => b.classList.remove("is-active"));
-}
+    function ensureGlobalPop() {
+        let pop = document.getElementById("wah-pop") as HTMLElement | null;
+        let popBody = document.getElementById("wah-pop-body") as HTMLElement | null;
 
-export function renderFiltersPop(
-    popBody: HTMLElement,
-    active: Set<"critical" | "warning" | "recommendation">,
-    catActive: Set<IssueCategory>,
-    onFilterChange: (type: "severity" | "category", value: string, checked: boolean) => void
-) {
-    popBody.innerHTML = `
-        <div style="margin-bottom:8px; opacity:.9; font-size:12px;">Severities</div>
-        <label><input type="checkbox" data-sev="critical" ${active.has("critical") ? "checked" : ""}> Critical</label>
-        <label><input type="checkbox" data-sev="warning" ${active.has("warning") ? "checked" : ""}> Warning</label>
-        <label><input type="checkbox" data-sev="recommendation" ${active.has("recommendation") ? "checked" : ""}> Recommendation</label>
+        if (!pop) {
+            pop = document.createElement("div");
+            pop.id = "wah-pop";
+            pop.className = "wah-pop";
+            pop.setAttribute("hidden", "");
+            pop.innerHTML = `<div class="wah-pop-body" id="wah-pop-body"></div>`;
+            document.body.appendChild(pop);
+            popBody = pop.querySelector("#wah-pop-body") as HTMLElement;
+        }
 
-        <div style="margin:10px 0 8px; opacity:.9; font-size:12px;">Categories</div>
-        <label><input type="checkbox" data-cat="accessibility" ${catActive.has("accessibility") ? "checked" : ""}> Accessibility</label>
-        <label><input type="checkbox" data-cat="semantic" ${catActive.has("semantic") ? "checked" : ""}> Semantic</label>
-        <label><input type="checkbox" data-cat="seo" ${catActive.has("seo") ? "checked" : ""}> SEO</label>
-        <label><input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}> Responsive</label>
-    `;
+        if (!popBody) {
+            popBody = pop.querySelector("#wah-pop-body") as HTMLElement | null;
+        }
 
-    popBody.querySelectorAll('input[type="checkbox"][data-sev]').forEach(cb => {
-        cb.addEventListener("change", () => {
-            const input = cb as HTMLInputElement;
-            const sev = input.dataset.sev!;
-            onFilterChange("severity", sev, input.checked);
-        });
-    });
-
-    popBody.querySelectorAll('input[type="checkbox"][data-cat]').forEach(cb => {
-        cb.addEventListener("change", () => {
-            const input = cb as HTMLInputElement;
-            const cat = input.dataset.cat!;
-            onFilterChange("category", cat, input.checked);
-        });
-    });
-}
-
-export function openPopover(
-    type: PopoverType,
-    pop: HTMLElement,
-    popTitle: HTMLElement,
-    popBody: HTMLElement,
-    anchor: HTMLElement,
-    tools: HTMLButtonElement[],
-    active: Set<"critical" | "warning" | "recommendation">,
-    catActive: Set<IssueCategory>,
-    onFilterChange: (type: "severity" | "category", value: string, checked: boolean) => void,
-    setOpenPop: (state: PopoverType) => void
-) {
-    if (type === null) return;
-
-    setOpenPop(type);
-    pop.removeAttribute("hidden");
-    positionPop(pop, anchor);
-
-    tools.forEach(b => b.classList.toggle("is-active", b.dataset.pop === type));
-
-    if (type === "filters") {
-        popTitle.textContent = "Filters";
-        renderFiltersPop(popBody, active, catActive, onFilterChange);
-    } else {
-        popTitle.textContent =
-            type === "rules" ? "Rules" :
-                type === "ui" ? "UI" : "Export";
-
-        popBody.innerHTML = `<div style="opacity:.85;font-size:12px;padding:6px 2px;">
-            Coming soon.
-        </div>`;
+        return { pop, popBody };
     }
+
+    const { pop, popBody } = ensureGlobalPop();
+
+    if (!filtersBtn || !pop || !popBody) return;
+
+    const filtersBtnEl = filtersBtn;
+    const popEl = pop;
+    const popBodyEl = popBody;
+
+    let isOpen = false;
+
+    function positionPop(anchor: HTMLElement) {
+        const r = anchor.getBoundingClientRect();
+        const width = 260;
+        const height = 220;
+
+        let left = Math.round(r.left + r.width / 2 - width / 2);
+
+        left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+
+        let top = Math.round(r.bottom + 10);
+
+        if (top + height > window.innerHeight - 8) {
+            top = Math.round(r.top - height - 10);
+        }
+
+        top = Math.max(8, Math.min(top, window.innerHeight - height - 8));
+
+        popEl.style.left = `${left}px`;
+        popEl.style.top = `${top}px`;
+    }
+
+    function renderFilters() {
+        popBodyEl.innerHTML = `
+        <div class="wah-pop-titleline">Categories</div>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-cat="accessibility" ${catActive.has("accessibility") ? "checked" : ""}>
+            <span>Accessibility</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-cat="semantic" ${catActive.has("semantic") ? "checked" : ""}>
+            <span>Semantic</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-cat="seo" ${catActive.has("seo") ? "checked" : ""}>
+            <span>SEO</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}>
+            <span>Responsive</span>
+        </label>
+
+        <div class="wah-pop-hint">Tip: use the chips below for severity.</div>
+        `;
+
+        popBodyEl.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-cat]').forEach((cb) => {
+            cb.addEventListener("change", () => {
+                const cat = cb.dataset.cat as IssueCategory;
+                if (cb.checked) catActive.add(cat);
+                else catActive.delete(cat);
+                onChange();
+            });
+        });
+    }
+
+    function open() {
+        isOpen = true;
+        renderFilters();
+        popEl.removeAttribute("hidden");
+        filtersBtnEl.classList.add("is-active");
+        positionPop(filtersBtnEl);
+    }
+
+    function close() {
+        isOpen = false;
+        popEl.setAttribute("hidden", "");
+        filtersBtnEl.classList.remove("is-active");
+    }
+
+    filtersBtnEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (isOpen) close();
+        else open();
+    });
+
+    popEl.addEventListener("click", (e) => e.stopPropagation());
+
+    document.addEventListener(
+        "pointerdown",
+        (e) => {
+            if (!isOpen) return;
+            const t = e.target as Node;
+            const clickedBtn = filtersBtnEl.contains(t);
+            const clickedPop = popEl.contains(t);
+            if (!clickedBtn && !clickedPop) close();
+        },
+        true
+    );
+
+    window.addEventListener("resize", () => {
+        if (isOpen) positionPop(filtersBtnEl);
+    });
 }
