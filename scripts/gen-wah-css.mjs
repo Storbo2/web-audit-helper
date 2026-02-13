@@ -4,7 +4,6 @@ import path from "node:path";
 const stylesDir = path.resolve("src/overlay/styles");
 const outPath = path.resolve("src/overlay/wahCss.ts");
 
-// Order matters: variables first, then base, then specific modules
 const cssFileOrder = [
     "variables.css",
     "base.css",
@@ -13,7 +12,6 @@ const cssFileOrder = [
     "utilities.css"
 ];
 
-// Read all CSS files in order
 const cssFiles = cssFileOrder
     .map(fileName => {
         const filePath = path.join(stylesDir, fileName);

@@ -94,7 +94,7 @@ export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs)
         });
     }
 
-    const POPOVER_TRANSITION_MS = 200; // ajusta a tus transitions del CSS (160/180)
+    const POPOVER_TRANSITION_MS = 200;
 
     function openPop(anchor: HTMLElement) {
         if (!pop) return;
