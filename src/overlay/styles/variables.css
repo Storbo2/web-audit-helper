@@ -1,0 +1,17 @@
+:root {
+    --wah-bg: #0f172a;
+    --wah-text: #e5e7eb;
+    --wah-border: #38bdf8;
+    --wah-shawdow: rgba(239, 68, 68, 0);
+
+    --wah-score-excellent: #38bdf8;
+    --wah-score-good: #22c55e;
+    --wah-score-medium: #ffe100;
+    --wah-score-warning: #ff9f0e;
+    --wah-score-bad: #ed4141;
+    --wah-badges-symbols: #ffffff;
+    --wah-dark-border: rgba(255, 255, 255, 0.08);
+
+    --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Arial, sans-serif;
+}

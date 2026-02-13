@@ -1,18 +1,39 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const cssPath = path.resolve("src/overlay/wah.css");
+const stylesDir = path.resolve("src/overlay/styles");
 const outPath = path.resolve("src/overlay/wahCss.ts");
 
-const css = fs.readFileSync(cssPath, "utf8")
-    .replaceAll("`", "\\`");
+// Order matters: variables first, then base, then specific modules
+const cssFileOrder = [
+    "variables.css",
+    "base.css",
+    "popover.css",
+    "items.css",
+    "utilities.css"
+];
+
+// Read all CSS files in order
+const cssFiles = cssFileOrder
+    .map(fileName => {
+        const filePath = path.join(stylesDir, fileName);
+        if (!fs.existsSync(filePath)) {
+            console.warn(`[WAH] Warning: ${fileName} not found`);
+            return "";
+        }
+        return fs.readFileSync(filePath, "utf8");
+    })
+    .filter(content => content.length > 0);
+
+const css = cssFiles.join("\n\n").replaceAll("`", "\\`");
 
 const content =
     `// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
-// Source: src/overlay/wah.css
+// Source: src/overlay/styles/*.css files
+// Order: variables.css → base.css → popover.css → items.css → utilities.css
 
 export const wahCss = \`\n${css}\n\`;
 `;
 
 fs.writeFileSync(outPath, content, "utf8");
-console.log("[WAH] Generated src/overlay/wahCss.ts");
+console.log("[WAH] Generated src/overlay/wahCss.ts from modular CSS files");

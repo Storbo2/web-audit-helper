@@ -1,0 +1,166 @@
+.score-excellent {
+    color: var(--wah-score-excellent);
+}
+
+.score-good {
+    color: var(--wah-score-good);
+}
+
+.score-warning {
+    color: var(--wah-score-warning);
+}
+
+.score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-critical {
+    text-align: left;
+    font-size: 12px;
+    color: var(--wah-score-bad);
+}
+
+.wah-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-recommendation {
+    color: var(--wah-text);
+    opacity: .85;
+}
+
+.wah-filter {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 8px;
+}
+
+.wah-chip {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--wah-text);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.wah-chip.is-active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--wah-border);
+    opacity: 1;
+}
+
+.wah-toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0 2px;
+    align-items: center;
+}
+
+.wah-tool {
+    width: 32px;
+    height: 28px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wah-text);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.9;
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, opacity 160ms ease;
+}
+
+.wah-tool:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-1px);
+}
+
+.wah-tool.is-active {
+    border-color: rgba(56, 189, 248, 0.55);
+    background: rgba(56, 189, 248, 0.10);
+}
+
+.wah-counts {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    margin-top: 6px;
+    opacity: 0.9;
+}
+
+.wah-counts .c {
+    color: var(--wah-score-bad);
+}
+
+.wah-counts .w {
+    color: var(--wah-score-warning);
+}
+
+.wah-counts .r {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-legend {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    font-size: 11px;
+    opacity: 0.9;
+    margin: 6px 0 2px;
+}
+
+.wah-legend-item {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.wah-legend-sym {
+    font-size: 15px;
+}
+
+.wah-all-toggle {
+    width: 100%;
+    margin-top: 10px;
+    padding: 6px 8px;
+    border: 1px solid var(--wah-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--wah-text);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.wah-all-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issues {
+    margin: 6px 0 0;
+    padding-left: 16px;
+}
+
+.wah-issues li {
+    cursor: pointer;
+    margin-bottom: 6px;
+    color: var(--wah-score-bad);
+    transition: opacity .15s ease;
+}
+
+.wah-issues li:hover {
+    text-decoration: underline;
+}
+
+.wah-ok {
+    margin: 6px 0 0;
+    color: var(--wah-score-good);
+}

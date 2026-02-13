@@ -1,0 +1,55 @@
+/* antes: wah-pop { ... } */
+.wah-pop {
+    position: fixed;
+    width: 260px;
+    background: rgba(15, 23, 42, 0.98);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 12px;
+    padding: 14px 12px 12px;
+    z-index: 999999;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .40);
+    color: var(--wah-text);
+    backdrop-filter: blur(6px);
+    font-family: var(--wah-font);
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    transition: opacity 160ms ease, transform 180ms ease;
+    pointer-events: none;
+}
+
+.wah-pop.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.wah-pop-titleline {
+    font-size: 16px;
+    margin: 0 0 12px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    text-align: center;
+    font-family: inherit;
+    color: var(--wah-text);
+}
+
+.wah-pop-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    padding: 7px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wah-pop-row:hover {
+    background: rgba(56, 189, 248, 0.10);
+}
+
+.wah-pop-body input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--wah-border);
+}

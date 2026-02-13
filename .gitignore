@@ -20,6 +20,7 @@
 /build
 /dist
 src/overlay/wahCss.ts
+src/overlay/stylesheets.ts
 
 # misc
 .DS_Store

@@ -8,7 +8,7 @@ type SetupPopoverArgs = {
     onChange: () => void;
 };
 
-export function setupPopover({ overlay, active, catActive, onChange }: SetupPopoverArgs) {
+export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
 
     function ensureGlobalPop() {
@@ -65,7 +65,7 @@ export function setupPopover({ overlay, active, catActive, onChange }: SetupPopo
 
     function renderFilters() {
         popBodyEl.innerHTML = `
-        <div class="wah-pop-titleline">Categories</div>
+        <div class="wah-pop-titleline">Filters by category</div>
         <label class="wah-pop-row">
             <input type="checkbox" data-cat="accessibility" ${catActive.has("accessibility") ? "checked" : ""}>
             <span>Accessibility</span>
@@ -82,8 +82,6 @@ export function setupPopover({ overlay, active, catActive, onChange }: SetupPopo
             <input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}>
             <span>Responsive</span>
         </label>
-
-        <div class="wah-pop-hint">Tip: use the chips below for severity.</div>
         `;
 
         popBodyEl.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-cat]').forEach((cb) => {
@@ -96,39 +94,45 @@ export function setupPopover({ overlay, active, catActive, onChange }: SetupPopo
         });
     }
 
-    function open() {
-        isOpen = true;
-        renderFilters();
-        popEl.removeAttribute("hidden");
-        filtersBtnEl.classList.add("is-active");
-        positionPop(filtersBtnEl);
+    const POPOVER_TRANSITION_MS = 200; // ajusta a tus transitions del CSS (160/180)
+
+    function openPop(anchor: HTMLElement) {
+        if (!pop) return;
+        pop.removeAttribute("hidden");
+        positionPop(anchor);
+        void pop.offsetHeight;
+        pop.classList.add("is-open");
     }
 
-    function close() {
-        isOpen = false;
-        popEl.setAttribute("hidden", "");
-        filtersBtnEl.classList.remove("is-active");
+    function closePop() {
+        if (!pop) return;
+        pop.classList.remove("is-open");
+        window.setTimeout(() => {
+            pop.setAttribute("hidden", "");
+        }, POPOVER_TRANSITION_MS);
     }
 
-    filtersBtnEl.addEventListener("click", (e) => {
+    filtersBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        if (isOpen) close();
-        else open();
+        renderFilters();
+
+        const isOpen = pop?.classList.contains("is-open");
+        if (isOpen) closePop();
+        else openPop(filtersBtn);
     });
 
     popEl.addEventListener("click", (e) => e.stopPropagation());
 
-    document.addEventListener(
-        "pointerdown",
-        (e) => {
-            if (!isOpen) return;
-            const t = e.target as Node;
-            const clickedBtn = filtersBtnEl.contains(t);
-            const clickedPop = popEl.contains(t);
-            if (!clickedBtn && !clickedPop) close();
-        },
-        true
-    );
+    document.addEventListener("pointerdown", (e) => {
+        if (!pop) return;
+        const t = e.target as Node;
+
+        const clickedPop = pop.contains(t);
+        const clickedBtn = filtersBtn?.contains(t) ?? false;
+
+        if (!clickedPop && !clickedBtn) closePop();
+    }, true);
 
     window.addEventListener("resize", () => {
         if (isOpen) positionPop(filtersBtnEl);
