@@ -1,9 +1,8 @@
-/* antes: wah-pop { ... } */
 .wah-pop {
     position: fixed;
     width: 260px;
-    background: rgba(15, 23, 42, 0.98);
-    border: 1px solid rgba(56, 189, 248, 0.35);
+    background: var(--wah-bg);
+    border: 1px solid var(--wah-dark-border);
     border-radius: 12px;
     padding: 14px 12px 12px;
     z-index: 999999;
@@ -33,6 +32,36 @@
     color: var(--wah-text);
 }
 
+.wah-pop-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 12px;
+    letter-spacing: .2px;
+    color: var(--wah-text);
+    font-family: inherit;
+}
+
+.wah-pop-section {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.wah-ui-reset {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: opacity .15s ease, transform .15s ease;
+    padding: 0;
+}
+
 .wah-pop-row {
     display: flex;
     gap: 10px;
@@ -46,6 +75,10 @@
 
 .wah-pop-row:hover {
     background: rgba(56, 189, 248, 0.10);
+}
+
+.wah-ui-reset:hover {
+    transform: rotate(-30deg) scale(1.1);
 }
 
 .wah-pop-body input[type="checkbox"] {

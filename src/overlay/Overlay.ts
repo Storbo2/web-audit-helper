@@ -2,7 +2,7 @@ import { injectOverlayStyles } from "./overlayStyles";
 import { logIssueDetail, focusIssueElement } from "./overlayHighlight";
 import { getScoreClass } from "./overlayUtils";
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./overlayRenderer";
-import { setupPopover } from "./overlayPopover";
+import { setupPopover, applyUIToOverlay } from "./overlayPopover";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
@@ -47,6 +47,8 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
     `;
 
     document.body.appendChild(overlay);
+
+    applyUIToOverlay(overlay);
 
     type OverlayPos = "top-left" | "top-right" | "bottom-left" | "bottom-right";
     const POS_KEY = "wah:position";

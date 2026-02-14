@@ -20,5 +20,5 @@ export function escapeHtml(s: string) {
 export function badgeSymbol(sev: AuditIssue["severity"]) {
     if (sev === "critical") return "⛔";
     if (sev === "warning") return "⚠️";
-    return "❕";
+    return "!";
 }

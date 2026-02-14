@@ -2,7 +2,10 @@
     --wah-bg: #0f172a;
     --wah-text: #e5e7eb;
     --wah-border: #38bdf8;
-    --wah-shawdow: rgba(239, 68, 68, 0);
+    --wah-shadow: rgba(239, 68, 68, 0);
+    --wah-bg-light: #dfdfdf;
+    --wah-text-light: #0b1220;
+    --wah-dark-border-light: rgba(2, 6, 23, 0.10);
 
     --wah-score-excellent: #38bdf8;
     --wah-score-good: #22c55e;
@@ -14,4 +17,19 @@
 
     --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+#wah-overlay[data-theme="light"] {
+    --wah-bg: var(--wah-bg-light);
+    --wah-text: var(--wah-text-light);
+    --wah-dark-border: var(--wah-dark-border-light);
+    --wah-badges-symbols: var(--wah-text-light);
+}
+
+@media (prefers-color-scheme: light) {
+    #wah-overlay[data-theme="auto"] {
+        --wah-bg: var(--wah-bg-light);
+        --wah-text: var(--wah-text-light);
+        --wah-dark-border: var(--wah-dark-border-light);
+    }
 }

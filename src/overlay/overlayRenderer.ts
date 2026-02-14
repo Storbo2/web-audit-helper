@@ -28,7 +28,7 @@ export function renderList(list: AuditIssue[]) {
             ${list.map((issue, i) => `
                 <li title="Click to focus" class="wah-issue-item wah-${issue.severity}" data-idx="${i}">
                     <span class="wah-badge wah-${issue.severity}" title="${issue.severity}">
-                        <span class="wah-badge-symbol">
+                        <span class="wah-text">
                             ${badgeSymbol(issue.severity)}
                         </span>
                     </span>
@@ -62,6 +62,6 @@ export function renderCounts(results: AuditIssue[]) {
     return `
         <span class="c">⛔ ${totalC}</span>
         <span class="w">⚠️ ${totalW}</span>
-        <span class="r">❕ ${totalR}</span>
+        <span class="r"><span class="r2">!</span> ${totalR}</span>
     `;
 }

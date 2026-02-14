@@ -58,7 +58,7 @@
 
 .wah-highlight {
     border-radius: 3px;
-    box-shadow: 0 0 0 0 var(--wah-shawdow);
+    box-shadow: 0 0 0 0 var(--wah-shadow);
     transition:
         box-shadow 220ms ease,
         transform 220ms ease;

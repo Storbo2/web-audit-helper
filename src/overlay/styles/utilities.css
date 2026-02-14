@@ -104,7 +104,12 @@
 }
 
 .wah-counts .r {
-    color: var(--wah-badges-symbols);
+    color: var(--wah-text);
+}
+
+.wah-counts .r .r2 {
+    color: var(--wah-text);
+    font-weight: bold;
 }
 
 .wah-legend {
