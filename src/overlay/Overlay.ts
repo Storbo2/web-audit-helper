@@ -30,9 +30,9 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
 
                 <div class="wah-toolbar" aria-label="WAH toolbar">
                     <button class="wah-tool" type="button" data-pop="filters" title="Extra filters">🔎</button>
-                    <button class="wah-tool" type="button" data-pop="rules" title="Rules">⚙️</button>
-                    <button class="wah-tool" type="button" data-pop="ui" title="UI">🎨</button>
-                    <button class="wah-tool" type="button" data-pop="export" title="Export">📥</button>
+                    <button class="wah-tool" type="button" data-pop="settings" title="Advanced settings">⚙️</button>
+                    <button class="wah-tool" type="button" data-pop="ui" title="UI settings">🎨</button>
+                    <button class="wah-tool" type="button" data-pop="export" title="Export report">📥</button>
                 </div>
             </div>
 

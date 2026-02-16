@@ -1,11 +1,21 @@
 import type { AuditIssue } from "../core/types";
+import { loadSettings } from "./overlaySettingsStore";
 
-const HIGHLIGHT_DURATION = 750;
 const TRANSITION_MS = 250;
 
+let highlightMsCache: number | null = null;
 let lastHighlighted: HTMLElement | null = null;
 let hideTimer: number | null = null;
 let cleanupTimer: number | null = null;
+
+export function setHighlightDurationMs(ms: number) {
+    highlightMsCache = ms;
+}
+
+export function getHighlightDurationMs() {
+    if (highlightMsCache != null) return highlightMsCache;
+    return loadSettings().highlightMs;
+}
 
 export function logIssueDetail(issue: AuditIssue) {
     console.groupCollapsed(
@@ -62,6 +72,7 @@ export function focusIssueElement(issue: AuditIssue) {
     lastHighlighted = el;
 
     const current = el;
+    const durationMs = getHighlightDurationMs();
 
     hideTimer = window.setTimeout(() => {
         current.classList.remove("wah-highlight--on");
@@ -71,5 +82,5 @@ export function focusIssueElement(issue: AuditIssue) {
             current.style.removeProperty("--wah-hl");
         }, TRANSITION_MS);
 
-    }, HIGHLIGHT_DURATION);
+    }, durationMs);
 }

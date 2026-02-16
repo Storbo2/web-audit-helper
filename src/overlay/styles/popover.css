@@ -73,6 +73,10 @@
     user-select: none;
 }
 
+.wah-pop-row input[type="range"] {
+    accent-color: var(--wah-accent-default);
+}
+
 .wah-pop-row:hover {
     background: rgba(56, 189, 248, 0.10);
 }
@@ -85,4 +89,110 @@
     width: 14px;
     height: 14px;
     accent-color: var(--wah-border);
+}
+
+.wah-pop-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.wah-pop-head-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+}
+
+.wah-pop-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--wah-text);
+}
+
+.wah-pop-page {
+    font-size: 11px;
+    opacity: 0.75;
+    color: var(--wah-text);
+}
+
+.wah-pop-nav {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid var(--wah-dark-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wah-text);
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+    font-size: 14px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wah-pop-nav:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.wah-pop-note {
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.75;
+    color: var(--wah-text);
+}
+
+.wah-pop-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--wah-dark-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wah-text);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.12s ease;
+}
+
+.wah-pop-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.wah-rerun {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 159, 14, 0.1);
+    border: 1px solid var(--wah-score-warning);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wah-rerun span {
+    font-size: 12px;
+    color: var(--wah-score-warning);
+    font-weight: 500;
+}
+
+.wah-rerun button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--wah-score-warning);
+    background: rgba(255, 159, 14, 0.15);
+    color: var(--wah-score-warning);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.wah-rerun button:hover {
+    background: rgba(255, 159, 14, 0.25);
+    transform: translateY(-1px);
 }

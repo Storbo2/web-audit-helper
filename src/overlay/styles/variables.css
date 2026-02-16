@@ -14,9 +14,9 @@
     --wah-score-bad: #ed4141;
     --wah-badges-symbols: #ffffff;
     --wah-dark-border: rgba(255, 255, 255, 0.08);
+    --wah-accent-default: #22d3ee;
 
-    --wah-font: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Arial, sans-serif;
+    --wah-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 #wah-overlay[data-theme="light"] {

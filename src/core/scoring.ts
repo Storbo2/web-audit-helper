@@ -1,10 +1,17 @@
 import type { AuditIssue } from "./types";
+import { loadSettings } from "../overlay/overlaySettingsStore";
 
 export function computeScore(issues: AuditIssue[]): number {
+    const { ignoreRecommendationsInScore } = loadSettings();
+
+    const filtered = ignoreRecommendationsInScore
+        ? issues.filter(i => i.severity !== "recommendation")
+        : issues;
+
     const perRuleCount = new Map<string, number>();
     const effective: AuditIssue[] = [];
 
-    for (const i of issues) {
+    for (const i of filtered) {
         const c = perRuleCount.get(i.rule) ?? 0;
         if (c >= 3) continue;
         perRuleCount.set(i.rule, c + 1);

@@ -1,23 +1,30 @@
 import type { IssueCategory } from "../core/types";
+import { loadSettings, saveSettings, resetSettings, DEFAULT_SETTINGS } from "./overlaySettingsStore";
+import { setHighlightDurationMs } from "./overlayHighlight";
+
 export type UIFilter = "critical" | "warning" | "recommendation";
-export type PopoverMode = "filters" | "ui";
+export type PopoverMode = "filters" | "ui" | "settings";
+
+type SettingsPage = 0 | 1 | 2 | 3;
 
 type SetupPopoverArgs = {
     overlay: HTMLElement;
     active: Set<UIFilter>;
     catActive: Set<IssueCategory>;
     onChange: () => void;
+    onRerunAudit?: () => void;
 };
 
 type UITheme = "auto" | "dark" | "light";
 
 export const UI_DEFAULTS = {
     theme: "auto" as const,
-    accent: "#22d3ee",
+    accent: "var(--wah-accent-default)",
     opacity: 1
 };
 
 export const UI_STORAGE_KEY = "wah:ui";
+const SETTINGS_PAGE_KEY = "wah:settings:page";
 
 export function saveUISettings(ui: any) {
     localStorage.setItem(UI_STORAGE_KEY, JSON.stringify(ui));
@@ -30,6 +37,15 @@ export function getUISettings() {
 
 export function resetUISettings() {
     localStorage.removeItem(UI_STORAGE_KEY);
+}
+
+function getLastSettingsPage(): SettingsPage {
+    const n = Number(localStorage.getItem(SETTINGS_PAGE_KEY));
+    return (n === 0 || n === 1 || n === 2 || n === 3) ? (n as SettingsPage) : 0;
+}
+
+function setLastSettingsPage(p: SettingsPage) {
+    localStorage.setItem(SETTINGS_PAGE_KEY, String(p));
 }
 
 function getTheme(): UITheme {
@@ -184,9 +200,214 @@ function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     });
 }
 
-export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs) {
+function renderSettingsHeader(title: string, page: number, total: number): string {
+    return `
+        <div class="wah-pop-head">
+            <button class="wah-pop-nav" data-nav="prev" title="Previous">←</button>
+            <div class="wah-pop-head-center">
+                <div class="wah-pop-title">${title}</div>
+                <div class="wah-pop-page">${page}/${total}</div>
+            </div>
+            <button class="wah-pop-nav" data-nav="next" title="Next">→</button>
+        </div>
+    `;
+}
+
+type SettingsPageRef = { current: SettingsPage };
+
+function wirePage0(popBody: HTMLElement) {
+    const s = loadSettings();
+
+    const radios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-loglvl"]');
+    radios.forEach(r => {
+        r.checked = r.value === s.logLevel;
+        r.addEventListener("change", () => {
+            saveSettings({ logLevel: r.value as any });
+        });
+    });
+
+    const slider = popBody.querySelector<HTMLInputElement>('[data-s="hl"]');
+    const label = popBody.querySelector<HTMLElement>('[data-s="hlLabel"]');
+    if (slider && label) {
+        slider.value = String(s.highlightMs);
+        label.textContent = `${s.highlightMs}ms`;
+
+        slider.addEventListener("input", () => {
+            const ms = Number(slider.value);
+            label.textContent = `${ms}ms`;
+            saveSettings({ highlightMs: ms });
+            setHighlightDurationMs(ms);
+        });
+    }
+}
+
+function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
+    const s = loadSettings();
+
+    const checkboxes = popBody.querySelectorAll<HTMLInputElement>('input[data-s="rep"]');
+    checkboxes.forEach(cb => {
+        cb.checked = s.reporters.includes(cb.value as any);
+        cb.addEventListener("change", () => {
+            const selected = Array.from(checkboxes)
+                .filter(x => x.checked)
+                .map(x => x.value as any);
+
+            saveSettings({ reporters: selected.length ? selected : ["console"] });
+
+            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (banner) {
+                banner.style.display = "flex";
+            }
+        });
+    });
+
+    if (onRerunAudit) {
+        const rerunBtn = popBody.querySelector('[data-s="rerun"]') as HTMLButtonElement | null;
+        rerunBtn?.addEventListener("click", () => {
+            onRerunAudit();
+            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (banner) {
+                banner.style.display = "none";
+            }
+        });
+    }
+}
+
+function wirePage2(popBody: HTMLElement, onRerunAudit?: () => void) {
+    const s = loadSettings();
+
+    const ignoreCb = popBody.querySelector<HTMLInputElement>('[data-s="ignoreRec"]');
+    if (ignoreCb) {
+        ignoreCb.checked = s.ignoreRecommendationsInScore;
+        ignoreCb.addEventListener("change", () => {
+            saveSettings({ ignoreRecommendationsInScore: ignoreCb.checked });
+
+            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (banner) {
+                banner.style.display = "flex";
+            }
+        });
+    }
+
+    if (onRerunAudit) {
+        const rerunBtn = popBody.querySelector('[data-s="rerun"]') as HTMLButtonElement | null;
+        rerunBtn?.addEventListener("click", () => {
+            onRerunAudit();
+            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (banner) {
+                banner.style.display = "none";
+            }
+        });
+    }
+}
+
+function wirePage3(popBody: HTMLElement, pageRef: SettingsPageRef) {
+    const resetBtn = popBody.querySelector('[data-s="reset"]') as HTMLButtonElement | null;
+    resetBtn?.addEventListener("click", () => {
+        resetSettings();
+        localStorage.removeItem(SETTINGS_PAGE_KEY);
+        pageRef.current = 0;
+        setLastSettingsPage(pageRef.current);
+        renderSettingsPage(popBody, pageRef);
+    });
+}
+
+function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
+    const page = pageRef.current;
+    const total = 4;
+
+    if (page === 0) {
+        popBody.innerHTML = `
+        ${renderSettingsHeader("Advanced settings", 1, total)}
+
+        <div class="wah-pop-section">Console logs</div>
+        <label class="wah-pop-row">
+            <input type="radio" name="wah-loglvl" value="none"> <span>None</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="radio" name="wah-loglvl" value="critical"> <span>Critical only</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="radio" name="wah-loglvl" value="all"> <span>All issues</span>
+        </label>
+
+        <div class="wah-pop-section">Highlight duration</div>
+        <div class="wah-pop-row" style="justify-content:space-between;">
+            <span data-s="hlLabel">750ms</span>
+            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750">
+        </div>
+    `;
+        wirePage0(popBody);
+    }
+
+    if (page === 1) {
+        popBody.innerHTML = `
+        ${renderSettingsHeader("Advanced settings", 2, total)}
+        <div class="wah-pop-section">Reporters</div>
+        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="console"> <span>Console</span></label>
+        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="json"> <span>JSON</span></label>
+        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="text"> <span>Text</span></label>
+        <div class="wah-pop-note">Changes require re-run audit for effect.</div>
+        <div class="wah-rerun" style="display:none;">
+            <span>Audit settings changed</span>
+            <button data-s="rerun">Re-run audit</button>
+        </div>
+    `;
+        wirePage1(popBody, onRerunAudit);
+    }
+
+    if (page === 2) {
+        popBody.innerHTML = `
+        ${renderSettingsHeader("Advanced settings", 3, total)}
+        <div class="wah-pop-section">Scoring</div>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-s="ignoreRec"> <span>Ignore recommendations in score</span>
+        </label>
+        <div class="wah-pop-note">Critical/Warning should always count. Requires re-run.</div>
+        <div class="wah-rerun" style="display:none;">
+            <span>Audit settings changed</span>
+            <button data-s="rerun">Re-run audit</button>
+        </div>
+    `;
+        wirePage2(popBody, onRerunAudit);
+    }
+
+    if (page === 3) {
+        popBody.innerHTML = `
+        ${renderSettingsHeader("Advanced settings", 4, total)}
+        <div class="wah-pop-section">Advanced</div>
+        <button class="wah-pop-btn" data-s="reset">Reset settings</button>
+        <div class="wah-pop-note">More options coming soon.</div>
+        `;
+        wirePage3(popBody, pageRef);
+    }
+
+    const prevBtn = popBody.querySelector('[data-nav="prev"]') as HTMLButtonElement | null;
+    const nextBtn = popBody.querySelector('[data-nav="next"]') as HTMLButtonElement | null;
+
+    const wrap = (p: number) => ((p % 4) + 4) % 4 as SettingsPage;
+
+    prevBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        pageRef.current = wrap(pageRef.current - 1);
+        setLastSettingsPage(pageRef.current);
+        renderSettingsPage(popBody, pageRef, onRerunAudit);
+    });
+
+    nextBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        pageRef.current = wrap(pageRef.current + 1);
+        setLastSettingsPage(pageRef.current);
+        renderSettingsPage(popBody, pageRef, onRerunAudit);
+    });
+}
+
+export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
     const uiBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="ui"]');
+    const settingsBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="settings"]');
+
+    const settingsPageRef: SettingsPageRef = { current: getLastSettingsPage() };
 
     function ensureGlobalPop() {
         let pop = document.getElementById("wah-pop") as HTMLElement | null;
@@ -251,6 +472,8 @@ export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs)
             renderFiltersPopover(popBodyEl, catActive, onChange);
         } else if (mode === "ui") {
             renderUIPopover(popBodyEl, overlay);
+        } else if (mode === "settings") {
+            renderSettingsPage(popBodyEl, settingsPageRef, onRerunAudit);
         }
 
         positionPop(anchor, pop);
@@ -292,6 +515,18 @@ export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs)
         }
     });
 
+    settingsBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isOpen = pop?.classList.contains("is-open");
+        if (isOpen && currentMode === "settings") {
+            closePop();
+        } else {
+            openPop("settings", settingsBtn);
+        }
+    });
+
     popEl.addEventListener("click", (e) => e.stopPropagation());
 
     document.addEventListener("pointerdown", (e) => {
@@ -299,7 +534,7 @@ export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs)
         const t = e.target as Node;
 
         const clickedPop = pop.contains(t);
-        const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false);
+        const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false) || (settingsBtn?.contains(t) ?? false);
 
         if (!clickedPop && !clickedBtn) closePop();
     }, true);
