@@ -11,6 +11,12 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
         ...userConfig,
     };
 
+    (window as any).__WAH_RERUN__ = () => {
+        document.getElementById("wah-overlay")?.remove();
+        document.getElementById("wah-pop")?.remove();
+        runWAH(userConfig);
+    };
+
     const results = runCoreAudit(config);
 
     const criticalIssues = results.issues

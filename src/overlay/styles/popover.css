@@ -163,36 +163,8 @@
     background: rgba(255, 255, 255, 0.07);
 }
 
-.wah-rerun {
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    background: rgba(255, 159, 14, 0.1);
-    border: 1px solid var(--wah-score-warning);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
 .wah-rerun span {
     font-size: 12px;
     color: var(--wah-score-warning);
     font-weight: 500;
-}
-
-.wah-rerun button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--wah-score-warning);
-    background: rgba(255, 159, 14, 0.15);
-    color: var(--wah-score-warning);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    transition: background 0.12s ease, transform 0.12s ease;
-}
-
-.wah-rerun button:hover {
-    background: rgba(255, 159, 14, 0.25);
-    transform: translateY(-1px);
 }

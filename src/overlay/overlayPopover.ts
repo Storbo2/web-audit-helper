@@ -19,12 +19,17 @@ type UITheme = "auto" | "dark" | "light";
 
 export const UI_DEFAULTS = {
     theme: "auto" as const,
-    accent: "var(--wah-accent-default)",
+    accent: "#22d3ee",
     opacity: 1
 };
 
 export const UI_STORAGE_KEY = "wah:ui";
 const SETTINGS_PAGE_KEY = "wah:settings:page";
+let pendingChangesNeedRerun = false;
+
+export function resetPendingChangesState() {
+    pendingChangesNeedRerun = false;
+}
 
 export function saveUISettings(ui: any) {
     localStorage.setItem(UI_STORAGE_KEY, JSON.stringify(ui));
@@ -81,6 +86,14 @@ export function applyUIToOverlay(overlay: HTMLElement) {
             if (v) pop.style.setProperty(name, v);
         });
     }
+}
+
+function renderRerunNotice(): string {
+    return `
+        <div class="wah-rerun" style="display: none;">
+            <span>Changes require re-run audit for effect.</span>
+        </div>
+    `;
 }
 
 function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueCategory>, onChange: () => void) {
@@ -203,12 +216,12 @@ function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
 function renderSettingsHeader(title: string, page: number, total: number): string {
     return `
         <div class="wah-pop-head">
-            <button class="wah-pop-nav" data-nav="prev" title="Previous">←</button>
+            <button class="wah-pop-nav" data-nav="prev" title="Previous">❮</button>
             <div class="wah-pop-head-center">
                 <div class="wah-pop-title">${title}</div>
                 <div class="wah-pop-page">${page}/${total}</div>
             </div>
-            <button class="wah-pop-nav" data-nav="next" title="Next">→</button>
+            <button class="wah-pop-nav" data-nav="next" title="Next">❯</button>
         </div>
     `;
 }
@@ -241,7 +254,7 @@ function wirePage0(popBody: HTMLElement) {
     }
 }
 
-function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
+function wirePage1(popBody: HTMLElement, pageState: { needsRerun: boolean }, _onRerunAudit?: () => void) {
     const s = loadSettings();
 
     const checkboxes = popBody.querySelectorAll<HTMLInputElement>('input[data-s="rep"]');
@@ -252,51 +265,35 @@ function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
                 .filter(x => x.checked)
                 .map(x => x.value as any);
 
-            saveSettings({ reporters: selected.length ? selected : ["console"] });
-
-            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (banner) {
-                banner.style.display = "flex";
+            const currentReporters = s.reporters.join(",");
+            const newReporters = (selected.length ? selected : ["console"]).join(",");
+            if (currentReporters !== newReporters) {
+                pageState.needsRerun = true;
+                pendingChangesNeedRerun = true;
+                const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+                if (noticeEl) noticeEl.style.display = "flex";
             }
+
+            saveSettings({ reporters: selected.length ? selected : ["console"] });
         });
     });
-
-    if (onRerunAudit) {
-        const rerunBtn = popBody.querySelector('[data-s="rerun"]') as HTMLButtonElement | null;
-        rerunBtn?.addEventListener("click", () => {
-            onRerunAudit();
-            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (banner) {
-                banner.style.display = "none";
-            }
-        });
-    }
 }
 
-function wirePage2(popBody: HTMLElement, onRerunAudit?: () => void) {
+function wirePage2(popBody: HTMLElement, pageState: { needsRerun: boolean }, _onRerunAudit?: () => void) {
     const s = loadSettings();
 
     const ignoreCb = popBody.querySelector<HTMLInputElement>('[data-s="ignoreRec"]');
     if (ignoreCb) {
         ignoreCb.checked = s.ignoreRecommendationsInScore;
         ignoreCb.addEventListener("change", () => {
+            if (s.ignoreRecommendationsInScore !== ignoreCb.checked) {
+                pageState.needsRerun = true;
+                pendingChangesNeedRerun = true;
+                const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+                if (noticeEl) noticeEl.style.display = "flex";
+            }
+
             saveSettings({ ignoreRecommendationsInScore: ignoreCb.checked });
-
-            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (banner) {
-                banner.style.display = "flex";
-            }
-        });
-    }
-
-    if (onRerunAudit) {
-        const rerunBtn = popBody.querySelector('[data-s="rerun"]') as HTMLButtonElement | null;
-        rerunBtn?.addEventListener("click", () => {
-            onRerunAudit();
-            const banner = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (banner) {
-                banner.style.display = "none";
-            }
         });
     }
 }
@@ -315,6 +312,7 @@ function wirePage3(popBody: HTMLElement, pageRef: SettingsPageRef) {
 function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
     const page = pageRef.current;
     const total = 4;
+    const pageState = { needsRerun: false };
 
     if (page === 0) {
         popBody.innerHTML = `
@@ -347,13 +345,13 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRe
         <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="console"> <span>Console</span></label>
         <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="json"> <span>JSON</span></label>
         <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="text"> <span>Text</span></label>
-        <div class="wah-pop-note">Changes require re-run audit for effect.</div>
-        <div class="wah-rerun" style="display:none;">
-            <span>Audit settings changed</span>
-            <button data-s="rerun">Re-run audit</button>
-        </div>
+        ${renderRerunNotice()}
     `;
-        wirePage1(popBody, onRerunAudit);
+        wirePage1(popBody, pageState, onRerunAudit);
+        if (pendingChangesNeedRerun) {
+            const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (noticeEl) noticeEl.style.display = "flex";
+        }
     }
 
     if (page === 2) {
@@ -363,13 +361,13 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRe
         <label class="wah-pop-row">
             <input type="checkbox" data-s="ignoreRec"> <span>Ignore recommendations in score</span>
         </label>
-        <div class="wah-pop-note">Critical/Warning should always count. Requires re-run.</div>
-        <div class="wah-rerun" style="display:none;">
-            <span>Audit settings changed</span>
-            <button data-s="rerun">Re-run audit</button>
-        </div>
+        ${renderRerunNotice()}
     `;
-        wirePage2(popBody, onRerunAudit);
+        wirePage2(popBody, pageState, onRerunAudit);
+        if (pendingChangesNeedRerun) {
+            const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
+            if (noticeEl) noticeEl.style.display = "flex";
+        }
     }
 
     if (page === 3) {

@@ -2,13 +2,18 @@ import { injectOverlayStyles } from "./overlayStyles";
 import { logIssueDetail, focusIssueElement } from "./overlayHighlight";
 import { getScoreClass } from "./overlayUtils";
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./overlayRenderer";
-import { setupPopover, applyUIToOverlay } from "./overlayPopover";
+import { setupPopover, applyUIToOverlay, resetPendingChangesState } from "./overlayPopover";
+import { runCoreAudit } from "../core";
+import { runReporters } from "../reporters";
+import { loadSettings } from "./overlaySettingsStore";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
-export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
+export function createOverlay(initialResults: OverlayAuditResult, _config: WAHConfig) {
     if (document.getElementById("wah-overlay")) return;
+
+    let results = initialResults;
 
     injectOverlayStyles();
 
@@ -20,7 +25,11 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
     overlay.innerHTML = `
         <div class="wah-header">
             <strong>WAH Report</strong>
-            <button class="wah-toggle" aria-label="Minimize">–</button>
+
+            <div class="wah-header-actions">
+                <button class="wah-rerun-btn" type="button" aria-label="Re-run audit" title="Re-run audit">🔄</button>
+                <button class="wah-toggle" type="button" aria-label="Minimize" title="Minimize">–</button>
+            </div>
         </div>
 
         <div class="wah-content">
@@ -154,18 +163,17 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
     let pointerId = 0;
 
     header.addEventListener("pointerdown", (e: PointerEvent) => {
-        const target = e.target as HTMLElement;
-        if (target.closest(".wah-toggle")) return;
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+
+        if (target.closest("button") || target.closest(".wah-header-actions")) return;
 
         e.preventDefault();
-
         pointerId = e.pointerId;
         dragging = true;
 
         overlay.classList.add("wah-dragging");
-
         const r = overlay.getBoundingClientRect();
-
         overlay.style.right = "auto";
         overlay.style.bottom = "auto";
         overlay.style.left = `${r.left}px`;
@@ -215,6 +223,54 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
         });
     }
 
+    const rerunHeaderBtn = overlay.querySelector('.wah-rerun-btn') as HTMLButtonElement | null;
+
+    function rerunAudit() {
+        const s = loadSettings();
+        const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel, reporters: s.reporters };
+
+        const newResult = runCoreAudit(configForRun);
+        const criticalIssues = newResult.issues.filter(i => i.severity === "critical").slice(0, 3);
+
+        results = { ...newResult, criticalIssues };
+
+        const scoreEl = overlay.querySelector('.wah-score') as HTMLElement | null;
+        if (scoreEl) {
+            const scoreClass = getScoreClass(results.score);
+            scoreEl.className = `wah-score ${scoreClass}`;
+            scoreEl.textContent = `Score: ${results.score}%`;
+        }
+
+        refresh();
+
+        runReporters(results, configForRun);
+
+        overlay.classList.add('wah-highlight');
+        window.setTimeout(() => overlay.classList.remove('wah-highlight'), 700);
+    }
+
+    rerunHeaderBtn?.addEventListener("pointerdown", (e: PointerEvent) => {
+        e.stopPropagation();
+    });
+
+    rerunHeaderBtn?.addEventListener("click", (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const popover = document.getElementById("wah-pop") as HTMLElement | null;
+        if (popover) {
+            popover.classList.remove("is-open");
+            window.setTimeout(() => {
+                popover.setAttribute("hidden", "");
+            }, 200);
+        }
+        resetPendingChangesState();
+
+        const fn = (window as any).__WAH_RERUN__ as undefined | (() => void);
+        if (fn) fn();
+        else window.location.reload();
+    });
+
     chips.forEach((btn) => {
         btn.addEventListener("click", () => {
             const f = btn.dataset.filter as UIFilter;
@@ -235,7 +291,8 @@ export function createOverlay(results: OverlayAuditResult, _config: WAHConfig) {
         overlay,
         active,
         catActive,
-        onChange: refresh
+        onChange: refresh,
+        onRerunAudit: rerunAudit
     });
 
     refresh();
