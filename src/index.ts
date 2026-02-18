@@ -1,6 +1,8 @@
 import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
+import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/overlaySettingsStore";
+import { resetPendingChangesState } from "./overlay/overlayPopover";
 import type { WAHConfig } from "./core/types";
 
 export function runWAH(userConfig: Partial<WAHConfig> = {}) {
@@ -14,6 +16,7 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
     (window as any).__WAH_RERUN__ = () => {
         document.getElementById("wah-overlay")?.remove();
         document.getElementById("wah-pop")?.remove();
+        resetPendingChangesState();
         runWAH(userConfig);
     };
 
@@ -33,6 +36,23 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
         selector: i.selector ?? "-"
     })));
     console.groupEnd();
+
+    const shouldHideUntilRefresh = getHideUntilRefresh();
+    const hideUntil = getHideUntil();
+
+    if (shouldHideUntilRefresh) {
+        clearHideUntilRefresh();
+    }
+
+    if (hideUntil && hideUntil > Date.now()) {
+        console.log(`[WAH] Overlay hidden until ${new Date(hideUntil).toLocaleString()}`);
+        return results;
+    }
+
+    (window as any).__WAH_RESET_HIDE__ = () => {
+        clearHideUntilRefresh();
+        clearHideUntil();
+    };
 
     createOverlay({ ...results, criticalIssues }, config);
 

@@ -1,16 +1,15 @@
 import type { AuditResult } from "../core/types";
-import { loadSettings } from "../overlay/overlaySettingsStore";
+import { getSettings } from "../overlay/overlaySettingsStore";
 
-function shouldLog(severity: string, logLevel: "none" | "critical" | "all"): boolean {
+function shouldLogIssue(severity: string): boolean {
+    const { logLevel } = getSettings();
     if (logLevel === "none") return false;
     if (logLevel === "critical") return severity === "critical";
     return true;
 }
 
 export function consoleReporter(result: AuditResult) {
-    const { logLevel } = loadSettings();
-
-    const issuesToLog = result.issues.filter(i => shouldLog(i.severity, logLevel));
+    const issuesToLog = result.issues.filter(i => shouldLogIssue(i.severity));
 
     console.log("[WAH] Issues:", issuesToLog);
     console.log("[WAH] Score:", result.score);

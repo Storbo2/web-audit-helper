@@ -1,11 +1,15 @@
 import type { IssueCategory } from "../core/types";
-import { loadSettings, saveSettings, resetSettings, DEFAULT_SETTINGS } from "./overlaySettingsStore";
-import { setHighlightDurationMs } from "./overlayHighlight";
+import {
+    getSettings, setLogLevel, setHighlightMs, setIgnoreRecommendationsInScore,
+    getLastSettingsPage, setLastSettingsPage, resetSettings,
+    getHideUntil, setHideForDuration, clearHideUntil,
+    setHideUntilRefresh
+} from "./overlaySettingsStore";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
 export type PopoverMode = "filters" | "ui" | "settings";
 
-type SettingsPage = 0 | 1 | 2 | 3;
+type SettingsPage = 0 | 1 | 2;
 
 type SetupPopoverArgs = {
     overlay: HTMLElement;
@@ -24,7 +28,7 @@ export const UI_DEFAULTS = {
 };
 
 export const UI_STORAGE_KEY = "wah:ui";
-const SETTINGS_PAGE_KEY = "wah:settings:page";
+
 let pendingChangesNeedRerun = false;
 
 export function resetPendingChangesState() {
@@ -44,15 +48,6 @@ export function resetUISettings() {
     localStorage.removeItem(UI_STORAGE_KEY);
 }
 
-function getLastSettingsPage(): SettingsPage {
-    const n = Number(localStorage.getItem(SETTINGS_PAGE_KEY));
-    return (n === 0 || n === 1 || n === 2 || n === 3) ? (n as SettingsPage) : 0;
-}
-
-function setLastSettingsPage(p: SettingsPage) {
-    localStorage.setItem(SETTINGS_PAGE_KEY, String(p));
-}
-
 function getTheme(): UITheme {
     const settings = getUISettings();
     const v = settings.theme;
@@ -70,7 +65,6 @@ function getOpacity(): number {
     if (!Number.isFinite(n)) return UI_DEFAULTS.opacity;
     return Math.min(1, Math.max(0.3, n));
 }
-
 
 export function applyUIToOverlay(overlay: HTMLElement) {
     overlay.dataset.theme = getTheme();
@@ -92,6 +86,7 @@ function renderRerunNotice(): string {
     return `
         <div class="wah-rerun" style="display: none;">
             <span>Changes require re-run audit for effect.</span>
+            <span style="opacity:.85">Use 🔄 in the header or reload the page.</span>
         </div>
     `;
 }
@@ -202,11 +197,9 @@ function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
         resetUISettings();
 
         const defaults = UI_DEFAULTS;
-
         overlay.style.setProperty("--wah-border", defaults.accent);
         overlay.style.opacity = String(defaults.opacity);
         overlay.classList.remove("wah-theme-dark", "wah-theme-light");
-
 
         applyUIToOverlay(overlay);
         renderUIPopover(popBody, overlay);
@@ -229,94 +222,132 @@ function renderSettingsHeader(title: string, page: number, total: number): strin
 type SettingsPageRef = { current: SettingsPage };
 
 function wirePage0(popBody: HTMLElement) {
-    const s = loadSettings();
+    const settings = getSettings();
 
-    const radios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-loglvl"]');
-    radios.forEach(r => {
-        r.checked = r.value === s.logLevel;
-        r.addEventListener("change", () => {
-            saveSettings({ logLevel: r.value as any });
+    const logLevelRadios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-loglvl"]');
+    logLevelRadios.forEach(radio => {
+        radio.checked = radio.value === settings.logLevel;
+        radio.addEventListener("change", () => {
+            setLogLevel(radio.value as "none" | "critical" | "all");
         });
     });
 
-    const slider = popBody.querySelector<HTMLInputElement>('[data-s="hl"]');
-    const label = popBody.querySelector<HTMLElement>('[data-s="hlLabel"]');
-    if (slider && label) {
-        slider.value = String(s.highlightMs);
-        label.textContent = `${s.highlightMs}ms`;
+    const hlSlider = popBody.querySelector<HTMLInputElement>('[data-s="hl"]');
+    const hlLabel = popBody.querySelector<HTMLElement>('[data-s="hlLabel"]');
+    if (hlSlider && hlLabel) {
+        hlSlider.value = String(settings.highlightMs);
+        hlLabel.textContent = `${settings.highlightMs}ms`;
 
-        slider.addEventListener("input", () => {
-            const ms = Number(slider.value);
-            label.textContent = `${ms}ms`;
-            saveSettings({ highlightMs: ms });
-            setHighlightDurationMs(ms);
+        hlSlider.addEventListener("input", () => {
+            const ms = Number(hlSlider.value);
+            hlLabel.textContent = `${ms}ms`;
+            setHighlightMs(ms);
         });
     }
 }
 
-function wirePage1(popBody: HTMLElement, pageState: { needsRerun: boolean }, _onRerunAudit?: () => void) {
-    const s = loadSettings();
-
-    const checkboxes = popBody.querySelectorAll<HTMLInputElement>('input[data-s="rep"]');
-    checkboxes.forEach(cb => {
-        cb.checked = s.reporters.includes(cb.value as any);
-        cb.addEventListener("change", () => {
-            const selected = Array.from(checkboxes)
-                .filter(x => x.checked)
-                .map(x => x.value as any);
-
-            const currentReporters = s.reporters.join(",");
-            const newReporters = (selected.length ? selected : ["console"]).join(",");
-            if (currentReporters !== newReporters) {
-                pageState.needsRerun = true;
-                pendingChangesNeedRerun = true;
-                const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-                if (noticeEl) noticeEl.style.display = "flex";
-            }
-
-            saveSettings({ reporters: selected.length ? selected : ["console"] });
-        });
-    });
-}
-
-function wirePage2(popBody: HTMLElement, pageState: { needsRerun: boolean }, _onRerunAudit?: () => void) {
-    const s = loadSettings();
+function wirePage1(popBody: HTMLElement, pageState: { needsRerun: boolean }) {
+    const settings = getSettings();
 
     const ignoreCb = popBody.querySelector<HTMLInputElement>('[data-s="ignoreRec"]');
     if (ignoreCb) {
-        ignoreCb.checked = s.ignoreRecommendationsInScore;
+        ignoreCb.checked = settings.ignoreRecommendationsInScore;
         ignoreCb.addEventListener("change", () => {
-            if (s.ignoreRecommendationsInScore !== ignoreCb.checked) {
+            if (settings.ignoreRecommendationsInScore !== ignoreCb.checked) {
                 pageState.needsRerun = true;
                 pendingChangesNeedRerun = true;
                 const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
                 if (noticeEl) noticeEl.style.display = "flex";
             }
 
-            saveSettings({ ignoreRecommendationsInScore: ignoreCb.checked });
+            setIgnoreRecommendationsInScore(ignoreCb.checked);
         });
     }
 }
 
-function wirePage3(popBody: HTMLElement, pageRef: SettingsPageRef) {
-    const resetBtn = popBody.querySelector('[data-s="reset"]') as HTMLButtonElement | null;
+function wirePage2(popBody: HTMLElement) {
+    function closePopover() {
+        const pop = document.getElementById("wah-pop") as HTMLElement | null;
+        if (pop && pop.classList.contains("is-open")) {
+            pop.classList.remove("is-open");
+            window.setTimeout(() => {
+                pop.setAttribute("hidden", "");
+            }, 200);
+        }
+    }
+
+    const hideRefreshBtn = popBody.querySelector<HTMLButtonElement>('[data-s="hideRefresh"]');
+    hideRefreshBtn?.addEventListener("click", () => {
+        setHideUntilRefresh();
+        closePopover();
+        const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+        if (overlay) {
+            overlay.remove();
+        }
+        console.log("[WAH] Overlay hidden until next page refresh");
+    });
+
+    const hideForSelect = popBody.querySelector<HTMLSelectElement>('[data-s="hideForSelect"]');
+    const hideForBtn = popBody.querySelector<HTMLButtonElement>('[data-s="hideForBtn"]');
+    const hideInfo = popBody.querySelector<HTMLElement>('[data-s="hideUntilInfo"]');
+
+    function renderHideInfo() {
+        const current = getHideUntil();
+        if (current && current > Date.now()) {
+            const remaining = current - Date.now();
+            const mins = Math.round(remaining / 60000);
+            if (hideInfo) hideInfo.textContent = `Hidden for ${mins} min (until ${new Date(current).toLocaleString()})`;
+            if (hideForBtn) hideForBtn.textContent = "Show overlay";
+        } else {
+            if (hideInfo) hideInfo.textContent = "";
+            if (hideForBtn) hideForBtn.textContent = "Hide";
+        }
+    }
+
+    if (hideForBtn) {
+        hideForBtn.addEventListener("click", () => {
+            const current = getHideUntil();
+            const isHidden = !!(current && current > Date.now());
+            if (isHidden) {
+                clearHideUntil();
+                renderHideInfo();
+                console.log("[WAH] Overlay will show now (hide cleared)");
+                return;
+            }
+
+            const val = hideForSelect ? Number(hideForSelect.value) : 0;
+            if (!Number.isFinite(val) || val <= 0) return;
+
+            setHideForDuration(val);
+            closePopover();
+            const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+            if (overlay) overlay.remove();
+            renderHideInfo();
+            console.log(`[WAH] Overlay hidden for ${Math.round(val / 60000)} minutes`);
+        });
+    }
+
+    const resetBtn = popBody.querySelector<HTMLButtonElement>('[data-s="reset"]');
     resetBtn?.addEventListener("click", () => {
         resetSettings();
-        localStorage.removeItem(SETTINGS_PAGE_KEY);
-        pageRef.current = 0;
-        setLastSettingsPage(pageRef.current);
-        renderSettingsPage(popBody, pageRef);
+        clearHideUntil();
+        console.log("[WAH] All settings reset to defaults");
+        const popBody = document.getElementById("wah-pop-body") as HTMLElement | null;
+        if (popBody) {
+            const pageRef: SettingsPageRef = { current: 2 };
+            renderSettingsPage(popBody, pageRef);
+        }
     });
 }
 
-function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
+function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef) {
     const page = pageRef.current;
-    const total = 4;
+    const total = 3;
     const pageState = { needsRerun: false };
 
     if (page === 0) {
         popBody.innerHTML = `
-        ${renderSettingsHeader("Advanced settings", 1, total)}
+        ${renderSettingsHeader("Settings", 1, total)}
 
         <div class="wah-pop-section">Console logs</div>
         <label class="wah-pop-row">
@@ -329,7 +360,9 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRe
             <input type="radio" name="wah-loglvl" value="all"> <span>All issues</span>
         </label>
 
-        <div class="wah-pop-section">Highlight duration</div>
+        <div style="height:12px"></div>
+
+        <div class="wah-pop-section" style="margin-top:6px">Highlight duration</div>
         <div class="wah-pop-row" style="justify-content:space-between;">
             <span data-s="hlLabel">750ms</span>
             <input data-s="hl" type="range" min="200" max="3000" step="50" value="750">
@@ -340,14 +373,14 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRe
 
     if (page === 1) {
         popBody.innerHTML = `
-        ${renderSettingsHeader("Advanced settings", 2, total)}
-        <div class="wah-pop-section">Reporters</div>
-        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="console"> <span>Console</span></label>
-        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="json"> <span>JSON</span></label>
-        <label class="wah-pop-row"><input type="checkbox" data-s="rep" value="text"> <span>Text</span></label>
+        ${renderSettingsHeader("Settings", 2, total)}
+        <div class="wah-pop-section">Scoring</div>
+        <label class="wah-pop-row">
+            <input type="checkbox" data-s="ignoreRec"> <span>Ignore recommendations in score</span>
+        </label>
         ${renderRerunNotice()}
     `;
-        wirePage1(popBody, pageState, onRerunAudit);
+        wirePage1(popBody, pageState);
         if (pendingChangesNeedRerun) {
             const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
             if (noticeEl) noticeEl.style.display = "flex";
@@ -356,56 +389,54 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRe
 
     if (page === 2) {
         popBody.innerHTML = `
-        ${renderSettingsHeader("Advanced settings", 3, total)}
-        <div class="wah-pop-section">Scoring</div>
-        <label class="wah-pop-row">
-            <input type="checkbox" data-s="ignoreRec"> <span>Ignore recommendations in score</span>
-        </label>
-        ${renderRerunNotice()}
-    `;
-        wirePage2(popBody, pageState, onRerunAudit);
-        if (pendingChangesNeedRerun) {
-            const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (noticeEl) noticeEl.style.display = "flex";
-        }
-    }
+        ${renderSettingsHeader("Settings", 3, total)}
+        <div class="wah-pop-section" style="text-align:center;margin-bottom:10px">Hide overlay</div>
+        <button class="wah-pop-btn" data-s="hideRefresh" style="width: 100%; margin-bottom: 12px;">Hide until next refresh</button>
+        <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;">
+            <span style="font-size:13px;font-weight:500;white-space:nowrap;">Hide for</span>
+            <select data-s="hideForSelect" class="wah-hide-select">
+                <option value="600000">10 minutes</option>
+                <option value="1800000">30 minutes</option>
+                <option value="3600000">1 hour</option>
+                <option value="10800000">3 hours</option>
+                <option value="86400000">1 day</option>
+            </select>
+            <button class="wah-pop-btn" data-s="hideForBtn" style="max-width:40px;">✔</button>
+        </div>
+        <div data-s="hideUntilInfo" style="font-size:12px;opacity:.85;margin-bottom:12px;text-align:center"></div>
 
-    if (page === 3) {
-        popBody.innerHTML = `
-        ${renderSettingsHeader("Advanced settings", 4, total)}
-        <div class="wah-pop-section">Advanced</div>
-        <button class="wah-pop-btn" data-s="reset">Reset settings</button>
-        <div class="wah-pop-note">More options coming soon.</div>
-        `;
-        wirePage3(popBody, pageRef);
+        <div class="wah-pop-section" style="text-align:center;margin-bottom:10px">Other options</div>
+        <button class="wah-pop-btn wah-reset-btn" data-s="reset" style="width: 100%;">Reset all settings</button>
+    `;
+        wirePage2(popBody);
     }
 
     const prevBtn = popBody.querySelector('[data-nav="prev"]') as HTMLButtonElement | null;
     const nextBtn = popBody.querySelector('[data-nav="next"]') as HTMLButtonElement | null;
 
-    const wrap = (p: number) => ((p % 4) + 4) % 4 as SettingsPage;
+    const wrap = (p: number) => ((p % 3) + 3) % 3 as SettingsPage;
 
     prevBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         pageRef.current = wrap(pageRef.current - 1);
         setLastSettingsPage(pageRef.current);
-        renderSettingsPage(popBody, pageRef, onRerunAudit);
+        renderSettingsPage(popBody, pageRef);
     });
 
     nextBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         pageRef.current = wrap(pageRef.current + 1);
         setLastSettingsPage(pageRef.current);
-        renderSettingsPage(popBody, pageRef, onRerunAudit);
+        renderSettingsPage(popBody, pageRef);
     });
 }
 
-export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: SetupPopoverArgs) {
+export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
     const uiBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="ui"]');
     const settingsBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="settings"]');
 
-    const settingsPageRef: SettingsPageRef = { current: getLastSettingsPage() };
+    const settingsPageRef: SettingsPageRef = { current: getLastSettingsPage() as 0 | 1 | 2 };
 
     function ensureGlobalPop() {
         let pop = document.getElementById("wah-pop") as HTMLElement | null;
@@ -429,7 +460,6 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
     }
 
     const { pop, popBody } = ensureGlobalPop();
-
     if (!pop || !popBody) return;
 
     const popEl = pop;
@@ -459,33 +489,30 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
     const POPOVER_TRANSITION_MS = 200;
 
     function openPop(mode: PopoverMode, anchor: HTMLElement) {
-        if (!pop || !popBody) return;
-
         currentMode = mode;
         currentAnchor = anchor;
 
-        pop.removeAttribute("hidden");
+        popEl.removeAttribute("hidden");
 
         if (mode === "filters") {
             renderFiltersPopover(popBodyEl, catActive, onChange);
         } else if (mode === "ui") {
             renderUIPopover(popBodyEl, overlay);
         } else if (mode === "settings") {
-            renderSettingsPage(popBodyEl, settingsPageRef, onRerunAudit);
+            renderSettingsPage(popBodyEl, settingsPageRef);
         }
 
-        positionPop(anchor, pop);
+        positionPop(anchor, popEl);
 
         requestAnimationFrame(() => {
-            pop.classList.add("is-open");
+            popEl.classList.add("is-open");
         });
     }
 
     function closePop() {
-        if (!pop) return;
-        pop.classList.remove("is-open");
+        popEl.classList.remove("is-open");
         window.setTimeout(() => {
-            pop.setAttribute("hidden", "");
+            popEl.setAttribute("hidden", "");
         }, POPOVER_TRANSITION_MS);
     }
 
@@ -493,7 +520,7 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
         e.preventDefault();
         e.stopPropagation();
 
-        const isOpen = pop?.classList.contains("is-open");
+        const isOpen = popEl.classList.contains("is-open");
         if (isOpen && currentMode === "filters") {
             closePop();
         } else {
@@ -505,7 +532,7 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
         e.preventDefault();
         e.stopPropagation();
 
-        const isOpen = pop?.classList.contains("is-open");
+        const isOpen = popEl.classList.contains("is-open");
         if (isOpen && currentMode === "ui") {
             closePop();
         } else {
@@ -517,7 +544,7 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
         e.preventDefault();
         e.stopPropagation();
 
-        const isOpen = pop?.classList.contains("is-open");
+        const isOpen = popEl.classList.contains("is-open");
         if (isOpen && currentMode === "settings") {
             closePop();
         } else {
@@ -528,18 +555,17 @@ export function setupPopover({ overlay, catActive, onChange, onRerunAudit }: Set
     popEl.addEventListener("click", (e) => e.stopPropagation());
 
     document.addEventListener("pointerdown", (e) => {
-        if (!pop) return;
         const t = e.target as Node;
 
-        const clickedPop = pop.contains(t);
+        const clickedPop = popEl.contains(t);
         const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false) || (settingsBtn?.contains(t) ?? false);
 
         if (!clickedPop && !clickedBtn) closePop();
     }, true);
 
     window.addEventListener("resize", () => {
-        if (!pop || pop.hasAttribute("hidden")) return;
+        if (popEl.hasAttribute("hidden")) return;
         if (!currentAnchor) return;
-        positionPop(currentAnchor, pop);
+        positionPop(currentAnchor, popEl);
     });
 }

@@ -25,7 +25,5 @@ export const defaultConfig: WAHConfig = {
         lg: 1024,
         xl: 1280,
         "2xl": 1536
-    },
-
-    reporters: ["console"]
+    }
 };

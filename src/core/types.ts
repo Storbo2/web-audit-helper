@@ -39,6 +39,6 @@ export interface WAHConfig {
         theme: "dark" | "light";
     };
 
-    reporters: ("console" | "json" | "text")[];
+    reporters?: ("console" | "json" | "text")[];
     breakpoints: Record<string, number>;
 }

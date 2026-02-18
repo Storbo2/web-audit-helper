@@ -85,6 +85,10 @@
     transform: rotate(-30deg) scale(1.1);
 }
 
+.wah-pop-body {
+    min-height: 180px;
+}
+
 .wah-pop-body input[type="checkbox"] {
     width: 14px;
     height: 14px;
@@ -167,4 +171,39 @@
     font-size: 12px;
     color: var(--wah-score-warning);
     font-weight: 500;
+}
+
+.wah-hide-select {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--wah-dark-border);
+    color: var(--wah-text);
+    font-family: var(--wah-font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.wah-hide-select:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-accent-default);
+}
+
+.wah-hide-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-accent-default);
+}
+
+.wah-hide-select option {
+    background: var(--wah-bg);
+    color: var(--wah-text);
+}
+
+.wah-reset-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--wah-score-bad);
+    box-shadow: 0 0 10px rgba(237, 65, 65, 0.3);
 }

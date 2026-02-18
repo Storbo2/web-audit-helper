@@ -5,7 +5,7 @@ import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts }
 import { setupPopover, applyUIToOverlay, resetPendingChangesState } from "./overlayPopover";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
-import { loadSettings } from "./overlaySettingsStore";
+import { getSettings } from "./overlaySettingsStore";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
@@ -226,8 +226,8 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     const rerunHeaderBtn = overlay.querySelector('.wah-rerun-btn') as HTMLButtonElement | null;
 
     function rerunAudit() {
-        const s = loadSettings();
-        const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel, reporters: s.reporters };
+        const s = getSettings();
+        const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel };
 
         const newResult = runCoreAudit(configForRun);
         const criticalIssues = newResult.issues.filter(i => i.severity === "critical").slice(0, 3);

@@ -7,15 +7,17 @@ export function runReporters(
     result: AuditResult,
     config: WAHConfig
 ) {
-    if (config.reporters.includes("console")) {
+    const reporters = config.reporters ?? ["console"];
+
+    if (reporters.includes("console")) {
         consoleReporter(result);
     }
 
-    if (config.reporters.includes("json")) {
+    if (reporters.includes("json")) {
         jsonReporter(result);
     }
 
-    if (config.reporters.includes("text")) {
+    if (reporters.includes("text")) {
         textReporter(result);
     }
 }
