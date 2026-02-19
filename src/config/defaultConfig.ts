@@ -3,7 +3,7 @@ import type { WAHConfig } from "../core/types";
 
 export const defaultConfig: WAHConfig = {
     logs: true,
-    logLevel: "all",
+    logLevel: "full",
 
     overlay: {
         enabled: true,

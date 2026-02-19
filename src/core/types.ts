@@ -1,6 +1,6 @@
 export type Severity = "critical" | "warning" | "recommendation";
 
-export type LogLevel = "none" | "critical" | "all";
+export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type ContrastLevel = "AA" | "AAA";
 

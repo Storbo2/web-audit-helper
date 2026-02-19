@@ -86,7 +86,6 @@ function renderRerunNotice(): string {
     return `
         <div class="wah-rerun" style="display: none;">
             <span>Changes require re-run audit for effect.</span>
-            <span style="opacity:.85">Use 🔄 in the header or reload the page.</span>
         </div>
     `;
 }
@@ -135,16 +134,15 @@ function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
         </div>
 
         <div class="wah-pop-section">Opacity</div>
-        <div class="wah-pop-row" style="justify-content: space-between;">
+        <div class="wah-pop-row wah-pop-row-space-between">
             <span data-ui="opacityLabel">${Math.round(opacity * 100)}%</span>
             <input type="range" min="0.3" max="1" step="0.05" value="${opacity}" data-ui="opacity"/>
         </div>
 
         <div class="wah-pop-section">Accent</div>
-        <label class="wah-pop-row" style="justify-content: space-between;">
+        <label class="wah-pop-row wah-pop-row-space-between">
             <span>Color</span>
-            <input type="color" value="${accent}" data-ui="accent"
-                style="width:38px;height:22px;border:none;background:transparent;padding:0;cursor:pointer;"/>
+            <input type="color" value="${accent}" data-ui="accent" class="wah-color-input"/>
         </label>
 
         <div class="wah-pop-section">Theme</div>
@@ -199,7 +197,6 @@ function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
         const defaults = UI_DEFAULTS;
         overlay.style.setProperty("--wah-border", defaults.accent);
         overlay.style.opacity = String(defaults.opacity);
-        overlay.classList.remove("wah-theme-dark", "wah-theme-light");
 
         applyUIToOverlay(overlay);
         renderUIPopover(popBody, overlay);
@@ -228,7 +225,7 @@ function wirePage0(popBody: HTMLElement) {
     logLevelRadios.forEach(radio => {
         radio.checked = radio.value === settings.logLevel;
         radio.addEventListener("change", () => {
-            setLogLevel(radio.value as "none" | "critical" | "all");
+            setLogLevel(radio.value as "full" | "critical-only" | "summary" | "none");
         });
     });
 
@@ -319,10 +316,10 @@ function wirePage2(popBody: HTMLElement) {
             if (!Number.isFinite(val) || val <= 0) return;
 
             setHideForDuration(val);
+            renderHideInfo();
             closePopover();
             const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
             if (overlay) overlay.remove();
-            renderHideInfo();
             console.log(`[WAH] Overlay hidden for ${Math.round(val / 60000)} minutes`);
         });
     }
@@ -351,19 +348,22 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef) {
 
         <div class="wah-pop-section">Console logs</div>
         <label class="wah-pop-row">
-            <input type="radio" name="wah-loglvl" value="none"> <span>None</span>
+            <input type="radio" name="wah-loglvl" value="full"> <span>Full report</span>
         </label>
         <label class="wah-pop-row">
-            <input type="radio" name="wah-loglvl" value="critical"> <span>Critical only</span>
+            <input type="radio" name="wah-loglvl" value="critical-only"> <span>Only critical issues</span>
         </label>
         <label class="wah-pop-row">
-            <input type="radio" name="wah-loglvl" value="all"> <span>All issues</span>
+            <input type="radio" name="wah-loglvl" value="summary"> <span>Report summary</span>
+        </label>
+        <label class="wah-pop-row">
+            <input type="radio" name="wah-loglvl" value="none"> <span>No console logs</span>
         </label>
 
-        <div style="height:12px"></div>
+        <div class="wah-pop-spacer"></div>
 
-        <div class="wah-pop-section" style="margin-top:6px">Highlight duration</div>
-        <div class="wah-pop-row" style="justify-content:space-between;">
+        <div class="wah-pop-section wah-pop-section-spaced">Highlight duration</div>
+        <div class="wah-pop-row wah-pop-row-space-between">
             <span data-s="hlLabel">750ms</span>
             <input data-s="hl" type="range" min="200" max="3000" step="50" value="750">
         </div>
@@ -383,30 +383,37 @@ function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef) {
         wirePage1(popBody, pageState);
         if (pendingChangesNeedRerun) {
             const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-            if (noticeEl) noticeEl.style.display = "flex";
+            if (noticeEl) noticeEl.classList.add('wah-rerun-visible');
         }
     }
 
     if (page === 2) {
         popBody.innerHTML = `
         ${renderSettingsHeader("Settings", 3, total)}
-        <div class="wah-pop-section" style="text-align:center;margin-bottom:10px">Hide overlay</div>
-        <button class="wah-pop-btn" data-s="hideRefresh" style="width: 100%; margin-bottom: 12px;">Hide until next refresh</button>
-        <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;">
-            <span style="font-size:13px;font-weight:500;white-space:nowrap;">Hide for</span>
-            <select data-s="hideForSelect" class="wah-hide-select">
-                <option value="600000">10 minutes</option>
-                <option value="1800000">30 minutes</option>
-                <option value="3600000">1 hour</option>
-                <option value="10800000">3 hours</option>
-                <option value="86400000">1 day</option>
-            </select>
-            <button class="wah-pop-btn" data-s="hideForBtn" style="max-width:40px;">✔</button>
+        <div class="wah-pop-section wah-pop-section-centered">Hide overlay</div>
+        <div class="wah-pop-settings">
+            <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh">Hide until next refresh</button>
         </div>
-        <div data-s="hideUntilInfo" style="font-size:12px;opacity:.85;margin-bottom:12px;text-align:center"></div>
+        <div class="wah-pop-settings">
+            <div class="wah-hide-for-row">
+                <span class="wah-hide-for-label">Hide for</span>
+                <select data-s="hideForSelect" class="wah-hide-select">
+                    <option value="600000">10 minutes</option>
+                    <option value="1800000">30 minutes</option>
+                    <option value="3600000">1 hour</option>
+                    <option value="10800000">3 hours</option>
+                    <option value="86400000">1 day</option>
+                </select>
+                <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn">✔</button>
+            </div>
+        </div>
+        <div class="wah-hide-info" data-s="hideUntilInfo"></div>
 
-        <div class="wah-pop-section" style="text-align:center;margin-bottom:10px">Other options</div>
-        <button class="wah-pop-btn wah-reset-btn" data-s="reset" style="width: 100%;">Reset all settings</button>
+
+        <div class="wah-pop-section wah-pop-section-centered">Other options</div>
+        <div class="wah-pop-settings">
+            <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset">Reset all settings</button>
+        </div>
     `;
         wirePage2(popBody);
     }

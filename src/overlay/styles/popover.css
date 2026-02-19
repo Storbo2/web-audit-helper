@@ -74,7 +74,11 @@
 }
 
 .wah-pop-row input[type="range"] {
-    accent-color: var(--wah-accent-default);
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-row input[type="radio"] {
+    accent-color: var(--wah-border);
 }
 
 .wah-pop-row:hover {
@@ -165,6 +169,12 @@
 
 .wah-pop-btn:hover {
     background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--wah-border);
+}
+
+.wah-rerun {
+    margin-top: 12px;
+    justify-content: center;
 }
 
 .wah-rerun span {
@@ -174,6 +184,7 @@
 }
 
 .wah-hide-select {
+    width: fit-content;
     flex: 1;
     padding: 8px 10px;
     border-radius: 8px;
@@ -188,7 +199,7 @@
 
 .wah-hide-select:hover {
     background: rgba(255, 255, 255, 0.07);
-    border-color: var(--wah-accent-default);
+    border-color: var(--wah-border);
 }
 
 .wah-hide-select:focus {
@@ -204,6 +215,83 @@
 
 .wah-reset-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: var(--wah-score-bad);
-    box-shadow: 0 0 10px rgba(237, 65, 65, 0.3);
+    border-color: var(--wah-score-warning);
+    box-shadow: 0 0 10px rgba(237, 171, 65, 0.3);
+}
+
+.wah-pop-spacer {
+    height: 12px;
+}
+
+.wah-pop-section-spaced {
+    margin-top: 6px;
+}
+
+.wah-pop-row-space-between {
+    justify-content: space-between;
+}
+
+.wah-pop-section-centered {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.wah-pop-btn-full {
+    width: fit-content;
+}
+
+.wah-pop-btn-full+div {
+    margin-bottom: 12px;
+}
+
+.wah-hide-for-label {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.wah-hide-for-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+
+.wah-hide-for-btn {
+    width: fit-content;
+    padding: 8px 10px;
+}
+
+.wah-hide-info {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.wah-color-input {
+    width: 38px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.wah-rerun {
+    display: none;
+    justify-content: center;
+}
+
+.wah-rerun-visible {
+    display: flex;
+}
+
+.wah-pop-settings {
+    display: flex;
+    justify-content: center;
 }

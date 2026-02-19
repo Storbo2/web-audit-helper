@@ -1,12 +1,27 @@
 import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
-import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/overlaySettingsStore";
+import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil, getSettings } from "./overlay/overlaySettingsStore";
 import { resetPendingChangesState } from "./overlay/overlayPopover";
+import { runReporters } from "./reporters";
+import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import type { WAHConfig } from "./core/types";
 
-export function runWAH(userConfig: Partial<WAHConfig> = {}) {
-    console.log("WAH initialized");
+(window as any).__WAH_RESET_HIDE__ = () => {
+    clearHideUntilRefresh();
+    clearHideUntil();
+    console.log("[WAH] Hide settings cleared. Reloading overlay...");
+    const rerunFn = (window as any).__WAH_RERUN__ as undefined | (() => void);
+    if (rerunFn) rerunFn();
+    else window.location.reload();
+};
+
+export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
+    const settings = getSettings();
+
+    if (settings.logLevel !== "none") {
+        console.log("[WAH] Initialized");
+    }
 
     const config: WAHConfig = {
         ...defaultConfig,
@@ -20,41 +35,30 @@ export function runWAH(userConfig: Partial<WAHConfig> = {}) {
         runWAH(userConfig);
     };
 
+    const shouldHideUntilRefresh = getHideUntilRefresh();
+    const hideUntil = getHideUntil();
+
+    if (shouldHideUntilRefresh || (hideUntil && Date.now() < hideUntil)) {
+        const hideReason = shouldHideUntilRefresh ? 'until refresh' : `until ${new Date(hideUntil!).toLocaleString()}`;
+        logHideMessage(hideReason, settings.logLevel);
+        return;
+    }
+
+    clearHideUntilRefresh();
+    clearHideUntil();
+
     const results = runCoreAudit(config);
 
     const criticalIssues = results.issues
         .filter(i => i.severity === "critical")
         .slice(0, 3);
 
-    console.group(`%cWAH Audit Report`, "color:#38bdf8;font-weight:bold;");
-    console.log("Score:", results.score + "%");
-    console.log("Issues:", results.issues.length);
-    console.table(results.issues.map(i => ({
-        rule: i.rule,
-        severity: i.severity,
-        message: i.message,
-        selector: i.selector ?? "-"
-    })));
-    console.groupEnd();
-
-    const shouldHideUntilRefresh = getHideUntilRefresh();
-    const hideUntil = getHideUntil();
-
-    if (shouldHideUntilRefresh) {
-        clearHideUntilRefresh();
-    }
-
-    if (hideUntil && hideUntil > Date.now()) {
-        console.log(`[WAH] Overlay hidden until ${new Date(hideUntil).toLocaleString()}`);
-        return results;
-    }
-
-    (window as any).__WAH_RESET_HIDE__ = () => {
-        clearHideUntilRefresh();
-        clearHideUntil();
-    };
-
     createOverlay({ ...results, criticalIssues }, config);
+
+    logWAHResults(results, settings.logLevel);
+    runReporters(results, config);
+
+    resetPendingChangesState();
 
     return results;
 }

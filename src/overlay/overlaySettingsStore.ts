@@ -1,4 +1,4 @@
-export type LogLevel = "none" | "critical" | "all";
+export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type WAHSettings = {
     logLevel: LogLevel;
@@ -14,14 +14,14 @@ const KEY_SETTINGS_PAGE = "wah:settings:page";
 const KEY_HIDE_UNTIL_REFRESH = "wah:hideUntilRefresh";
 
 export const DEFAULT_SETTINGS: WAHSettings = {
-    logLevel: "critical",
+    logLevel: "summary",
     highlightMs: 750,
     ignoreRecommendationsInScore: false,
 };
 
 function loadLogLevel(): LogLevel {
     const v = localStorage.getItem(KEY_LOG_LEVEL);
-    if (v === "none" || v === "critical" || v === "all") return v;
+    if (v === "full" || v === "critical-only" || v === "summary" || v === "none") return v;
     return DEFAULT_SETTINGS.logLevel;
 }
 
@@ -77,15 +77,15 @@ export function clearHideUntil() {
 }
 
 export function getHideUntilRefresh(): boolean {
-    return sessionStorage.getItem(KEY_HIDE_UNTIL_REFRESH) === "1";
+    return !!(window as any).wahHideUntilRefresh;
 }
 
 export function setHideUntilRefresh() {
-    sessionStorage.setItem(KEY_HIDE_UNTIL_REFRESH, "1");
+    (window as any).wahHideUntilRefresh = true;
 }
 
 export function clearHideUntilRefresh() {
-    sessionStorage.removeItem(KEY_HIDE_UNTIL_REFRESH);
+    delete (window as any).wahHideUntilRefresh;
 }
 
 export function getLastSettingsPage(): 0 | 1 | 2 {
@@ -104,5 +104,5 @@ export function resetSettings() {
     localStorage.removeItem(KEY_IGNORE_REC_SCORE);
     localStorage.removeItem(KEY_HIDE_UNTIL);
     localStorage.removeItem(KEY_SETTINGS_PAGE);
-    sessionStorage.removeItem(KEY_HIDE_UNTIL_REFRESH);
+    delete (window as any).wahHideUntilRefresh;
 }
