@@ -1,7 +1,8 @@
 import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
-import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil, getSettings } from "./overlay/overlaySettingsStore";
+import { getSettings } from "./overlay/overlaySettings";
+import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/overlayHideStore";
 import { resetPendingChangesState } from "./overlay/overlayPopoverUtils";
 import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";

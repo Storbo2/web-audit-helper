@@ -1,6 +1,6 @@
 import { defaultConfig } from "./defaultConfig";
 import type { WAHConfig } from "../core/types";
-import { getSettings } from "../overlay/overlaySettingsStore";
+import { getSettings } from "../overlay/overlaySettings";
 
 export function loadConfig(
     userConfig: Partial<WAHConfig>

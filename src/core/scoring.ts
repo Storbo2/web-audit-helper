@@ -1,5 +1,5 @@
 import type { AuditIssue } from "./types";
-import { loadSettings } from "../overlay/overlaySettingsStore";
+import { loadSettings } from "../overlay/overlaySettings";
 
 export function computeScore(issues: AuditIssue[]): number {
     const { ignoreRecommendationsInScore } = loadSettings();

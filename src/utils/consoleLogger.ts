@@ -25,6 +25,9 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
 
     console.group("%c[WAH] Web Audit Report", CONSOLE_COLORS.header);
 
+    const screenSize = getScreenSize();
+    console.log(`%cThe report was prepared considering this screen size: ${screenSize}`, CONSOLE_COLORS.light);
+
     const scoreClass = getScoreClass(results.score);
     console.log(`%cScore: ${results.score}%`, CONSOLE_COLORS[scoreClass]);
 
@@ -33,9 +36,6 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
     } else {
         console.log("%cNo issues found! 🎉", "color:#22c55e;font-weight:bold;");
     }
-
-    const screenSize = getScreenSize();
-    console.log(`%cScreen size: ${screenSize}`, CONSOLE_COLORS.light);
 
     if ((logLevel === "full" || logLevel === "critical-only") && results.issues.length > 0) {
         let issuesToShow: AuditIssue[] = results.issues;

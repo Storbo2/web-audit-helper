@@ -1,6 +1,4 @@
-import { readSavedPos, applyPos, type OverlayPos } from "./overlayPosition";
-
-type OverlayPos = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+import { applyPos, type OverlayPos } from "./overlayPosition";
 
 export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
     let dragging = false;

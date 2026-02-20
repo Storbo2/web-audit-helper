@@ -1,17 +1,11 @@
 import type { IssueCategory } from "../core/types";
-import {
-    getSettings, setLogLevel, setHighlightMs, setIgnoreRecommendationsInScore,
-    getLastSettingsPage, setLastSettingsPage, resetSettings,
-    getHideUntil, setHideForDuration, clearHideUntil,
-    setHideUntilRefresh
-} from "./overlaySettingsStore";
+import { getLastSettingsPage } from "./overlaySettings";
 import { renderFiltersPopover } from "./overlayPopoverFilters";
-import { renderUIPopover, applyUIToOverlay } from "./overlayPopoverUI";
+import { renderUIPopover } from "./overlayPopoverUI";
 import { renderSettingsPage } from "./overlayPopoverSettings";
-import { openPop, closePop, resetPendingChangesState, type PopoverMode } from "./overlayPopoverUtils";
+import { openPop, closePop, type PopoverMode } from "./overlayPopoverUtils";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
-export type PopoverMode = "filters" | "ui" | "settings";
 
 type SetupPopoverArgs = {
     overlay: HTMLElement;
