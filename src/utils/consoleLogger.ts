@@ -1,4 +1,4 @@
-import { getScoreClass } from "../overlay/overlayUtils";
+import { getScoreClass, getScreenSize } from "../overlay/overlayUtils";
 import { getCssSelector } from "../utils/dom";
 import type { AuditResult, AuditIssue } from "../core/types";
 
@@ -7,9 +7,10 @@ const CONSOLE_COLORS = {
     "score-good": "color:#22c55e;font-weight:bold;",
     "score-warning": "color:#ff9f0e;font-weight:bold;",
     "score-bad": "color:#ed4141;font-weight:bold;",
-    header: "color:#38bdf8;font-weight:bold;font-size:14px;",
+    header: "color:#38bdf8;font-weight:bold;font-size:16px;",
     normal: "color:#e5e7eb;",
     bold: "font-weight:bold;",
+    light: "color:#8F8F8F;",
 };
 
 function getScoreMessage(score: number): string {
@@ -32,6 +33,9 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
     } else {
         console.log("%cNo issues found! 🎉", "color:#22c55e;font-weight:bold;");
     }
+
+    const screenSize = getScreenSize();
+    console.log(`%cScreen size: ${screenSize}`, CONSOLE_COLORS.light);
 
     if ((logLevel === "full" || logLevel === "critical-only") && results.issues.length > 0) {
         let issuesToShow: AuditIssue[] = results.issues;

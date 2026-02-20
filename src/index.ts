@@ -2,7 +2,7 @@ import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
 import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil, getSettings } from "./overlay/overlaySettingsStore";
-import { resetPendingChangesState } from "./overlay/overlayPopover";
+import { resetPendingChangesState } from "./overlay/overlayPopoverUtils";
 import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import type { WAHConfig } from "./core/types";
@@ -18,10 +18,6 @@ import type { WAHConfig } from "./core/types";
 
 export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     const settings = getSettings();
-
-    if (settings.logLevel !== "none") {
-        console.log("[WAH] Initialized");
-    }
 
     const config: WAHConfig = {
         ...defaultConfig,
