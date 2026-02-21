@@ -39,11 +39,8 @@ function getOpacity(): number {
     return Math.min(1, Math.max(0.3, n));
 }
 
-export function applyUIToOverlay(overlay: HTMLElement) {
+export function applyThemeToOverlay(overlay: HTMLElement) {
     overlay.dataset.theme = getTheme();
-    overlay.style.setProperty("--wah-border", getAccent());
-    overlay.style.opacity = String(getOpacity());
-
     const pop = document.getElementById("wah-pop") as HTMLElement | null;
     if (pop) {
         pop.dataset.theme = overlay.dataset.theme;
@@ -55,11 +52,34 @@ export function applyUIToOverlay(overlay: HTMLElement) {
     }
 }
 
+export function applyAccentToOverlay(overlay: HTMLElement) {
+    overlay.style.setProperty("--wah-border", getAccent());
+    const pop = document.getElementById("wah-pop") as HTMLElement | null;
+    if (pop) {
+        pop.style.setProperty("--wah-border", getAccent());
+    }
+}
+
+export function applyOpacityToOverlay(overlay: HTMLElement) {
+    overlay.style.opacity = String(getOpacity());
+}
+
+export function applyUIToOverlay(overlay: HTMLElement) {
+    applyThemeToOverlay(overlay);
+    applyAccentToOverlay(overlay);
+    applyOpacityToOverlay(overlay);
+}
+
 export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     const settings = getUISettings();
     const theme = getTheme();
     const accent = getAccent();
     const opacity = getOpacity();
+
+    const pop = document.getElementById("wah-pop") as HTMLElement | null;
+    if (pop) {
+        pop.style.setProperty("--wah-border", accent);
+    }
 
     popBody.innerHTML = `
         <div class="wah-pop-header">
@@ -98,34 +118,56 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     `;
 
     popBody.querySelectorAll('input[name="wah-theme"]').forEach((el) => {
+        el.replaceWith(el.cloneNode(true));
+    });
+
+    const accentEl = popBody.querySelector('[data-ui="accent"]') as HTMLInputElement | null;
+    const oldAccentEl = document.querySelector('[data-ui="accent"]') as HTMLInputElement | null;
+    if (oldAccentEl && oldAccentEl !== accentEl) {
+        oldAccentEl.replaceWith(oldAccentEl.cloneNode(true));
+    }
+
+    const opEl = popBody.querySelector('[data-ui="opacity"]') as HTMLInputElement | null;
+    const oldOpEl = document.querySelector('[data-ui="opacity"]') as HTMLInputElement | null;
+    if (oldOpEl && oldOpEl !== opEl) {
+        oldOpEl.replaceWith(oldOpEl.cloneNode(true));
+    }
+
+    const resetBtn = popBody.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
+    const oldResetBtn = document.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
+    if (oldResetBtn && oldResetBtn !== resetBtn) {
+        oldResetBtn.replaceWith(oldResetBtn.cloneNode(true));
+    }
+
+    popBody.querySelectorAll('input[name="wah-theme"]').forEach((el) => {
         el.addEventListener("change", () => {
             const v = (el as HTMLInputElement).value as UITheme;
             const updated = { ...settings, theme: v };
             saveUISettings(updated);
-            applyUIToOverlay(overlay);
+            applyThemeToOverlay(overlay);
         });
     });
 
-    const accentEl = popBody.querySelector('[data-ui="accent"]') as HTMLInputElement | null;
-    accentEl?.addEventListener("input", () => {
-        const updated = { ...settings, accent: accentEl.value };
+    const accentElRefresh = popBody.querySelector('[data-ui="accent"]') as HTMLInputElement | null;
+    accentElRefresh?.addEventListener("input", () => {
+        const updated = { ...settings, accent: accentElRefresh.value };
         saveUISettings(updated);
-        applyUIToOverlay(overlay);
+        applyAccentToOverlay(overlay);
     });
 
-    const opEl = popBody.querySelector('[data-ui="opacity"]') as HTMLInputElement | null;
+    const opElRefresh = popBody.querySelector('[data-ui="opacity"]') as HTMLInputElement | null;
     const opLabel = popBody.querySelector('[data-ui="opacityLabel"]') as HTMLElement | null;
 
-    opEl?.addEventListener("input", () => {
-        const v = Number(opEl.value);
+    opElRefresh?.addEventListener("input", () => {
+        const v = Number(opElRefresh.value);
         const updated = { ...settings, opacity: v };
         saveUISettings(updated);
         if (opLabel) opLabel.textContent = `${Math.round(v * 100)}%`;
-        applyUIToOverlay(overlay);
+        applyOpacityToOverlay(overlay);
     });
 
-    const resetBtn = popBody.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
-    resetBtn?.addEventListener("click", () => {
+    const resetBtnRefresh = popBody.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
+    resetBtnRefresh?.addEventListener("click", () => {
         resetUISettings();
         console.log("[WAH] All UI settings reset to defaults");
 

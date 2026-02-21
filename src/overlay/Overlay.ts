@@ -47,7 +47,6 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
     const chips = Array.from(overlay.querySelectorAll(".wah-chip")) as HTMLButtonElement[];
 
-    // Update chip classes based on loaded active filters
     chips.forEach((btn) => {
         const f = btn.dataset.filter as UIFilter;
         if (active.has(f)) {

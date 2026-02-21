@@ -1,7 +1,14 @@
 import type { IssueCategory } from "../core/types";
 import { setActiveCategories } from "./overlaySettings";
+import { getUISettings } from "./overlayPopoverUI";
 
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueCategory>, onChange: () => void) {
+    const pop = document.getElementById("wah-pop") as HTMLElement | null;
+    if (pop) {
+        const uiSettings = getUISettings();
+        const accentColor = uiSettings.accent || "#22d3ee";
+        pop.style.setProperty("--wah-border", accentColor);
+    }
     popBody.innerHTML = `
     <div class="wah-pop-titleline">Filters by category</div>
     <label class="wah-pop-row">

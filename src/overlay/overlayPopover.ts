@@ -47,49 +47,37 @@ export function setupPopover({ overlay, catActive, onChange }: SetupPopoverArgs)
     filtersBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (currentMode === "filters" && document.getElementById("wah-pop")?.classList.contains("is-open")) {
-            closePop();
-        } else {
-            openPopover("filters", filtersBtn);
-        }
+        openPopover("filters", filtersBtn);
     });
 
     uiBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (currentMode === "ui" && document.getElementById("wah-pop")?.classList.contains("is-open")) {
-            closePop();
-        } else {
-            openPopover("ui", uiBtn);
-        }
+        openPopover("ui", uiBtn);
     });
 
     settingsBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (currentMode === "settings" && document.getElementById("wah-pop")?.classList.contains("is-open")) {
-            closePop();
-        } else {
-            openPopover("settings", settingsBtn);
-        }
+        openPopover("settings", settingsBtn);
     });
 
-    document.addEventListener("pointerdown", (e) => {
+    const handleGlobalClick = (e: PointerEvent) => {
         const t = e.target as Node;
         const currentPopEl = document.getElementById("wah-pop") as HTMLElement | null;
+
+        if (currentPopEl?.hasAttribute("hidden")) return;
 
         const clickedPop = currentPopEl?.contains(t) ?? false;
         const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false) || (settingsBtn?.contains(t) ?? false);
 
-        if (!clickedPop && !clickedBtn) closePop();
-    }, true);
+        if (!clickedPop && !clickedBtn) {
+            closePop();
+        }
+    };
 
-    window.addEventListener("resize", () => {
-        const currentPopEl = document.getElementById("wah-pop") as HTMLElement | null;
-        if (currentPopEl?.hasAttribute("hidden")) return;
-        if (!currentAnchor) return;
-    });
+    if (!(document as any).__wahGlobalClickListenerAdded) {
+        document.addEventListener("pointerdown", handleGlobalClick, true);
+        (document as any).__wahGlobalClickListenerAdded = true;
+    }
 }

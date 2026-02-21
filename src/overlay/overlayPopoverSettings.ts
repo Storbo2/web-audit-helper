@@ -6,6 +6,7 @@ import {
     getHideUntil, setHideForDuration, clearHideUntil,
     setHideUntilRefresh
 } from "./overlayHideStore";
+import { getUISettings } from "./overlayPopoverUI";
 
 type SettingsPage = 0 | 1 | 2;
 
@@ -154,6 +155,13 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
     const page = pageRef.current;
     const total = 3;
     const pageState = { needsRerun: false };
+
+    const pop = document.getElementById("wah-pop") as HTMLElement | null;
+    if (pop) {
+        const uiSettings = getUISettings();
+        const accentColor = uiSettings.accent || "#22d3ee";
+        pop.style.setProperty("--wah-border", accentColor);
+    }
 
     if (page === 0) {
         popBody.innerHTML = `

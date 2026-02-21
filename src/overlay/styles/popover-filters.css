@@ -1,0 +1,22 @@
+.wah-pop-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    padding: 7px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wah-pop-row input[type="range"] {
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-row input[type="radio"] {
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-row:hover {
+    background: rgba(56, 189, 248, 0.10);
+}

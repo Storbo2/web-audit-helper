@@ -1,0 +1,107 @@
+.wah-ui-reset {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: opacity var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
+    padding: 0;
+}
+
+.wah-ui-reset:hover {
+    transform: rotate(-30deg) scale(1.1);
+}
+
+.wah-rerun {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 159, 14, 0.1);
+    border: 1px solid var(--wah-score-warning);
+    display: none;
+    justify-content: center;
+}
+
+.wah-rerun span {
+    font-size: 12px;
+    color: var(--wah-score-warning);
+    font-weight: 500;
+}
+
+.wah-hide-select {
+    width: fit-content;
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--wah-dark-border);
+    color: var(--wah-text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease;
+}
+
+.wah-hide-select:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-border);
+}
+
+.wah-hide-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-accent-default);
+}
+
+.wah-hide-select option {
+    background: var(--wah-bg);
+    color: var(--wah-text);
+}
+
+.wah-reset-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--wah-score-warning);
+    box-shadow: 0 0 10px rgba(237, 171, 65, 0.3);
+}
+
+.wah-hide-for-label {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.wah-hide-for-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+
+.wah-hide-for-btn {
+    width: fit-content;
+    padding: 8px 10px;
+}
+
+.wah-hide-info {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.wah-color-input {
+    width: 38px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.wah-rerun-visible {
+    display: flex;
+}

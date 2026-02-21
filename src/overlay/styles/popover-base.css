@@ -1,0 +1,91 @@
+.wah-pop {
+    position: fixed;
+    min-height: 150px;
+    width: 260px;
+    background: var(--wah-bg);
+    border: 1px solid var(--wah-dark-border);
+    border-radius: 12px;
+    padding: 14px 12px 12px;
+    z-index: 999999;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .40);
+    color: var(--wah-text);
+    backdrop-filter: blur(6px);
+    font-family: var(--wah-font);
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
+    pointer-events: none;
+}
+
+.wah-pop.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.wah-pop-titleline {
+    font-size: 16px;
+    margin: 0 0 12px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    text-align: center;
+    font-family: inherit;
+}
+
+.wah-pop-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 12px;
+    letter-spacing: .2px;
+    font-family: inherit;
+}
+
+.wah-pop-section {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.wah-pop-body {
+    min-height: 180px;
+}
+
+.wah-pop-body input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-spacer {
+    height: 12px;
+}
+
+.wah-pop-section-spaced {
+    margin-top: 6px;
+}
+
+.wah-pop-row-space-between {
+    justify-content: space-between;
+}
+
+.wah-pop-section-centered {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.wah-pop-btn-full {
+    width: fit-content;
+}
+
+.wah-pop-btn-full+div {
+    margin-bottom: 12px;
+}
+
+.wah-pop-settings {
+    display: flex;
+    justify-content: center;
+}

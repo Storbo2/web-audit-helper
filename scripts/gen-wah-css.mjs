@@ -7,7 +7,10 @@ const outPath = path.resolve("src/overlay/wahCss.ts");
 const cssFileOrder = [
     "variables.css",
     "base.css",
-    "popover.css",
+    "popover-base.css",
+    "popover-filters.css",
+    "popover-settings.css",
+    "popover-ui.css",
     "items.css",
     "utilities.css"
 ];
@@ -28,7 +31,7 @@ const css = cssFiles.join("\n\n").replaceAll("`", "\\`");
 const content =
     `// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files
-// Order: variables.css → base.css → popover.css → items.css → utilities.css
+// Order: variables.css → base.css → popover-base.css → popover-filters.css → popover-settings.css → popover-ui.css → items.css → utilities.css
 
 export const wahCss = \`\n${css}\n\`;
 `;
