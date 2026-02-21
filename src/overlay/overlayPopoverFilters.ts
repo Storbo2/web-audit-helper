@@ -1,4 +1,5 @@
 import type { IssueCategory } from "../core/types";
+import { setActiveCategories } from "./overlaySettings";
 
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueCategory>, onChange: () => void) {
     popBody.innerHTML = `
@@ -26,6 +27,7 @@ export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueC
             const cat = cb.dataset.cat as IssueCategory;
             if (cb.checked) catActive.add(cat);
             else catActive.delete(cat);
+            setActiveCategories(catActive);
             onChange();
         });
     });

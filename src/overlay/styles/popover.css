@@ -1,5 +1,6 @@
 .wah-pop {
     position: fixed;
+    min-height: 150px;
     width: 260px;
     background: var(--wah-bg);
     border: 1px solid var(--wah-dark-border);
@@ -12,7 +13,7 @@
     font-family: var(--wah-font);
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
-    transition: opacity 160ms ease, transform 180ms ease;
+    transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
     pointer-events: none;
 }
 
@@ -29,7 +30,6 @@
     letter-spacing: .2px;
     text-align: center;
     font-family: inherit;
-    color: var(--wah-text);
 }
 
 .wah-pop-header {
@@ -41,7 +41,6 @@
     font-size: 16px;
     margin: 0 0 12px;
     letter-spacing: .2px;
-    color: var(--wah-text);
     font-family: inherit;
 }
 
@@ -58,7 +57,7 @@
     border: none;
     cursor: pointer;
     font-size: 18px;
-    transition: opacity .15s ease, transform .15s ease;
+    transition: opacity var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
     padding: 0;
 }
 
@@ -118,13 +117,11 @@
 .wah-pop-title {
     font-weight: 700;
     font-size: 14px;
-    color: var(--wah-text);
 }
 
 .wah-pop-page {
     font-size: 11px;
     opacity: 0.75;
-    color: var(--wah-text);
 }
 
 .wah-pop-nav {
@@ -133,9 +130,8 @@
     border-radius: 10px;
     border: 1px solid var(--wah-dark-border);
     background: rgba(255, 255, 255, 0.04);
-    color: var(--wah-text);
     cursor: pointer;
-    transition: transform 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+    transition: transform var(--wah-trans-quick) ease, background var(--wah-trans-quick) ease, opacity var(--wah-trans-quick) ease;
     font-size: 14px;
     padding: 0;
     display: flex;
@@ -152,7 +148,6 @@
     margin-top: 10px;
     font-size: 11px;
     opacity: 0.75;
-    color: var(--wah-text);
 }
 
 .wah-pop-btn {
@@ -160,11 +155,9 @@
     padding: 10px 12px;
     border-radius: 12px;
     border: 1px solid var(--wah-dark-border);
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--wah-text);
     cursor: pointer;
     font-size: 14px;
-    transition: background 0.12s ease;
+    transition: background var(--wah-trans-quick) ease;
 }
 
 .wah-pop-btn:hover {
@@ -174,6 +167,11 @@
 
 .wah-rerun {
     margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 159, 14, 0.1);
+    border: 1px solid var(--wah-score-warning);
+    display: none;
     justify-content: center;
 }
 
@@ -191,10 +189,9 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--wah-dark-border);
     color: var(--wah-text);
-    font-family: var(--wah-font);
     font-size: 13px;
     cursor: pointer;
-    transition: background 0.12s ease, border-color 0.12s ease;
+    transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease;
 }
 
 .wah-hide-select:hover {
@@ -280,11 +277,6 @@
     background: transparent;
     padding: 0;
     cursor: pointer;
-}
-
-.wah-rerun {
-    display: none;
-    justify-content: center;
 }
 
 .wah-rerun-visible {

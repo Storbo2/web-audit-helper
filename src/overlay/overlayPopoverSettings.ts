@@ -144,7 +144,7 @@ function wirePage2(popBody: HTMLElement) {
         console.log("[WAH] All settings reset to defaults");
         const popBody = document.getElementById("wah-pop-body") as HTMLElement | null;
         if (popBody) {
-            const pageRef: SettingsPageRef = { current: 2 };
+            const pageRef: SettingsPageRef = { current: 0 };
             renderSettingsPage(popBody, pageRef);
         }
     });

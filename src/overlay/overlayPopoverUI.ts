@@ -127,6 +127,7 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     const resetBtn = popBody.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
     resetBtn?.addEventListener("click", () => {
         resetUISettings();
+        console.log("[WAH] All UI settings reset to defaults");
 
         const defaults = UI_DEFAULTS;
         overlay.style.setProperty("--wah-border", defaults.accent);

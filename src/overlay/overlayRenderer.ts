@@ -32,7 +32,7 @@ export function renderList(list: AuditIssue[]) {
                             ${badgeSymbol(issue.severity)}
                         </span>
                     </span>
-                    <span class="wah-msg">${escapeHtml(issue.message)}</span>
+                    <span class="wah-msg wah-${issue.severity === 'critical' ? 'score-bad' : issue.severity === 'warning' ? 'score-warning' : 'text'}">${escapeHtml(issue.message)}</span>
                 </li>
             `).join("")}
         </ul>

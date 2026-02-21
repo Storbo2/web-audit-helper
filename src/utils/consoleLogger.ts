@@ -45,6 +45,18 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
         }
 
         if (issuesToShow.length > 0) {
+            const severityOrder: Record<string, number> = {
+                critical: 0,
+                warning: 1,
+                recommendation: 2,
+            };
+
+            issuesToShow.sort((a: AuditIssue, b: AuditIssue) => {
+                const sa = severityOrder[a.severity] ?? 99;
+                const sb = severityOrder[b.severity] ?? 99;
+                return sa - sb;
+            });
+
             const tableData = issuesToShow.map((issue: AuditIssue) => ({
                 "Rule": issue.rule,
                 "Severity": issue.severity,

@@ -7,7 +7,7 @@ import { applyUIToOverlay } from "./overlayPopoverUI";
 import { resetPendingChangesState } from "./overlayPopoverUtils";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
-import { getSettings } from "./overlaySettings";
+import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setActiveCategories, type UIFilter } from "./overlaySettings";
 import { setupDrag } from "./overlayDrag";
 import { readSavedPos, applyPos, type OverlayPos } from "./overlayPosition";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
@@ -40,18 +40,22 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
     setupDrag(overlay, header);
 
-    type UIFilter = "critical" | "warning" | "recommendation";
-    const active = new Set<UIFilter>(["critical"]);
-    const catActive = new Set<IssueCategory>([
-        "accessibility",
-        "semantic",
-        "seo",
-        "responsive"
-    ]);
+    const active = getActiveFilters();
+    const catActive = getActiveCategories();
 
     const panel = overlay.querySelector("#wah-panel") as HTMLElement | null;
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
     const chips = Array.from(overlay.querySelectorAll(".wah-chip")) as HTMLButtonElement[];
+
+    // Update chip classes based on loaded active filters
+    chips.forEach((btn) => {
+        const f = btn.dataset.filter as UIFilter;
+        if (active.has(f)) {
+            btn.classList.add("is-active");
+        } else {
+            btn.classList.remove("is-active");
+        }
+    });
 
     function refresh() {
         if (!panel || !countsEl) return;
@@ -133,6 +137,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
                 btn.classList.add("is-active");
             }
 
+            setActiveFilters(active);
             refresh();
         });
     });

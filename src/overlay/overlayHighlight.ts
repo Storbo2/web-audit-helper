@@ -18,15 +18,37 @@ export function getHighlightDurationMs() {
 }
 
 export function logIssueDetail(issue: AuditIssue) {
-    console.groupCollapsed(
-        `%cWAH Issue → ${issue.rule}`,
-        "color:#ef4444;font-weight:bold;"
-    );
+    const varName =
+        issue.severity === "critical" ? "--wah-score-bad" :
+            issue.severity === "warning" ? "--wah-score-warning" :
+                "--wah-text";
+
+    let colorValue: string | null = null;
+    try {
+        if (typeof document !== "undefined" && document.documentElement) {
+            colorValue = getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || null;
+        }
+    } catch (e) {
+        colorValue = null;
+    }
+
+    if (!colorValue) {
+        const fallback: Record<string, string> = {
+            "--wah-score-bad": "#ed4141",
+            "--wah-score-warning": "#ff9f0e",
+            "--wah-text": "#e5e7eb",
+        };
+        colorValue = fallback[varName] ?? "#ffffff";
+    }
+
+    const style = `color: ${colorValue}; font-weight: bold;`;
+
+    console.groupCollapsed(`%c[WAH] Issue "${issue.rule}" details:`, style);
     console.log("Message:", issue.message);
     console.log("Severity:", issue.severity);
+    console.log("Category:", issue.category);
     console.log("Selector:", issue.selector ?? "-");
     console.log("Element:", issue.element ?? null);
-    console.log("Full issue:", issue);
     console.groupEnd();
 }
 
