@@ -1,4 +1,4 @@
-export type PopoverMode = "filters" | "ui" | "settings";
+export type PopoverMode = "filters" | "ui" | "settings" | "export";
 
 export let pendingChangesNeedRerun = false;
 
@@ -49,9 +49,27 @@ function positionPop(anchor: HTMLElement, pop: HTMLElement) {
 
 const POPOVER_TRANSITION_MS = 200;
 
+function syncPopoverThemeFromOverlay(pop: HTMLElement) {
+    const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+    if (!overlay) return;
+
+    const overlayTheme = overlay.dataset.theme;
+    if (overlayTheme) {
+        pop.dataset.theme = overlayTheme;
+    }
+
+    const cs = getComputedStyle(overlay);
+    ["--wah-bg", "--wah-text", "--wah-dark-border", "--wah-border"].forEach((name) => {
+        const v = cs.getPropertyValue(name);
+        if (v) pop.style.setProperty(name, v);
+    });
+}
+
 function openPop(mode: PopoverMode, anchor: HTMLElement, renderFn: (popBody: HTMLElement) => void) {
     const { pop, popBody } = ensureGlobalPop();
     if (!pop || !popBody) return;
+
+    syncPopoverThemeFromOverlay(pop);
 
     pop.removeAttribute("hidden");
 

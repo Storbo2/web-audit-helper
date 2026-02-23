@@ -1,5 +1,7 @@
 import type { AuditResult } from "../core/types";
+import { buildAuditReport, serializeReportToJSON } from "./auditReport";
 
 export function jsonReporter(result: AuditResult) {
-    console.log(JSON.stringify(result, null, 2));
+    const report = buildAuditReport(result);
+    console.log(serializeReportToJSON(report));
 }

@@ -76,11 +76,6 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     const accent = getAccent();
     const opacity = getOpacity();
 
-    const pop = document.getElementById("wah-pop") as HTMLElement | null;
-    if (pop) {
-        pop.style.setProperty("--wah-border", accent);
-    }
-
     popBody.innerHTML = `
         <div class="wah-pop-header">
             <span>UI settings</span>

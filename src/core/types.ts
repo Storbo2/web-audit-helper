@@ -8,6 +8,14 @@ export type IssueLevel = "critical" | "warnings" | "all";
 
 export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive";
 
+export type RuleStatus = "pass" | "warn" | "fail";
+
+export type ImpactLevel = "low" | "medium" | "high";
+
+export type Grade = "A" | "B" | "C" | "D" | "E";
+
+export type AuditMode = "dev" | "ci";
+
 export interface AuditIssue {
     rule: string;
     message: string;
@@ -41,4 +49,60 @@ export interface WAHConfig {
 
     reporters?: ("console" | "json" | "text")[];
     breakpoints: Record<string, number>;
+}
+
+export interface AffectedElement {
+    selector: string;
+    snippet?: string;
+    note?: string;
+}
+
+export interface RuleResult {
+    id: string;
+    title: string;
+    description: string;
+    status: RuleStatus;
+    impact: ImpactLevel;
+    message: string;
+    help?: string;
+    elements?: AffectedElement[];
+}
+
+export interface CategoryResult {
+    id: string;
+    title: string;
+    score: number;
+    rules: RuleResult[];
+}
+
+export interface AuditReportMeta {
+    url?: string;
+    date: string;
+    viewport: {
+        width: number;
+        height: number;
+    };
+    userAgent: string;
+    version: string;
+    mode: AuditMode;
+}
+
+export interface AuditReportScore {
+    overall: number;
+    grade: Grade;
+}
+
+export interface AuditReportStats {
+    passed: number;
+    warnings: number;
+    failed: number;
+    totalRules: number;
+}
+
+export interface AuditReport {
+    meta: AuditReportMeta;
+    score: AuditReportScore;
+    categories: CategoryResult[];
+    stats: AuditReportStats;
+    highlights?: string[];
 }

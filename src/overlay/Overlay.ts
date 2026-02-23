@@ -145,6 +145,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         overlay,
         active,
         catActive,
+        results,
         onChange: refresh,
         onRerunAudit: rerunAudit
     });
