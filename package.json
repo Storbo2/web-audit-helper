@@ -1,5 +1,17 @@
 {
+    "name": "web-audit-helper",
+    "version": "0.1.0-dev",
+    "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
+    "main": "dist/index.cjs",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "license": "MIT",
     "devDependencies": {
+        "@types/node": "^25.3.0",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3"
     },
