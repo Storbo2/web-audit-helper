@@ -1,5 +1,6 @@
 import type { AuditIssue } from "../types";
 import { getCssSelector } from "../../utils/dom";
+import { RULE_IDS } from "./ruleIds";
 
 export function checkMultipleH1(): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -8,7 +9,7 @@ export function checkMultipleH1(): AuditIssue[] {
     if (h1s.length > 1) {
         h1s.slice(1).forEach((h1) => {
             issues.push({
-                rule: "multiple-h1",
+                rule: RULE_IDS.accessibility.multipleH1,
                 message: "Multiple H1 detected",
                 severity: "warning",
                 category: "semantic",
@@ -34,7 +35,7 @@ export function checkTooManyDivs(): AuditIssue[] {
 
     if (ratioDiv >= 0.65 && semantic <= 2) {
         issues.push({
-            rule: "semantic-tags",
+            rule: RULE_IDS.custom.lowSemanticStructure,
             message: `High DIV ratio (${Math.round(ratioDiv * 100)}%) and low semantic structure`,
             severity: "recommendation",
             category: "semantic"

@@ -1,32 +1,46 @@
+<!doctype html>
+<html>
+
 <head>
-    <meta charset="UTF-8" />
-    <title></title> <!-- title vacío -> critical -->
-    <!-- sin meta description -> warning -->
-    <!-- sin viewport -> warning -->
+    <title></title> <!-- SEO-01: title vacío -->
+    <!-- SEO-02: sin meta description -->
+    <!-- SEO-03: sin meta charset -->
+    <!-- SEO-04: sin viewport -->
 </head>
 
 <body>
-    <h1>WAH Test</h1>
-    <h1>Second H1</h1> <!-- multiple-h1 -> warning -->
+    <h1 id="dup-id">WAH Test</h1>
+    <h1 id="dup-id">Second H1</h1> <!-- ACC-08 + DOM-01: id duplicado -->
 
     <p style="font-size: 10px; color: #aaa; background: #fff;">
         Texto con fuente pequeña y bajo contraste
     </p>
 
-    <a href="#">Click aquí</a> <!-- link-text -> recommendation -->
+    <a href="#">Click aquí</a> <!-- WAH-ACC-VAGUE-LINK -->
+    <br>
 
-    <input type="text" placeholder="Nombre" /> <!-- input-label -> critical -->
+    <a>Enlace sin href</a> <!-- WAH-LINK-NO-HREF -->
+    <br>
+
+    <a href="/destino"></a> <!-- ACC-03: link sin nombre accesible -->
+    <br>
+
+    <button></button> <!-- ACC-04: button sin nombre accesible -->
+
+    <input type="text" placeholder="Nombre" /> <!-- ACC-05 + ACC-07 -->
 
     <div>
         <div>
             <div>Muchos divs</div>
         </div>
-    </div> <!-- semantic-tags -> recommendation (según tu umbral) -->
+    </div> <!-- WAH-SEM-LOW-STRUCTURE (según umbral) -->
 
-    <img src="./../src/favicon-32x32.png"> <!-- img-alt -> critical -->
+    <img src="./../src/favicon-32x32.png"> <!-- ACC-02: img sin alt -->
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";
         runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });
     </script>
 </body>
+
+</html>

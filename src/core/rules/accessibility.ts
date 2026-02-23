@@ -1,5 +1,31 @@
 import type { AuditIssue } from "../types";
 import { getCssSelector } from "../../utils/dom";
+import { RULE_IDS } from "./ruleIds";
+
+function hasAccessibleName(el: Element): boolean {
+    const text = (el.textContent || "").trim();
+    const ariaLabel = (el.getAttribute("aria-label") || "").trim();
+    const labelledBy = (el.getAttribute("aria-labelledby") || "").trim();
+    return text.length > 0 || ariaLabel.length > 0 || labelledBy.length > 0;
+}
+
+export function checkHtmlLangMissing(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const lang = (document.documentElement.lang || "").trim();
+
+    if (!lang) {
+        issues.push({
+            rule: RULE_IDS.accessibility.htmlMissingLang,
+            message: "<html> is missing a valid lang attribute",
+            severity: "warning",
+            category: "accessibility",
+            element: document.documentElement,
+            selector: "html"
+        });
+    }
+
+    return issues;
+}
 
 export function checkFontSize(minSize: number): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -13,7 +39,7 @@ export function checkFontSize(minSize: number): AuditIssue[] {
                 fontSize <= 10 ? "critical" : "warning";
 
             issues.push({
-                rule: "font-size",
+                rule: RULE_IDS.accessibility.textTooSmall,
                 message: `Font size too small (${fontSize}px)`,
                 severity,
                 category: "accessibility",
@@ -33,7 +59,7 @@ export function checkMissingAlt(): AuditIssue[] {
         const alt = img.getAttribute("alt");
         if (!alt || alt.trim() === "") {
             issues.push({
-                rule: "img-alt",
+                rule: RULE_IDS.accessibility.imgMissingAlt,
                 message: "Image missing alt attribute",
                 severity: "critical",
                 category: "accessibility",
@@ -60,7 +86,7 @@ export function checkInputsWithoutLabel(): AuditIssue[] {
 
         if (!hasLabelByFor && !wrappedByLabel && !hasAria) {
             issues.push({
-                rule: "input-label",
+                rule: RULE_IDS.accessibility.controlMissingLabel,
                 message: "Form control missing accessible label",
                 severity: "critical",
                 category: "accessibility",
@@ -82,7 +108,7 @@ export function checkVagueLinks(): AuditIssue[] {
         const text = (a.textContent || "").trim().toLowerCase();
         if (bad.includes(text)) {
             issues.push({
-                rule: "link-text",
+                rule: RULE_IDS.custom.vagueLinkText,
                 message: `Link text is vague: "${(a.textContent || "").trim()}"`,
                 severity: "recommendation",
                 category: "accessibility",
@@ -90,6 +116,111 @@ export function checkVagueLinks(): AuditIssue[] {
                 selector: getCssSelector(a)
             });
         }
+    });
+
+    return issues;
+}
+
+export function checkLinksWithoutHref(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    document.querySelectorAll("a").forEach((a) => {
+        if (!a.getAttribute("href")) {
+            issues.push({
+                rule: RULE_IDS.custom.linkMissingHref,
+                message: "Link missing href attribute",
+                severity: "warning",
+                category: "accessibility",
+                element: a as HTMLElement,
+                selector: getCssSelector(a)
+            });
+        }
+    });
+    return issues;
+}
+
+export function checkLinksWithoutAccessibleName(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("a").forEach((a) => {
+        if (hasAccessibleName(a)) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.linkMissingAccessibleName,
+            message: "Link is missing an accessible name",
+            severity: "warning",
+            category: "accessibility",
+            element: a as HTMLElement,
+            selector: getCssSelector(a)
+        });
+    });
+
+    return issues;
+}
+
+export function checkButtonsWithoutAccessibleName(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("button").forEach((button) => {
+        if (hasAccessibleName(button)) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.buttonMissingAccessibleName,
+            message: "Button is missing an accessible name",
+            severity: "warning",
+            category: "accessibility",
+            element: button as HTMLElement,
+            selector: getCssSelector(button)
+        });
+    });
+
+    return issues;
+}
+
+export function checkControlsWithoutIdOrName(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("input, select, textarea").forEach((el) => {
+        const control = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        const id = (control.id || "").trim();
+        const name = (control.getAttribute("name") || "").trim();
+
+        if (id || name) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.controlMissingIdOrName,
+            message: "Form control is missing both id and name",
+            severity: "critical",
+            category: "accessibility",
+            element: control as HTMLElement,
+            selector: getCssSelector(control)
+        });
+    });
+
+    return issues;
+}
+
+export function checkDuplicateIds(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const seen = new Map<string, Element>();
+
+    document.querySelectorAll("[id]").forEach((el) => {
+        const id = (el.getAttribute("id") || "").trim();
+        if (!id) return;
+
+        const first = seen.get(id);
+        if (!first) {
+            seen.set(id, el);
+            return;
+        }
+
+        issues.push({
+            rule: RULE_IDS.accessibility.duplicateIds,
+            message: `Duplicate id detected: "${id}"`,
+            severity: "critical",
+            category: "accessibility",
+            element: el as HTMLElement,
+            selector: getCssSelector(el)
+        });
     });
 
     return issues;

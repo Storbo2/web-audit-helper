@@ -1,5 +1,6 @@
 import type { AuditIssue } from "../types";
 import { getCssSelector } from "../../utils/dom";
+import { RULE_IDS } from "./ruleIds";
 
 export function checkMissingViewportMeta(): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -7,7 +8,7 @@ export function checkMissingViewportMeta(): AuditIssue[] {
 
     if (!meta || !(meta.content || "").includes("width=device-width")) {
         issues.push({
-            rule: "viewport-meta",
+            rule: RULE_IDS.seo.missingViewport,
             message: "Missing or incomplete viewport meta tag",
             severity: "warning",
             category: "responsive",
@@ -27,7 +28,7 @@ export function checkLargeFixedWidths(): AuditIssue[] {
 
         if (!isNaN(px) && px > 900 && el !== document.body && el !== document.documentElement) {
             issues.push({
-                rule: "fixed-width",
+                rule: RULE_IDS.custom.largeFixedWidth,
                 message: `Large fixed width detected (${Math.round(px)}px)`,
                 severity: "recommendation",
                 category: "responsive",
