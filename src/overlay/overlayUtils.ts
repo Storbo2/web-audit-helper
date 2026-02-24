@@ -24,7 +24,19 @@ export function badgeSymbol(sev: AuditIssue["severity"]) {
 }
 
 export function getScreenSize() {
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    return `${width}px x ${height}px`;
+    const vv = window.visualViewport;
+    const width = vv?.width ?? window.innerWidth ?? document.documentElement.clientWidth ?? document.body.clientWidth;
+    const height = vv?.height ?? window.innerHeight ?? document.documentElement.clientHeight ?? document.body.clientHeight;
+    return `${Math.round(width)}px x ${Math.round(height)}px`;
+}
+
+export function ensureViewportMeta(): boolean {
+    const existing = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
+    if (existing) return false;
+
+    const meta = document.createElement("meta");
+    meta.name = "viewport";
+    meta.content = "width=device-width, initial-scale=1";
+    document.head.appendChild(meta);
+    return true;
 }

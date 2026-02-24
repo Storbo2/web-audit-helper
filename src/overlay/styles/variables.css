@@ -23,7 +23,7 @@
     --wah-trans-long: 240ms;
 }
 
-#wah-overlay[data-theme="light"] {
+#wah-overlay-root[data-theme="light"] {
     --wah-bg: var(--wah-bg-light);
     --wah-text: var(--wah-text-light);
     --wah-dark-border: var(--wah-dark-border-light);
@@ -31,7 +31,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-    #wah-overlay[data-theme="auto"] {
+    #wah-overlay-root[data-theme="auto"] {
         --wah-bg: var(--wah-bg-light);
         --wah-text: var(--wah-text-light);
         --wah-dark-border: var(--wah-dark-border-light);

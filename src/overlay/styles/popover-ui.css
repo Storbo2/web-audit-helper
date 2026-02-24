@@ -5,7 +5,7 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 1.1em;
     transition: opacity var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
     padding: 0;
 }
@@ -15,17 +15,17 @@
 }
 
 .wah-rerun {
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 8px;
+    margin-top: 0.75rem;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
     background: rgba(255, 159, 14, 0.1);
-    border: 1px solid var(--wah-score-warning);
+    border: 0.0625rem solid var(--wah-score-warning);
     display: none;
     justify-content: center;
 }
 
 .wah-rerun span {
-    font-size: 12px;
+    font-size: 0.85em;
     color: var(--wah-score-warning);
     font-weight: 500;
 }
@@ -33,12 +33,12 @@
 .wah-hide-select {
     width: fit-content;
     flex: 1;
-    padding: 8px 10px;
-    border-radius: 8px;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--wah-dark-border);
+    border: 0.0625rem solid var(--wah-dark-border);
     color: var(--wah-text);
-    font-size: 13px;
+    font-size: 0.9em;
     cursor: pointer;
     transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease;
 }
@@ -62,20 +62,20 @@
 .wah-reset-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--wah-score-warning);
-    box-shadow: 0 0 10px rgba(237, 171, 65, 0.3);
+    box-shadow: 0 0 0.625rem rgba(237, 171, 65, 0.3);
 }
 
 .wah-hide-for-label {
-    font-size: 13px;
+    font-size: 0.9em;
     font-weight: 500;
     white-space: nowrap;
 }
 
 .wah-hide-for-row {
     display: flex;
-    gap: 6px;
-    margin-top: 6px;
-    margin-bottom: 12px;
+    gap: 0.375rem;
+    margin-top: 0.375rem;
+    margin-bottom: 0.75rem;
     align-items: center;
     justify-content: center;
     width: fit-content;
@@ -83,19 +83,19 @@
 
 .wah-hide-for-btn {
     width: fit-content;
-    padding: 8px 10px;
+    padding: 0.5rem 0.625rem;
 }
 
 .wah-hide-info {
-    font-size: 12px;
+    font-size: 0.85em;
     opacity: 0.85;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
     text-align: center;
 }
 
 .wah-color-input {
-    width: 38px;
-    height: 22px;
+    width: 2.375rem;
+    height: 1.375rem;
     border: none;
     background: transparent;
     padding: 0;

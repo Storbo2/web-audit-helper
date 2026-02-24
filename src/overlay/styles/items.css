@@ -1,16 +1,16 @@
 .wah-panel,
 .wah-all-panel {
-    max-height: 150px;
+    max-height: min(45vh, 13.75rem);
     overflow: auto;
-    border: 1px solid var(--wah-dark-border);
-    border-radius: 8px;
-    padding: 8px;
+    border: 0.0625rem solid var(--wah-dark-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
     text-align: left;
 }
 
 .wah-all-panel {
-    max-height: 140px;
-    margin-top: 6px;
+    max-height: min(40vh, 12.5rem);
+    margin-top: 0.375rem;
 }
 
 .wah-list {
@@ -21,12 +21,12 @@
 
 .wah-issue-item {
     display: flex;
-    gap: 8px;
+    gap: 0.5rem;
     align-items: flex-start;
     cursor: pointer;
-    padding: 8px 4px;
-    border-bottom: 1px solid var(--wah-dark-border);
-    font-size: 12px;
+    padding: 0.5rem 0.25rem;
+    border-bottom: 0.0625rem solid var(--wah-dark-border);
+    font-size: 0.9em;
 }
 
 .wah-issue-item:last-child {
@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    font-size: 12px;
+    font-size: 0.85em;
     line-height: 1;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .wah-panel::-webkit-scrollbar {
-    width: 10px;
+    width: 0.625rem;
 }
 
 .wah-panel::-webkit-scrollbar-track {
@@ -72,13 +72,13 @@
 
 .wah-panel::-webkit-scrollbar-thumb {
     background: rgba(229, 231, 235, 0.18);
-    border-radius: 10px;
-    border: 2px solid transparent;
+    border-radius: 0.625rem;
+    border: 0.125rem solid transparent;
     background-clip: content-box;
 }
 
 .wah-panel::-webkit-scrollbar-thumb:hover {
     background: rgba(229, 231, 235, 0.28);
-    border: 2px solid transparent;
+    border: 0.125rem solid transparent;
     background-clip: content-box;
 }

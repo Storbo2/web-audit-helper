@@ -2,37 +2,37 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
 }
 
 .wah-pop-head-center {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 0.125rem;
     flex: 1;
 }
 
 .wah-pop-title {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 1em;
 }
 
 .wah-pop-page {
-    font-size: 11px;
+    font-size: 0.8em;
     opacity: 0.75;
 }
 
 .wah-pop-nav {
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
-    border: 1px solid var(--wah-dark-border);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.625rem;
+    border: 0.0625rem solid var(--wah-dark-border);
     background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
     transition: transform var(--wah-trans-quick) ease, background var(--wah-trans-quick) ease, opacity var(--wah-trans-quick) ease;
-    font-size: 14px;
+    font-size: 0.95em;
     padding: 0;
     display: flex;
     align-items: center;
@@ -40,27 +40,27 @@
 }
 
 .wah-pop-nav:hover {
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
     background: rgba(255, 255, 255, 0.07);
 }
 
 .wah-pop-note {
-    margin-top: 10px;
-    font-size: 11px;
+    margin-top: 0.625rem;
+    font-size: 0.8em;
     opacity: 0.75;
 }
 
 .wah-pop-btn {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--wah-dark-border);
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.75rem;
+    border: 0.0625rem solid var(--wah-dark-border);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.95em;
     transition: background var(--wah-trans-quick) ease;
 }
 
 .wah-pop-btn:hover {
     background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--wah-border);
+    border: 0.0625rem solid var(--wah-border);
 }

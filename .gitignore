@@ -20,7 +20,6 @@
 /build
 /dist
 src/overlay/wahCss.ts
-src/overlay/stylesheets.
 *.tgz
 
 # misc
@@ -43,3 +42,4 @@ next-env.d.ts
 
 # extra
 planes.txt
+.vscode/
