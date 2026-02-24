@@ -1,6 +1,6 @@
 import { injectOverlayStyles } from "./overlayStyles";
 import { logIssueDetail, focusIssueElement } from "./overlayHighlight";
-import { getScoreClass, ensureViewportMeta } from "./overlayUtils";
+import { getScoreClass } from "./overlayUtils";
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./overlayRenderer";
 import { setupPopover } from "./overlayPopover";
 import { applyUIToOverlay } from "./overlayPopoverUI";
@@ -17,8 +17,6 @@ type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
 export function createOverlay(initialResults: OverlayAuditResult, _config: WAHConfig) {
     if (document.getElementById("wah-overlay-root")) return;
-
-    ensureViewportMeta();
 
     let results = initialResults;
 

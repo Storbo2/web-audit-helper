@@ -1,5 +1,5 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector } from "../../utils/dom";
+import { getCssSelector, isWahIgnored } from "../../utils/dom";
 import { RULE_IDS } from "./ruleIds";
 
 function hasAccessibleName(el: Element): boolean {
@@ -7,6 +7,10 @@ function hasAccessibleName(el: Element): boolean {
     const ariaLabel = (el.getAttribute("aria-label") || "").trim();
     const labelledBy = (el.getAttribute("aria-labelledby") || "").trim();
     return text.length > 0 || ariaLabel.length > 0 || labelledBy.length > 0;
+}
+
+function shouldIgnore(el: Element): boolean {
+    return isWahIgnored(el);
 }
 
 export function checkHtmlLangMissing(): AuditIssue[] {
@@ -31,6 +35,7 @@ export function checkFontSize(minSize: number): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("*").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const style = window.getComputedStyle(el);
         const fontSize = parseFloat(style.fontSize);
 
@@ -56,6 +61,7 @@ export function checkMissingAlt(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("img").forEach((img) => {
+        if (shouldIgnore(img)) return;
         const alt = img.getAttribute("alt");
         if (!alt || alt.trim() === "") {
             issues.push({
@@ -75,7 +81,8 @@ export function checkMissingAlt(): AuditIssue[] {
 export function checkInputsWithoutLabel(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
-    const inputs = Array.from(document.querySelectorAll("input, select, textarea"));
+    const inputs = Array.from(document.querySelectorAll("input, select, textarea"))
+        .filter((el) => !shouldIgnore(el));
 
     for (const el of inputs) {
         const input = el as HTMLInputElement;
@@ -105,6 +112,7 @@ export function checkVagueLinks(): AuditIssue[] {
         "more", "read more", "más", "more info", "info"];
 
     document.querySelectorAll("a").forEach((a) => {
+        if (shouldIgnore(a)) return;
         const text = (a.textContent || "").trim().toLowerCase();
         if (bad.includes(text)) {
             issues.push({
@@ -124,6 +132,7 @@ export function checkVagueLinks(): AuditIssue[] {
 export function checkLinksWithoutHref(): AuditIssue[] {
     const issues: AuditIssue[] = [];
     document.querySelectorAll("a").forEach((a) => {
+        if (shouldIgnore(a)) return;
         if (!a.getAttribute("href")) {
             issues.push({
                 rule: RULE_IDS.custom.linkMissingHref,
@@ -142,6 +151,7 @@ export function checkLinksWithoutAccessibleName(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("a").forEach((a) => {
+        if (shouldIgnore(a)) return;
         if (hasAccessibleName(a)) return;
 
         issues.push({
@@ -161,6 +171,7 @@ export function checkButtonsWithoutAccessibleName(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("button").forEach((button) => {
+        if (shouldIgnore(button)) return;
         if (hasAccessibleName(button)) return;
 
         issues.push({
@@ -180,6 +191,7 @@ export function checkControlsWithoutIdOrName(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("input, select, textarea").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const control = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
         const id = (control.id || "").trim();
         const name = (control.getAttribute("name") || "").trim();
@@ -204,6 +216,7 @@ export function checkDuplicateIds(): AuditIssue[] {
     const seen = new Map<string, Element>();
 
     document.querySelectorAll("[id]").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const id = (el.getAttribute("id") || "").trim();
         if (!id) return;
 
@@ -230,6 +243,7 @@ export function checkLabelsWithoutFor(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("label").forEach((label) => {
+        if (shouldIgnore(label)) return;
         const hasFor = (label.getAttribute("for") || "").trim().length > 0;
         const hasControlChild = !!label.querySelector("input, select, textarea");
 
@@ -250,7 +264,7 @@ export function checkLabelsWithoutFor(): AuditIssue[] {
 
 export function checkMissingH1(): AuditIssue[] {
     const issues: AuditIssue[] = [];
-    const h1 = document.querySelector("h1");
+    const h1 = Array.from(document.querySelectorAll("h1")).find((el) => !shouldIgnore(el));
 
     if (!h1) {
         issues.push({
@@ -266,7 +280,8 @@ export function checkMissingH1(): AuditIssue[] {
 
 export function checkHeadingOrder(): AuditIssue[] {
     const issues: AuditIssue[] = [];
-    const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+    const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+        .filter((el) => !shouldIgnore(el));
 
     let lastLevel = 0;
     for (const el of headings) {
@@ -294,6 +309,7 @@ export function checkAriaLabelledbyTargets(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("[aria-labelledby]").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const raw = (el.getAttribute("aria-labelledby") || "").trim();
         const ids = raw.length ? raw.split(/\s+/) : [];
         const missing = ids.filter((id) => !document.getElementById(id));
@@ -319,6 +335,7 @@ export function checkAriaDescribedbyTargets(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("[aria-describedby]").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const raw = (el.getAttribute("aria-describedby") || "").trim();
         const ids = raw.length ? raw.split(/\s+/) : [];
         const missing = ids.filter((id) => !document.getElementById(id));
@@ -344,6 +361,7 @@ export function checkPositiveTabindex(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("[tabindex]").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const raw = (el.getAttribute("tabindex") || "").trim();
         const value = parseInt(raw, 10);
         if (!Number.isFinite(value) || value <= 0) return;
@@ -356,6 +374,122 @@ export function checkPositiveTabindex(): AuditIssue[] {
             element: el as HTMLElement,
             selector: getCssSelector(el)
         });
+    });
+
+    return issues;
+}
+
+export function checkNestedInteractiveElements(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const interactiveSelectors = "a, button, input, select, textarea, [role='button'], [role='link']";
+
+    document.querySelectorAll(interactiveSelectors).forEach((parent) => {
+        if (shouldIgnore(parent)) return;
+        const nested = parent.querySelectorAll(interactiveSelectors);
+        if (nested.length === 0) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.nestedInteractive,
+            message: `Interactive element contains nested interactive elements`,
+            severity: "warning",
+            category: "accessibility",
+            element: parent as HTMLElement,
+            selector: getCssSelector(parent)
+        });
+    });
+
+    return issues;
+}
+
+export function checkIframesWithoutTitle(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("iframe").forEach((iframe) => {
+        if (shouldIgnore(iframe)) return;
+        const title = (iframe.getAttribute("title") || "").trim();
+        const ariaLabel = (iframe.getAttribute("aria-label") || "").trim();
+
+        if (!title && !ariaLabel) {
+            issues.push({
+                rule: RULE_IDS.accessibility.iframeMissingTitle,
+                message: "Iframe is missing a title attribute",
+                severity: "warning",
+                category: "accessibility",
+                element: iframe as HTMLElement,
+                selector: getCssSelector(iframe)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkVideosWithoutControls(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("video").forEach((video) => {
+        if (shouldIgnore(video)) return;
+        const hasControls = video.hasAttribute("controls");
+        const isMuted = video.hasAttribute("muted");
+        const isAutoplay = video.hasAttribute("autoplay");
+
+        if (!hasControls && !isMuted && !isAutoplay) {
+            issues.push({
+                rule: RULE_IDS.accessibility.videoMissingControls,
+                message: "Video element without controls attribute",
+                severity: "warning",
+                category: "accessibility",
+                element: video as HTMLElement,
+                selector: getCssSelector(video)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkTablesWithoutCaption(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("table").forEach((table) => {
+        if (shouldIgnore(table)) return;
+        const caption = table.querySelector("caption");
+        const ariaLabel = (table.getAttribute("aria-label") || "").trim();
+        const ariaLabelledby = (table.getAttribute("aria-labelledby") || "").trim();
+
+        if (!caption && !ariaLabel && !ariaLabelledby) {
+            issues.push({
+                rule: RULE_IDS.accessibility.tableMissingCaption,
+                message: "Table is missing a caption or accessible name",
+                severity: "recommendation",
+                category: "accessibility",
+                element: table as HTMLElement,
+                selector: getCssSelector(table)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkTableHeadersWithoutScope(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("th").forEach((th) => {
+        if (shouldIgnore(th)) return;
+        const hasScope = th.hasAttribute("scope");
+        const hasId = th.hasAttribute("id");
+
+        if (!hasScope && !hasId) {
+            issues.push({
+                rule: RULE_IDS.accessibility.thMissingScope,
+                message: "Table header (th) is missing scope attribute",
+                severity: "recommendation",
+                category: "accessibility",
+                element: th as HTMLElement,
+                selector: getCssSelector(th)
+            });
+        }
     });
 
     return issues;

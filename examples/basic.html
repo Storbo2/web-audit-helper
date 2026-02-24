@@ -37,13 +37,31 @@
     <div aria-describedby="desc-inexistente">Sin descripcion</div> <!-- ACC-12 -->
     <div tabindex="2">Orden de tab alto</div> <!-- ACC-13 -->
 
+    <a href="#"><button>Click aquí</button></a> <!-- ACC-14: elementos interactivos anidados -->
+
+    <iframe src="about:blank"></iframe> <!-- ACC-15: iframe sin title -->
+
+    <video width="100px" height="100px" src="./../public/video.mp4"></video> <!-- ACC-16: video sin controls -->
+
+    <table>
+        <tr>
+            <th>Encabezado</th> <!-- ACC-18: th sin scope -->
+            <td>Dato</td>
+        </tr>
+    </table> <!-- ACC-17: table sin caption -->
+
+    <a href="#top">Ir arriba</a> <!-- SEC-02: link con href="#" -->
+    <a href="https://example.com" target="_blank">Enlace externo</a> <!-- SEC-01: sin noopener -->
+
+    <p>Texto en <b>negrita</b> y en <i>cursiva</i></p> <!-- SEM-01: b/i en vez de strong/em -->
+
     <div>
         <div>
             <div>Muchos divs</div>
         </div>
     </div> <!-- WAH-SEM-LOW-STRUCTURE (según umbral) -->
 
-    <img src="./../src/favicon-32x32.png"> <!-- ACC-02: img sin alt -->
+    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: img sin alt -->
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";

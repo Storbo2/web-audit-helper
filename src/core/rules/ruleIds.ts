@@ -13,6 +13,11 @@ export const RULE_IDS = {
         ariaLabelledbyMissingTarget: "ACC-11",
         ariaDescribedbyMissingTarget: "ACC-12",
         positiveTabindex: "ACC-13",
+        nestedInteractive: "ACC-14",
+        iframeMissingTitle: "ACC-15",
+        videoMissingControls: "ACC-16",
+        tableMissingCaption: "ACC-17",
+        thMissingScope: "ACC-18",
         duplicateIds: "DOM-01",
         textTooSmall: "ACC-22"
     },
@@ -20,7 +25,21 @@ export const RULE_IDS = {
         missingTitle: "SEO-01",
         weakOrMissingDescription: "SEO-02",
         missingCharset: "SEO-03",
-        missingViewport: "SEO-04"
+        missingViewport: "SEO-04",
+        missingCanonical: "SEO-05",
+        metaRobotsNoindex: "SEO-06",
+        missingOpenGraph: "SEO-07",
+        missingTwitterCard: "SEO-08"
+    },
+    security: {
+        targetBlankWithoutNoopener: "SEC-01",
+        dummyLink: "SEC-02"
+    },
+    semantic: {
+        bItagUsage: "SEM-01"
+    },
+    quality: {
+        excessiveInlineStyles: "QUAL-01"
     },
     custom: {
         vagueLinkText: "WAH-ACC-VAGUE-LINK",

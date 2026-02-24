@@ -9,18 +9,33 @@ import {
     checkFontSize,
     checkHeadingOrder,
     checkHtmlLangMissing,
+    checkIframesWithoutTitle,
     checkInputsWithoutLabel,
     checkLabelsWithoutFor,
     checkLinksWithoutAccessibleName,
     checkLinksWithoutHref,
     checkMissingAlt,
     checkMissingH1,
+    checkNestedInteractiveElements,
     checkPositiveTabindex,
-    checkVagueLinks
+    checkTableHeadersWithoutScope,
+    checkTablesWithoutCaption,
+    checkVagueLinks,
+    checkVideosWithoutControls
 } from "./accessibility";
-import { checkMultipleH1, checkTooManyDivs } from "./semantic";
-import { checkMissingMetaCharset, checkMissingMetaDescription, checkMissingTitle } from "./seo";
+import { checkBoldItalicTags, checkMultipleH1, checkTooManyDivs } from "./semantic";
+import {
+    checkMissingCanonical,
+    checkMissingMetaCharset,
+    checkMissingMetaDescription,
+    checkMissingOpenGraph,
+    checkMissingTitle,
+    checkMissingTwitterCard,
+    checkMetaRobotsNoindex
+} from "./seo";
 import { checkLargeFixedWidths, checkMissingViewportMeta } from "./responsive";
+import { checkDummyLinks, checkTargetBlankWithoutNoopener } from "./security";
+import { checkExcessiveInlineStyles } from "./quality";
 
 export interface RegisteredRule {
     id: string;
@@ -81,6 +96,26 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         run: () => checkPositiveTabindex()
     },
     {
+        id: RULE_IDS.accessibility.nestedInteractive,
+        run: () => checkNestedInteractiveElements()
+    },
+    {
+        id: RULE_IDS.accessibility.iframeMissingTitle,
+        run: () => checkIframesWithoutTitle()
+    },
+    {
+        id: RULE_IDS.accessibility.videoMissingControls,
+        run: () => checkVideosWithoutControls()
+    },
+    {
+        id: RULE_IDS.accessibility.tableMissingCaption,
+        run: () => checkTablesWithoutCaption()
+    },
+    {
+        id: RULE_IDS.accessibility.thMissingScope,
+        run: () => checkTableHeadersWithoutScope()
+    },
+    {
         id: RULE_IDS.accessibility.duplicateIds,
         run: () => checkDuplicateIds()
     },
@@ -101,6 +136,10 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         id: RULE_IDS.custom.lowSemanticStructure,
         run: () => checkTooManyDivs()
     },
+    {
+        id: RULE_IDS.semantic.bItagUsage,
+        run: () => checkBoldItalicTags()
+    },
 
     {
         id: RULE_IDS.seo.missingTitle,
@@ -114,6 +153,22 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         id: RULE_IDS.seo.missingCharset,
         run: () => checkMissingMetaCharset()
     },
+    {
+        id: RULE_IDS.seo.missingCanonical,
+        run: () => checkMissingCanonical()
+    },
+    {
+        id: RULE_IDS.seo.metaRobotsNoindex,
+        run: () => checkMetaRobotsNoindex()
+    },
+    {
+        id: RULE_IDS.seo.missingOpenGraph,
+        run: () => checkMissingOpenGraph()
+    },
+    {
+        id: RULE_IDS.seo.missingTwitterCard,
+        run: () => checkMissingTwitterCard()
+    },
 
     {
         id: RULE_IDS.seo.missingViewport,
@@ -122,5 +177,19 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.custom.largeFixedWidth,
         run: () => checkLargeFixedWidths()
+    },
+
+    {
+        id: RULE_IDS.security.targetBlankWithoutNoopener,
+        run: () => checkTargetBlankWithoutNoopener()
+    },
+    {
+        id: RULE_IDS.security.dummyLink,
+        run: () => checkDummyLinks()
+    },
+
+    {
+        id: RULE_IDS.quality.excessiveInlineStyles,
+        run: (config) => checkExcessiveInlineStyles(config.quality?.inlineStylesThreshold)
     }
 ];

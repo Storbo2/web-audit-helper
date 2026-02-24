@@ -1,10 +1,15 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector } from "../../utils/dom";
+import { getCssSelector, isWahIgnored } from "../../utils/dom";
 import { RULE_IDS } from "./ruleIds";
+
+function shouldIgnore(el: Element): boolean {
+    return isWahIgnored(el);
+}
 
 export function checkMultipleH1(): AuditIssue[] {
     const issues: AuditIssue[] = [];
-    const h1s = Array.from(document.querySelectorAll("h1"));
+    const h1s = Array.from(document.querySelectorAll("h1"))
+        .filter((el) => !shouldIgnore(el));
 
     if (h1s.length > 1) {
         h1s.slice(1).forEach((h1) => {
@@ -25,11 +30,14 @@ export function checkMultipleH1(): AuditIssue[] {
 export function checkTooManyDivs(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
-    const all = document.querySelectorAll("body *").length;
+    const all = Array.from(document.querySelectorAll("body *"))
+        .filter((el) => !shouldIgnore(el)).length;
     if (all < 40) return issues;
 
-    const divs = document.querySelectorAll("div").length;
-    const semantic = document.querySelectorAll("main, header, footer, nav, section, article, aside").length;
+    const divs = Array.from(document.querySelectorAll("div"))
+        .filter((el) => !shouldIgnore(el)).length;
+    const semantic = Array.from(document.querySelectorAll("main, header, footer, nav, section, article, aside"))
+        .filter((el) => !shouldIgnore(el)).length;
 
     const ratioDiv = divs / all;
 
@@ -41,6 +49,27 @@ export function checkTooManyDivs(): AuditIssue[] {
             category: "semantic"
         });
     }
+
+    return issues;
+}
+
+export function checkBoldItalicTags(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("b, i").forEach((el) => {
+        if (shouldIgnore(el)) return;
+        const tag = el.tagName.toLowerCase();
+        const suggestion = tag === "b" ? "strong" : "em";
+
+        issues.push({
+            rule: RULE_IDS.semantic.bItagUsage,
+            message: `Use <${suggestion}> instead of <${tag}> for semantic meaning`,
+            severity: "recommendation",
+            category: "semantic",
+            element: el as HTMLElement,
+            selector: getCssSelector(el)
+        });
+    });
 
     return issues;
 }

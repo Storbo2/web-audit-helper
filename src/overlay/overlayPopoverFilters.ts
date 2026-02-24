@@ -20,6 +20,14 @@ export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueC
         <input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}>
         <span>Responsive</span>
     </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="quality" ${catActive.has("quality") ? "checked" : ""}>
+        <span>Quality</span>
+    </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="security" ${catActive.has("security") ? "checked" : ""}>
+        <span>Security</span>
+    </label>
     `;
 
     popBody.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-cat]').forEach((cb) => {

@@ -1,6 +1,10 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector } from "../../utils/dom";
+import { getCssSelector, isWahIgnored } from "../../utils/dom";
 import { RULE_IDS } from "./ruleIds";
+
+function shouldIgnore(el: Element): boolean {
+    return isWahIgnored(el);
+}
 
 export function checkMissingViewportMeta(): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -22,6 +26,7 @@ export function checkLargeFixedWidths(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     document.querySelectorAll("*").forEach((el) => {
+        if (shouldIgnore(el)) return;
         const style = getComputedStyle(el);
         const w = style.width;
         const px = parseFloat(w);

@@ -1,5 +1,5 @@
 import { getScoreClass, getScreenSize } from "../overlay/overlayUtils";
-import { getCssSelector } from "../utils/dom";
+import { focusIssueElement, logIssueDetail } from "../overlay/overlayHighlight";
 import type { AuditResult, AuditIssue } from "../core/types";
 
 const CONSOLE_COLORS = {
@@ -13,15 +13,48 @@ const CONSOLE_COLORS = {
     light: "color:#8F8F8F;",
 };
 
-const SHORT_RULE_LABELS: Record<string, string> = {
-    "WAH-ACC-VAGUE-LINK": "ACC-98",
-    "WAH-LINK-NO-HREF": "ACC-99",
-    "WAH-SEM-LOW-STRUCTURE": "SEM-99",
-    "WAH-RESP-FIXED-WIDTH": "RESP-99"
+const FRIENDLY_RULE_LABELS: Record<string, string> = {
+    "ACC-01": "Missing html lang",
+    "ACC-02": "Image missing alt",
+    "ACC-03": "Link missing name",
+    "ACC-04": "Button missing name",
+    "ACC-05": "Control missing id/name",
+    "ACC-06": "Label missing for",
+    "ACC-07": "Control missing label",
+    "ACC-08": "Multiple H1",
+    "ACC-09": "Missing H1",
+    "ACC-10": "Heading order jump",
+    "ACC-11": "aria-labelledby invalid",
+    "ACC-12": "aria-describedby invalid",
+    "ACC-13": "Positive tabindex",
+    "ACC-14": "Nested interactive",
+    "ACC-15": "Iframe missing title",
+    "ACC-16": "Video missing controls",
+    "ACC-17": "Table missing caption",
+    "ACC-18": "TH missing scope",
+    "ACC-22": "Text too small",
+    "DOM-01": "Duplicate IDs",
+    "SEO-01": "Missing title",
+    "SEO-02": "Missing description",
+    "SEO-03": "Missing charset",
+    "SEO-04": "Missing viewport",
+    "SEO-05": "Missing canonical",
+    "SEO-06": "Robots noindex",
+    "SEO-07": "Missing Open Graph",
+    "SEO-08": "Missing Twitter Card",
+    "SEC-01": "Unsafe target=_blank",
+    "SEC-02": "Dummy link",
+    "SEM-01": "Use strong/em",
+    "QUAL-01": "Too many inline styles",
+    "WAH-ACC-VAGUE-LINK": "Vague link text",
+    "WAH-LINK-NO-HREF": "Link missing href",
+    "WAH-SEM-LOW-STRUCTURE": "Low semantic structure",
+    "WAH-RESP-FIXED-WIDTH": "Large fixed width"
 };
 
 function formatRuleLabel(rule: string): string {
-    return SHORT_RULE_LABELS[rule] ?? rule;
+    const label = FRIENDLY_RULE_LABELS[rule];
+    return label || rule;
 }
 
 function getScoreMessage(score: number): string {
@@ -68,14 +101,29 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
                 return sa - sb;
             });
 
+            if (typeof window !== "undefined") {
+                (window as Window & { __WAH_FOCUS_ISSUE__?: (index: number) => void }).__WAH_FOCUS_ISSUE__ = (index: number) => {
+                    const issue = issuesToShow[index];
+                    if (!issue) {
+                        console.warn(`[WAH] No issue found at index ${index}`);
+                        return null;
+                    }
+
+                    focusIssueElement(issue);
+                    logIssueDetail(issue);
+                    return issue;
+                };
+            }
+
             const tableData = issuesToShow.map((issue: AuditIssue) => ({
                 "Rule": formatRuleLabel(issue.rule),
                 "Severity": issue.severity,
+                "Category": issue.category || "N/A",
                 "Message": issue.message,
-                "Element": getCssSelector(issue.element as Element) || "N/A",
             }));
 
             console.table(tableData);
+            console.log('%cUse __WAH_FOCUS_ISSUE__(index) to highlight and log details', CONSOLE_COLORS.light);
         } else {
             console.log(`%cNo critical issues to show in table`, CONSOLE_COLORS.normal);
         }

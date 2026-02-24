@@ -18,6 +18,10 @@ export const defaultConfig: WAHConfig = {
         contrastLevel: "AA"
     },
 
+    quality: {
+        inlineStylesThreshold: 10
+    },
+
     breakpoints: {
         xs: 480,
         sm: 640,

@@ -6,7 +6,7 @@ export type ContrastLevel = "AA" | "AAA";
 
 export type IssueLevel = "critical" | "warnings" | "all";
 
-export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive";
+export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "maintainability";
 
 export type RuleStatus = "pass" | "warn" | "fail";
 
@@ -39,6 +39,10 @@ export interface WAHConfig {
     accessibility: {
         minFontSize: number;
         contrastLevel: ContrastLevel;
+    };
+
+    quality?: {
+        inlineStylesThreshold?: number;
     };
 
     overlay: {
