@@ -9,8 +9,10 @@
 </head>
 
 <body>
-    <h1 id="dup-id">WAH Test</h1>
-    <h1 id="dup-id">Second H1</h1> <!-- ACC-08 + DOM-01: id duplicado -->
+    <h1>Título Principal</h1>
+    <h1>Otro Principal</h1> <!-- ACC-08: múltiples h1 -->
+    <h2 id="dup-id">WAH Test</h2>
+    <h4 id="dup-id">Second Title</h4> <!-- ACC-09 + ACC-10 + DOM-01 -->
 
     <p style="font-size: 10px; color: #aaa; background: #fff;">
         Texto con fuente pequeña y bajo contraste
@@ -27,7 +29,13 @@
 
     <button></button> <!-- ACC-04: button sin nombre accesible -->
 
+    <label>Etiqueta suelta</label> <!-- ACC-06: label sin for ni control -->
+
     <input type="text" placeholder="Nombre" /> <!-- ACC-05 + ACC-07 -->
+
+    <div aria-labelledby="titulo-inexistente">Sin label</div> <!-- ACC-11 -->
+    <div aria-describedby="desc-inexistente">Sin descripcion</div> <!-- ACC-12 -->
+    <div tabindex="2">Orden de tab alto</div> <!-- ACC-13 -->
 
     <div>
         <div>

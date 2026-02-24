@@ -13,6 +13,17 @@ const CONSOLE_COLORS = {
     light: "color:#8F8F8F;",
 };
 
+const SHORT_RULE_LABELS: Record<string, string> = {
+    "WAH-ACC-VAGUE-LINK": "ACC-98",
+    "WAH-LINK-NO-HREF": "ACC-99",
+    "WAH-SEM-LOW-STRUCTURE": "SEM-99",
+    "WAH-RESP-FIXED-WIDTH": "RESP-99"
+};
+
+function formatRuleLabel(rule: string): string {
+    return SHORT_RULE_LABELS[rule] ?? rule;
+}
+
 function getScoreMessage(score: number): string {
     if (score >= 95) return "✅ Web optimizada. Tu sitio está listo para producción.";
     if (score >= 75) return "👍 Web en buen estado, con mejoras menores posibles.";
@@ -58,7 +69,7 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
             });
 
             const tableData = issuesToShow.map((issue: AuditIssue) => ({
-                "Rule": issue.rule,
+                "Rule": formatRuleLabel(issue.rule),
                 "Severity": issue.severity,
                 "Message": issue.message,
                 "Element": getCssSelector(issue.element as Element) || "N/A",

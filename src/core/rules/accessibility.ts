@@ -225,3 +225,138 @@ export function checkDuplicateIds(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkLabelsWithoutFor(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("label").forEach((label) => {
+        const hasFor = (label.getAttribute("for") || "").trim().length > 0;
+        const hasControlChild = !!label.querySelector("input, select, textarea");
+
+        if (hasFor || hasControlChild) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.labelMissingFor,
+            message: "Label is missing a for attribute and does not wrap a control",
+            severity: "warning",
+            category: "accessibility",
+            element: label as HTMLElement,
+            selector: getCssSelector(label)
+        });
+    });
+
+    return issues;
+}
+
+export function checkMissingH1(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const h1 = document.querySelector("h1");
+
+    if (!h1) {
+        issues.push({
+            rule: RULE_IDS.accessibility.missingH1,
+            message: "No H1 heading found",
+            severity: "warning",
+            category: "accessibility"
+        });
+    }
+
+    return issues;
+}
+
+export function checkHeadingOrder(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+
+    let lastLevel = 0;
+    for (const el of headings) {
+        const level = parseInt(el.tagName.replace("H", ""), 10);
+        if (!Number.isFinite(level)) continue;
+
+        if (lastLevel > 0 && level > lastLevel + 1) {
+            issues.push({
+                rule: RULE_IDS.accessibility.headingOrder,
+                message: `Heading level jumps from H${lastLevel} to H${level}`,
+                severity: "warning",
+                category: "accessibility",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+
+        lastLevel = level;
+    }
+
+    return issues;
+}
+
+export function checkAriaLabelledbyTargets(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("[aria-labelledby]").forEach((el) => {
+        const raw = (el.getAttribute("aria-labelledby") || "").trim();
+        const ids = raw.length ? raw.split(/\s+/) : [];
+        const missing = ids.filter((id) => !document.getElementById(id));
+
+        if (ids.length === 0 || missing.length > 0) {
+            issues.push({
+                rule: RULE_IDS.accessibility.ariaLabelledbyMissingTarget,
+                message: ids.length === 0
+                    ? "aria-labelledby is empty"
+                    : `aria-labelledby references missing id(s): ${missing.join(", ")}`,
+                severity: "critical",
+                category: "accessibility",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkAriaDescribedbyTargets(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("[aria-describedby]").forEach((el) => {
+        const raw = (el.getAttribute("aria-describedby") || "").trim();
+        const ids = raw.length ? raw.split(/\s+/) : [];
+        const missing = ids.filter((id) => !document.getElementById(id));
+
+        if (ids.length === 0 || missing.length > 0) {
+            issues.push({
+                rule: RULE_IDS.accessibility.ariaDescribedbyMissingTarget,
+                message: ids.length === 0
+                    ? "aria-describedby is empty"
+                    : `aria-describedby references missing id(s): ${missing.join(", ")}`,
+                severity: "warning",
+                category: "accessibility",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkPositiveTabindex(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("[tabindex]").forEach((el) => {
+        const raw = (el.getAttribute("tabindex") || "").trim();
+        const value = parseInt(raw, 10);
+        if (!Number.isFinite(value) || value <= 0) return;
+
+        issues.push({
+            rule: RULE_IDS.accessibility.positiveTabindex,
+            message: `Positive tabindex detected (${value})`,
+            severity: "recommendation",
+            category: "accessibility",
+            element: el as HTMLElement,
+            selector: getCssSelector(el)
+        });
+    });
+
+    return issues;
+}

@@ -1,15 +1,21 @@
 import type { AuditIssue, WAHConfig } from "../types";
 import { RULE_IDS } from "./ruleIds";
 import {
+    checkAriaDescribedbyTargets,
+    checkAriaLabelledbyTargets,
     checkButtonsWithoutAccessibleName,
     checkControlsWithoutIdOrName,
     checkDuplicateIds,
     checkFontSize,
+    checkHeadingOrder,
     checkHtmlLangMissing,
     checkInputsWithoutLabel,
+    checkLabelsWithoutFor,
     checkLinksWithoutAccessibleName,
     checkLinksWithoutHref,
     checkMissingAlt,
+    checkMissingH1,
+    checkPositiveTabindex,
     checkVagueLinks
 } from "./accessibility";
 import { checkMultipleH1, checkTooManyDivs } from "./semantic";
@@ -47,8 +53,32 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         run: () => checkControlsWithoutIdOrName()
     },
     {
+        id: RULE_IDS.accessibility.labelMissingFor,
+        run: () => checkLabelsWithoutFor()
+    },
+    {
         id: RULE_IDS.accessibility.controlMissingLabel,
         run: () => checkInputsWithoutLabel()
+    },
+    {
+        id: RULE_IDS.accessibility.missingH1,
+        run: () => checkMissingH1()
+    },
+    {
+        id: RULE_IDS.accessibility.headingOrder,
+        run: () => checkHeadingOrder()
+    },
+    {
+        id: RULE_IDS.accessibility.ariaLabelledbyMissingTarget,
+        run: () => checkAriaLabelledbyTargets()
+    },
+    {
+        id: RULE_IDS.accessibility.ariaDescribedbyMissingTarget,
+        run: () => checkAriaDescribedbyTargets()
+    },
+    {
+        id: RULE_IDS.accessibility.positiveTabindex,
+        run: () => checkPositiveTabindex()
     },
     {
         id: RULE_IDS.accessibility.duplicateIds,
