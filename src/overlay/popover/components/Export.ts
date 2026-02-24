@@ -7,14 +7,14 @@ export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, 
         <div class="wah-popover-content wah-export-content">
             <h3>Export Report</h3>
 
-            <button class="wah-export-btn wah-export-json" type="button">
-                <span class="label">📋 JSON (CI / Automation)</span>
-                <span class="desc">Machine-readable structured report (ideal for pipelines and diffing builds)</span>
-            </button>
-
             <button class="wah-export-btn wah-export-txt" type="button">
                 <span class="label">📄 TXT (Human Review)</span>
                 <span class="desc">Readable summary report (ideal for quick inspection and sharing)</span>
+            </button>
+
+            <button class="wah-export-btn wah-export-json" type="button">
+                <span class="label">📋 JSON (CI / Automation)</span>
+                <span class="desc">Machine-readable structured report (ideal for pipelines and diffing builds)</span>
             </button>
         </div>
     `;

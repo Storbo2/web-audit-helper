@@ -21,7 +21,7 @@ const CATEGORY_TITLES: Record<IssueCategory, string> = {
     maintainability: "Maintainability"
 };
 
-const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive"];
+const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "maintainability"];
 
 const SEVERITY_RANK: Record<Severity, number> = {
     recommendation: 1,
