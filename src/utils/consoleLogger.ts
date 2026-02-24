@@ -1,5 +1,5 @@
-import { getScoreClass, getScreenSize } from "../overlay/overlayUtils";
-import { focusIssueElement, logIssueDetail } from "../overlay/overlayHighlight";
+import { getScoreClass, getScreenSize } from "../overlay/core/utils";
+import { focusIssueElement, logIssueDetail } from "../overlay/interactions/highlight";
 import type { AuditResult, AuditIssue } from "../core/types";
 
 const CONSOLE_COLORS = {

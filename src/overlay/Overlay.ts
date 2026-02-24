@@ -1,17 +1,17 @@
-import { injectOverlayStyles } from "./overlayStyles";
-import { logIssueDetail, focusIssueElement } from "./overlayHighlight";
-import { getScoreClass } from "./overlayUtils";
-import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./overlayRenderer";
-import { setupPopover } from "./overlayPopover";
-import { applyUIToOverlay } from "./overlayPopoverUI";
-import { resetPendingChangesState } from "./overlayPopoverUtils";
+import { injectOverlayStyles } from "./core/styles";
+import { logIssueDetail, focusIssueElement } from "./interactions/highlight";
+import { getScoreClass } from "./core/utils";
+import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./core/renderer";
+import { setupPopover } from "./popover/Popover";
+import { applyUIToOverlay } from "./popover/components/UI";
+import { resetPendingChangesState } from "./popover/utils";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
-import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setActiveCategories, type UIFilter } from "./overlaySettings";
-import { setupDrag } from "./overlayDrag";
-import { readSavedPos, applyPos, type OverlayPos } from "./overlayPosition";
+import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setActiveCategories, type UIFilter } from "./config/settings";
+import { setupDrag } from "./interactions/drag";
+import { readSavedPos, applyPos, type OverlayPos } from "./interactions/position";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
-import { renderOverlayHtml } from "./overlayTemplate";
+import { renderOverlayHtml } from "./core/template";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 

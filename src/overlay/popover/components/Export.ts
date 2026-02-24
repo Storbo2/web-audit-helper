@@ -1,6 +1,6 @@
-import type { AuditResult } from "../core/types";
-import { buildAuditReport, serializeReportToJSON, serializeReportToTXT } from "../reporters/auditReport";
-import { closePop } from "./overlayPopoverUtils";
+import type { AuditResult } from "../../../core/types";
+import { buildAuditReport, serializeReportToJSON, serializeReportToTXT } from "../../../reporters/auditReport";
+import { closePop } from "../utils";
 
 export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, results: AuditResult) {
     popBody.innerHTML = `

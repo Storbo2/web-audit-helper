@@ -4,5 +4,5 @@ export * from "./seo";
 export * from "./responsive";
 export * from "./security";
 export * from "./quality";
-export * from "./registry";
-export * from "./ruleIds";
+export * from "../config/registry";
+export * from "../config/ruleIds";

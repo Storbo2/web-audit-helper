@@ -1,5 +1,5 @@
-import type { AuditIssue, IssueCategory } from "../core/types";
-import { escapeHtml, badgeSymbol } from "./overlayUtils";
+import type { AuditIssue, IssueCategory } from "../../core/types";
+import { escapeHtml, badgeSymbol } from "./utils";
 
 const ORDER: Array<"critical" | "warning" | "recommendation"> = ["critical", "warning", "recommendation"];
 

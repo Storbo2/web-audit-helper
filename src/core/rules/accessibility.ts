@@ -1,6 +1,6 @@
 import type { AuditIssue } from "../types";
 import { getCssSelector, isWahIgnored } from "../../utils/dom";
-import { RULE_IDS } from "./ruleIds";
+import { RULE_IDS } from "../config/ruleIds";
 
 function hasAccessibleName(el: Element): boolean {
     const text = (el.textContent || "").trim();

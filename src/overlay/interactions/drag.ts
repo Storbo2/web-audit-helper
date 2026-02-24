@@ -1,4 +1,4 @@
-import { applyPos, type OverlayPos } from "./overlayPosition";
+import { applyPos, type OverlayPos } from "./position";
 
 export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
     let dragging = false;

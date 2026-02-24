@@ -1,7 +1,7 @@
 export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
-export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security";
+export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "maintainability";
 
 export type WAHSettings = {
     logLevel: LogLevel;

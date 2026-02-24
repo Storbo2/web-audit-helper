@@ -1,5 +1,5 @@
-import type { IssueCategory } from "../core/types";
-import { setActiveCategories } from "./overlaySettings";
+import type { IssueCategory } from "../../../core/types";
+import { setActiveCategories } from "../../config/settings";
 
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueCategory>, onChange: () => void) {
     popBody.innerHTML = `

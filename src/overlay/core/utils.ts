@@ -1,4 +1,4 @@
-import type { AuditIssue } from "../core/types";
+import type { AuditIssue } from "../../core/types";
 
 export function getScoreClass(score: number) {
     if (score >= 95) return "score-excellent";

@@ -1,4 +1,4 @@
-import type { AuditIssue, AuditResult } from "../core/types";
+import type { AuditIssue, AuditResult } from "../../core/types";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 

@@ -19,7 +19,7 @@
 # production
 /build
 /dist
-src/overlay/wahCss.ts
+*wahCss.ts
 *.tgz
 
 # misc

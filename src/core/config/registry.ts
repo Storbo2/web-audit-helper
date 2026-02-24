@@ -22,8 +22,8 @@ import {
     checkTablesWithoutCaption,
     checkVagueLinks,
     checkVideosWithoutControls
-} from "./accessibility";
-import { checkBoldItalicTags, checkMultipleH1, checkTooManyDivs } from "./semantic";
+} from "../rules/accessibility";
+import { checkBoldItalicTags, checkMultipleH1, checkTooManyDivs } from "../rules/semantic";
 import {
     checkMissingCanonical,
     checkMissingMetaCharset,
@@ -32,10 +32,10 @@ import {
     checkMissingTitle,
     checkMissingTwitterCard,
     checkMetaRobotsNoindex
-} from "./seo";
-import { checkLargeFixedWidths, checkMissingViewportMeta } from "./responsive";
-import { checkDummyLinks, checkTargetBlankWithoutNoopener } from "./security";
-import { checkExcessiveInlineStyles } from "./quality";
+} from "../rules/seo";
+import { checkLargeFixedWidths, checkMissingViewportMeta } from "../rules/responsive";
+import { checkDummyLinks, checkTargetBlankWithoutNoopener } from "../rules/security";
+import { checkExcessiveInlineStyles } from "../rules/quality";
 
 export interface RegisteredRule {
     id: string;

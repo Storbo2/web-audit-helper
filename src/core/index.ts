@@ -1,6 +1,6 @@
 import type { AuditResult, IssueLevel, Severity, WAHConfig } from "./types";
 import { computeScore } from "./scoring";
-import { CORE_RULES_REGISTRY } from "./rules/registry";
+import { CORE_RULES_REGISTRY } from "./config/registry";
 import { isWahIgnored } from "../utils/dom";
 
 function allowedSeverities(level: IssueLevel): Severity[] {

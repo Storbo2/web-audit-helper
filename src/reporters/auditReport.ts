@@ -15,7 +15,10 @@ const CATEGORY_TITLES: Record<IssueCategory, string> = {
     accessibility: "Accessibility",
     semantic: "Semantic HTML",
     seo: "SEO",
-    responsive: "Responsive Design"
+    responsive: "Responsive Design",
+    security: "Security",
+    quality: "Quality",
+    maintainability: "Maintainability"
 };
 
 const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive"];

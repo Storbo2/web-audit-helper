@@ -1,5 +1,5 @@
-import type { AuditIssue } from "../core/types";
-import { loadSettings } from "./overlaySettings";
+import type { AuditIssue } from "../../core/types";
+import { loadSettings } from "../config/settings";
 
 const TRANSITION_MS = 250;
 

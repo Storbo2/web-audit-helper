@@ -1,10 +1,10 @@
-import type { AuditResult, IssueCategory } from "../core/types";
-import { getLastSettingsPage } from "./overlaySettings";
-import { renderFiltersPopover } from "./overlayPopoverFilters";
-import { renderUIPopover } from "./overlayPopoverUI";
-import { renderSettingsPage } from "./overlayPopoverSettings";
-import { renderExportPopover } from "./overlayPopoverExport";
-import { openPop, closePop, type PopoverMode } from "./overlayPopoverUtils";
+import type { AuditResult, IssueCategory } from "../../core/types";
+import { getLastSettingsPage } from "../config/settings";
+import { renderFiltersPopover } from "./components/Filters";
+import { renderUIPopover } from "./components/UI";
+import { renderSettingsPage } from "./components/Settings";
+import { renderExportPopover } from "./components/Export";
+import { openPop, closePop, type PopoverMode } from "./utils";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
 

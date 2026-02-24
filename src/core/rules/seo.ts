@@ -1,5 +1,5 @@
 import type { AuditIssue } from "../types";
-import { RULE_IDS } from "./ruleIds";
+import { RULE_IDS } from "../config/ruleIds";
 
 export function checkMissingTitle(): AuditIssue[] {
     const issues: AuditIssue[] = [];

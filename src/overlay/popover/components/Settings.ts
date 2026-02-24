@@ -1,11 +1,11 @@
 import {
     getSettings, setLogLevel, setHighlightMs, setIgnoreRecommendationsInScore,
     setLastSettingsPage, resetSettings
-} from "./overlaySettings";
+} from "../../config/settings";
 import {
     getHideUntil, setHideForDuration, clearHideUntil,
     setHideUntilRefresh
-} from "./overlayHideStore";
+} from "../../config/hideStore";
 
 type SettingsPage = 0 | 1 | 2;
 
