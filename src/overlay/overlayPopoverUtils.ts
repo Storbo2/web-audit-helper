@@ -14,6 +14,7 @@ function ensureGlobalPop() {
         pop = document.createElement("div");
         pop.id = "wah-pop";
         pop.className = "wah-pop";
+        pop.setAttribute("data-wah-ignore", "");
         pop.setAttribute("hidden", "");
         pop.innerHTML = `<div class="wah-pop-body" id="wah-pop-body"></div>`;
         document.body.appendChild(pop);
@@ -50,7 +51,7 @@ function positionPop(anchor: HTMLElement, pop: HTMLElement) {
 const POPOVER_TRANSITION_MS = 200;
 
 function syncPopoverThemeFromOverlay(pop: HTMLElement) {
-    const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+    const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
     if (!overlay) return;
 
     const overlayTheme = overlay.dataset.theme;

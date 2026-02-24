@@ -33,3 +33,10 @@ export function getCssSelector(el: Element): string {
 
     return parts.join(" > ");
 }
+
+const WAH_IGNORE_SELECTOR = "[data-wah-ignore]";
+
+export function isWahIgnored(el: Element | null): boolean {
+    if (!el) return false;
+    return !!el.closest(WAH_IGNORE_SELECTOR);
+}

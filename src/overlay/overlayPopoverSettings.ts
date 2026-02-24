@@ -90,7 +90,7 @@ function wirePage2(popBody: HTMLElement) {
     hideRefreshBtn?.addEventListener("click", () => {
         setHideUntilRefresh();
         closePopover();
-        const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+        const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
         if (overlay) {
             overlay.remove();
         }
@@ -131,7 +131,7 @@ function wirePage2(popBody: HTMLElement) {
             setHideForDuration(val);
             renderHideInfo();
             closePopover();
-            const overlay = document.getElementById("wah-overlay") as HTMLElement | null;
+            const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
             if (overlay) overlay.remove();
             console.log(`[WAH] Overlay hidden for ${Math.round(val / 60000)} minutes`);
         });

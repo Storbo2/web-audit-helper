@@ -26,7 +26,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     };
 
     (window as any).__WAH_RERUN__ = () => {
-        document.getElementById("wah-overlay")?.remove();
+        document.getElementById("wah-overlay-root")?.remove();
         document.getElementById("wah-pop")?.remove();
         resetPendingChangesState();
         runWAH(userConfig);
