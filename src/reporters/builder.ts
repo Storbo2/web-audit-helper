@@ -43,35 +43,36 @@ export function buildReportMeta(): AuditReportMeta {
     };
 }
 
-export function buildReportScore(categories: CategoryResult[]): AuditReportScore {
+export function buildReportScore(categories: CategoryResult[], overallScore: number): AuditReportScore {
     const byCategory: Partial<Record<IssueCategory, number>> = {};
     for (const category of categories) {
         byCategory[category.id] = category.score;
     }
 
-    const overall = computeWeightedOverall(byCategory);
-
     return {
-        overall,
-        grade: scoreToGrade(overall),
+        overall: overallScore,
+        grade: scoreToGrade(overallScore),
         byCategory
     };
 }
 
 export function buildReportStatsFromCategories(categories: CategoryResult[]): AuditReportStats {
+    let recommendations = 0;
     let warnings = 0;
     let failed = 0;
 
     for (const cat of categories) {
         for (const rule of cat.rules) {
-            if (rule.status === "fail") failed++;
-            else if (rule.status === "warn") warnings++;
+            if (rule.status === "critical") failed++;
+            else if (rule.status === "warning") warnings++;
+            else if (rule.status === "recommendation") recommendations++;
         }
     }
 
-    const totalRulesTriggered = warnings + failed;
+    const totalRulesTriggered = recommendations + warnings + failed;
 
     return {
+        recommendations,
         warnings,
         failed,
         totalRules: totalRulesTriggered,
@@ -81,17 +82,17 @@ export function buildReportStatsFromCategories(categories: CategoryResult[]): Au
 }
 
 export function calculateRuleSummary(rules: RuleResult[]): RuleSummary {
-    let pass = 0;
-    let warn = 0;
-    let fail = 0;
+    let recommendation = 0;
+    let warning = 0;
+    let critical = 0;
 
     for (const rule of rules) {
-        if (rule.status === "fail") fail++;
-        else if (rule.status === "warn") warn++;
-        else pass++;
+        if (rule.status === "critical") critical++;
+        else if (rule.status === "warning") warning++;
+        else if (rule.status === "recommendation") recommendation++;
     }
 
-    return { pass, warn, fail };
+    return { recommendation, warning, critical };
 }
 
 export function buildCategories(result: AuditResult): CategoryResult[] {
@@ -161,9 +162,10 @@ export function buildCategories(result: AuditResult): CategoryResult[] {
             rules.push(rule);
         }
 
-        const failRules = rules.filter(r => r.status === "fail").length;
-        const warnRules = rules.filter(r => r.status === "warn").length;
-        const categoryScore = Math.max(0, 100 - failRules * 20 - warnRules * 8);
+        const failRules = rules.filter(r => r.status === "critical").length;
+        const warnRules = rules.filter(r => r.status === "warning").length;
+        const recommendationRules = rules.filter(r => r.status === "recommendation").length;
+        const categoryScore = Math.max(0, 100 - failRules * 20 - warnRules * 8 - recommendationRules * 4);
 
         categories.push({
             id: catId,

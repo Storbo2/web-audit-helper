@@ -5,7 +5,7 @@ import { serializeReportToJSON, serializeReportToTXT, serializeReportToHTML } fr
 export function buildAuditReport(result: AuditResult): AuditReport {
     const categories = buildCategories(result);
     const stats = buildReportStatsFromCategories(categories);
-    const score = buildReportScore(categories);
+    const score = buildReportScore(categories, result.score);
 
     return {
         meta: buildReportMeta(),

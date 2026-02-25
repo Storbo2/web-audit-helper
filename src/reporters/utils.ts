@@ -25,10 +25,8 @@ export function worstSeverity(severities: Severity[]): Severity {
     return worst;
 }
 
-export function severityToStatus(severity: Severity): "pass" | "warn" | "fail" {
-    if (severity === "critical") return "fail";
-    if (severity === "warning" || severity === "recommendation") return "warn";
-    return "pass";
+export function severityToStatus(severity: Severity): Severity {
+    return severity;
 }
 
 export function getImpactLevel(severity: Severity): "low" | "medium" | "high" {

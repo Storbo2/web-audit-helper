@@ -2,19 +2,19 @@ export type Severity = "critical" | "warning" | "recommendation";
 
 export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
-export type ContrastLevel = "AA" | "AAA";
-
 export type IssueLevel = "critical" | "warnings" | "all";
 
 export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "maintainability";
 
-export type RuleStatus = "pass" | "warn" | "fail";
+export type RuleStatus = Severity;
 
 export type ImpactLevel = "low" | "medium" | "high";
 
 export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 
 export type AuditMode = "dev" | "ci";
+
+export type ContrastLevel = "AA" | "AAA";
 
 export interface AuditIssue {
     rule: string;
@@ -100,6 +100,7 @@ export interface AuditReportScore {
 }
 
 export interface AuditReportStats {
+    recommendations: number;
     warnings: number;
     failed: number;
     totalRules: number;
@@ -108,9 +109,9 @@ export interface AuditReportStats {
 }
 
 export interface RuleSummary {
-    pass: number;
-    warn: number;
-    fail: number;
+    recommendation: number;
+    warning: number;
+    critical: number;
 }
 
 export interface AuditReport {

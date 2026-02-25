@@ -35,6 +35,10 @@ export function ensureViewportMeta(): boolean {
     if (existing) {
         const content = existing.content || "";
         if (!content.includes("width=device-width")) {
+            existing.setAttribute("data-wah-viewport-patched", "true");
+            if (!existing.hasAttribute("data-wah-original-content")) {
+                existing.setAttribute("data-wah-original-content", content);
+            }
             const next = content.length > 0 ? `${content}, width=device-width` : "width=device-width, initial-scale=1";
             existing.content = next;
             return true;
@@ -45,6 +49,22 @@ export function ensureViewportMeta(): boolean {
     const meta = document.createElement("meta");
     meta.name = "viewport";
     meta.content = "width=device-width, initial-scale=1";
+    meta.setAttribute("data-wah-generated", "viewport");
     document.head.appendChild(meta);
     return true;
+}
+
+export function resetViewportMetaPatch(): void {
+    const generated = document.querySelector('meta[name="viewport"][data-wah-generated="viewport"]') as HTMLMetaElement | null;
+    if (generated) {
+        generated.remove();
+    }
+
+    const patched = Array.from(document.querySelectorAll('meta[name="viewport"][data-wah-viewport-patched="true"]')) as HTMLMetaElement[];
+    for (const meta of patched) {
+        const originalContent = meta.getAttribute("data-wah-original-content") || "";
+        meta.content = originalContent;
+        meta.removeAttribute("data-wah-viewport-patched");
+        meta.removeAttribute("data-wah-original-content");
+    }
 }

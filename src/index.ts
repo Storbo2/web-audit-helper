@@ -2,11 +2,22 @@ import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
 import { getSettings } from "./overlay/config/settings";
+import { ensureViewportMeta, resetViewportMetaPatch } from "./overlay/core/utils";
 import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/config/hideStore";
 import { resetPendingChangesState } from "./overlay/popover/utils";
 import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import type { WAHConfig } from "./core/types";
+
+async function waitForDocumentStable(): Promise<void> {
+    if (document.readyState !== "complete") {
+        await new Promise<void>((resolve) => {
+            window.addEventListener("load", () => resolve(), { once: true });
+        });
+    }
+
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+}
 
 (window as any).__WAH_RESET_HIDE__ = () => {
     clearHideUntilRefresh();
@@ -18,6 +29,10 @@ import type { WAHConfig } from "./core/types";
 };
 
 export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
+    await waitForDocumentStable();
+    resetViewportMetaPatch();
+    ensureViewportMeta();
+
     const settings = getSettings();
 
     const config: WAHConfig = {

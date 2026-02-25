@@ -16,8 +16,8 @@ const SEVERITY_RANK: Record<Severity, number> = {
     critical: 3
 };
 
-function severityToStatus(severity: Severity): "warn" | "fail" {
-    return severity === "critical" ? "fail" : "warn";
+function severityToStatus(severity: Severity): Severity {
+    return severity;
 }
 
 export function computeCategoryScores(issues: AuditIssue[]): Partial<Record<IssueCategory, number>> {
@@ -40,16 +40,18 @@ export function computeCategoryScores(issues: AuditIssue[]): Partial<Record<Issu
     const byCategory: Partial<Record<IssueCategory, number>> = {};
 
     for (const [category, rules] of perCategoryRuleWorst) {
-        let fail = 0;
-        let warn = 0;
+        let critical = 0;
+        let warning = 0;
+        let recommendation = 0;
 
         for (const severity of rules.values()) {
             const status = severityToStatus(severity);
-            if (status === "fail") fail++;
-            else warn++;
+            if (status === "critical") critical++;
+            else if (status === "warning") warning++;
+            else recommendation++;
         }
 
-        byCategory[category] = Math.max(0, 100 - fail * 20 - warn * 8);
+        byCategory[category] = Math.max(0, 100 - critical * 20 - warning * 8 - recommendation * 4);
     }
 
     return byCategory;

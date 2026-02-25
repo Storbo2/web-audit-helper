@@ -1,6 +1,6 @@
 import { injectOverlayStyles } from "./core/styles";
 import { logIssueDetail, focusIssueElement } from "./interactions/highlight";
-import { getScoreClass, ensureViewportMeta } from "./core/utils";
+import { getScoreClass, ensureViewportMeta, resetViewportMetaPatch } from "./core/utils";
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./core/renderer";
 import { setupPopover } from "./popover/Popover";
 import { applyUIToOverlay } from "./popover/components/UI";
@@ -86,6 +86,8 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         const s = getSettings();
         const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel };
 
+        resetViewportMetaPatch();
+        ensureViewportMeta();
         const newResult = runCoreAudit(configForRun);
         const criticalIssues = newResult.issues.filter(i => i.severity === "critical").slice(0, 3);
 
