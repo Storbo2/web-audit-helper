@@ -12,14 +12,14 @@ type SetupPopoverArgs = {
     overlay: HTMLElement;
     active: Set<UIFilter>;
     catActive: Set<IssueCategory>;
-    results: AuditResult;
+    getResults: () => AuditResult;
     onChange: () => void;
     onRerunAudit?: () => void;
 };
 
 type SettingsPageRef = { current: 0 | 1 | 2 };
 
-export function setupPopover({ overlay, catActive, results, onChange }: SetupPopoverArgs) {
+export function setupPopover({ overlay, catActive, getResults, onChange }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
     const uiBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="ui"]');
     const settingsBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="settings"]');
@@ -40,7 +40,7 @@ export function setupPopover({ overlay, catActive, results, onChange }: SetupPop
             } else if (mode === "settings") {
                 renderSettingsPage(popBody, settingsPageRef);
             } else if (mode === "export") {
-                renderExportPopover(popBody, overlay, results);
+                renderExportPopover(popBody, overlay, getResults());
             }
         };
 

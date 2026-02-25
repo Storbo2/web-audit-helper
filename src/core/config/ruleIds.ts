@@ -7,7 +7,6 @@ export const RULE_IDS = {
         controlMissingIdOrName: "ACC-05",
         labelMissingFor: "ACC-06",
         controlMissingLabel: "ACC-07",
-        multipleH1: "ACC-08",
         missingH1: "ACC-09",
         headingOrder: "ACC-10",
         ariaLabelledbyMissingTarget: "ACC-11",
@@ -18,33 +17,34 @@ export const RULE_IDS = {
         videoMissingControls: "ACC-16",
         tableMissingCaption: "ACC-17",
         thMissingScope: "ACC-18",
-        duplicateIds: "DOM-01",
-        textTooSmall: "ACC-22"
+        vagueLinkText: "ACC-19",
+        linkMissingHref: "ACC-20",
+        textTooSmall: "ACC-22",
+        duplicateIds: "ACC-23"
     },
     seo: {
         missingTitle: "SEO-01",
         weakOrMissingDescription: "SEO-02",
         missingCharset: "SEO-03",
-        missingViewport: "SEO-04",
         missingCanonical: "SEO-05",
         metaRobotsNoindex: "SEO-06",
         missingOpenGraph: "SEO-07",
         missingTwitterCard: "SEO-08"
     },
     security: {
-        targetBlankWithoutNoopener: "SEC-01",
-        dummyLink: "SEC-02"
+        targetBlankWithoutNoopener: "SEC-01"
     },
     semantic: {
-        bItagUsage: "SEM-01"
+        bItagUsage: "SEM-01",
+        lowSemanticStructure: "SEM-02",
+        multipleH1: "SEM-03"
     },
     quality: {
-        excessiveInlineStyles: "QUAL-01"
+        excessiveInlineStyles: "QLT-01",
+        dummyLink: "QLT-02"
     },
-    custom: {
-        vagueLinkText: "WAH-ACC-VAGUE-LINK",
-        linkMissingHref: "WAH-LINK-NO-HREF",
-        lowSemanticStructure: "WAH-SEM-LOW-STRUCTURE",
-        largeFixedWidth: "WAH-RESP-FIXED-WIDTH"
+    responsive: {
+        largeFixedWidth: "RWD-01",
+        missingViewport: "RWD-02"
     }
 } as const;

@@ -12,7 +12,7 @@ export function checkMissingViewportMeta(): AuditIssue[] {
 
     if (!meta || !(meta.content || "").includes("width=device-width")) {
         issues.push({
-            rule: RULE_IDS.seo.missingViewport,
+            rule: RULE_IDS.responsive.missingViewport,
             message: "Missing or incomplete viewport meta tag",
             severity: "warning",
             category: "responsive",
@@ -33,9 +33,9 @@ export function checkLargeFixedWidths(): AuditIssue[] {
 
         if (!isNaN(px) && px > 900 && el !== document.body && el !== document.documentElement) {
             issues.push({
-                rule: RULE_IDS.custom.largeFixedWidth,
+                rule: RULE_IDS.responsive.largeFixedWidth,
                 message: `Large fixed width detected (${Math.round(px)}px)`,
-                severity: "recommendation",
+                severity: "warning",
                 category: "responsive",
                 element: el as HTMLElement,
                 selector: getCssSelector(el)

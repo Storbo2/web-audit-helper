@@ -120,20 +120,20 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         run: () => checkDuplicateIds()
     },
     {
-        id: RULE_IDS.custom.vagueLinkText,
+        id: RULE_IDS.accessibility.vagueLinkText,
         run: () => checkVagueLinks()
     },
     {
-        id: RULE_IDS.custom.linkMissingHref,
+        id: RULE_IDS.accessibility.linkMissingHref,
         run: () => checkLinksWithoutHref()
     },
 
     {
-        id: RULE_IDS.accessibility.multipleH1,
+        id: RULE_IDS.semantic.multipleH1,
         run: () => checkMultipleH1()
     },
     {
-        id: RULE_IDS.custom.lowSemanticStructure,
+        id: RULE_IDS.semantic.lowSemanticStructure,
         run: () => checkTooManyDivs()
     },
     {
@@ -171,11 +171,11 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     },
 
     {
-        id: RULE_IDS.seo.missingViewport,
+        id: RULE_IDS.responsive.missingViewport,
         run: () => checkMissingViewportMeta()
     },
     {
-        id: RULE_IDS.custom.largeFixedWidth,
+        id: RULE_IDS.responsive.largeFixedWidth,
         run: () => checkLargeFixedWidths()
     },
 
@@ -184,7 +184,7 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         run: () => checkTargetBlankWithoutNoopener()
     },
     {
-        id: RULE_IDS.security.dummyLink,
+        id: RULE_IDS.quality.dummyLink,
         run: () => checkDummyLinks()
     },
 

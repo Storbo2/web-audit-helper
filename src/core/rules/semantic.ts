@@ -14,7 +14,7 @@ export function checkMultipleH1(): AuditIssue[] {
     if (h1s.length > 1) {
         h1s.slice(1).forEach((h1) => {
             issues.push({
-                rule: RULE_IDS.accessibility.multipleH1,
+                rule: RULE_IDS.semantic.multipleH1,
                 message: "Multiple H1 detected",
                 severity: "warning",
                 category: "semantic",
@@ -43,9 +43,9 @@ export function checkTooManyDivs(): AuditIssue[] {
 
     if (ratioDiv >= 0.65 && semantic <= 2) {
         issues.push({
-            rule: RULE_IDS.custom.lowSemanticStructure,
+            rule: RULE_IDS.semantic.lowSemanticStructure,
             message: `High DIV ratio (${Math.round(ratioDiv * 100)}%) and low semantic structure`,
-            severity: "recommendation",
+            severity: "warning",
             category: "semantic"
         });
     }

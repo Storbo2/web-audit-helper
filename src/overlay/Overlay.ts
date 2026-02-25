@@ -7,10 +7,10 @@ import { applyUIToOverlay } from "./popover/components/UI";
 import { resetPendingChangesState } from "./popover/utils";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
-import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setActiveCategories, type UIFilter } from "./config/settings";
+import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, type UIFilter } from "./config/settings";
 import { setupDrag } from "./interactions/drag";
 import { readSavedPos, applyPos, setupPositionAutoUpdate, type OverlayPos } from "./interactions/position";
-import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
+import type { AuditIssue, AuditResult, WAHConfig } from "../core/types";
 import { renderOverlayHtml } from "./core/template";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
@@ -149,7 +149,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         overlay,
         active,
         catActive,
-        results,
+        getResults: () => results,
         onChange: refresh,
         onRerunAudit: rerunAudit
     });

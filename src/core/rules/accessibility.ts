@@ -116,9 +116,9 @@ export function checkVagueLinks(): AuditIssue[] {
         const text = (a.textContent || "").trim().toLowerCase();
         if (bad.includes(text)) {
             issues.push({
-                rule: RULE_IDS.custom.vagueLinkText,
+                rule: RULE_IDS.accessibility.vagueLinkText,
                 message: `Link text is vague: "${(a.textContent || "").trim()}"`,
-                severity: "recommendation",
+                severity: "warning",
                 category: "accessibility",
                 element: a as HTMLElement,
                 selector: getCssSelector(a)
@@ -135,7 +135,7 @@ export function checkLinksWithoutHref(): AuditIssue[] {
         if (shouldIgnore(a)) return;
         if (!a.getAttribute("href")) {
             issues.push({
-                rule: RULE_IDS.custom.linkMissingHref,
+                rule: RULE_IDS.accessibility.linkMissingHref,
                 message: "Link missing href attribute",
                 severity: "warning",
                 category: "accessibility",

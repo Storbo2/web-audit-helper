@@ -70,13 +70,15 @@ export interface RuleResult {
     message: string;
     help?: string;
     elements?: AffectedElement[];
+    elementsOmitted?: number;
 }
 
 export interface CategoryResult {
-    id: string;
+    id: IssueCategory;
     title: string;
     score: number;
     rules: RuleResult[];
+    summary?: RuleSummary;
 }
 
 export interface AuditReportMeta {
@@ -94,13 +96,21 @@ export interface AuditReportMeta {
 export interface AuditReportScore {
     overall: number;
     grade: Grade;
+    byCategory: Partial<Record<IssueCategory, number>>;
 }
 
 export interface AuditReportStats {
-    passed: number;
     warnings: number;
     failed: number;
     totalRules: number;
+    totalRulesTriggered: number;
+    totalRulesAvailable: number;
+}
+
+export interface RuleSummary {
+    pass: number;
+    warn: number;
+    fail: number;
 }
 
 export interface AuditReport {

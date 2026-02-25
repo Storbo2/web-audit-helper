@@ -18,7 +18,7 @@ export function checkTargetBlankWithoutNoopener(): AuditIssue[] {
         if (!hasNoopener && !hasNoreferrer) {
             issues.push({
                 rule: RULE_IDS.security.targetBlankWithoutNoopener,
-                message: 'Link with target="_blank" is missing rel="noopener noreferrer"',
+                message: "Link with target=\"_blank\" is missing rel=\"noopener noreferrer\"",
                 severity: "warning",
                 category: "security",
                 element: link as HTMLElement,
@@ -39,7 +39,7 @@ export function checkDummyLinks(): AuditIssue[] {
 
         if (href === "#" || href === "javascript:void(0)" || href === "javascript:;") {
             issues.push({
-                rule: RULE_IDS.security.dummyLink,
+                rule: RULE_IDS.quality.dummyLink,
                 message: `Link has dummy href: "${href}"`,
                 severity: "recommendation",
                 category: "quality",

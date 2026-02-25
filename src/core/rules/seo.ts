@@ -74,7 +74,7 @@ export function checkMetaRobotsNoindex(): AuditIssue[] {
         if (content.includes("noindex")) {
             issues.push({
                 rule: RULE_IDS.seo.metaRobotsNoindex,
-                message: "Meta robots contains 'noindex' directive",
+                message: "Meta robots contains \"noindex\" directive",
                 severity: "warning",
                 category: "seo"
             });
