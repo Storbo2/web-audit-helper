@@ -1,6 +1,6 @@
 import { injectOverlayStyles } from "./core/styles";
 import { logIssueDetail, focusIssueElement } from "./interactions/highlight";
-import { getScoreClass } from "./core/utils";
+import { getScoreClass, ensureViewportMeta } from "./core/utils";
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./core/renderer";
 import { setupPopover } from "./popover/Popover";
 import { applyUIToOverlay } from "./popover/components/UI";
@@ -9,7 +9,7 @@ import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
 import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setActiveCategories, type UIFilter } from "./config/settings";
 import { setupDrag } from "./interactions/drag";
-import { readSavedPos, applyPos, type OverlayPos } from "./interactions/position";
+import { readSavedPos, applyPos, setupPositionAutoUpdate, type OverlayPos } from "./interactions/position";
 import type { AuditIssue, AuditResult, IssueCategory, WAHConfig } from "../core/types";
 import { renderOverlayHtml } from "./core/template";
 
@@ -17,6 +17,8 @@ type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
 export function createOverlay(initialResults: OverlayAuditResult, _config: WAHConfig) {
     if (document.getElementById("wah-overlay-root")) return;
+
+    ensureViewportMeta();
 
     let results = initialResults;
 
@@ -35,6 +37,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     applyUIToOverlay(overlay);
 
     applyPos(overlay, readSavedPos() ?? (overlay.dataset.pos as OverlayPos) ?? "bottom-right");
+    setupPositionAutoUpdate(overlay);
 
     const header = overlay.querySelector(".wah-header") as HTMLElement;
     if (!header) throw new Error("WAH: .wah-header not found");

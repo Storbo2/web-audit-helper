@@ -32,7 +32,15 @@ export function getScreenSize() {
 
 export function ensureViewportMeta(): boolean {
     const existing = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
-    if (existing) return false;
+    if (existing) {
+        const content = existing.content || "";
+        if (!content.includes("width=device-width")) {
+            const next = content.length > 0 ? `${content}, width=device-width` : "width=device-width, initial-scale=1";
+            existing.content = next;
+            return true;
+        }
+        return false;
+    }
 
     const meta = document.createElement("meta");
     meta.name = "viewport";

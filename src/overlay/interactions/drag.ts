@@ -14,6 +14,8 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
     function onPointerMove(e: PointerEvent) {
         if (!dragging) return;
 
+        e.preventDefault();
+
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
 
@@ -32,8 +34,13 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
 
-        const left = cx < window.innerWidth / 2;
         const top = cy < window.innerHeight / 2;
+
+        if (window.innerWidth <= 520) {
+            return top ? "top-center" : "bottom-center";
+        }
+
+        const left = cx < window.innerWidth / 2;
 
         if (top && left) return "top-left";
         if (top && !left) return "top-right";
@@ -46,7 +53,11 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
         const h = overlay.offsetHeight;
         const m = 16;
 
-        const left = pos.endsWith("left") ? m : (window.innerWidth - w - m);
+        let left = pos.endsWith("left") ? m : (window.innerWidth - w - m);
+        if (pos.endsWith("center")) {
+            left = Math.round((window.innerWidth - w) / 2);
+        }
+
         const top = pos.startsWith("top") ? m : (window.innerHeight - h - m);
 
         return { left: Math.max(8, left), top: Math.max(8, top) };
@@ -68,7 +79,14 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
         overlay.style.right = "auto";
         overlay.style.bottom = "auto";
         void overlay.offsetHeight;
-        overlay.style.left = `${target.left}px`;
+
+        if (snapped.endsWith("center")) {
+            overlay.style.left = "50%";
+            overlay.style.transform = "translateX(-50%)";
+        } else {
+            overlay.style.left = `${target.left}px`;
+            overlay.style.transform = "none";
+        }
         overlay.style.top = `${target.top}px`;
         const SNAP_MS = 260;
 
@@ -94,6 +112,7 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
         const r = overlay.getBoundingClientRect();
         overlay.style.right = "auto";
         overlay.style.bottom = "auto";
+        overlay.style.transform = "none";
         overlay.style.left = `${r.left}px`;
         overlay.style.top = `${r.top}px`;
 

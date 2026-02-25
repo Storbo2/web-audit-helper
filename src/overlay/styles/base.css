@@ -19,6 +19,9 @@
     opacity: 1;
     transform: translateY(0);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     transition:
         max-height var(--wah-trans-medium) ease,
         opacity var(--wah-trans-fast) ease,
@@ -38,6 +41,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0.6rem;
+    touch-action: none;
 }
 
 .wah-header-actions {
@@ -138,6 +142,22 @@
     top: auto;
 }
 
+#wah-overlay-root[data-pos="top-center"] {
+    top: 1rem;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%);
+}
+
+#wah-overlay-root[data-pos="bottom-center"] {
+    bottom: 1rem;
+    left: 50%;
+    right: auto;
+    top: auto;
+    transform: translateX(-50%);
+}
+
 #wah-overlay-root.wah-dragging {
     transition: none !important;
 }
@@ -153,5 +173,22 @@
 }
 
 #wah-overlay-root.wah-snapping {
-    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1), top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
+    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1), 
+                top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+                transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@media (max-width: 480px) {
+    #wah-overlay-root {
+        width: min(92vw, 18rem);
+        font-size: clamp(0.75rem, 0.7rem + 0.6vw, 0.95rem);
+    }
+
+    #wah-overlay-root .wah-content {
+        max-height: min(50vh, 16rem);
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
 }

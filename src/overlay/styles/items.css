@@ -1,6 +1,7 @@
 .wah-panel,
 .wah-all-panel {
-    max-height: min(45vh, 13.75rem);
+    flex: 1;
+    min-height: 0;
     overflow: auto;
     border: 0.0625rem solid var(--wah-dark-border);
     border-radius: 0.5rem;
