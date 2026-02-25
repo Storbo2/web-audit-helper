@@ -1,6 +1,6 @@
 import type { AuditResult, AuditReport } from "../core/types";
 import { buildCategories, buildReportScore, buildReportStatsFromCategories, buildReportMeta } from "./builder";
-import { serializeReportToJSON, serializeReportToTXT } from "./serializers";
+import { serializeReportToJSON, serializeReportToTXT, serializeReportToHTML } from "./serializers";
 
 export function buildAuditReport(result: AuditResult): AuditReport {
     const categories = buildCategories(result);
@@ -15,4 +15,4 @@ export function buildAuditReport(result: AuditResult): AuditReport {
     };
 }
 
-export { serializeReportToJSON, serializeReportToTXT };
+export { serializeReportToJSON, serializeReportToTXT, serializeReportToHTML };

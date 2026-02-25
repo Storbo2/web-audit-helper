@@ -1,5 +1,5 @@
 import type { AuditResult } from "../../../core/types";
-import { buildAuditReport, serializeReportToJSON, serializeReportToTXT } from "../../../reporters/auditReport";
+import { buildAuditReport, serializeReportToJSON, serializeReportToTXT, serializeReportToHTML } from "../../../reporters/auditReport";
 import { closePop } from "../utils";
 
 export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, results: AuditResult) {
@@ -16,14 +16,21 @@ export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, 
                 <span class="label">📋 JSON (CI / Automation)</span>
                 <span class="desc">Machine-readable structured report (ideal for pipelines and diffing builds)</span>
             </button>
+
+            <button class="wah-export-btn wah-export-html" type="button">
+                <span class="label">🖨️ HTML (Print-friendly)</span>
+                <span class="desc">Readable document optimized for printing and sharing</span>
+            </button>
         </div>
     `;
 
     const jsonBtn = popBody.querySelector(".wah-export-json") as HTMLButtonElement | null;
     const txtBtn = popBody.querySelector(".wah-export-txt") as HTMLButtonElement | null;
+    const htmlBtn = popBody.querySelector(".wah-export-html") as HTMLButtonElement | null;
 
     if (jsonBtn) jsonBtn.onclick = () => exportReport(results, "json");
     if (txtBtn) txtBtn.onclick = () => exportReport(results, "txt");
+    if (htmlBtn) htmlBtn.onclick = () => exportReport(results, "html");
 
     const pop = document.getElementById("wah-pop") as HTMLElement | null;
     if (pop) {
@@ -31,7 +38,7 @@ export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, 
     }
 }
 
-function exportReport(results: AuditResult, format: "json" | "txt") {
+function exportReport(results: AuditResult, format: "json" | "txt" | "html") {
     const report = buildAuditReport(results);
 
     let content: string;
@@ -42,6 +49,10 @@ function exportReport(results: AuditResult, format: "json" | "txt") {
         content = serializeReportToJSON(report);
         filename = buildReportFileName(report, "json");
         mimeType = "application/json";
+    } else if (format === "html") {
+        content = serializeReportToHTML(report);
+        filename = buildReportFileName(report, "html");
+        mimeType = "text/html";
     } else {
         content = serializeReportToTXT(report);
         filename = buildReportFileName(report, "txt");
@@ -63,7 +74,7 @@ function exportReport(results: AuditResult, format: "json" | "txt") {
 
 function buildReportFileName(
     report: ReturnType<typeof buildAuditReport>,
-    format: "json" | "txt"
+    format: "json" | "txt" | "html"
 ): string {
     const date = formatDateForFilename(report.meta.date);
     const score = report.score.overall;
