@@ -12,7 +12,7 @@ export type RuleStatus = "pass" | "warn" | "fail";
 
 export type ImpactLevel = "low" | "medium" | "high";
 
-export type Grade = "A" | "B" | "C" | "D" | "E";
+export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 
 export type AuditMode = "dev" | "ci";
 
