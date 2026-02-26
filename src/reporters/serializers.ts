@@ -1,6 +1,6 @@
 import type { AuditReport } from "../core/types";
-import { ELEMENTS_TXT_PREVIEW_LIMIT } from "./constants";
-import { toSentenceCase, sortByImpactDesc } from "./utils";
+import { CATEGORY_ORDER, CATEGORY_SHORT_LABELS, ELEMENTS_TXT_PREVIEW_LIMIT } from "./constants";
+import { toSentenceCase, sortRulesById } from "./utils";
 
 function formatDateISOToDDMMYYYY(iso: string): string {
     const d = new Date(iso);
@@ -25,17 +25,17 @@ function escapeHtml(value: string): string {
 
 export function serializeReportToHTML(report: AuditReport): string {
     const categorySummaryParts: string[] = [];
-    if (typeof report.score.byCategory.accessibility === "number") categorySummaryParts.push(`ACC ${report.score.byCategory.accessibility}`);
-    if (typeof report.score.byCategory.seo === "number") categorySummaryParts.push(`SEO ${report.score.byCategory.seo}`);
-    if (typeof report.score.byCategory.semantic === "number") categorySummaryParts.push(`SEM ${report.score.byCategory.semantic}`);
-    if (typeof report.score.byCategory.responsive === "number") categorySummaryParts.push(`RWD ${report.score.byCategory.responsive}`);
-    if (typeof report.score.byCategory.security === "number") categorySummaryParts.push(`SEC ${report.score.byCategory.security}`);
-    if (typeof report.score.byCategory.quality === "number") categorySummaryParts.push(`QLT ${report.score.byCategory.quality}`);
+    for (const category of CATEGORY_ORDER) {
+        const score = report.score.byCategory[category];
+        if (typeof score === "number") {
+            categorySummaryParts.push(`${CATEGORY_SHORT_LABELS[category]} ${score}`);
+        }
+    }
 
     const categoriesHtml = report.categories.map((cat) => {
-        const failRules = sortByImpactDesc(cat.rules.filter(r => r.status === "critical"));
-        const warnRules = sortByImpactDesc(cat.rules.filter(r => r.status === "warning"));
-        const recommendationRules = sortByImpactDesc(cat.rules.filter(r => r.status === "recommendation"));
+        const failRules = sortRulesById(cat.rules.filter(r => r.status === "critical"));
+        const warnRules = sortRulesById(cat.rules.filter(r => r.status === "warning"));
+        const recommendationRules = sortRulesById(cat.rules.filter(r => r.status === "recommendation"));
         const sortedRules = [...failRules, ...warnRules, ...recommendationRules];
 
         const rulesHtml = sortedRules.map((rule) => {
@@ -45,9 +45,9 @@ export function serializeReportToHTML(report: AuditReport): string {
                     ? "status-warn"
                     : "status-recommendation";
             const statusLabel = rule.status === "critical"
-                ? "FAIL"
+                ? "CRITICAL"
                 : rule.status === "warning"
-                    ? "WARN"
+                    ? "WARNING"
                     : "RECOMMENDATION";
             const icon = rule.status === "critical"
                 ? "✖"
@@ -73,16 +73,20 @@ export function serializeReportToHTML(report: AuditReport): string {
                 `
                 : "";
 
+            const fixHtml = rule.fix
+                ? `<p class="fix"><strong>Fix:</strong> ${escapeHtml(rule.fix)}</p>`
+                : "";
+
             return `
                 <article class="rule ${statusClass}">
                     <div class="rule-header">
                         <span class="icon">${icon}</span>
                         <span class="rule-id">[${escapeHtml(rule.id)}]</span>
                         <span class="rule-title">${escapeHtml(rule.title)}</span>
-                        <span class="impact">${escapeHtml(rule.impact.toUpperCase())}</span>
                         <span class="status">${statusLabel}</span>
                     </div>
                     <p class="message">${escapeHtml(rule.message)}</p>
+                    ${fixHtml}
                     ${elementsHtml}
                 </article>
             `;
@@ -91,8 +95,8 @@ export function serializeReportToHTML(report: AuditReport): string {
         return `
             <section class="category">
                 <h2>${escapeHtml(cat.title)} <span class="cat-score">(${cat.score}/100)</span></h2>
-                <div class="cat-summary">${failRules.length} fail, ${warnRules.length} warn</div>
-                ${recommendationRules.length > 0 ? `<div class="cat-summary">${recommendationRules.length} recommendations</div>` : ""}
+                <div class="cat-summary">${failRules.length} critical, ${warnRules.length} warning</div>
+                ${recommendationRules.length > 0 ? `<div class="cat-summary">${recommendationRules.length} recommendation</div>` : ""}
                 ${rulesHtml || '<p class="empty">No findings in this category.</p>'}
             </section>
         `;
@@ -123,11 +127,12 @@ export function serializeReportToHTML(report: AuditReport): string {
                 .rule-header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
                 .rule-id { color: #374151; font-weight: 600; }
                 .rule-title { font-weight: 600; }
-                .impact, .status { font-size: 12px; padding: 2px 6px; border-radius: 999px; background: #f3f4f6; color: #374151; }
+                .status { font-size: 12px; padding: 2px 6px; border-radius: 999px; background: #f3f4f6; color: #374151; }
                 .message { margin: 8px 0 0; }
                 .elements { margin: 8px 0 0 18px; padding: 0; }
                 .elements li { margin: 6px 0; }
                 code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }
+                .fix { margin: 6px 0 0; color: #1f2937; }
                 .note { color: #4b5563; margin-top: 2px; }
                 .omitted { color: #6b7280; font-style: italic; }
                 .empty { color: #6b7280; }
@@ -148,9 +153,9 @@ export function serializeReportToHTML(report: AuditReport): string {
                 <section class="summary">
                     <p><strong>Overall Score:</strong> ${report.score.overall} (Grade ${escapeHtml(report.score.grade)})</p>
                     ${categorySummaryParts.length > 0 ? `<p><strong>Categories:</strong> ${escapeHtml(categorySummaryParts.join(" | "))}</p>` : ""}
-                    <p><strong>Stats:</strong> ${report.stats.failed} failed, ${report.stats.warnings} warnings, ${report.stats.recommendations} recommendations</p>
+                    <p><strong>Stats:</strong> ${report.stats.failed} critical, ${report.stats.warnings} warning, ${report.stats.recommendations} recommendation</p>
                     <br>
-                    <p class="legend"><span class="legend-fail">FAIL = needs fixing</span>, <span class="legend-warn">WARN = improvement recommended</span>, <strong>! = recommendation</strong></p>
+                    <p class="legend"><span class="legend-fail">CRITICAL = needs fixing</span> <span class="legend-warn">WARNING = improvement recommended</span> <strong>RECOMMENDATION = suggested improvement</strong></p>
                 </section>
 
                 ${categoriesHtml}
@@ -181,12 +186,12 @@ export function serializeReportToTXT(report: AuditReport): string {
 
     lines.push(`Overall Score: ${report.score.overall} (Grade ${report.score.grade})`);
     const categorySummaryParts: string[] = [];
-    if (typeof report.score.byCategory.accessibility === "number") categorySummaryParts.push(`ACC ${report.score.byCategory.accessibility}`);
-    if (typeof report.score.byCategory.seo === "number") categorySummaryParts.push(`SEO ${report.score.byCategory.seo}`);
-    if (typeof report.score.byCategory.semantic === "number") categorySummaryParts.push(`SEM ${report.score.byCategory.semantic}`);
-    if (typeof report.score.byCategory.responsive === "number") categorySummaryParts.push(`RWD ${report.score.byCategory.responsive}`);
-    if (typeof report.score.byCategory.security === "number") categorySummaryParts.push(`SEC ${report.score.byCategory.security}`);
-    if (typeof report.score.byCategory.quality === "number") categorySummaryParts.push(`QLT ${report.score.byCategory.quality}`);
+    for (const category of CATEGORY_ORDER) {
+        const score = report.score.byCategory[category];
+        if (typeof score === "number") {
+            categorySummaryParts.push(`${CATEGORY_SHORT_LABELS[category]} ${score}`);
+        }
+    }
 
     if (categorySummaryParts.length > 0) {
         lines.push(`Categories: ${categorySummaryParts.join(" | ")}`);
@@ -197,6 +202,7 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push(`  ! Recommendations: ${report.stats.recommendations}`);
     lines.push(`  ⚠ Warnings: ${report.stats.warnings}`);
     lines.push(`  ✖ Failed: ${report.stats.failed}`);
+    lines.push(`  Triggered/Available Rules: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
     lines.push("");
 
     for (const cat of report.categories) {
@@ -204,13 +210,13 @@ export function serializeReportToTXT(report: AuditReport): string {
         const warnRules = cat.rules.filter(r => r.status === "warning").length;
         const recommendationRules = cat.rules.filter(r => r.status === "recommendation").length;
 
-        lines.push(`${cat.title} (${cat.score}/100) — ${failRules} fail, ${warnRules} warn, ${recommendationRules} recommendation`);
+        lines.push(`${cat.title} (${cat.score}/100) — ${failRules} critical, ${warnRules} warning, ${recommendationRules} recommendation`);
         lines.push("-".repeat(60));
 
         const sortedRules = [
-            ...sortByImpactDesc(cat.rules.filter(r => r.status === "critical")),
-            ...sortByImpactDesc(cat.rules.filter(r => r.status === "warning")),
-            ...sortByImpactDesc(cat.rules.filter(r => r.status === "recommendation"))
+            ...sortRulesById(cat.rules.filter(r => r.status === "critical")),
+            ...sortRulesById(cat.rules.filter(r => r.status === "warning")),
+            ...sortRulesById(cat.rules.filter(r => r.status === "recommendation"))
         ];
 
         let currentStatus: "critical" | "warning" | "recommendation" | null = null;
@@ -222,18 +228,21 @@ export function serializeReportToTXT(report: AuditReport): string {
             if (rule.status !== currentStatus) {
                 if (currentStatus !== null) lines.push("");
                 if (rule.status === "critical") {
-                    lines.push("FAILED:");
+                    lines.push("CRITICAL:");
                 } else if (rule.status === "warning") {
-                    lines.push("WARNINGS:");
+                    lines.push("WARNING:");
                 } else if (rule.status === "recommendation") {
-                    lines.push("RECOMMENDATIONS:");
+                    lines.push("RECOMMENDATION:");
                 }
                 currentStatus = rule.status;
             }
 
             const icon = rule.status === "critical" ? "✖" : rule.status === "warning" ? "⚠" : "!";
-            lines.push(`${icon} [${rule.id}] ${rule.title} [${rule.impact.toUpperCase()}]`);
+            lines.push(`${icon} [${rule.id}] ${rule.title}`);
             lines.push(`   ${rule.message}`);
+            if (rule.fix) {
+                lines.push(`   Fix: ${rule.fix}`);
+            }
 
             if (rule.elements && rule.elements.length > 0) {
                 for (const elem of rule.elements.slice(0, ELEMENTS_TXT_PREVIEW_LIMIT)) {

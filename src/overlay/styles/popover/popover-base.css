@@ -3,7 +3,7 @@
     min-height: min(40vh, 12.5rem);
     width: min(92vw, 20rem);
     background: var(--wah-bg);
-    border: 0.0625rem solid var(--wah-dark-border);
+    border: 0.0625rem solid var(--wah-accent-default);
     border-radius: 0.75rem;
     padding: 0.875rem 0.75rem 0.75rem;
     z-index: 999999;

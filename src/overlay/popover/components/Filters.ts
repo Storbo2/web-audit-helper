@@ -29,10 +29,6 @@ export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<UICate
         <span>Security</span>
     </label>
     <label class="wah-pop-row">
-        <input type="checkbox" data-cat="maintainability" ${catActive.has("maintainability") ? "checked" : ""}>
-        <span>Maintainability</span>
-    </label>
-    <label class="wah-pop-row">
         <input type="checkbox" data-cat="image" ${catActive.has("image") ? "checked" : ""}>
         <span>Image</span>
     </label>

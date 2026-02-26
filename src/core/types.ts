@@ -4,11 +4,9 @@ export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type IssueLevel = "critical" | "warnings" | "all";
 
-export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "maintainability" | "image" | "media" | "form";
+export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "image" | "media" | "form";
 
 export type RuleStatus = Severity;
-
-export type ImpactLevel = "low" | "medium" | "high";
 
 export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 
@@ -66,9 +64,9 @@ export interface RuleResult {
     title: string;
     description: string;
     status: RuleStatus;
-    impact: ImpactLevel;
     message: string;
     help?: string;
+    fix?: string;
     elements?: AffectedElement[];
     elementsOmitted?: number;
 }

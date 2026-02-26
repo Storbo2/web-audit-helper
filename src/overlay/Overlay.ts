@@ -4,7 +4,7 @@ import { getScoreClass, ensureViewportMeta, resetViewportMetaPatch } from "./cor
 import { getFilteredIssues, renderList, attachIssueItemListeners, renderCounts } from "./core/renderer";
 import { setupPopover } from "./popover/Popover";
 import { applyUIToOverlay } from "./popover/components/UI";
-import { resetPendingChangesState } from "./popover/utils";
+import { resetPendingChangesState, closePop } from "./popover/utils";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
 import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, type UIFilter } from "./config/settings";
@@ -49,6 +49,8 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
     const panel = overlay.querySelector("#wah-panel") as HTMLElement | null;
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
+    const scoreWrapEl = overlay.querySelector('.wah-score-wrap') as HTMLElement | null;
+    const scoreEl = overlay.querySelector('.wah-score') as HTMLElement | null;
     const chips = Array.from(overlay.querySelectorAll(".wah-chip")) as HTMLButtonElement[];
 
     chips.forEach((btn) => {
@@ -63,6 +65,12 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     function refresh() {
         if (!panel || !countsEl) return;
         const list = getFilteredIssues(results.issues, active, catActive);
+
+        if (scoreEl) {
+            const scoreClass = getScoreClass(results.score);
+            scoreEl.className = `wah-score ${scoreClass}`;
+            scoreEl.textContent = `Score: ${results.score}%`;
+        }
 
         countsEl.innerHTML = renderCounts(results.issues);
         panel.innerHTML = renderList(list);
@@ -93,13 +101,6 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
         results = { ...newResult, criticalIssues };
 
-        const scoreEl = overlay.querySelector('.wah-score') as HTMLElement | null;
-        if (scoreEl) {
-            const scoreClass = getScoreClass(results.score);
-            scoreEl.className = `wah-score ${scoreClass}`;
-            scoreEl.textContent = `Score: ${results.score}%`;
-        }
-
         refresh();
 
         runReporters(results, configForRun);
@@ -115,6 +116,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     rerunHeaderBtn?.addEventListener("click", (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        closePop();
 
         const popover = document.getElementById("wah-pop") as HTMLElement | null;
         if (popover) {
@@ -153,7 +155,9 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         catActive,
         getResults: () => results,
         onChange: refresh,
-        onRerunAudit: rerunAudit
+        onRerunAudit: rerunAudit,
+        scoreEl,
+        results
     });
 
     refresh();

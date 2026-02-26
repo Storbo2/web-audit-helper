@@ -2,9 +2,9 @@ import type { IssueCategory, RuleResult, Severity, Grade } from "../core/types";
 import {
     RULE_TITLES,
     RULE_DESCRIPTIONS,
+    RULE_FIXES,
     CATEGORY_PREFIXES,
     SEVERITY_RANK,
-    IMPACT_RANK,
     WAH_MODE
 } from "./constants";
 
@@ -29,13 +29,6 @@ export function severityToStatus(severity: Severity): Severity {
     return severity;
 }
 
-export function getImpactLevel(severity: Severity): "low" | "medium" | "high" {
-    if (severity === "critical") return "high";
-    if (severity === "warning") return "medium";
-    if (severity === "recommendation") return "low";
-    return "low";
-}
-
 export function toSentenceCase(text: string): string {
     const trimmed = text.trim();
     if (!trimmed) return trimmed;
@@ -48,6 +41,10 @@ export function getRuleTitle(ruleId: string, fallbackMessage: string): string {
 
 export function getRuleDescription(ruleId: string, title: string): string {
     return RULE_DESCRIPTIONS[ruleId] || `Checks ${title.toLowerCase()}`;
+}
+
+export function getRuleFix(ruleId: string): string | undefined {
+    return RULE_FIXES[ruleId];
 }
 
 export function getRulePrefix(ruleId: string): string {
@@ -65,6 +62,6 @@ export function validateRuleCategoryPrefix(category: IssueCategory, ruleId: stri
     }
 }
 
-export function sortByImpactDesc(rules: RuleResult[]): RuleResult[] {
-    return [...rules].sort((a, b) => IMPACT_RANK[b.impact] - IMPACT_RANK[a.impact]);
+export function sortRulesById(rules: RuleResult[]): RuleResult[] {
+    return [...rules].sort((a, b) => a.id.localeCompare(b.id));
 }

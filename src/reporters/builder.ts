@@ -22,10 +22,10 @@ import {
     scoreToGrade,
     worstSeverity,
     severityToStatus,
-    getImpactLevel,
     toSentenceCase,
     getRuleTitle,
     getRuleDescription,
+    getRuleFix,
     validateRuleCategoryPrefix
 } from "./utils";
 
@@ -127,7 +127,6 @@ export function buildCategories(result: AuditResult): CategoryResult[] {
 
             const ws = worstSeverity(ruleIssues.map(i => i.severity));
             const status = severityToStatus(ws);
-            const impact = getImpactLevel(ws);
             const firstIssue = ruleIssues[0];
             const title = getRuleTitle(ruleId, firstIssue.message);
 
@@ -153,8 +152,8 @@ export function buildCategories(result: AuditResult): CategoryResult[] {
                 title,
                 description: getRuleDescription(ruleId, title),
                 status,
-                impact,
                 message: toSentenceCase(firstIssue.message),
+                ...(getRuleFix(ruleId) ? { fix: getRuleFix(ruleId) } : {}),
                 ...(elements.length ? { elements } : {}),
                 ...(elementsOmitted > 0 ? { elementsOmitted } : {})
             };

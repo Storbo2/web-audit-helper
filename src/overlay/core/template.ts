@@ -15,7 +15,9 @@ export function renderOverlayHtml(results: OverlayAuditResult, scoreClass: strin
 
         <div class="wah-content">
             <div class="wah-top">
-                <div class="wah-score ${scoreClass}">Score: ${results.score}%</div>
+                <div class="wah-score-wrap">
+                    <div class="wah-score ${scoreClass}" tabindex="0" role="button" aria-controls="wah-score-breakdown" aria-expanded="false" aria-describedby="wah-score-breakdown">Score: ${results.score}%</div>
+                </div>
                 <div class="wah-counts"></div>
 
                 <div class="wah-toolbar" aria-label="WAH toolbar">

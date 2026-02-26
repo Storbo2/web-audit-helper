@@ -1,10 +1,11 @@
 import type { AuditResult, IssueCategory } from "../../core/types";
-import { getLastSettingsPage } from "../config/settings";
+import { getLastSettingsPage, getSettings } from "../config/settings";
 import { renderFiltersPopover } from "./components/Filters";
 import { renderUIPopover } from "./components/UI";
 import { renderSettingsPage } from "./components/Settings";
 import { renderExportPopover } from "./components/Export";
 import { openPop, closePop, type PopoverMode } from "./utils";
+import { renderCategoryScoreBreakdown } from "../core/renderer";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
 
@@ -15,11 +16,13 @@ type SetupPopoverArgs = {
     getResults: () => AuditResult;
     onChange: () => void;
     onRerunAudit?: () => void;
+    scoreEl?: HTMLElement | null;
+    results?: AuditResult;
 };
 
 type SettingsPageRef = { current: 0 | 1 | 2 };
 
-export function setupPopover({ overlay, catActive, getResults, onChange }: SetupPopoverArgs) {
+export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl, results: auditResults }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
     const uiBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="ui"]');
     const settingsBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="settings"]');
@@ -41,6 +44,11 @@ export function setupPopover({ overlay, catActive, getResults, onChange }: Setup
                 renderSettingsPage(popBody, settingsPageRef);
             } else if (mode === "export") {
                 renderExportPopover(popBody, overlay, getResults());
+            } else if (mode === "score-breakdown") {
+                const s = getSettings();
+                if (auditResults) {
+                    popBody.innerHTML = renderCategoryScoreBreakdown(auditResults.issues, s.ignoreRecommendationsInScore);
+                }
             }
         };
 
@@ -71,6 +79,29 @@ export function setupPopover({ overlay, catActive, getResults, onChange }: Setup
         openPopover("export", exportBtn);
     });
 
+    scoreEl?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Don't open if overlay is collapsed
+        if (!overlay.classList.contains("wah-collapsed")) {
+            openPopover("score-breakdown" as any, scoreEl);
+        }
+    });
+
+    scoreEl?.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            // Don't open if overlay is collapsed
+            if (!overlay.classList.contains("wah-collapsed")) {
+                openPopover("score-breakdown" as any, scoreEl);
+            }
+        }
+        if (e.key === "Escape") {
+            e.preventDefault();
+            closePop();
+        }
+    });
+
     const handleGlobalClick = (e: PointerEvent) => {
         const t = e.target as Node;
         const currentPopEl = document.getElementById("wah-pop") as HTMLElement | null;
@@ -78,7 +109,7 @@ export function setupPopover({ overlay, catActive, getResults, onChange }: Setup
         if (currentPopEl?.hasAttribute("hidden")) return;
 
         const clickedPop = currentPopEl?.contains(t) ?? false;
-        const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false) || (settingsBtn?.contains(t) ?? false) || (exportBtn?.contains(t) ?? false);
+        const clickedBtn = (filtersBtn?.contains(t) ?? false) || (uiBtn?.contains(t) ?? false) || (settingsBtn?.contains(t) ?? false) || (exportBtn?.contains(t) ?? false) || (scoreEl?.contains(t) ?? false);
 
         if (!clickedPop && !clickedBtn) {
             closePop();

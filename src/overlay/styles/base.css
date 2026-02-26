@@ -11,6 +11,7 @@
     font-family: var(--wah-font);
     font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
     overflow: hidden;
+    z-index: 9999;
     transition: height var(--wah-trans-medium) ease, left var(--wah-trans-long) ease, top var(--wah-trans-long) ease;
 }
 
@@ -114,6 +115,85 @@
     margin: 0;
 }
 
+.wah-score-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wah-score-wrap .wah-score {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 0.08em;
+    cursor: pointer;
+    transition: text-decoration-color var(--wah-trans-medium) ease, opacity var(--wah-trans-fast) ease;
+    outline: none;
+}
+
+.wah-score-wrap:hover .wah-score,
+.wah-score-wrap:focus-within .wah-score {
+    text-decoration-color: currentColor;
+}
+
+.wah-score-pop {
+    position: fixed;
+    transform: translateY(-0.2rem) scale(0.98);
+    opacity: 0;
+    pointer-events: none;
+    min-width: 13.5rem;
+    max-width: 16.5rem;
+    border-radius: 0.625rem;
+    border: 0.0625rem solid var(--wah-border);
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.30);
+    padding: 0.5rem 0.625rem;
+    z-index: 99999;
+    transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
+}
+
+.wah-score-wrap.is-open .wah-score-pop {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.wah-score-pop-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.375rem;
+    text-align: center;
+}
+
+.wah-score-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.wah-score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.75rem;
+}
+
+.wah-score-cat {
+    opacity: 0.95;
+    text-align: left;
+}
+
+.wah-score-val {
+    font-weight: 700;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
 #wah-overlay-root[data-pos="top-left"] {
     top: 1rem;
     left: 1rem;
@@ -173,9 +253,9 @@
 }
 
 #wah-overlay-root.wah-snapping {
-    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1), 
-                top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
-                transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
+    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 @media (max-width: 480px) {

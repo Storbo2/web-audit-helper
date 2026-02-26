@@ -16,7 +16,7 @@ export function checkExcessiveInlineStyles(threshold = 10): AuditIssue[] {
             rule: RULE_IDS.quality.excessiveInlineStyles,
             message: `Excessive use of inline styles (${elementsWithStyle.length} elements)`,
             severity: "recommendation",
-            category: "maintainability"
+            category: "quality",
         });
     }
 

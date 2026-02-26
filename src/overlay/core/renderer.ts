@@ -1,7 +1,66 @@
 import type { AuditIssue, IssueCategory } from "../../core/types";
 import { escapeHtml, badgeSymbol } from "./utils";
+import { CATEGORY_ORDER, CATEGORY_TITLES } from "../../reporters/constants";
 
 const ORDER: Array<"critical" | "warning" | "recommendation"> = ["critical", "warning", "recommendation"];
+
+function computeCategoryScore(
+    issues: AuditIssue[],
+    category: IssueCategory,
+    ignoreRecommendationsInScore: boolean
+): number {
+    const ruleWorstSeverity = new Map<string, AuditIssue["severity"]>();
+
+    for (const issue of issues) {
+        const issueCategory = issue.category || "accessibility";
+        if (issueCategory !== category) continue;
+        if (ignoreRecommendationsInScore && issue.severity === "recommendation") continue;
+
+        const current = ruleWorstSeverity.get(issue.rule);
+        if (!current) {
+            ruleWorstSeverity.set(issue.rule, issue.severity);
+            continue;
+        }
+
+        const rank = current === "critical" ? 3 : current === "warning" ? 2 : 1;
+        const nextRank = issue.severity === "critical" ? 3 : issue.severity === "warning" ? 2 : 1;
+        if (nextRank > rank) {
+            ruleWorstSeverity.set(issue.rule, issue.severity);
+        }
+    }
+
+    let critical = 0;
+    let warning = 0;
+    let recommendation = 0;
+
+    for (const severity of ruleWorstSeverity.values()) {
+        if (severity === "critical") critical++;
+        else if (severity === "warning") warning++;
+        else recommendation++;
+    }
+
+    return Math.max(0, 100 - critical * 20 - warning * 8 - recommendation * 4);
+}
+
+export function renderCategoryScoreBreakdown(issues: AuditIssue[], ignoreRecommendationsInScore: boolean): string {
+    const rows = CATEGORY_ORDER
+        .map((category) => {
+            const score = computeCategoryScore(issues, category, ignoreRecommendationsInScore);
+            const scoreClass = score >= 95 ? "score-excellent" : score >= 85 ? "score-good" : score >= 70 ? "score-warning" : "score-bad";
+            return `
+                <li class="wah-score-row">
+                    <span class="wah-score-cat">${escapeHtml(CATEGORY_TITLES[category])}</span>
+                    <span class="wah-score-val ${scoreClass}">(${score}/100)</span>
+                </li>
+            `;
+        })
+        .join("");
+
+    return `
+        <div class="wah-score-pop-title">Score by category</div>
+        <ul class="wah-score-list">${rows}</ul>
+    `;
+}
 
 export function getFilteredIssues(
     issues: AuditIssue[],

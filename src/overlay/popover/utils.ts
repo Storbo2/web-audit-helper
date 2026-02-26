@@ -1,4 +1,4 @@
-export type PopoverMode = "filters" | "ui" | "settings" | "export";
+export type PopoverMode = "filters" | "ui" | "settings" | "export" | "score-breakdown";
 
 export let pendingChangesNeedRerun = false;
 

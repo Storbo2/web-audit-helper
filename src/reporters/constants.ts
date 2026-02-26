@@ -1,4 +1,4 @@
-import type { IssueCategory, RuleResult, Severity } from "../core/types";
+import type { IssueCategory, Severity } from "../core/types";
 
 export const CATEGORY_TITLES: Record<IssueCategory, string> = {
     accessibility: "Accessibility",
@@ -7,18 +7,23 @@ export const CATEGORY_TITLES: Record<IssueCategory, string> = {
     responsive: "Responsive Design",
     security: "Security",
     quality: "Quality",
-    maintainability: "Maintainability",
     image: "Image Optimization",
     media: "Media",
     form: "Form"
 };
 
-export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "maintainability", "image", "media", "form"];
+export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "image", "media", "form"];
 
-export const IMPACT_RANK: Record<RuleResult["impact"], number> = {
-    high: 3,
-    medium: 2,
-    low: 1
+export const CATEGORY_SHORT_LABELS: Record<IssueCategory, string> = {
+    accessibility: "ACC",
+    semantic: "SEM",
+    seo: "SEO",
+    responsive: "RWD",
+    security: "SEC",
+    quality: "QLT",
+    image: "IMG",
+    media: "MEDIA",
+    form: "FORM"
 };
 
 export const ELEMENTS_EXPORT_LIMIT = 20;
@@ -126,6 +131,58 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "FORM-02": "Ensures required fields are visually indicated",
     "FORM-03": "Ensures email and tel inputs use correct types",
     "FORM-04": "Encourages autocomplete attributes on form fields"
+};
+
+export const RULE_FIXES: Partial<Record<string, string>> = {
+    "ACC-01": "Set a valid document language: add lang to the html element, e.g. <html lang=\"en\">.",
+    "ACC-02": "Add descriptive alt text to informative images, or alt=\"\" for decorative images.",
+    "ACC-03": "Ensure each link has an accessible name using visible text, aria-label, or labelled content.",
+    "ACC-04": "Give buttons an accessible name via text content, aria-label, or aria-labelledby.",
+    "ACC-05": "Add stable id or name attributes to form controls so labels and scripts can target them.",
+    "ACC-06": "Associate labels with controls using for/id, or wrap the input inside its label.",
+    "ACC-07": "Provide a visible label (or aria-label/aria-labelledby) for each form control.",
+    "ACC-09": "Add exactly one meaningful H1 that describes the main purpose of the page.",
+    "ACC-10": "Use headings in order (H1 → H2 → H3) and avoid skipping levels.",
+    "ACC-11": "Update aria-labelledby to reference existing element IDs with meaningful text.",
+    "ACC-12": "Update aria-describedby to reference existing IDs that contain helpful descriptions.",
+    "ACC-13": "Avoid positive tabindex; keep natural DOM order or use tabindex=\"0\" when needed.",
+    "ACC-14": "Do not nest interactive elements; keep one interactive control per clickable region.",
+    "ACC-15": "Add a concise and descriptive title attribute to each iframe.",
+    "ACC-16": "Enable video controls or provide equivalent custom controls with keyboard support.",
+    "ACC-17": "Add a caption to each data table to describe its purpose.",
+    "ACC-18": "Set proper scope on TH cells (col, row, colgroup, rowgroup) based on table structure.",
+    "ACC-19": "Replace vague link text with specific action/context (avoid 'click here' patterns).",
+    "ACC-20": "Provide a valid href for anchors, or use a button element for non-navigation actions.",
+    "ACC-22": "Increase text size to meet readability targets and avoid very small default font sizes.",
+    "ACC-23": "Ensure every id is unique across the DOM to prevent broken references.",
+    "ACC-24": "Add a visible-on-focus skip link pointing to your main content container.",
+    "SEO-01": "Set a unique, descriptive title with primary keywords near the start.",
+    "SEO-02": "Add a concise meta description that summarizes page intent and encourages clicks.",
+    "SEO-03": "Declare charset early in head, e.g. <meta charset=\"utf-8\">.",
+    "SEO-05": "Add a canonical link element pointing to the preferred URL of the page.",
+    "SEO-06": "Review robots directives and remove noindex when indexing is intended.",
+    "SEO-07": "Add Open Graph tags (title, description, image, url) for social previews.",
+    "SEO-08": "Add Twitter Card metadata (card, title, description, image) for link sharing.",
+    "SEC-01": "For target=_blank links, include rel=\"noopener noreferrer\" to block tabnabbing.",
+    "SEM-01": "Prefer semantic emphasis tags (strong/em) instead of purely presentational b/i.",
+    "SEM-02": "Use semantic layout landmarks (main, header, nav, section, article, footer) where relevant.",
+    "SEM-03": "Keep a single H1 and move other top-level headings to H2/H3 as needed.",
+    "SEM-04": "Wrap primary page content in one main element.",
+    "SEM-05": "Keep only one main element per page and move secondary regions to section/article.",
+    "SEM-06": "Ensure nav landmarks contain structured lists of navigation links.",
+    "SEM-07": "Use real ul/ol/li list markup instead of div/span groups that mimic lists.",
+    "RWD-01": "Replace large fixed widths with fluid sizing (%, max-width, clamp) and responsive breakpoints.",
+    "RWD-02": "Add a proper viewport meta tag, e.g. width=device-width, initial-scale=1.",
+    "QLT-01": "Move repeated inline styles to CSS classes and central stylesheets.",
+    "QLT-02": "Replace dummy href values with real destinations or use buttons for JS-only actions.",
+    "IMG-01": "Set explicit width and height attributes to reduce layout shift.",
+    "IMG-02": "Use loading=\"lazy\" for below-the-fold images.",
+    "IMG-03": "Use decoding=\"async\" for non-critical images.",
+    "MEDIA-01": "When autoplay is needed, also set muted (and usually playsinline) on video.",
+    "FORM-01": "Place submit buttons inside their form or bind them with the form attribute.",
+    "FORM-02": "Visually indicate required fields and keep required attributes consistent with UI.",
+    "FORM-03": "Use semantic input types (email/tel) to improve validation and mobile keyboards.",
+    "FORM-04": "Add meaningful autocomplete values to common form fields.",
 };
 
 export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
