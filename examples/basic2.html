@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Page - Incompatible Rules</title>
+    <meta name="description" content="Test page for mutually exclusive audit rules" />
+    <link rel="canonical" href="https://example.com" />
+</head>
+
+<body>
+    <!-- ✅ ACC-09: no H1 exists on this page (incompatible with ACC-08 which is in basic.html) -->
+    <h2>Main Section</h2>
+
+    <!-- ✅ SEM-04: no main element exists on this page (incompatible with SEM-05 which is in basic.html) -->
+    <p>This page only tests rules ACC-09 and SEM-04 which are mutually exclusive with ACC-08 and SEM-05.</p>
+
+    <script type="module">
+        import { runWAH } from "../dist/index.mjs";
+        runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });
+    </script>
+</body>
+
+</html>

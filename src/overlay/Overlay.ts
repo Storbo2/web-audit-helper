@@ -28,9 +28,12 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     overlay.id = "wah-overlay-root";
     overlay.setAttribute("data-wah-ignore", "");
 
+    const active = getActiveFilters();
+    setActiveFilters(active);
+
     const scoreClass = getScoreClass(results.score);
 
-    overlay.innerHTML = renderOverlayHtml(results, scoreClass);
+    overlay.innerHTML = renderOverlayHtml(results, scoreClass, active);
 
     document.body.appendChild(overlay);
 
@@ -44,12 +47,10 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
     setupDrag(overlay, header);
 
-    const active = getActiveFilters();
     const catActive = getActiveCategories();
 
     const panel = overlay.querySelector("#wah-panel") as HTMLElement | null;
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
-    const scoreWrapEl = overlay.querySelector('.wah-score-wrap') as HTMLElement | null;
     const scoreEl = overlay.querySelector('.wah-score') as HTMLElement | null;
     const chips = Array.from(overlay.querySelectorAll(".wah-chip")) as HTMLButtonElement[];
 

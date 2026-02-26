@@ -1,86 +1,97 @@
 <!doctype html>
-<html>
+<html lang="">
 
 <head>
-    <title></title> <!-- SEO-01: title vacío -->
-    <!-- SEO-02: sin meta description -->
-    <!-- SEO-03: sin meta charset -->
-    <!-- SEO-05: sin canonical -->
-    <!-- SEO-07/08: sin Open Graph ni Twitter Card -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" /> <!-- SEO-06: robots noindex -->
+    <title></title> <!-- SEO-01: empty title -->
+    <meta name="description" content="" /> <!-- SEO-02: empty description -->
+    <link rel="canonical" href="" /> <!-- SEO-05: empty canonical -->
+    <!-- SEO-07: Open Graph -->
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- SEO-08: Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="" />
+    <meta name="twitter:description" content="" />
 </head>
 
 <body>
     <!-- ACC-24: Missing skip link (global check) -->
+    <!-- ACC-01: empty html lang -->
 
-    <h1>Título Principal</h1>
-    <h1>Otro Principal</h1> <!-- SEM-03: múltiples h1 -->
+    <h1>Main Title</h1>
+    <h1>Another Main</h1> <!-- ACC-08: multiple h1 -->
     <h2 id="dup-id">WAH Test</h2>
     <h4 id="dup-id">Second Title</h4> <!-- ACC-23: duplicated id + ACC-10: heading order jump -->
 
     <p style="font-size: 10px; color: #aaa; background: #fff; margin: 0; padding: 5px;">
-        Texto pequeño <!-- ACC-22: texto pequeño + QUAL-01: inline styles -->
+        Small text <!-- ACC-22: small text + QUAL-01: inline styles -->
     </p>
 
-    <a href="#">Click aquí</a> <!-- ACC-19: vague link text + QLT-02: dummy link -->
-    <a>Enlace sin href</a> <!-- ACC-20: link sin href -->
-    <a href="/destino"></a> <!-- ACC-03: link sin nombre accesible -->
-    <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: sin noopener -->
+    <a href="#">Click here</a> <!-- ACC-19: vague link text + QLT-02: dummy link -->
+    <a>Link without href</a> <!-- ACC-20: link without href -->
+    <a href="/destination"></a> <!-- ACC-03: link without accessible name -->
+    <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: without noopener -->
 
-    <button></button> <!-- ACC-04: button sin nombre accesible -->
+    <button></button> <!-- ACC-04: button without accessible name -->
     <a href="#"><button>Click</button></a> <!-- ACC-14: nested interactive -->
 
-    <label>Etiqueta suelta</label> <!-- ACC-06: label sin for ni control -->
-    <input type="text" placeholder="Nombre" /> <!-- ACC-05: sin id/name + ACC-07: sin label -->
+    <label>Orphaned label</label> <!-- ACC-06: label without for or control -->
+    <input type="text" placeholder="Name" /> <!-- ACC-05: without id/name + ACC-07: without label -->
 
-    <div aria-labelledby="titulo-inexistente">Content</div> <!-- ACC-11 -->
-    <div aria-describedby="desc-inexistente">Content</div> <!-- ACC-12 -->
+    <div aria-labelledby="nonexistent-title">Content</div> <!-- ACC-11 -->
+    <div aria-describedby="nonexistent-desc">Content</div> <!-- ACC-12 -->
     <div tabindex="2">Tab order</div> <!-- ACC-13: positive tabindex -->
 
-    <iframe src="about:blank"></iframe> <!-- ACC-15: iframe sin title -->
+    <iframe src="about:blank"></iframe> <!-- ACC-15: iframe without title -->
 
     <video autoplay width="160" height="90" src="./../public/video.mp4"></video>
-    <!-- ACC-16: video sin controls + MEDIA-01: autoplay sin muted -->
+    <!-- ACC-16: video without controls + MEDIA-01: autoplay without muted -->
 
     <table>
         <tr>
-            <th>Header</th> <!-- ACC-18: th sin scope -->
+            <th>Header</th> <!-- ACC-18: th without scope -->
             <td>Data</td>
         </tr>
-    </table> <!-- ACC-17: table sin caption -->
+    </table> <!-- ACC-17: table without caption -->
 
-    <p>Texto en <b>negrita</b> y en <i>cursiva</i></p> <!-- SEM-01: b/i -->
+    <p>Text in <b>bold</b> and in <i>italic</i></p> <!-- SEM-01: b/i instead of strong/em -->
 
     <div>
         <div>
             <div>
                 <div>
-                    <div>Muchos divs</div>
+                    <div>Many divs</div>
                 </div>
             </div>
         </div>
     </div> <!-- SEM-02: low semantic -->
 
-    <main>Primera main</main>
-    <main>Segunda main</main> <!-- SEM-05: multiple main -->
+    <main>First main</main>
+    <main>Second main</main> <!-- SEM-05: multiple main -->
 
-    <nav><a href="/">Home</a></nav> <!-- SEM-06: nav sin lista -->
+    <nav><a href="/">Home</a></nav> <!-- SEM-06: nav without list -->
 
     <ul>
         <div>Item 1</div>
         <div>Item 2</div>
     </ul> <!-- SEM-07: false list -->
 
-    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: sin alt + IMG-01: sin dimensions -->
+    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: without alt + IMG-01: without dimensions -->
     <img src="./../public/favicon-32x32.png" alt="Test" width="100" height="100">
-    <!-- IMG-02: sin lazy + IMG-03: sin async decode -->
+    <!-- IMG-02: without lazy loading + IMG-03: without async decode -->
 
-    <button type="submit">Submit outside</button> <!-- FORM-01: submit fuera de form -->
+    <button type="submit">Submit outside</button> <!-- FORM-01: submit outside form -->
 
     <form>
-        <label for="name">Name</label> <!-- FORM-02: required sin asterisco -->
+        <label for="name">Name</label> <!-- FORM-02: required without asterisk -->
         <input type="text" id="name" name="name" required />
         <input type="text" name="email" placeholder="Email" />
-        <!-- FORM-03: debe ser type=email + FORM-04: sin autocomplete -->
+        <!-- FORM-03: should be type=email + FORM-04: without autocomplete -->
         <button type="submit">Submit</button>
     </form>
 

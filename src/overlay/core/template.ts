@@ -1,8 +1,9 @@
 import type { AuditIssue, AuditResult } from "../../core/types";
+import type { UIFilter } from "../config/settings";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
-export function renderOverlayHtml(results: OverlayAuditResult, scoreClass: string) {
+export function renderOverlayHtml(results: OverlayAuditResult, scoreClass: string, activeFilters: Set<UIFilter>) {
     return `
         <div class="wah-header">
             <strong>WAH Report</strong>
@@ -29,9 +30,9 @@ export function renderOverlayHtml(results: OverlayAuditResult, scoreClass: strin
             </div>
 
             <div class="wah-filter">
-                <button class="wah-chip is-active" data-filter="critical" type="button">Critical</button>
-                <button class="wah-chip" data-filter="warning" type="button">Warning</button>
-                <button class="wah-chip" data-filter="recommendation" type="button">Recommendation</button>
+                <button class="wah-chip${activeFilters.has("critical") ? " is-active" : ""}" data-filter="critical" type="button">Critical</button>
+                <button class="wah-chip${activeFilters.has("warning") ? " is-active" : ""}" data-filter="warning" type="button">Warning</button>
+                <button class="wah-chip${activeFilters.has("recommendation") ? " is-active" : ""}" data-filter="recommendation" type="button">Recommendation</button>
             </div>
 
             <div class="wah-panel" id="wah-panel"></div>

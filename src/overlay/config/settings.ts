@@ -75,11 +75,11 @@ export function setLastSettingsPage(page: 0 | 1 | 2) {
 
 export function getActiveFilters(): Set<UIFilter> {
     const v = localStorage.getItem(KEY_ACTIVE_FILTERS);
-    if (v) {
+    if (v !== null) {
         try {
             const arr = JSON.parse(v) as UIFilter[];
             const valid = arr.filter(f => f === "critical" || f === "warning" || f === "recommendation");
-            if (valid.length > 0) return new Set(valid);
+            return new Set(valid);
         } catch { }
     }
     return new Set(["critical"]);
