@@ -1,5 +1,5 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector, isWahIgnored } from "../../utils/dom";
+import { isWahIgnored } from "../../utils/dom";
 import { RULE_IDS } from "../config/ruleIds";
 
 function shouldIgnore(el: Element): boolean {

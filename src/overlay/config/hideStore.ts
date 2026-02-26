@@ -1,5 +1,4 @@
 const KEY_HIDE_UNTIL = "wah:settings:hideUntil";
-const KEY_HIDE_UNTIL_REFRESH = "wah:hideUntilRefresh";
 
 export function getHideUntil(): number | null {
     const v = localStorage.getItem(KEY_HIDE_UNTIL);

@@ -71,10 +71,10 @@ function formatRuleLabel(rule: string): string {
 }
 
 function getScoreMessage(score: number): string {
-    if (score >= 95) return "✅ Web optimizada. Tu sitio está listo para producción.";
-    if (score >= 75) return "👍 Web en buen estado, con mejoras menores posibles.";
-    if (score >= 50) return "⚠️ Es un buen comienzo, pero existen problemas considerables que afectan UX.";
-    return "❌ Gran cantidad de problemas críticos, se requiere revisión y optimización urgente.";
+    if (score >= 95) return "✅ Optimized web. Your site is ready for production.";
+    if (score >= 75) return "👍 Web in good condition, with possible minor improvements.";
+    if (score >= 50) return "⚠️ Good start, but there are significant issues affecting UX.";
+    return "❌ Many critical issues found, urgent review and optimization required.";
 }
 
 export function logWAHResults(results: AuditResult, logLevel: "full" | "critical-only" | "summary" | "none"): void {

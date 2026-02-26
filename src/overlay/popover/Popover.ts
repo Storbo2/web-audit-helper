@@ -30,10 +30,7 @@ export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl
 
     const settingsPageRef: SettingsPageRef = { current: getLastSettingsPage() as 0 | 1 | 2 };
 
-    let currentAnchor: HTMLElement | null = null;
-
     function openPopover(mode: PopoverMode, anchor: HTMLElement) {
-        currentAnchor = anchor;
 
         const renderFn = (popBody: HTMLElement) => {
             if (mode === "filters") {

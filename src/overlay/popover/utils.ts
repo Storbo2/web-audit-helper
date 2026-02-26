@@ -66,7 +66,7 @@ function syncPopoverThemeFromOverlay(pop: HTMLElement) {
     });
 }
 
-function openPop(mode: PopoverMode, anchor: HTMLElement, renderFn: (popBody: HTMLElement) => void) {
+function openPop(_mode: PopoverMode, anchor: HTMLElement, renderFn: (popBody: HTMLElement) => void) {
     const { pop, popBody } = ensureGlobalPop();
     if (!pop || !popBody) return;
 

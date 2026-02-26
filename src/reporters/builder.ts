@@ -9,7 +9,6 @@ import type {
     RuleSummary,
     IssueCategory
 } from "../core/types";
-import { computeWeightedOverall } from "../core/scoring";
 import { CORE_RULES_REGISTRY } from "../core/config/registry";
 import {
     CATEGORY_TITLES,
