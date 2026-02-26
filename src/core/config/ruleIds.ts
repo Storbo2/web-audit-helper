@@ -20,7 +20,8 @@ export const RULE_IDS = {
         vagueLinkText: "ACC-19",
         linkMissingHref: "ACC-20",
         textTooSmall: "ACC-22",
-        duplicateIds: "ACC-23"
+        duplicateIds: "ACC-23",
+        missingSkipLink: "ACC-24"
     },
     seo: {
         missingTitle: "SEO-01",
@@ -37,7 +38,11 @@ export const RULE_IDS = {
     semantic: {
         bItagUsage: "SEM-01",
         lowSemanticStructure: "SEM-02",
-        multipleH1: "SEM-03"
+        multipleH1: "SEM-03",
+        missingMain: "SEM-04",
+        multipleMain: "SEM-05",
+        missingNav: "SEM-06",
+        falseLists: "SEM-07"
     },
     quality: {
         excessiveInlineStyles: "QLT-01",
@@ -46,5 +51,19 @@ export const RULE_IDS = {
     responsive: {
         largeFixedWidth: "RWD-01",
         missingViewport: "RWD-02"
+    },
+    image: {
+        missingDimensions: "IMG-01",
+        missingLazyLoad: "IMG-02",
+        missingAsyncDecode: "IMG-03"
+    },
+    media: {
+        autoplayWithoutMuted: "MEDIA-01"
+    },
+    form: {
+        submitButtonOutsideForm: "FORM-01",
+        requiredWithoutIndicator: "FORM-02",
+        emailTelWithoutType: "FORM-03",
+        missingAutocomplete: "FORM-04"
     }
 } as const;

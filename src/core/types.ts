@@ -4,7 +4,7 @@ export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type IssueLevel = "critical" | "warnings" | "all";
 
-export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "maintainability";
+export type IssueCategory = "accessibility" | "semantic" | "seo" | "responsive" | "security" | "quality" | "maintainability" | "image" | "media" | "form";
 
 export type RuleStatus = Severity;
 

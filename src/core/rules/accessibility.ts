@@ -494,3 +494,20 @@ export function checkTableHeadersWithoutScope(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkMissingSkipLink(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const skipLink = document.querySelector("a[href='#main'], a[href='#content'], a[href='#main-content']");
+
+    if (!skipLink) {
+        issues.push({
+            rule: RULE_IDS.accessibility.missingSkipLink,
+            message: "Missing skip link to main content",
+            severity: "recommendation",
+            category: "accessibility"
+        });
+    }
+
+    return issues;
+}

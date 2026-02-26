@@ -1,7 +1,7 @@
 export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
-export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "maintainability";
+export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "maintainability" | "image" | "media" | "form";
 
 export type WAHSettings = {
     logLevel: LogLevel;
@@ -80,7 +80,7 @@ export function getActiveFilters(): Set<UIFilter> {
             const arr = JSON.parse(v) as UIFilter[];
             const valid = arr.filter(f => f === "critical" || f === "warning" || f === "recommendation");
             if (valid.length > 0) return new Set(valid);
-        } catch {}
+        } catch { }
     }
     return new Set(["critical"]);
 }
@@ -94,11 +94,12 @@ export function getActiveCategories(): Set<UICategory> {
     if (v) {
         try {
             const arr = JSON.parse(v) as UICategory[];
-            const valid = arr.filter(c => c === "accessibility" || c === "semantic" || c === "seo" || c === "responsive" || c === "quality" || c === "security");
+            const validCategories: UICategory[] = ["accessibility", "semantic", "seo", "responsive", "quality", "security", "maintainability", "image", "media", "form"];
+            const valid = arr.filter(c => validCategories.includes(c));
             if (valid.length > 0) return new Set(valid);
-        } catch {}
+        } catch { }
     }
-    return new Set(["accessibility", "semantic", "seo", "responsive", "quality", "security"]);
+    return new Set(["accessibility", "semantic", "seo", "responsive", "quality", "security", "maintainability", "image", "media", "form"]);
 }
 
 export function setActiveCategories(categories: Set<UICategory>) {

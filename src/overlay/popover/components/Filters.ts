@@ -1,7 +1,7 @@
-import type { IssueCategory } from "../../../core/types";
+import type { UICategory } from "../../config/settings";
 import { setActiveCategories } from "../../config/settings";
 
-export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueCategory>, onChange: () => void) {
+export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<UICategory>, onChange: () => void) {
     popBody.innerHTML = `
     <div class="wah-pop-titleline">Filters by category</div>
     <label class="wah-pop-row">
@@ -28,11 +28,27 @@ export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<IssueC
         <input type="checkbox" data-cat="security" ${catActive.has("security") ? "checked" : ""}>
         <span>Security</span>
     </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="maintainability" ${catActive.has("maintainability") ? "checked" : ""}>
+        <span>Maintainability</span>
+    </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="image" ${catActive.has("image") ? "checked" : ""}>
+        <span>Image</span>
+    </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="media" ${catActive.has("media") ? "checked" : ""}>
+        <span>Media</span>
+    </label>
+    <label class="wah-pop-row">
+        <input type="checkbox" data-cat="form" ${catActive.has("form") ? "checked" : ""}>
+        <span>Form</span>
+    </label>
     `;
 
     popBody.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-cat]').forEach((cb) => {
         cb.addEventListener("change", () => {
-            const cat = cb.dataset.cat as IssueCategory;
+            const cat = cb.dataset.cat as UICategory;
             if (cb.checked) catActive.add(cat);
             else catActive.delete(cat);
             setActiveCategories(catActive);

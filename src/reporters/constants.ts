@@ -7,10 +7,13 @@ export const CATEGORY_TITLES: Record<IssueCategory, string> = {
     responsive: "Responsive Design",
     security: "Security",
     quality: "Quality",
-    maintainability: "Maintainability"
+    maintainability: "Maintainability",
+    image: "Image Optimization",
+    media: "Media",
+    form: "Form"
 };
 
-export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "maintainability"];
+export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "maintainability", "image", "media", "form"];
 
 export const IMPACT_RANK: Record<RuleResult["impact"], number> = {
     high: 3,
@@ -43,6 +46,7 @@ export const RULE_TITLES: Record<string, string> = {
     "ACC-20": "Link missing href",
     "ACC-22": "Text too small",
     "ACC-23": "Duplicate IDs",
+    "ACC-24": "Missing skip link",
     "SEO-01": "Missing title",
     "SEO-02": "Weak or missing description",
     "SEO-03": "Missing charset",
@@ -54,10 +58,22 @@ export const RULE_TITLES: Record<string, string> = {
     "SEM-01": "Use strong/em",
     "SEM-02": "Low semantic structure",
     "SEM-03": "Multiple H1",
+    "SEM-04": "Missing main element",
+    "SEM-05": "Multiple main elements",
+    "SEM-06": "Nav missing list",
+    "SEM-07": "False list structure",
     "RWD-01": "Large fixed width",
     "RWD-02": "Missing viewport",
     "QLT-01": "Too many inline styles",
-    "QLT-02": "Dummy link"
+    "QLT-02": "Dummy link",
+    "IMG-01": "Image missing dimensions",
+    "IMG-02": "Image missing lazy loading",
+    "IMG-03": "Image missing async decode",
+    "MEDIA-01": "Autoplay without muted",
+    "FORM-01": "Submit button outside form",
+    "FORM-02": "Required without indicator",
+    "FORM-03": "Email/tel without type",
+    "FORM-04": "Missing autocomplete"
 };
 
 export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
@@ -82,6 +98,7 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "ACC-20": "Ensures anchor elements include an href attribute",
     "ACC-22": "Ensures text size meets minimum readability thresholds",
     "ACC-23": "Ensures DOM ids are unique",
+    "ACC-24": "Ensures skip links are available for keyboard navigation",
     "SEO-01": "Ensures the page has a valid <title>",
     "SEO-02": "Ensures the page includes a useful meta description",
     "SEO-03": "Ensures a charset meta tag is declared",
@@ -93,10 +110,22 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "SEM-01": "Encourages semantic emphasis tags over presentational tags",
     "SEM-02": "Detects weak semantic structure in page layout",
     "SEM-03": "Ensures only one H1 is used for the main page heading",
+    "SEM-04": "Ensures main element is present for page content",
+    "SEM-05": "Ensures only one main element exists",
+    "SEM-06": "Ensures nav elements contain list structures",
+    "SEM-07": "Ensures proper list markup is used",
     "RWD-01": "Detects oversized fixed-width elements that hurt responsiveness",
     "RWD-02": "Ensures a viewport meta tag is configured",
     "QLT-01": "Detects excessive use of inline styles",
-    "QLT-02": "Detects links that use dummy href values"
+    "QLT-02": "Detects links that use dummy href values",
+    "IMG-01": "Ensures images include height and width attributes",
+    "IMG-02": "Ensures below-fold images use lazy loading",
+    "IMG-03": "Encourages async decoding attribute for images",
+    "MEDIA-01": "Ensures autoplay videos have muted attribute",
+    "FORM-01": "Ensures submit buttons are inside form elements",
+    "FORM-02": "Ensures required fields are visually indicated",
+    "FORM-03": "Ensures email and tel inputs use correct types",
+    "FORM-04": "Encourages autocomplete attributes on form fields"
 };
 
 export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
@@ -105,7 +134,10 @@ export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
     seo: ["SEO"],
     responsive: ["RWD"],
     security: ["SEC"],
-    quality: ["QLT"]
+    quality: ["QLT"],
+    image: ["IMG"],
+    media: ["MEDIA"],
+    form: ["FORM"]
 };
 
 export const SEVERITY_RANK: Record<Severity, number> = {

@@ -16,6 +16,7 @@ import {
     checkLinksWithoutHref,
     checkMissingAlt,
     checkMissingH1,
+    checkMissingSkipLink,
     checkNestedInteractiveElements,
     checkPositiveTabindex,
     checkTableHeadersWithoutScope,
@@ -23,7 +24,15 @@ import {
     checkVagueLinks,
     checkVideosWithoutControls
 } from "../rules/accessibility";
-import { checkBoldItalicTags, checkMultipleH1, checkTooManyDivs } from "../rules/semantic";
+import {
+    checkBoldItalicTags,
+    checkFalseLists,
+    checkMissingMain,
+    checkMissingNav,
+    checkMultipleH1,
+    checkMultipleMain,
+    checkTooManyDivs
+} from "../rules/semantic";
 import {
     checkMissingCanonical,
     checkMissingMetaCharset,
@@ -36,6 +45,18 @@ import {
 import { checkLargeFixedWidths, checkMissingViewportMeta } from "../rules/responsive";
 import { checkDummyLinks, checkTargetBlankWithoutNoopener } from "../rules/security";
 import { checkExcessiveInlineStyles } from "../rules/quality";
+import {
+    checkImageMissingAsyncDecode,
+    checkImageMissingDimensions,
+    checkImageMissingLazyLoad
+} from "../rules/image";
+import { checkVideoAutoplayWithoutMuted } from "../rules/media";
+import {
+    checkEmailTelWithoutType,
+    checkMissingAutocomplete,
+    checkRequiredWithoutIndicator,
+    checkSubmitButtonOutsideForm
+} from "../rules/form";
 
 export interface RegisteredRule {
     id: string;
@@ -127,6 +148,10 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
         id: RULE_IDS.accessibility.linkMissingHref,
         run: () => checkLinksWithoutHref()
     },
+    {
+        id: RULE_IDS.accessibility.missingSkipLink,
+        run: () => checkMissingSkipLink()
+    },
 
     {
         id: RULE_IDS.semantic.multipleH1,
@@ -139,6 +164,22 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.semantic.bItagUsage,
         run: () => checkBoldItalicTags()
+    },
+    {
+        id: RULE_IDS.semantic.missingMain,
+        run: () => checkMissingMain()
+    },
+    {
+        id: RULE_IDS.semantic.multipleMain,
+        run: () => checkMultipleMain()
+    },
+    {
+        id: RULE_IDS.semantic.missingNav,
+        run: () => checkMissingNav()
+    },
+    {
+        id: RULE_IDS.semantic.falseLists,
+        run: () => checkFalseLists()
     },
 
     {
@@ -191,5 +232,40 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.quality.excessiveInlineStyles,
         run: (config) => checkExcessiveInlineStyles(config.quality?.inlineStylesThreshold)
+    },
+
+    {
+        id: RULE_IDS.image.missingDimensions,
+        run: () => checkImageMissingDimensions()
+    },
+    {
+        id: RULE_IDS.image.missingLazyLoad,
+        run: () => checkImageMissingLazyLoad()
+    },
+    {
+        id: RULE_IDS.image.missingAsyncDecode,
+        run: () => checkImageMissingAsyncDecode()
+    },
+
+    {
+        id: RULE_IDS.media.autoplayWithoutMuted,
+        run: () => checkVideoAutoplayWithoutMuted()
+    },
+
+    {
+        id: RULE_IDS.form.submitButtonOutsideForm,
+        run: () => checkSubmitButtonOutsideForm()
+    },
+    {
+        id: RULE_IDS.form.requiredWithoutIndicator,
+        run: () => checkRequiredWithoutIndicator()
+    },
+    {
+        id: RULE_IDS.form.emailTelWithoutType,
+        run: () => checkEmailTelWithoutType()
+    },
+    {
+        id: RULE_IDS.form.missingAutocomplete,
+        run: () => checkMissingAutocomplete()
     }
 ];

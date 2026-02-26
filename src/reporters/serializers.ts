@@ -119,7 +119,7 @@ export function serializeReportToHTML(report: AuditReport): string {
                 .rule { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
                 .status-fail { border-left: 4px solid #dc2626; }
                 .status-warn { border-left: 4px solid #d97706; }
-                .status-recommendation { border-left: 4px solid #2563eb; }
+                .status-recommendation { border-left: 4px solid #6d6d6d; }
                 .rule-header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
                 .rule-id { color: #374151; font-weight: 600; }
                 .rule-title { font-weight: 600; }

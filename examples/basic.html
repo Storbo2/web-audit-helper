@@ -5,63 +5,84 @@
     <title></title> <!-- SEO-01: title vacío -->
     <!-- SEO-02: sin meta description -->
     <!-- SEO-03: sin meta charset -->
-    <!-- SEO-04: sin viewport -->
+    <!-- SEO-05: sin canonical -->
+    <!-- SEO-07/08: sin Open Graph ni Twitter Card -->
 </head>
 
 <body>
-    <h1>Título Principal</h1>
-    <h1>Otro Principal</h1> <!-- ACC-08: múltiples h1 -->
-    <h2 id="dup-id">WAH Test</h2>
-    <h4 id="dup-id">Second Title</h4> <!-- ACC-09 + ACC-10 + DOM-01 -->
+    <!-- ACC-24: Missing skip link (global check) -->
 
-    <p style="font-size: 10px; color: #aaa; background: #fff;">
-        Texto con fuente pequeña y bajo contraste
+    <h1>Título Principal</h1>
+    <h1>Otro Principal</h1> <!-- SEM-03: múltiples h1 -->
+    <h2 id="dup-id">WAH Test</h2>
+    <h4 id="dup-id">Second Title</h4> <!-- ACC-23: duplicated id + ACC-10: heading order jump -->
+
+    <p style="font-size: 10px; color: #aaa; background: #fff; margin: 0; padding: 5px;">
+        Texto pequeño <!-- ACC-22: texto pequeño + QUAL-01: inline styles -->
     </p>
 
-    <a href="#">Click aquí</a> <!-- WAH-ACC-VAGUE-LINK -->
-    <br>
-
-    <a>Enlace sin href</a> <!-- WAH-LINK-NO-HREF -->
-    <br>
-
+    <a href="#">Click aquí</a> <!-- ACC-19: vague link text + QLT-02: dummy link -->
+    <a>Enlace sin href</a> <!-- ACC-20: link sin href -->
     <a href="/destino"></a> <!-- ACC-03: link sin nombre accesible -->
-    <br>
+    <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: sin noopener -->
 
     <button></button> <!-- ACC-04: button sin nombre accesible -->
+    <a href="#"><button>Click</button></a> <!-- ACC-14: nested interactive -->
 
     <label>Etiqueta suelta</label> <!-- ACC-06: label sin for ni control -->
+    <input type="text" placeholder="Nombre" /> <!-- ACC-05: sin id/name + ACC-07: sin label -->
 
-    <input type="text" placeholder="Nombre" /> <!-- ACC-05 + ACC-07 -->
-
-    <div aria-labelledby="titulo-inexistente">Sin label</div> <!-- ACC-11 -->
-    <div aria-describedby="desc-inexistente">Sin descripcion</div> <!-- ACC-12 -->
-    <div tabindex="2">Orden de tab alto</div> <!-- ACC-13 -->
-
-    <a href="#"><button>Click aquí</button></a> <!-- ACC-14: elementos interactivos anidados -->
+    <div aria-labelledby="titulo-inexistente">Content</div> <!-- ACC-11 -->
+    <div aria-describedby="desc-inexistente">Content</div> <!-- ACC-12 -->
+    <div tabindex="2">Tab order</div> <!-- ACC-13: positive tabindex -->
 
     <iframe src="about:blank"></iframe> <!-- ACC-15: iframe sin title -->
 
-    <video width="100px" height="100px" src="./../public/video.mp4"></video> <!-- ACC-16: video sin controls -->
+    <video autoplay width="160" height="90" src="./../public/video.mp4"></video>
+    <!-- ACC-16: video sin controls + MEDIA-01: autoplay sin muted -->
 
     <table>
         <tr>
-            <th>Encabezado</th> <!-- ACC-18: th sin scope -->
-            <td>Dato</td>
+            <th>Header</th> <!-- ACC-18: th sin scope -->
+            <td>Data</td>
         </tr>
     </table> <!-- ACC-17: table sin caption -->
 
-    <a href="#top">Ir arriba</a> <!-- SEC-02: link con href="#" -->
-    <a href="https://example.com" target="_blank">Enlace externo</a> <!-- SEC-01: sin noopener -->
-
-    <p>Texto en <b>negrita</b> y en <i>cursiva</i></p> <!-- SEM-01: b/i en vez de strong/em -->
+    <p>Texto en <b>negrita</b> y en <i>cursiva</i></p> <!-- SEM-01: b/i -->
 
     <div>
         <div>
-            <div>Muchos divs</div>
+            <div>
+                <div>
+                    <div>Muchos divs</div>
+                </div>
+            </div>
         </div>
-    </div> <!-- WAH-SEM-LOW-STRUCTURE (según umbral) -->
+    </div> <!-- SEM-02: low semantic -->
 
-    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: img sin alt -->
+    <main>Primera main</main>
+    <main>Segunda main</main> <!-- SEM-05: multiple main -->
+
+    <nav><a href="/">Home</a></nav> <!-- SEM-06: nav sin lista -->
+
+    <ul>
+        <div>Item 1</div>
+        <div>Item 2</div>
+    </ul> <!-- SEM-07: false list -->
+
+    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: sin alt + IMG-01: sin dimensions -->
+    <img src="./../public/favicon-32x32.png" alt="Test" width="100" height="100">
+    <!-- IMG-02: sin lazy + IMG-03: sin async decode -->
+
+    <button type="submit">Submit outside</button> <!-- FORM-01: submit fuera de form -->
+
+    <form>
+        <label for="name">Name</label> <!-- FORM-02: required sin asterisco -->
+        <input type="text" id="name" name="name" required />
+        <input type="text" name="email" placeholder="Email" />
+        <!-- FORM-03: debe ser type=email + FORM-04: sin autocomplete -->
+        <button type="submit">Submit</button>
+    </form>
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";

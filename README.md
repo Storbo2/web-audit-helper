@@ -12,18 +12,24 @@ WAH focuses on:
 - Basic SEO best practices
 - Quality (code patterns and best practices)
 - Security (basic security checks)
+- Image optimization
+- Media (video/audio best practices)
+- Form validation and UX
 
 ---
 
 ## ✨ Features
 
-- ✔ Accessibility checks (font size, alt, labels, vague links, headings)
-- 🧱 Semantic HTML analysis (multiple H1, semantic usage heuristics)
-- 🔍 Basic SEO checks (title, meta description, viewport)
+- ♿ Accessibility checks (font size, alt, labels, vague links, headings, ARIA, skip links)
+- 🧱 Semantic HTML analysis (multiple H1, semantic usage heuristics, main/nav elements)
+- 🔍 Basic SEO checks (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 Responsive heuristics (viewport, fixed-width detection)
-- 🔒 Security checks (inline scripts, external resources)
-- ✨ Quality checks (code patterns and best practices)
-- 🎨 Floating configurable overlay
+- 🔒 Security checks (target=_blank, dummy links)
+- ✨ Quality checks (code patterns, inline styles, maintainability)
+- 📸 Image optimization (dimensions, lazy loading, async decode)
+- 🎬 Media best practices (autoplay, controls)
+- 📋 Form validation (proper types, autocomplete, required indicators)
+- 🎨 Floating configurable overlay with category filters
 - 📊 Scoring system (excellent → critical)
 - 📤 Export reports (JSON / TXT)
 - 🧩 Framework-agnostic

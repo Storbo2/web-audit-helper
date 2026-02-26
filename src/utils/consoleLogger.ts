@@ -36,6 +36,7 @@ const FRIENDLY_RULE_LABELS: Record<string, string> = {
     "ACC-20": "Link missing href",
     "ACC-22": "Text too small",
     "ACC-23": "Duplicate IDs",
+    "ACC-24": "Missing skip link",
     "SEO-01": "Missing title",
     "SEO-02": "Missing description",
     "SEO-03": "Missing charset",
@@ -46,10 +47,22 @@ const FRIENDLY_RULE_LABELS: Record<string, string> = {
     "SEC-01": "Unsafe target=_blank",
     "SEM-01": "Use strong/em",
     "SEM-02": "Low semantic structure",
+    "SEM-04": "Missing main element",
+    "SEM-05": "Multiple main elements",
+    "SEM-06": "Nav missing list",
+    "SEM-07": "False list structure",
     "RWD-02": "Missing viewport",
     "QLT-01": "Too many inline styles",
     "QLT-02": "Dummy link",
-    "RWD-01": "Large fixed width"
+    "RWD-01": "Large fixed width",
+    "IMG-01": "Image missing dimensions",
+    "IMG-02": "Image missing lazy loading",
+    "IMG-03": "Image missing async decode",
+    "MEDIA-01": "Autoplay without muted",
+    "FORM-01": "Submit button outside form",
+    "FORM-02": "Required without indicator",
+    "FORM-03": "Email/tel without type",
+    "FORM-04": "Missing autocomplete"
 };
 
 function formatRuleLabel(rule: string): string {
