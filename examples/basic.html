@@ -28,7 +28,7 @@
     <h2 id="dup-id">WAH Test</h2>
     <h4 id="dup-id">Second Title</h4> <!-- ACC-23: duplicated id + ACC-10: heading order jump -->
 
-    <p style="font-size: 10px; color: #aaa; background: #fff; margin: 0; padding: 5px;">
+    <p style="font-size: 10px; color: #2c2c2c; background: #fff; margin: 0; padding: 5px;">
         Small text <!-- ACC-22: small text + QUAL-01: inline styles -->
     </p>
 
@@ -71,6 +71,21 @@
         </div>
     </div> <!-- SEM-02: low semantic -->
 
+    <!-- ACC-25: Insufficient contrast - multiple test cases -->
+    <p class="low-contrast-light">Light gray on white (#ccc on #fff) - ratio ~1.6</p>
+    <a href="/" class="low-contrast-light">Link with low contrast</a>
+    <p class="low-contrast-dark">Dark gray on black (#444 on #000) - ratio ~2.3</p>
+    <a href="/" class="low-contrast-dark">Dark link with low contrast</a>
+    <span class="low-contrast-color">Orange on yellow (#ff8800 on #ffff00) - ratio ~1.5</span>
+
+    <!-- ACC-21: Focus not visible -->
+    <button class="no-focus">No focus indicator</button>
+    <a href="/test" class="no-focus">Link without focus</a>
+
+    <!-- ACC-26: Line-height too low -->
+    <p class="low-line-height">This paragraph has very low line-height (1.0). Multiple lines of text to show the problem
+        clearly and how it affects readability when line-height is too small.</p>
+
     <main>First main</main>
     <main>Second main</main> <!-- SEM-05: multiple main -->
 
@@ -87,6 +102,11 @@
 
     <button type="submit">Submit outside</button> <!-- FORM-01: submit outside form -->
 
+    <!-- RWD-01: Large fixed width -->
+    <div style="width: 1200px; background: #eee; padding: 10px;">
+        This div has a fixed width of 1200px (too large for mobile)
+    </div>
+
     <form>
         <label for="name">Name</label> <!-- FORM-02: required without asterisk -->
         <input type="text" id="name" name="name" required />
@@ -95,6 +115,35 @@
         <button type="submit">Submit</button>
     </form>
 
+    <style>
+        /* ACC-25: Insufficient contrast - test cases */
+        .low-contrast-light {
+            color: #ccc !important;
+            background: #fff;
+        }
+
+        .low-contrast-dark {
+            color: #444 !important;
+            background: #000;
+        }
+
+        .low-contrast-color {
+            color: #ff8800 !important;
+            background: #ffff00;
+            display: inline-block;
+            padding: 2px 5px;
+        }
+
+        /* ACC-21: Focus not visible */
+        .no-focus {
+            outline: none;
+        }
+
+        /* ACC-26: Line-height too low */
+        .low-line-height {
+            line-height: 1;
+        }
+    </style>
     <script type="module">
         import { runWAH } from "../dist/index.mjs";
         runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });

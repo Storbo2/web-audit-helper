@@ -511,3 +511,166 @@ export function checkMissingSkipLink(): AuditIssue[] {
 
     return issues;
 }
+
+function getRelativeLuminance(r: number, g: number, b: number): number {
+    const [rs, gs, bs] = [r, g, b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+function parseRGBColor(rgb: string): [number, number, number] | null {
+    const match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!match) return null;
+    return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+}
+
+function hasVisibleText(el: Element): boolean {
+    const text = (el.textContent || "").trim();
+    if (text.length === 0) return false;
+    const style = window.getComputedStyle(el);
+    return style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
+}
+
+function getBackgroundColor(el: Element): string {
+    let current: Element | null = el;
+
+    while (current) {
+        const style = window.getComputedStyle(current);
+        const bgColor = style.backgroundColor;
+
+        if (bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
+            current = current.parentElement;
+            continue;
+        }
+
+        if (bgColor.includes("rgba")) {
+            const match = bgColor.match(/rgba\(.+,\s*([\d.]+)\)/);
+            const alpha = match ? parseFloat(match[1]) : 1;
+            if (alpha < 1) {
+                current = current.parentElement;
+                continue;
+            }
+        }
+
+        return bgColor;
+    }
+
+    return "rgb(255, 255, 255)";
+}
+
+export function checkContrastRatio(minRatio: number = 4.5): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const selectors = "button, a[href], h1, h2, h3, h4, h5, h6, p, span, label, input, select, textarea";
+    const sample = Array.from(document.querySelectorAll(selectors))
+        .slice(0, 100);
+
+    sample.forEach((el) => {
+        if (shouldIgnore(el) || !hasVisibleText(el)) return;
+
+        const style = window.getComputedStyle(el);
+        const fgColor = style.color;
+        const bgColor = getBackgroundColor(el);
+
+        const fgRGB = parseRGBColor(fgColor);
+        const bgRGB = parseRGBColor(bgColor);
+
+        if (!fgRGB || !bgRGB) return;
+
+        const l1 = getRelativeLuminance(fgRGB[0], fgRGB[1], fgRGB[2]);
+        const l2 = getRelativeLuminance(bgRGB[0], bgRGB[1], bgRGB[2]);
+        const lighter = Math.max(l1, l2);
+        const darker = Math.min(l1, l2);
+        const ratio = (lighter + 0.05) / (darker + 0.05);
+
+        if (ratio < minRatio) {
+            issues.push({
+                rule: RULE_IDS.accessibility.contrastInsufficient,
+                message: `Insufficient contrast ratio (${ratio.toFixed(2)}:1, needs ${minRatio}:1)`,
+                severity: ratio < 3 ? "critical" : "warning",
+                category: "accessibility",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkFocusNotVisible(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const selectors = "button, a[href], input, select, textarea";
+    const sample = Array.from(document.querySelectorAll(selectors))
+        .slice(0, 100);
+
+    sample.forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const htmlEl = el as HTMLElement;
+        const style = window.getComputedStyle(htmlEl);
+
+        const hasInlineOutlineNone = htmlEl.style.outline === "none" || htmlEl.style.outlineWidth === "0" || htmlEl.style.outlineWidth === "0px";
+        const hasNoFocusClass = htmlEl.classList.contains("no-focus") ||
+            htmlEl.classList.contains("no-outline") ||
+            htmlEl.classList.contains("outline-none");
+
+        if (hasInlineOutlineNone || hasNoFocusClass) {
+            const boxShadow = style.boxShadow;
+            const border = style.border;
+
+            if (boxShadow === "none" && !border.includes("px solid")) {
+                issues.push({
+                    rule: RULE_IDS.accessibility.focusNotVisible,
+                    message: "Element has outline explicitly disabled with no visible focus alternative",
+                    severity: "warning",
+                    category: "accessibility",
+                    element: htmlEl,
+                    selector: getCssSelector(el)
+                });
+            }
+        }
+    });
+
+    return issues;
+}
+
+export function checkLineHeightTooLow(minRatio: number = 1.4): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const selectors = "p, div, span, li, label, h1, h2, h3, h4, h5, h6";
+    const sample = Array.from(document.querySelectorAll(selectors))
+        .filter(el => hasVisibleText(el))
+        .slice(0, 100);
+
+    sample.forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const style = window.getComputedStyle(el);
+        const lineHeight = style.lineHeight;
+        const fontSize = parseFloat(style.fontSize);
+
+        if (lineHeight && lineHeight !== "normal") {
+            let lineHeightValue = parseFloat(lineHeight);
+            if (lineHeight.includes("px")) {
+                lineHeightValue = lineHeightValue / fontSize;
+            }
+
+            if (lineHeightValue < minRatio) {
+                issues.push({
+                    rule: RULE_IDS.accessibility.lineHeightTooLow,
+                    message: `Line-height too low (${lineHeightValue.toFixed(2)}, needs ${minRatio})`,
+                    severity: "recommendation",
+                    category: "accessibility",
+                    element: el as HTMLElement,
+                    selector: getCssSelector(el)
+                });
+            }
+        }
+    });
+
+    return issues;
+}

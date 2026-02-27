@@ -37,6 +37,8 @@ export interface WAHConfig {
     accessibility: {
         minFontSize: number;
         contrastLevel: ContrastLevel;
+        minContrastRatio?: number;
+        minLineHeight?: number;
     };
 
     quality?: {

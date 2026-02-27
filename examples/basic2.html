@@ -9,12 +9,13 @@
     <link rel="canonical" href="https://example.com" />
 </head>
 
-<body>
+<body style="max-width: fit-content;">
     <!-- ✅ ACC-09: no H1 exists on this page (incompatible with ACC-08 which is in basic.html) -->
     <h2>Main Section</h2>
 
     <!-- ✅ SEM-04: no main element exists on this page (incompatible with SEM-05 which is in basic.html) -->
-    <p>This page only tests rules ACC-09 and SEM-04 which are mutually exclusive with ACC-08 and SEM-05.</p>
+    <p>This page only tests rules ACC-09 and SEM-04 which are mutually exclusive with
+        ACC-08 and SEM-05.</p>
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";

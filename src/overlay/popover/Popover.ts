@@ -79,7 +79,6 @@ export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl
     scoreEl?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // Don't open if overlay is collapsed
         if (!overlay.classList.contains("wah-collapsed")) {
             openPopover("score-breakdown" as any, scoreEl);
         }
@@ -88,7 +87,6 @@ export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl
     scoreEl?.addEventListener("keydown", (e: KeyboardEvent) => {
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            // Don't open if overlay is collapsed
             if (!overlay.classList.contains("wah-collapsed")) {
                 openPopover("score-breakdown" as any, scoreEl);
             }

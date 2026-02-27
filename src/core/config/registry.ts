@@ -22,7 +22,10 @@ import {
     checkTableHeadersWithoutScope,
     checkTablesWithoutCaption,
     checkVagueLinks,
-    checkVideosWithoutControls
+    checkVideosWithoutControls,
+    checkContrastRatio,
+    checkFocusNotVisible,
+    checkLineHeightTooLow
 } from "../rules/accessibility";
 import {
     checkBoldItalicTags,
@@ -151,6 +154,18 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.accessibility.missingSkipLink,
         run: () => checkMissingSkipLink()
+    },
+    {
+        id: RULE_IDS.accessibility.contrastInsufficient,
+        run: (config) => checkContrastRatio(config.accessibility.minContrastRatio ?? 4.5)
+    },
+    {
+        id: RULE_IDS.accessibility.focusNotVisible,
+        run: () => checkFocusNotVisible()
+    },
+    {
+        id: RULE_IDS.accessibility.lineHeightTooLow,
+        run: (config) => checkLineHeightTooLow(config.accessibility.minLineHeight ?? 1.4)
     },
 
     {

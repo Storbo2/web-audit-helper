@@ -94,10 +94,9 @@ export function serializeReportToHTML(report: AuditReport): string {
 
         return `
             <section class="category">
-                <h2>${escapeHtml(cat.title)} <span class="cat-score">(${cat.score}/100)</span></h2>
-                <div class="cat-summary">${failRules.length} critical, ${warnRules.length} warning</div>
-                ${recommendationRules.length > 0 ? `<div class="cat-summary">${recommendationRules.length} recommendation</div>` : ""}
-                ${rulesHtml || '<p class="empty">No findings in this category.</p>'}
+            <h2>${escapeHtml(cat.title)} <span class="cat-score">(${cat.score}/100)</span></h2>
+            <div class="cat-summary">${failRules.length} critical, ${warnRules.length} warning${recommendationRules.length > 0 ? `, ${recommendationRules.length} recommendation` : ""}</div>
+            ${rulesHtml || '<p class="empty">No findings in this category.</p>'}
             </section>
         `;
     }).join("");

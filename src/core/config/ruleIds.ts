@@ -21,7 +21,10 @@ export const RULE_IDS = {
         linkMissingHref: "ACC-20",
         textTooSmall: "ACC-22",
         duplicateIds: "ACC-23",
-        missingSkipLink: "ACC-24"
+        missingSkipLink: "ACC-24",
+        focusNotVisible: "ACC-21",
+        contrastInsufficient: "ACC-25",
+        lineHeightTooLow: "ACC-26"
     },
     seo: {
         missingTitle: "SEO-01",
