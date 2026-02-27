@@ -62,7 +62,13 @@ export const RULE_IDS = {
         imageMissingDimensions: "IMG-01",
         imageMissingLazyLoad: "IMG-02",
         imageMissingAsyncDecode: "IMG-03",
-        videoAutoplayWithoutMuted: "MEDIA-01"
+        videoAutoplayWithoutMuted: "MEDIA-01",
+        imageMissingSrcset: "PERF-01",
+        tooManyFonts: "PERF-02",
+        tooManyScripts: "PERF-03",
+        scriptWithoutDefer: "PERF-04",
+        renderBlockingCSS: "PERF-05",
+        missingCacheHeaders: "PERF-06"
     },
     form: {
         submitButtonOutsideForm: "FORM-01",

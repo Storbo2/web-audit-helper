@@ -17,6 +17,33 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="" />
     <meta name="twitter:description" content="" />
+
+    <!-- PERF-02: Too many fonts (threshold: 3) - keeping exactly 4 for 1 error -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
+    <link rel="stylesheet" media="print"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" />
+    <link rel="stylesheet" media="print"
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" />
+    <link rel="stylesheet" media="print"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" />
+
+    <!-- PERF-05: Render-blocking CSS (without media or preload) - keeping 1 for single error -->
+    <link rel="stylesheet" href="../public/styles/main.css" />
+
+    <!-- PERF-04: Scripts without defer in head - keeping 2 for visible error -->
+    <script src="../public/js/analytics.js"></script>
+    <script src="../public/js/tracking.js"></script>
+
+    <!-- PERF-03: Too many scripts (threshold: 10) - exactly 11 total for 1 error -->
+    <script src="../public/js/lib1.js" defer></script>
+    <script src="../public/js/lib2.js" defer></script>
+    <script src="../public/js/lib3.js" defer></script>
+    <script src="../public/js/lib4.js" defer></script>
+    <script src="../public/js/lib5.js" defer></script>
+    <script src="../public/js/lib6.js" defer></script>
+    <script src="../public/js/lib7.js" defer></script>
+    <script src="../public/js/lib8.js" defer></script>
+    <script src="../public/js/lib9.js" defer></script>
 </head>
 
 <body>
@@ -49,7 +76,7 @@
 
     <iframe src="about:blank"></iframe> <!-- ACC-15: iframe without title -->
 
-    <video autoplay width="160" height="90" src="./../public/video.mp4"></video>
+    <video autoplay width="160" height="90" src="./../public/videos/video.mp4"></video>
     <!-- ACC-16: video without controls + MEDIA-01: autoplay without muted -->
 
     <table>
@@ -96,9 +123,23 @@
         <div>Item 2</div>
     </ul> <!-- SEM-07: false list -->
 
-    <img src="./../public/favicon-32x32.png"> <!-- ACC-02: without alt + IMG-01: without dimensions -->
-    <img src="./../public/favicon-32x32.png" alt="Test" width="100" height="100">
-    <!-- IMG-02: without lazy loading + IMG-03: without async decode -->
+    <img src="./../public/favicon-32x32.png" width="32" height="32" loading="lazy" decoding="async">
+    <!-- ACC-02: without alt -->
+
+    <!-- PERF-01: Image without srcset (>100x100px) - keeping 1 for single error -->
+    <img src="../public/images/hero.svg" alt="Hero" width="800" height="600" loading="lazy" decoding="async" />
+
+    <!-- IMG-02: Image missing lazy loading - kept 1 error -->
+    <img src="../public/images/banner.svg" alt="Banner" width="1200" height="400" loading="eager"
+        srcset="../public/images/banner.svg 1200w" />
+
+    <!-- IMG-03: Image missing async decode - using well-formed image -->
+    <img src="../public/favicon-32x32.png" alt="Badge" width="150" height="150" loading="lazy" decoding="async"
+        srcset="../public/favicon-32x32.png 150w" />
+
+    <!-- PERF-06: Multiple static resources (>5) - kept images + video + audio -->
+    <video src="../public/videos/video.mp4" controls style="width:200px;"></video>
+    <audio src="../public/audio/audio.mp3" controls></audio>
 
     <button type="submit">Submit outside</button> <!-- FORM-01: submit outside form -->
 
@@ -121,12 +162,13 @@
     <!-- RWD-03: Horizontal overflow - very wide table -->
     <div style="margin-top: 160px;">
         <table style="width: 2000px; border-collapse: collapse;">
+            <caption style="text-align:left; padding: 6px 0;">Wide responsive test table</caption>
             <tr>
-                <th style="border: 1px solid #ddd; padding: 10px;">Column 1</th>
-                <th style="border: 1px solid #ddd; padding: 10px;">Column 2</th>
-                <th style="border: 1px solid #ddd; padding: 10px;">Column 3</th>
-                <th style="border: 1px solid #ddd; padding: 10px;">Column 4</th>
-                <th style="border: 1px solid #ddd; padding: 10px;">Column 5</th>
+                <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Column 1</th>
+                <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Column 2</th>
+                <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Column 3</th>
+                <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Column 4</th>
+                <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Column 5</th>
             </tr>
             <tr>
                 <td style="border: 1px solid #ddd; padding: 10px;">Data 1</td>

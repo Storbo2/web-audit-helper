@@ -52,7 +52,13 @@ import {
     checkImageMissingAsyncDecode,
     checkImageMissingDimensions,
     checkImageMissingLazyLoad,
-    checkVideoAutoplayWithoutMuted
+    checkVideoAutoplayWithoutMuted,
+    checkImageMissingSrcset,
+    checkTooManyFonts,
+    checkTooManyScripts,
+    checkScriptWithoutDefer,
+    checkRenderBlockingCSS,
+    checkMissingCacheHeaders
 } from "../rules/performance";
 import {
     checkEmailTelWithoutType,
@@ -276,6 +282,30 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.performance.videoAutoplayWithoutMuted,
         run: () => checkVideoAutoplayWithoutMuted()
+    },
+    {
+        id: RULE_IDS.performance.imageMissingSrcset,
+        run: () => checkImageMissingSrcset()
+    },
+    {
+        id: RULE_IDS.performance.tooManyFonts,
+        run: () => checkTooManyFonts()
+    },
+    {
+        id: RULE_IDS.performance.tooManyScripts,
+        run: () => checkTooManyScripts()
+    },
+    {
+        id: RULE_IDS.performance.scriptWithoutDefer,
+        run: () => checkScriptWithoutDefer()
+    },
+    {
+        id: RULE_IDS.performance.renderBlockingCSS,
+        run: () => checkRenderBlockingCSS()
+    },
+    {
+        id: RULE_IDS.performance.missingCacheHeaders,
+        run: () => checkMissingCacheHeaders()
     },
 
     {

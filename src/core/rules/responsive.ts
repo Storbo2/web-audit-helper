@@ -101,25 +101,35 @@ export function checkHorizontalOverflow(): AuditIssue[] {
 export function checkFixedElementOverlap(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
-    const elements = Array.from(document.querySelectorAll("[style*='position']"))
-        .filter(el => {
+    const viewportHeight = window.innerHeight;
+    const minViewportRatio = 0.12;
+    const minPixelHeight = 120;
+
+    const elements = Array.from(document.querySelectorAll("*"))
+        .filter((el) => {
             const style = getComputedStyle(el);
             return style.position === "fixed" || style.position === "sticky";
         })
-        .slice(0, 20);
+        .slice(0, 100);
 
     elements.forEach((el) => {
         if (shouldIgnore(el)) return;
 
         const htmlEl = el as HTMLElement;
-        const style = getComputedStyle(htmlEl);
-        const height = parseFloat(style.height);
-        const viewportHeight = window.innerHeight;
+        const rect = htmlEl.getBoundingClientRect();
+        const height = rect.height;
+        const top = rect.top;
+        const overlapRatio = viewportHeight > 0 ? height / viewportHeight : 0;
 
-        if (!isNaN(height) && height > viewportHeight * 0.25) {
+        const isTopAnchored = top <= 0;
+        const passesRatioRule = overlapRatio >= minViewportRatio;
+        const passesTopHeaderRule = isTopAnchored && height >= minPixelHeight;
+        const passes = !isNaN(height) && (passesRatioRule || passesTopHeaderRule);
+
+        if (passes) {
             issues.push({
                 rule: RULE_IDS.responsive.fixedElementOverlap,
-                message: `Fixed/sticky element takes up ${Math.round((height / viewportHeight) * 100)}% of viewport height`,
+                message: `Fixed/sticky element takes up ${Math.round(overlapRatio * 100)}% of viewport height`,
                 severity: "warning",
                 category: "responsive",
                 element: htmlEl,
@@ -142,7 +152,7 @@ export function checkProblematic100vh(): AuditIssue[] {
 
         const htmlEl = el as HTMLElement;
 
-        const has100vh = 
+        const has100vh =
             htmlEl.style.height?.includes("100vh") ||
             htmlEl.style.minHeight?.includes("100vh") ||
             htmlEl.style.maxHeight?.includes("100vh");
