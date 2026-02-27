@@ -3,6 +3,10 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
+    scroll-snap-type: y proximity;
+    scroll-padding: 0.5rem 0;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
     border: 0.0625rem solid var(--wah-dark-border);
     border-radius: 0.5rem;
     padding: 0.5rem;
@@ -28,6 +32,7 @@
     padding: 0.5rem 0.25rem;
     border-bottom: 0.0625rem solid var(--wah-dark-border);
     font-size: 0.9em;
+    scroll-snap-align: start;
 }
 
 .wah-issue-item:last-child {
@@ -35,6 +40,7 @@
 }
 
 .wah-msg {
+    font-size: 0.8rem;
     line-height: 1.25;
 }
 

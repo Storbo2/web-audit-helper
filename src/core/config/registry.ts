@@ -45,7 +45,7 @@ import {
     checkMissingTwitterCard,
     checkMetaRobotsNoindex
 } from "../rules/seo";
-import { checkLargeFixedWidths, checkMissingViewportMeta } from "../rules/responsive";
+import { checkLargeFixedWidths, checkMissingViewportMeta, checkHorizontalOverflow, checkFixedElementOverlap, checkProblematic100vh } from "../rules/responsive";
 import { checkDummyLinks, checkTargetBlankWithoutNoopener } from "../rules/security";
 import { checkExcessiveInlineStyles } from "../rules/quality";
 import {
@@ -233,6 +233,18 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     {
         id: RULE_IDS.responsive.largeFixedWidth,
         run: () => checkLargeFixedWidths()
+    },
+    {
+        id: RULE_IDS.responsive.overflowHorizontal,
+        run: () => checkHorizontalOverflow()
+    },
+    {
+        id: RULE_IDS.responsive.fixedElementOverlap,
+        run: () => checkFixedElementOverlap()
+    },
+    {
+        id: RULE_IDS.responsive.problematic100vh,
+        run: () => checkProblematic100vh()
     },
 
     {

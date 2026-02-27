@@ -53,7 +53,10 @@ export const RULE_IDS = {
     },
     responsive: {
         largeFixedWidth: "RWD-01",
-        missingViewport: "RWD-02"
+        missingViewport: "RWD-02",
+        overflowHorizontal: "RWD-03",
+        fixedElementOverlap: "RWD-04",
+        problematic100vh: "RWD-05"
     },
     image: {
         missingDimensions: "IMG-01",

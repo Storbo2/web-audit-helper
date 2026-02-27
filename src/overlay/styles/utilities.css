@@ -20,7 +20,6 @@
 
 .wah-critical {
     text-align: left;
-    font-size: 0.75rem;
 }
 
 .wah-recommendation {
@@ -47,7 +46,6 @@
     margin: 0.625rem 0 0.5rem;
 }
 
-/* Message text color based on severity */
 .wah-msg.score-bad {
     color: var(--wah-score-bad);
 }

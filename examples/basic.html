@@ -107,6 +107,37 @@
         This div has a fixed width of 1200px (too large for mobile)
     </div>
 
+    <!-- RWD-05: Problematic 100vh -->
+    <section style="height: 100vh; background: #f0f0f0; padding: 20px;">
+        This section uses 100vh which can cause problems on mobile with URL bars
+    </section>
+
+    <!-- RWD-04: Fixed element overlap (header simulation) -->
+    <header
+        style="position: fixed; top: 0; width: 100%; height: 150px; background: #333; color: white; padding: 10px; z-index: 1000;">
+        Fixed header overlapping 30% of viewport
+    </header>
+
+    <!-- RWD-03: Horizontal overflow - very wide table -->
+    <div style="margin-top: 160px;">
+        <table style="width: 2000px; border-collapse: collapse;">
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 10px;">Column 1</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Column 2</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Column 3</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Column 4</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Column 5</th>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 10px;">Data 1</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Data 2</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Data 3</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Data 4</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Data 5</td>
+            </tr>
+        </table>
+    </div>
+
     <form>
         <label for="name">Name</label> <!-- FORM-02: required without asterisk -->
         <input type="text" id="name" name="name" required />

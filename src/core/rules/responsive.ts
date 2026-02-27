@@ -79,3 +79,85 @@ export function checkLargeFixedWidths(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkHorizontalOverflow(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const documentWidth = document.documentElement.scrollWidth;
+    const viewportWidth = window.innerWidth;
+
+    if (documentWidth > viewportWidth) {
+        issues.push({
+            rule: RULE_IDS.responsive.overflowHorizontal,
+            message: `Horizontal overflow detected (document width ${documentWidth}px exceeds viewport ${viewportWidth}px)`,
+            severity: "warning",
+            category: "responsive"
+        });
+    }
+
+    return issues;
+}
+
+export function checkFixedElementOverlap(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const elements = Array.from(document.querySelectorAll("[style*='position']"))
+        .filter(el => {
+            const style = getComputedStyle(el);
+            return style.position === "fixed" || style.position === "sticky";
+        })
+        .slice(0, 20);
+
+    elements.forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const htmlEl = el as HTMLElement;
+        const style = getComputedStyle(htmlEl);
+        const height = parseFloat(style.height);
+        const viewportHeight = window.innerHeight;
+
+        if (!isNaN(height) && height > viewportHeight * 0.25) {
+            issues.push({
+                rule: RULE_IDS.responsive.fixedElementOverlap,
+                message: `Fixed/sticky element takes up ${Math.round((height / viewportHeight) * 100)}% of viewport height`,
+                severity: "warning",
+                category: "responsive",
+                element: htmlEl,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkProblematic100vh(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const elements = Array.from(document.querySelectorAll("*"))
+        .slice(0, 100);
+
+    elements.forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const htmlEl = el as HTMLElement;
+
+        const has100vh = 
+            htmlEl.style.height?.includes("100vh") ||
+            htmlEl.style.minHeight?.includes("100vh") ||
+            htmlEl.style.maxHeight?.includes("100vh");
+
+        if (has100vh) {
+            issues.push({
+                rule: RULE_IDS.responsive.problematic100vh,
+                message: `Element uses 100vh which can cause overflow on mobile devices with URL bars`,
+                severity: "recommendation",
+                category: "responsive",
+                element: htmlEl,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
