@@ -68,7 +68,13 @@ const FRIENDLY_RULE_LABELS: Record<string, string> = {
     "FORM-01": "Submit button outside form",
     "FORM-02": "Required without indicator",
     "FORM-03": "Email/tel without type",
-    "FORM-04": "Missing autocomplete"
+    "FORM-04": "Missing autocomplete",
+    "PERF-01": "Image missing srcset",
+    "PERF-02": "Too many fonts",
+    "PERF-03": "Too many scripts",
+    "PERF-04": "Script without defer",
+    "PERF-05": "Render-blocking CSS",
+    "PERF-06": "Missing cache headers"
 };
 
 function formatRuleLabel(rule: string): string {

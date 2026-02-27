@@ -12,8 +12,7 @@ WAH focuses on:
 - Basic SEO best practices
 - Quality (code patterns and best practices)
 - Security (basic security checks)
-- Image optimization
-- Media (video/audio best practices)
+- Performance (resource optimization, images, media, scripts, caching)
 - Form validation and UX
 
 ---
@@ -26,8 +25,7 @@ WAH focuses on:
 - 📱 Responsive heuristics (viewport, fixed-width detection)
 - 🔒 Security checks (target=_blank, dummy links)
 - ✨ Quality checks (code patterns, inline styles, maintainability)
-- 📸 Image optimization (dimensions, lazy loading, async decode)
-- 🎬 Media best practices (autoplay, controls)
+- ⚡ Performance checks (image dimensions, lazy loading, async decode, video autoplay, scripts, fonts, caching, render-blocking resources)
 - 📋 Form validation (proper types, autocomplete, required indicators)
 - 🎨 Floating configurable overlay with category filters
 - 📊 Scoring system (excellent → critical)

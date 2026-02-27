@@ -58,13 +58,11 @@ export const RULE_IDS = {
         fixedElementOverlap: "RWD-04",
         problematic100vh: "RWD-05"
     },
-    image: {
-        missingDimensions: "IMG-01",
-        missingLazyLoad: "IMG-02",
-        missingAsyncDecode: "IMG-03"
-    },
-    media: {
-        autoplayWithoutMuted: "MEDIA-01"
+    performance: {
+        imageMissingDimensions: "IMG-01",
+        imageMissingLazyLoad: "IMG-02",
+        imageMissingAsyncDecode: "IMG-03",
+        videoAutoplayWithoutMuted: "MEDIA-01"
     },
     form: {
         submitButtonOutsideForm: "FORM-01",

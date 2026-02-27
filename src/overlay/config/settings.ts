@@ -1,7 +1,7 @@
 export type LogLevel = "full" | "critical-only" | "summary" | "none";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
-export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "image" | "media" | "form";
+export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "performance" | "form";
 
 export type WAHSettings = {
     logLevel: LogLevel;
@@ -91,15 +91,16 @@ export function setActiveFilters(filters: Set<UIFilter>) {
 
 export function getActiveCategories(): Set<UICategory> {
     const v = localStorage.getItem(KEY_ACTIVE_CATEGORIES);
+    const defaultCategories: UICategory[] = ["accessibility", "semantic", "seo", "responsive", "quality", "security", "performance", "form"];
+
     if (v) {
         try {
             const arr = JSON.parse(v) as UICategory[];
-            const validCategories: UICategory[] = ["accessibility", "semantic", "seo", "responsive", "quality", "security", "image", "media", "form"];
-            const valid = arr.filter(c => validCategories.includes(c));
-            if (valid.length > 0) return new Set(valid);
+            const valid = arr.filter(c => defaultCategories.includes(c));
+            if (valid.length === defaultCategories.length) return new Set(valid);
         } catch { }
     }
-    return new Set(["accessibility", "semantic", "seo", "responsive", "quality", "security", "image", "media", "form"]);
+    return new Set(defaultCategories);
 }
 
 export function setActiveCategories(categories: Set<UICategory>) {

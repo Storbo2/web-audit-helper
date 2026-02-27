@@ -51,9 +51,9 @@ import { checkExcessiveInlineStyles } from "../rules/quality";
 import {
     checkImageMissingAsyncDecode,
     checkImageMissingDimensions,
-    checkImageMissingLazyLoad
-} from "../rules/image";
-import { checkVideoAutoplayWithoutMuted } from "../rules/media";
+    checkImageMissingLazyLoad,
+    checkVideoAutoplayWithoutMuted
+} from "../rules/performance";
 import {
     checkEmailTelWithoutType,
     checkMissingAutocomplete,
@@ -262,20 +262,19 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     },
 
     {
-        id: RULE_IDS.image.missingDimensions,
+        id: RULE_IDS.performance.imageMissingDimensions,
         run: () => checkImageMissingDimensions()
     },
     {
-        id: RULE_IDS.image.missingLazyLoad,
+        id: RULE_IDS.performance.imageMissingLazyLoad,
         run: () => checkImageMissingLazyLoad()
     },
     {
-        id: RULE_IDS.image.missingAsyncDecode,
+        id: RULE_IDS.performance.imageMissingAsyncDecode,
         run: () => checkImageMissingAsyncDecode()
     },
-
     {
-        id: RULE_IDS.media.autoplayWithoutMuted,
+        id: RULE_IDS.performance.videoAutoplayWithoutMuted,
         run: () => checkVideoAutoplayWithoutMuted()
     },
 

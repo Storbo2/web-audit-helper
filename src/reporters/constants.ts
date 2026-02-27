@@ -7,12 +7,11 @@ export const CATEGORY_TITLES: Record<IssueCategory, string> = {
     responsive: "Responsive Design",
     security: "Security",
     quality: "Quality",
-    image: "Image Optimization",
-    media: "Media",
+    performance: "Performance",
     form: "Form"
 };
 
-export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "image", "media", "form"];
+export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "performance", "form"];
 
 export const CATEGORY_SHORT_LABELS: Record<IssueCategory, string> = {
     accessibility: "ACC",
@@ -21,8 +20,7 @@ export const CATEGORY_SHORT_LABELS: Record<IssueCategory, string> = {
     responsive: "RWD",
     security: "SEC",
     quality: "QLT",
-    image: "IMG",
-    media: "MEDIA",
+    performance: "PERF",
     form: "FORM"
 };
 
@@ -84,7 +82,13 @@ export const RULE_TITLES: Record<string, string> = {
     "FORM-01": "Submit button outside form",
     "FORM-02": "Required without indicator",
     "FORM-03": "Email/tel without type",
-    "FORM-04": "Missing autocomplete"
+    "FORM-04": "Missing autocomplete",
+    "PERF-01": "Image missing srcset/sizes",
+    "PERF-02": "Too many fonts/weights",
+    "PERF-03": "Too many scripts",
+    "PERF-04": "Script without defer in head",
+    "PERF-05": "Render-blocking CSS",
+    "PERF-06": "Missing cache headers"
 };
 
 export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
@@ -142,7 +146,13 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "FORM-01": "Ensures submit buttons are inside form elements",
     "FORM-02": "Ensures required fields are visually indicated",
     "FORM-03": "Ensures email and tel inputs use correct types",
-    "FORM-04": "Encourages autocomplete attributes on form fields"
+    "FORM-04": "Encourages autocomplete attributes on form fields",
+    "PERF-01": "Encourages responsive images with srcset and sizes",
+    "PERF-02": "Warns about excessive font resources that slow page load",
+    "PERF-03": "Detects excessive script tags that may block rendering",
+    "PERF-04": "Ensures scripts in head use defer or async attributes",
+    "PERF-05": "Detects render-blocking CSS in head without preload",
+    "PERF-06": "Warns when Cache-Control headers may not be configured"
 };
 
 export const RULE_FIXES: Partial<Record<string, string>> = {
@@ -201,6 +211,12 @@ export const RULE_FIXES: Partial<Record<string, string>> = {
     "FORM-02": "Visually indicate required fields and keep required attributes consistent with UI.",
     "FORM-03": "Use semantic input types (email/tel) to improve validation and mobile keyboards.",
     "FORM-04": "Add meaningful autocomplete values to common form fields.",
+    "PERF-01": "Use srcset and sizes attributes for responsive images to serve appropriately sized assets.",
+    "PERF-02": "Limit font families and weights; consider using system fonts or variable fonts.",
+    "PERF-03": "Consolidate scripts or use module bundlers to reduce HTTP requests and blocking.",
+    "PERF-04": "Add defer or async to scripts in head to prevent render blocking.",
+    "PERF-05": "Inline critical CSS or use preload for CSS; consider async loading non-critical styles.",
+    "PERF-06": "Configure server Cache-Control headers or use CDN edge caching for static assets."
 };
 
 export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
@@ -210,8 +226,7 @@ export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
     responsive: ["RWD"],
     security: ["SEC"],
     quality: ["QLT"],
-    image: ["IMG"],
-    media: ["MEDIA"],
+    performance: ["PERF", "IMG", "MEDIA"],
     form: ["FORM"]
 };
 

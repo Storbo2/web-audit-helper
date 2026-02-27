@@ -16,10 +16,10 @@ export function checkImageMissingDimensions(): AuditIssue[] {
 
         if (!hasWidth || !hasHeight) {
             issues.push({
-                rule: RULE_IDS.image.missingDimensions,
+                rule: RULE_IDS.performance.imageMissingDimensions,
                 message: hasWidth ? "Image missing height attribute/style" : hasHeight ? "Image missing width attribute/style" : "Image missing width and height attributes/styles",
                 severity: "warning",
-                category: "image",
+                category: "performance",
                 element: img as HTMLElement,
                 selector: getCssSelector(img)
             });
@@ -46,10 +46,10 @@ export function checkImageMissingLazyLoad(): AuditIssue[] {
         }
 
         issues.push({
-            rule: RULE_IDS.image.missingLazyLoad,
+            rule: RULE_IDS.performance.imageMissingLazyLoad,
             message: "Image should use loading='lazy' for optimization",
             severity: "recommendation",
-            category: "image",
+            category: "performance",
             element: img as HTMLElement,
             selector: getCssSelector(img)
         });
@@ -67,13 +67,36 @@ export function checkImageMissingAsyncDecode(): AuditIssue[] {
         if (decoding === "async") return;
 
         issues.push({
-            rule: RULE_IDS.image.missingAsyncDecode,
+            rule: RULE_IDS.performance.imageMissingAsyncDecode,
             message: "Image should use decoding='async' for improved performance",
             severity: "recommendation",
-            category: "image",
+            category: "performance",
             element: img as HTMLElement,
             selector: getCssSelector(img)
         });
+    });
+
+    return issues;
+}
+
+export function checkVideoAutoplayWithoutMuted(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("video").forEach((video) => {
+        if (shouldIgnore(video)) return;
+        const isAutoplay = video.hasAttribute("autoplay");
+        const isMuted = video.hasAttribute("muted");
+
+        if (isAutoplay && !isMuted) {
+            issues.push({
+                rule: RULE_IDS.performance.videoAutoplayWithoutMuted,
+                message: "Video with autoplay must also have muted attribute to respect browser policies",
+                severity: "warning",
+                category: "performance",
+                element: video as HTMLElement,
+                selector: getCssSelector(video)
+            });
+        }
     });
 
     return issues;
