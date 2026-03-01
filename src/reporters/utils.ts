@@ -35,12 +35,18 @@ export function toSentenceCase(text: string): string {
     return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
 
+export function generateRuleDescription(ruleId: string, ruleTitle: string): string {
+    const stored = RULE_DESCRIPTIONS[ruleId];
+    if (stored) return stored;
+    return `Checks ${ruleTitle.toLowerCase()}`;
+}
+
 export function getRuleTitle(ruleId: string, fallbackMessage: string): string {
     return RULE_TITLES[ruleId] || toSentenceCase(fallbackMessage);
 }
 
 export function getRuleDescription(ruleId: string, title: string): string {
-    return RULE_DESCRIPTIONS[ruleId] || `Checks ${title.toLowerCase()}`;
+    return generateRuleDescription(ruleId, title);
 }
 
 export function getRuleFix(ruleId: string): string | undefined {

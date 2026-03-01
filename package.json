@@ -1,6 +1,6 @@
 {
     "name": "web-audit-helper",
-    "version": "0.1.0-dev",
+    "version": "1.0",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
     "main": "dist/index.cjs",
     "module": "dist/index.js",

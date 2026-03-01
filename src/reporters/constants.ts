@@ -1,14 +1,28 @@
 import type { IssueCategory, Severity } from "../core/types";
 
+export const getCategoryTitle = (cat: IssueCategory): string => {
+    const titles: Record<IssueCategory, string> = {
+        accessibility: "Accessibility",
+        semantic: "Semantic",
+        seo: "SEO",
+        responsive: "Responsive",
+        security: "Security",
+        quality: "Quality",
+        performance: "Performance",
+        form: "Forms"
+    };
+    return titles[cat];
+};
+
 export const CATEGORY_TITLES: Record<IssueCategory, string> = {
     accessibility: "Accessibility",
-    semantic: "Semantic HTML",
+    semantic: "Semantic",
     seo: "SEO",
-    responsive: "Responsive Design",
+    responsive: "Responsive",
     security: "Security",
     quality: "Quality",
     performance: "Performance",
-    form: "Form"
+    form: "Forms"
 };
 
 export const CATEGORY_ORDER: IssueCategory[] = ["accessibility", "semantic", "seo", "responsive", "security", "quality", "performance", "form"];

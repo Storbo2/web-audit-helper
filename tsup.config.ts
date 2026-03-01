@@ -14,6 +14,8 @@ export default defineConfig({
     minify: true,
     sourcemap: false,
     clean: true,
+    treeshake: true,
+    splitting: false,
     define: {
         __WAH_VERSION__: JSON.stringify(wahVersion),
         __WAH_MODE__: JSON.stringify(wahMode)
@@ -23,5 +25,6 @@ export default defineConfig({
             ...options.loader,
             ".css": "text"
         };
+        options.minifyWhitespace = true;
     }
 });
