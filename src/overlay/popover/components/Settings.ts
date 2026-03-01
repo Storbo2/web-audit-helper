@@ -23,6 +23,20 @@ const SCORING_MODE_INFO: Record<ScoringMode, string> = {
     custom: "Consider filters in scoring: uses current chips (severity) and Extra filters (categories) for score and reports."
 };
 
+const LOG_LEVEL_OPTIONS: Array<{ value: "full" | "summary" | "none"; label: string; title: string }> = [
+    { value: "full", label: "Full report", title: "Show full report in console with issue table" },
+    { value: "summary", label: "Report summary", title: "Show only report summary in console" },
+    { value: "none", label: "No console logs", title: "Disable all console logs" }
+];
+
+const HIDE_DURATIONS: Array<{ value: number; label: string }> = [
+    { value: 600000, label: "10 minutes" },
+    { value: 1800000, label: "30 minutes" },
+    { value: 3600000, label: "1 hour" },
+    { value: 10800000, label: "3 hours" },
+    { value: 86400000, label: "1 day" }
+];
+
 function renderRerunNotice(): string {
     return `
         <div class="wah-rerun" id="wah-rerun-notice" title="Click to re-run audit" style="display: none;">
@@ -42,6 +56,18 @@ function renderSettingsHeader(title: string, page: number, total: number): strin
             <button class="wah-pop-nav" data-nav="next" title="Next">❯</button>
         </div>
     `;
+}
+
+function renderLogLevelOptions(): string {
+    return LOG_LEVEL_OPTIONS.map(({ value, label, title }) => `
+        <label class="wah-pop-row" title="${title}">
+            <input type="radio" name="wah-loglvl" value="${value}"> <span>${label}</span>
+        </label>
+    `).join("");
+}
+
+function renderHideDurationOptions(): string {
+    return HIDE_DURATIONS.map(({ value, label }) => `<option value="${value}">${label}</option>`).join("");
 }
 
 function wirePage0(popBody: HTMLElement) {
@@ -191,15 +217,7 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
         ${renderSettingsHeader("Settings", 1, total)}
 
         <div class="wah-pop-section">Console logs</div>
-        <label class="wah-pop-row" title="Show full report in console with issue table">
-            <input type="radio" name="wah-loglvl" value="full"> <span>Full report</span>
-        </label>
-        <label class="wah-pop-row" title="Show only report summary in console">
-            <input type="radio" name="wah-loglvl" value="summary"> <span>Report summary</span>
-        </label>
-        <label class="wah-pop-row" title="Disable all console logs">
-            <input type="radio" name="wah-loglvl" value="none"> <span>No console logs</span>
-        </label>
+        ${renderLogLevelOptions()}
 
         <div class="wah-pop-spacer"></div>
 
@@ -248,11 +266,7 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
             <div class="wah-hide-for-row">
                 <span class="wah-hide-for-label">Hide for</span>
                 <select id="wah-hide-for-select" data-s="hideForSelect" class="wah-hide-select" title="Select duration to hide overlay">
-                    <option value="600000">10 minutes</option>
-                    <option value="1800000">30 minutes</option>
-                    <option value="3600000">1 hour</option>
-                    <option value="10800000">3 hours</option>
-                    <option value="86400000">1 day</option>
+                    ${renderHideDurationOptions()}
                 </select>
                 <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn" title="Confirm hide duration">✔</button>
             </div>

@@ -1,41 +1,30 @@
 import type { UICategory } from "../../config/settings";
 import { setActiveCategories } from "../../config/settings";
 
+const FILTER_CATEGORIES: Array<{ id: UICategory; label: string; title: string }> = [
+    { id: "accessibility", label: "Accessibility", title: "Filter issues by accessibility category" },
+    { id: "semantic", label: "Semantic", title: "Filter issues by semantic category" },
+    { id: "seo", label: "SEO", title: "Filter issues by SEO category" },
+    { id: "responsive", label: "Responsive", title: "Filter issues by responsive category" },
+    { id: "quality", label: "Quality", title: "Filter issues by quality category" },
+    { id: "security", label: "Security", title: "Filter issues by security category" },
+    { id: "performance", label: "Performance", title: "Filter issues by performance category" },
+    { id: "form", label: "Form", title: "Filter issues by form category" }
+];
+
+function renderFilterRows(catActive: Set<UICategory>): string {
+    return FILTER_CATEGORIES.map(({ id, label, title }) => `
+    <label class="wah-pop-row" title="${title}">
+        <input type="checkbox" data-cat="${id}" ${catActive.has(id) ? "checked" : ""}>
+        <span>${label}</span>
+    </label>
+    `).join("");
+}
+
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<UICategory>, onChange: () => void) {
     popBody.innerHTML = `
     <div class="wah-pop-titleline">Filters by category</div>
-    <label class="wah-pop-row" title="Filter issues by accessibility category">
-        <input type="checkbox" data-cat="accessibility" ${catActive.has("accessibility") ? "checked" : ""}>
-        <span>Accessibility</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by semantic category">
-        <input type="checkbox" data-cat="semantic" ${catActive.has("semantic") ? "checked" : ""}>
-        <span>Semantic</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by SEO category">
-        <input type="checkbox" data-cat="seo" ${catActive.has("seo") ? "checked" : ""}>
-        <span>SEO</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by responsive category">
-        <input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}>
-        <span>Responsive</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by quality category">
-        <input type="checkbox" data-cat="quality" ${catActive.has("quality") ? "checked" : ""}>
-        <span>Quality</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by security category">
-        <input type="checkbox" data-cat="security" ${catActive.has("security") ? "checked" : ""}>
-        <span>Security</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by performance category">
-        <input type="checkbox" data-cat="performance" ${catActive.has("performance") ? "checked" : ""}>
-        <span>Performance</span>
-    </label>
-    <label class="wah-pop-row" title="Filter issues by form category">
-        <input type="checkbox" data-cat="form" ${catActive.has("form") ? "checked" : ""}>
-        <span>Form</span>
-    </label>
+    ${renderFilterRows(catActive)}
     `;
 
     popBody.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-cat]').forEach((cb) => {

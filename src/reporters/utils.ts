@@ -1,6 +1,6 @@
 import type { IssueCategory, RuleResult, Severity, Grade } from "../core/types";
 import {
-    RULE_TITLES,
+    RULE_TOKENS_COMPACT,
     RULE_DESCRIPTIONS,
     RULE_FIXES,
     CATEGORY_PREFIXES,
@@ -35,14 +35,37 @@ export function toSentenceCase(text: string): string {
     return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
 
+export function decodeRuleTitle(token: string): string {
+    const colonIndex = token.indexOf(':');
+    if (colonIndex === -1) return token;
+
+    const prefix = token.substring(0, colonIndex);
+    const rest = token.substring(colonIndex + 1);
+
+    return toSentenceCase(prefix) + ' ' + rest;
+}
+
 export function generateRuleDescription(ruleId: string, ruleTitle: string): string {
     const stored = RULE_DESCRIPTIONS[ruleId];
     if (stored) return stored;
     return `Checks ${ruleTitle.toLowerCase()}`;
 }
 
+export function generateRuleFix(ruleId: string): string | undefined {
+    const stored = RULE_FIXES[ruleId];
+    if (stored) return stored;
+
+    const tokenTitle = RULE_TOKENS_COMPACT[ruleId];
+    if (!tokenTitle) return undefined;
+
+    const decodedTitle = decodeRuleTitle(tokenTitle);
+    return `${decodedTitle.toLowerCase()}.`;
+}
+
 export function getRuleTitle(ruleId: string, fallbackMessage: string): string {
-    return RULE_TITLES[ruleId] || toSentenceCase(fallbackMessage);
+    const token = RULE_TOKENS_COMPACT[ruleId];
+    if (token) return decodeRuleTitle(token);
+    return toSentenceCase(fallbackMessage);
 }
 
 export function getRuleDescription(ruleId: string, title: string): string {
@@ -50,7 +73,7 @@ export function getRuleDescription(ruleId: string, title: string): string {
 }
 
 export function getRuleFix(ruleId: string): string | undefined {
-    return RULE_FIXES[ruleId];
+    return generateRuleFix(ruleId);
 }
 
 export function getRulePrefix(ruleId: string): string {
