@@ -19,9 +19,9 @@ Runs the complete audit and initializes the overlay.
 import { runWAH } from 'web-audit-helper';
 
 const result = await runWAH({
-  logs: true,
-  logLevel: 'full',
-  overlay: { enabled: true }
+    logs: true,
+    logLevel: 'full',
+    overlay: { enabled: true }
 });
 
 console.log(`Audit score: ${result.score}%`);
@@ -80,12 +80,12 @@ Single audit issue found.
 
 ```typescript
 interface AuditIssue {
-  rule: string;              // "ACC-02", "SEO-01", etc.
-  message: string;           // "Image missing alt"
-  severity: Severity;        // "critical" | "warning" | "recommendation"
-  category?: IssueCategory;  // "accessibility", "seo", etc.
-  selector?: string;         // CSS selector: "html > body > img:nth-of-type(1)"
-  element?: HTMLElement;     // Reference to DOM element
+    rule: string;              // "ACC-02", "SEO-01", etc.
+    message: string;           // "Image missing alt"
+    severity: Severity;        // "critical" | "warning" | "recommendation"
+    category?: IssueCategory;  // "accessibility", "seo", etc.
+    selector?: string;         // CSS selector: "html > body > img:nth-of-type(1)"
+    element?: HTMLElement;     // Reference to DOM element
 }
 ```
 
@@ -95,8 +95,8 @@ Complete audit result.
 
 ```typescript
 interface AuditResult {
-  issues: AuditIssue[];      // All issues found
-  score: number;             // 0-100 overall score
+    issues: AuditIssue[];      // All issues found
+    score: number;             // 0-100 overall score
 }
 ```
 
@@ -106,32 +106,32 @@ Configuration options passed to `runWAH()`.
 
 ```typescript
 interface WAHConfig {
-  // Console logging
-  logs?: boolean;                    // Enable/disable logging
-  logLevel?: 'full' | 'summary' | 'none';  // Console verbosity
-  
-  // Issue filtering
-  issueLevel?: 'critical' | 'warnings' | 'all';
-  
-  // Accessibility settings
-  accessibility?: {
-    minFontSize?: number;            // Minimum font size (default: 12)
-    contrastLevel?: 'AA' | 'AAA';    // WCAG level (default: 'AA')
-    minContrastRatio?: number;       // Custom contrast ratio
-    minLineHeight?: number;          // Minimum line height (default: 1.4)
-  };
-  
-  // Overlay UI
-  overlay?: {
-    enabled?: boolean;               // Show overlay (default: true)
-    position?: string;               // Position on screen
-    hide?: number;                   // Hide duration in ms
-  };
-  
-  // Quality settings
-  quality?: {
-    inlineStylesThreshold?: number;  // Warn threshold (default: 10)
-  };
+    // Console logging
+    logs?: boolean;                    // Enable/disable logging
+    logLevel?: 'full' | 'summary' | 'none';  // Console verbosity
+    
+    // Issue filtering
+    issueLevel?: 'critical' | 'warnings' | 'all';
+    
+    // Accessibility settings
+    accessibility?: {
+        minFontSize?: number;            // Minimum font size (default: 12)
+        contrastLevel?: 'AA' | 'AAA';    // WCAG level (default: 'AA')
+        minContrastRatio?: number;       // Custom contrast ratio
+        minLineHeight?: number;          // Minimum line height (default: 1.4)
+    };
+    
+    // Overlay UI
+    overlay?: {
+        enabled?: boolean;               // Show overlay (default: true)
+        position?: string;               // Position on screen
+        hide?: number;                   // Hide duration in ms
+    };
+    
+    // Quality settings
+    quality?: {
+        inlineStylesThreshold?: number;  // Warn threshold (default: 10)
+    };
 }
 ```
 
@@ -149,14 +149,14 @@ Category of audit issue.
 
 ```typescript
 type IssueCategory = 
-  | 'accessibility'
-  | 'semantic'
-  | 'seo'
-  | 'responsive'
-  | 'security'
-  | 'quality'
-  | 'performance'
-  | 'form';
+    | 'accessibility'
+    | 'semantic'
+    | 'seo'
+    | 'responsive'
+    | 'security'
+    | 'quality'
+    | 'performance'
+    | 'form';
 ```
 
 ### `LogLevel`
@@ -194,18 +194,18 @@ await runWAH();
 import { runWAH } from 'web-audit-helper';
 
 const result = await runWAH({
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'all',
-  accessibility: {
-    minFontSize: 14,
-    contrastLevel: 'AAA'
-  },
-  overlay: {
-    enabled: true,
-    position: 'top-right',
-    hide: 0
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'all',
+    accessibility: {
+        minFontSize: 14,
+        contrastLevel: 'AAA'
+    },
+    overlay: {
+        enabled: true,
+        position: 'top-right',
+        hide: 0
+    }
 });
 ```
 
@@ -235,13 +235,13 @@ console.log(`Accessibility issues: ${accessibilityIssues.length}`);
 const result = await runWAH();
 
 if (result.score < 50) {
-  console.error('Critical quality issues detected!');
-  // Fail CI/CD
-  process.exit(1);
+    console.error('Critical quality issues detected!');
+    // Fail CI/CD
+    process.exit(1);
 } else if (result.score < 70) {
-  console.warn('Quality issues need attention');
+    console.warn('Quality issues need attention');
 } else {
-  console.log('Good score!');
+    console.log('Good score!');
 }
 ```
 
@@ -251,23 +251,23 @@ if (result.score < 50) {
 import { runWAH } from 'web-audit-helper';
 
 async function auditPage() {
-  const result = await runWAH({
-    logs: false,           // No console noise
-    logLevel: 'none',
-    issueLevel: 'critical', // Only critical issues
-    overlay: {
-      enabled: false      // No UI in CI
-    }
-  });
+    const result = await runWAH({
+        logs: false,           // No console noise
+        logLevel: 'none',
+        issueLevel: 'critical', // Only critical issues
+        overlay: {
+        enabled: false      // No UI in CI
+        }
+    });
 
-  // Report
-  console.log(`Audit Score: ${result.score}%`);
-  
-  // Fail if too many critical issues
-  const criticalCount = result.issues.filter(i => i.severity === 'critical').length;
-  if (criticalCount > 5) {
-    throw new Error(`Too many critical issues: ${criticalCount}`);
-  }
+    // Report
+    console.log(`Audit Score: ${result.score}%`);
+    
+    // Fail if too many critical issues
+    const criticalCount = result.issues.filter(i => i.severity === 'critical').length;
+    if (criticalCount > 5) {
+        throw new Error(`Too many critical issues: ${criticalCount}`);
+    }
 }
 
 await auditPage();
@@ -280,14 +280,14 @@ const result = await runWAH();
 
 // Build custom report
 const report = {
-  score: result.score,
-  timestamp: new Date(),
-  issues: result.issues,
-  summary: {
-    critical: result.issues.filter(i => i.severity === 'critical').length,
-    warnings: result.issues.filter(i => i.severity === 'warning').length,
-    recommendations: result.issues.filter(i => i.severity === 'recommendation').length
-  }
+    score: result.score,
+    timestamp: new Date(),
+    issues: result.issues,
+    summary: {
+        critical: result.issues.filter(i => i.severity === 'critical').length,
+        warnings: result.issues.filter(i => i.severity === 'warning').length,
+        recommendations: result.issues.filter(i => i.severity === 'recommendation').length
+    }
 };
 
 // Save to database
@@ -300,12 +300,12 @@ await saveAuditReport(report);
 const isDev = process.env.NODE_ENV === 'development';
 
 await runWAH({
-  logs: isDev,
-  logLevel: isDev ? 'full' : 'none',
-  overlay: {
-    enabled: isDev,
-    position: 'bottom-right'
-  }
+    logs: isDev,
+    logLevel: isDev ? 'full' : 'none',
+    overlay: {
+        enabled: isDev,
+        position: 'bottom-right'
+    }
 });
 ```
 
@@ -342,11 +342,11 @@ WAH doesn't throw errors during normal operation. Issues are captured as `AuditI
 
 ```javascript
 try {
-  const result = await runWAH();
-  // Handle result
-} catch (error) {
-  // Handle unexpected errors (should be rare)
-  console.error('WAH encountered an error:', error);
+    const result = await runWAH();
+    // Handle result
+    } catch (error) {
+    // Handle unexpected errors (should be rare)
+    console.error('WAH encountered an error:', error);
 }
 ```
 

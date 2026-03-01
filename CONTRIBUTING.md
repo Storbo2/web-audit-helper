@@ -161,9 +161,9 @@ describe('ACC-XX: Your rule', () => {
 Example:
 ```typescript
 /**
- * Checks for missing alt text on images
- * @returns Array of issues found
- */
+    * Checks for missing alt text on images
+    * @returns Array of issues found
+*/
 export function checkMissingAlt(): AuditIssue[] {
     // ...
 }
@@ -188,12 +188,13 @@ Tests should:
 Use clear, conventional commits:
 
 ```
-Add: Implement new ACC-XX rule for validation
-Fix: Correct false positive in existing rule
-Docs: Update README with configuration example
-Test: Add tests for rule validation
-Refactor: Simplify scoring calculation logic
-Build: Update dependency versions
+feat: Add new ACC-XX rule for validation
+fix: Correct false positive in existing rule
+docs: Update README with configuration example
+test: Add tests for rule validation
+refactor: Simplify scoring calculation logic
+chore: Update dependency versions
+style: Format code and remove whitespace
 ```
 
 ### Release Process

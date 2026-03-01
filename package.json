@@ -1,6 +1,6 @@
 {
     "name": "web-audit-helper",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
     "main": "dist/index.cjs",
     "module": "dist/index.js",
@@ -43,6 +43,7 @@
         "jsdom": "^25.0.1",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3",
+        "vite": "^7.3.1",
         "vitest": "^4.0.18"
     },
     "scripts": {

@@ -8,18 +8,18 @@ Complete reference for all WAH configuration options.
 import { runWAH } from 'web-audit-helper';
 
 await runWAH({
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'all',
-  accessibility: {
-    minFontSize: 12,
-    contrastLevel: 'AA'
-  },
-  overlay: {
-    enabled: true,
-    position: 'bottom-right',
-    hide: 0
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'all',
+    accessibility: {
+        minFontSize: 12,
+        contrastLevel: 'AA'
+    },
+    overlay: {
+        enabled: true,
+        position: 'bottom-right',
+        hide: 0
+    }
 });
 ```
 
@@ -37,17 +37,17 @@ await runWAH({
 
 ```javascript
 accessibility: {
-  // Minimum font size in pixels (warn if below)
-  minFontSize: 12,           // default: 12
-  
-  // WCAG contrast requirement level
-  contrastLevel: 'AA',       // 'AA' or 'AAA' (default: 'AA')
-  
-  // Optional: Custom minimum contrast ratio
-  minContrastRatio: 4.5,     // default: 4.5 for AA, 7 for AAA
-  
-  // Optional: Minimum line-height
-  minLineHeight: 1.4         // default: 1.4
+    // Minimum font size in pixels (warn if below)
+    minFontSize: 12,           // default: 12
+    
+    // WCAG contrast requirement level
+    contrastLevel: 'AA',       // 'AA' or 'AAA' (default: 'AA')
+    
+    // Optional: Custom minimum contrast ratio
+    minContrastRatio: 4.5,     // default: 4.5 for AA, 7 for AAA
+    
+    // Optional: Minimum line-height
+    minLineHeight: 1.4         // default: 1.4
 }
 ```
 
@@ -55,17 +55,17 @@ accessibility: {
 
 ```javascript
 overlay: {
-  // Show/hide the visual overlay interface
-  enabled: true,             // default: true
-  
-  // Position of overlay on screen
-  position: 'bottom-right',  // 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
-                            // default: 'bottom-right'
-  
-  // Hide overlay for X milliseconds on initial load
-  hide: 0,                   // 0 = show immediately (default: 0)
-                            // 300000 = hide for 5 minutes
-                            // -1 = hide until page refresh
+    // Show/hide the visual overlay interface
+    enabled: true,             // default: true
+    
+    // Position of overlay on screen
+    position: 'bottom-right',  // 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
+                                // default: 'bottom-right'
+    
+    // Hide overlay for X milliseconds on initial load
+    hide: 0,                   // 0 = show immediately (default: 0)
+                                // 300000 = hide for 5 minutes
+                                // -1 = hide until page refresh
 }
 ```
 
@@ -73,8 +73,8 @@ overlay: {
 
 ```javascript
 quality: {
-  // Threshold for inline styles detection
-  inlineStylesThreshold: 10  // warn if >10 elements (default: 10)
+    // Threshold for inline styles detection
+    inlineStylesThreshold: 10  // warn if >10 elements (default: 10)
 }
 ```
 
@@ -84,17 +84,17 @@ quality: {
 
 ```javascript
 await runWAH({
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'all',
-  accessibility: {
-    minFontSize: 12,
-    contrastLevel: 'AA'
-  },
-  overlay: {
-    enabled: true,
-    position: 'bottom-right'
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'all',
+    accessibility: {
+        minFontSize: 12,
+        contrastLevel: 'AA'
+    },
+    overlay: {
+        enabled: true,
+        position: 'bottom-right'
+    }
 });
 ```
 
@@ -102,13 +102,13 @@ await runWAH({
 
 ```javascript
 await runWAH({
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'critical',  // Only critical issues
-  accessibility: {
-    minFontSize: 14,  // Stricter font size
-    contrastLevel: 'AAA'  // Stricter contrast
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'critical',  // Only critical issues
+    accessibility: {
+        minFontSize: 14,  // Stricter font size
+        contrastLevel: 'AAA'  // Stricter contrast
+    }
 });
 ```
 
@@ -116,12 +116,12 @@ await runWAH({
 
 ```javascript
 await runWAH({
-  logs: false,  // No console output
-  logLevel: 'none',
-  issueLevel: 'critical',  // Only critical issues
-  overlay: {
-    enabled: false  // Don't show overlay
-  }
+    logs: false,  // No console output
+    logLevel: 'none',
+    issueLevel: 'critical',  // Only critical issues
+    overlay: {
+        enabled: false  // Don't show overlay
+    }
 });
 ```
 
@@ -129,16 +129,16 @@ await runWAH({
 
 ```javascript
 await runWAH({
-  logs: true,
-  logLevel: 'summary',  // Less verbose
-  issueLevel: 'warnings',  // Skip recommendations
-  accessibility: {
-    minFontSize: 14,
-    contrastLevel: 'AA'
-  },
-  overlay: {
-    enabled: true
-  }
+    logs: true,
+    logLevel: 'summary',  // Less verbose
+    issueLevel: 'warnings',  // Skip recommendations
+    accessibility: {
+        minFontSize: 14,
+        contrastLevel: 'AA'
+    },
+    overlay: {
+        enabled: true
+    }
 });
 ```
 
@@ -160,11 +160,11 @@ Scoring mode is changed via the overlay UI after initialization.
 
 ```javascript
 if (process.env.NODE_ENV === 'development') {
-  await runWAH({
-    logs: true,
-    logLevel: 'full',
-    overlay: { enabled: true }
-  });
+    await runWAH({
+        logs: true,
+        logLevel: 'full',
+        overlay: { enabled: true }
+    });
 }
 ```
 
@@ -172,11 +172,11 @@ if (process.env.NODE_ENV === 'development') {
 
 ```javascript
 if (process.env.NODE_ENV === 'staging') {
-  await runWAH({
-    logs: true,
-    logLevel: 'summary',
-    overlay: { enabled: true }
-  });
+    await runWAH({
+        logs: true,
+        logLevel: 'summary',
+        overlay: { enabled: true }
+    });
 }
 ```
 
@@ -184,11 +184,11 @@ if (process.env.NODE_ENV === 'staging') {
 
 ```javascript
 if (process.env.NODE_ENV === 'production') {
-  // Usually disabled in production, but can be enabled for testing:
-  // await runWAH({
-  //   logs: false,
-  //   overlay: { enabled: false }
-  // });
+    // Usually disabled in production, but can be enabled for testing:
+    // await runWAH({
+    //   logs: false,
+    //   overlay: { enabled: false }
+    // });
 }
 ```
 
@@ -196,15 +196,15 @@ if (process.env.NODE_ENV === 'production') {
 
 ```javascript
 try {
-  const result = await runWAH({
-    /* config */
-  });
-  
-  if (result.score < 50) {
-    console.warn('Critical accessibility issues detected');
-  }
-} catch (error) {
-  console.error('WAH encountered an error:', error);
+    const result = await runWAH({
+        /* config */
+    });
+    
+    if (result.score < 50) {
+        console.warn('Critical accessibility issues detected');
+    }
+    } catch (error) {
+    console.error('WAH encountered an error:', error);
 }
 ```
 
@@ -214,21 +214,21 @@ try {
 import type { WAHConfig } from 'web-audit-helper';
 
 const config: WAHConfig = {
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'all',
-  accessibility: {
-    minFontSize: 12,
-    contrastLevel: 'AA'
-  },
-  overlay: {
-    enabled: true,
-    position: 'bottom-right',
-    hide: 0
-  },
-  quality: {
-    inlineStylesThreshold: 10
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'all',
+    accessibility: {
+        minFontSize: 12,
+        contrastLevel: 'AA'
+    },
+    overlay: {
+        enabled: true,
+        position: 'bottom-right',
+        hide: 0
+    },
+    quality: {
+        inlineStylesThreshold: 10
+    }
 };
 
 await runWAH(config);
@@ -239,8 +239,8 @@ await runWAH(config);
 **Q: How do I disable the overlay but keep console logs?**
 ```javascript
 await runWAH({
-  logs: true,
-  overlay: { enabled: false }
+    logs: true,
+    overlay: { enabled: false }
 });
 ```
 

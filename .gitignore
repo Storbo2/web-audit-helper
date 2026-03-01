@@ -19,7 +19,6 @@
 # production
 /build
 /dist
-*wahCss.ts
 *.tgz
 
 # misc

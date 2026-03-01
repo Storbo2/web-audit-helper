@@ -1,6 +1,6 @@
 # WAH – Web Audit Helper 🧠
 
-[![npm version](https://badge.fury.io/js/web-audit-helper.svg)](https://www.npmjs.com/package/web-audit-helper)
+[![npm version](https://img.shields.io/npm/v/web-audit-helper)](https://www.npmjs.com/package/web-audit-helper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
@@ -12,7 +12,7 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 
 ## ✨ Features
 
-- ♿ **61 Accessibility checks** (WCAG AA/AAA, font size, alt text, labels, contrast, ARIA, skip links)
+- ♿ **60+ Accessibility checks** (WCAG AA/AAA, font size, alt text, labels, contrast, ARIA, skip links)
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
@@ -44,10 +44,10 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.0.0/dist/index.js';
-  
-  // Run with default configuration
-  await runWAH();
+    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.0.0/dist/index.js';
+
+    // Run with default configuration
+    await runWAH();
 </script>
 ```
 
@@ -61,18 +61,18 @@ await runWAH();
 
 // Custom configuration
 await runWAH({
-  logs: true,
-  logLevel: 'full',
-  issueLevel: 'all',
-  accessibility: {
-    minFontSize: 12,
-    contrastLevel: 'AA'
-  },
-  overlay: {
-    enabled: true,
-    position: 'bottom-right',
-    hide: 0
-  }
+    logs: true,
+    logLevel: 'full',
+    issueLevel: 'all',
+    accessibility: {
+        minFontSize: 12,
+        contrastLevel: 'AA'
+    },
+    overlay: {
+        enabled: true,
+        position: 'bottom-right',
+        hide: 0
+    }
 });
 ```
 
@@ -82,16 +82,16 @@ await runWAH({
 
 WAH supports extensive configuration options for customization:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `logs` | `boolean` | `true` | Enable console logging |
-| `logLevel` | `'full' \| 'summary' \| 'none'` | `'full'` | Console verbosity level |
-| `issueLevel` | `'critical' \| 'warnings' \| 'all'` | `'all'` | Filter which issues to report |
-| `accessibility.minFontSize` | `number` | `12` | Minimum font size in pixels |
-| `accessibility.contrastLevel` | `'AA' \| 'AAA'` | `'AA'` | WCAG contrast requirement level |
-| `overlay.enabled` | `boolean` | `true` | Show visual overlay interface |
-| `overlay.position` | `string` | `'bottom-right'` | Overlay position (bottom-left/bottom-right/top-left/top-right) |
-| `overlay.hide` | `number` | `0` | Hide overlay for X milliseconds on load |
+| Option                        | Type                                | Default          | Description                                                    |
+| ----------------------------- | ----------------------------------- | ---------------- | -------------------------------------------------------------- |
+| `logs`                        | `boolean`                           | `true`           | Enable console logging                                         |
+| `logLevel`                    | `'full' \| 'summary' \| 'none'`     | `'full'`         | Console verbosity level                                        |
+| `issueLevel`                  | `'critical' \| 'warnings' \| 'all'` | `'all'`          | Filter which issues to report                                  |
+| `accessibility.minFontSize`   | `number`                            | `12`             | Minimum font size in pixels                                    |
+| `accessibility.contrastLevel` | `'AA' \| 'AAA'`                     | `'AA'`           | WCAG contrast requirement level                                |
+| `overlay.enabled`             | `boolean`                           | `true`           | Show visual overlay interface                                  |
+| `overlay.position`            | `string`                            | `'bottom-right'` | Overlay position (bottom-left/bottom-right/top-left/top-right) |
+| `overlay.hide`                | `number`                            | `0`              | Hide overlay for X milliseconds on load                        |
 
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
 
@@ -123,32 +123,32 @@ Multipliers automatically calibrate based on active categories:
 
 ---
 
-## 🎯 Audit Rules (61 Total)
+## 🎯 Audit Rules (+60 Total)
 
 WAH implements comprehensive audit rules across **8 categories**:
 
-### Accessibility (26 rules)
+### Accessibility
 Font size, alt text, labels, links, buttons, ARIA, skip links, headings, focus, contrast, line-height, etc.
 
-### Semantic HTML (7 rules)
+### Semantic HTML
 H1 hierarchy, semantic elements (strong/em), main, nav, canonical structure
 
-### SEO (8 rules)
+### SEO
 Title, meta description, viewport, canonical, Open Graph, Twitter Cards, charset, robots
 
-### Responsive Design (5 rules)
+### Responsive Design
 Viewport meta, fixed widths, overflow, fixed elements, 100vh issues
 
-### Security (1 rule)
+### Security
 Target=_blank security (tabnabbing prevention)
 
-### Quality (2 rules)
+### Quality
 Inline styles, dummy links, semantic naming
 
-### Performance (10 rules)
+### Performance
 Image optimization, lazy loading, async decode, script placement, fonts, caching, render-blocking CSS
 
-### Forms (4 rules)
+### Forms
 Submit buttons, required indicators, input types, autocomplete
 
 **For complete rules reference**, see [Rules Documentation](docs/rules.md).
@@ -185,8 +185,8 @@ Run WAH with logging enabled to export reports to the console:
 
 ```javascript
 await runWAH({
-  logs: true,
-  logLevel: 'full'
+    logs: true,
+    logLevel: 'full'
 });
 
 // Reports are printed to console as:
@@ -235,7 +235,7 @@ The overlay provides a floating interface with:
 
 WAH is organized into clear modules:
 
-- **`core/`**: Audit engine with 61 rules across 8 categories
+- **`core/`**: Audit engine with 60+ rules across 8 categories
 - **`overlay/`**: Visual UI components (Overlay, Popover, filters, drag)
 - **`reporters/`**: Export formats (JSON, TXT, HTML) with metadata
 - **`utils/`**: Shared utilities (console logging, DOM helpers)
@@ -290,7 +290,7 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ## 📋 Roadmap
 
 ### v1.0.0 (Current)
-- 61 audit rules implemented
+- 60+ audit rules implemented
 - Visual overlay with filtering and export
 - 5 scoring modes with auto-calibration
 - Console diagnostics and commands

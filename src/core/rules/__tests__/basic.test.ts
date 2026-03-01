@@ -21,7 +21,6 @@ describe('Accessibility Rules', () => {
             img.src = 'test.jpg';
             testElement.appendChild(img);
 
-            // In actual implementation, would run the rule function
             const hasAlt = img.hasAttribute('alt') && img.getAttribute('alt') !== '';
             expect(hasAlt).toBe(false);
         });
@@ -39,7 +38,7 @@ describe('Accessibility Rules', () => {
         it('should flag decorative images without empty alt', () => {
             const img = document.createElement('img');
             img.src = 'decoration.jpg';
-            img.alt = 'Decorative spacing'; // Should be empty for decorative
+            img.alt = 'Decorative spacing';
             testElement.appendChild(img);
 
             const isDecorativeProper = img.getAttribute('alt') === '' || img.getAttribute('alt')?.trim() === '';
@@ -160,8 +159,6 @@ describe('SEO Rules', () => {
     describe('SEO-03: Charset', () => {
         it('should detect charset meta tag', () => {
             const charset = document.querySelector('meta[charset]');
-            // May exist or not depending on test setup
-            // This test just verifies the selector works
             expect(charset === null || charset instanceof HTMLMetaElement).toBe(true);
         });
     });
@@ -275,7 +272,6 @@ describe('Responsive Design Rules', () => {
     describe('RWD-02: Missing Viewport Meta', () => {
         it('should detect missing viewport meta tag', () => {
             const viewport = document.querySelector('meta[name="viewport"]');
-            // May exist or not - test just verifies selector works
             expect(viewport === null || viewport instanceof HTMLMetaElement).toBe(true);
         });
 

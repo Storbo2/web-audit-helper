@@ -19,7 +19,7 @@ Overview of WAH's system design and module organization.
     ▼                  ▼
 ┌──────────────┐  ┌──────────────┐
 │ Rules Engine │  │ Scoring      │
-│   (61 rules) │  │ Engine       │
+│   (60+ rules) │  │ Engine       │
 └──────┬───────┘  └──────┬───────┘
        │                 │
        └────────┬────────┘
@@ -145,40 +145,40 @@ src/reporters/
 **Report Format**:
 ```json
 {
-  "meta": {
-    "url": "...",
-    "date": "2026-03-01T...",
-    "viewport": { "width": 1920, "height": 1080 },
-    "scoringMode": "normal",
-    "appliedFilters": { "severities": [...], "categories": [...] }
-  },
-  "score": {
-    "overall": 75,
-    "grade": "C",
-    "byCategory": { "accessibility": 65, "seo": 80, ... }
-  },
-  "categories": [
-    {
-      "id": "accessibility",
-      "title": "Accessibility",
-      "score": 65,
-      "rules": [
+    "meta": {
+        "url": "...",
+        "date": "2026-03-01T...",
+        "viewport": { "width": 1920, "height": 1080 },
+        "scoringMode": "normal",
+        "appliedFilters": { "severities": [...], "categories": [...] }
+    },
+    "score": {
+        "overall": 75,
+        "grade": "C",
+        "byCategory": { "accessibility": 65, "seo": 80, ... }
+    },
+    "categories": [
         {
-          "id": "ACC-02",
-          "title": "Image missing alt",
-          "status": "critical",
-          "message": "...",
-          "fix": "...",
-          "elements": [...]
+        "id": "accessibility",
+        "title": "Accessibility",
+        "score": 65,
+        "rules": [
+            {
+            "id": "ACC-02",
+            "title": "Image missing alt",
+            "status": "critical",
+            "message": "...",
+            "fix": "...",
+            "elements": [...]
+            }
+        ]
         }
-      ]
+    ],
+    "stats": {
+        "failed": 12,
+        "warnings": 18,
+        "recommendations": 5
     }
-  ],
-  "stats": {
-    "failed": 12,
-    "warnings": 18,
-    "recommendations": 5
-  }
 }
 ```
 
@@ -271,14 +271,14 @@ For each category:
 
 ```
 Weights:
-  accessibility: 0.25
-  seo:          0.20
-  responsive:   0.15
-  semantic:     0.10
-  security:     0.10
-  quality:      0.10
-  performance:  0.05
-  form:         0.05
+    accessibility: 0.25
+    seo:          0.20
+    responsive:   0.15
+    semantic:     0.10
+    security:     0.10
+    quality:      0.10
+    performance:  0.05
+    form:         0.05
 
 overallScore = sum(categoryScore * weight) / totalWeight
 ```
@@ -299,45 +299,45 @@ This prevents scores from bottoming out with very restrictive filters.
 ```typescript
 // Issue definition
 interface AuditIssue {
-  rule: string;              // "ACC-02"
-  message: string;           // Human readable
-  severity: Severity;        // critical | warning | recommendation
-  category?: IssueCategory;  // accessibility | seo | ...
-  selector?: string;         // CSS selector for DOM targeting
-  element?: HTMLElement;     // Reference to DOM element
+    rule: string;              // "ACC-02"
+    message: string;           // Human readable
+    severity: Severity;        // critical | warning | recommendation
+    category?: IssueCategory;  // accessibility | seo | ...
+    selector?: string;         // CSS selector for DOM targeting
+    element?: HTMLElement;     // Reference to DOM element
 }
 
 // Audit result
 interface AuditResult {
-  issues: AuditIssue[];
-  score: number;  // 0-100
+    issues: AuditIssue[];
+    score: number;  // 0-100
 }
 
 // Configuration
 interface WAHConfig {
-  logs: boolean;
-  logLevel: LogLevel;
-  issueLevel: IssueLevel;
-  accessibility: {
-    minFontSize: number;
-    contrastLevel: ContrastLevel;
-  };
-  overlay: {
-    enabled: boolean;
-    position: string;
-    hide: number;
-  };
-  quality?: {
-    inlineStylesThreshold?: number;
-  };
+    logs: boolean;
+    logLevel: LogLevel;
+    issueLevel: IssueLevel;
+    accessibility: {
+        minFontSize: number;
+        contrastLevel: ContrastLevel;
+    };
+    overlay: {
+        enabled: boolean;
+        position: string;
+        hide: number;
+    };
+    quality?: {
+        inlineStylesThreshold?: number;
+    };
 }
 
 // Report
 interface AuditReport {
-  meta: ReportMeta;
-  score: ReportScore;
-  categories: CategoryReport[];
-  stats: AuditStats;
+    meta: ReportMeta;
+    score: ReportScore;
+    categories: CategoryReport[];
+    stats: AuditStats;
 }
 ```
 

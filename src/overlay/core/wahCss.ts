@@ -1,0 +1,979 @@
+// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
+// Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
+// Order: variables.css → base.css → popover-base.css → popover-filters.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
+
+export const wahCss = `
+:root {
+    --wah-bg: #0f172a;
+    --wah-text: #e5e7eb;
+    --wah-border: #38bdf8;
+    --wah-shadow: rgba(239, 68, 68, 0);
+    --wah-bg-light: #dfdfdf;
+    --wah-text-light: #0b1220;
+    --wah-dark-border-light: rgba(2, 6, 23, 0.10);
+
+    --wah-score-excellent: #38bdf8;
+    --wah-score-good: #22c55e;
+    --wah-score-medium: #ffe100;
+    --wah-score-warning: #ff9f0e;
+    --wah-score-bad: #ed4141;
+    --wah-badges-symbols: #ffffff;
+    --wah-dark-border: rgba(255, 255, 255, 0.08);
+    --wah-accent-default: #22d3ee;
+
+    --wah-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --wah-trans-quick: 120ms;
+    --wah-trans-fast: 160ms;
+    --wah-trans-medium: 220ms;
+    --wah-trans-long: 240ms;
+}
+
+#wah-overlay-root[data-theme="light"] {
+    --wah-bg: var(--wah-bg-light);
+    --wah-text: var(--wah-text-light);
+    --wah-dark-border: var(--wah-dark-border-light);
+    --wah-badges-symbols: var(--wah-text-light);
+}
+
+@media (prefers-color-scheme: light) {
+    #wah-overlay-root[data-theme="auto"] {
+        --wah-bg: var(--wah-bg-light);
+        --wah-text: var(--wah-text-light);
+        --wah-dark-border: var(--wah-dark-border-light);
+    }
+}
+
+#wah-overlay-root {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: min(92vw, 21.25rem);
+    max-width: 92vw;
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    border: 0.0625rem solid var(--wah-border);
+    border-radius: 0.625rem;
+    font-family: var(--wah-font);
+    font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
+    overflow: hidden;
+    z-index: 9999;
+    transition: height var(--wah-trans-medium) ease, left var(--wah-trans-long) ease, top var(--wah-trans-long) ease;
+}
+
+#wah-overlay-root .wah-content {
+    max-height: min(45vh, 20rem);
+    opacity: 1;
+    transform: translateY(0);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+        max-height var(--wah-trans-medium) ease,
+        opacity var(--wah-trans-fast) ease,
+        transform var(--wah-trans-medium) ease;
+}
+
+#wah-overlay-root.wah-collapsed .wah-content {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+    transform: translateY(-0.375rem);
+    pointer-events: none;
+    display: block;
+}
+
+.wah-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem;
+    touch-action: none;
+}
+
+.wah-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.wah-content {
+    padding: 0.7rem;
+    text-align: center;
+    border-top: 0.0625rem solid var(--wah-border);
+}
+
+.wah-toggle {
+    background: none;
+    border: none;
+    color: var(--wah-text);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.wah-toggle:focus {
+    font-weight: bold;
+}
+
+.wah-rerun-btn {
+    background: none;
+    border: none;
+    color: var(--wah-text);
+    font-size: 1em;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.95;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.wah-rerun-btn:hover {
+    transform: rotate(20deg) scale(1.1);
+    opacity: 1;
+}
+
+.wah-rerun-btn:active {
+    transform: rotate(20deg) scale(0.95);
+}
+
+.wah-highlight {
+    border-radius: 0.1875rem;
+    box-shadow: 0 0 0 0 var(--wah-shadow);
+    transition:
+        box-shadow 220ms ease,
+        transform 220ms ease;
+}
+
+.wah-highlight.wah-highlight--on {
+    box-shadow: 0 0 0 0.25rem var(--wah-hl, var(--wah-score-bad));
+}
+
+.wah-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.wah-score {
+    font-size: clamp(1.2em, 1em + 1vw, 1.6em);
+    font-weight: bold;
+    margin: 0;
+}
+
+.wah-score-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wah-score-wrap .wah-score {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 0.08em;
+    cursor: pointer;
+    transition: text-decoration-color var(--wah-trans-medium) ease, opacity var(--wah-trans-fast) ease;
+    outline: none;
+}
+
+.wah-score-wrap:hover .wah-score,
+.wah-score-wrap:focus-within .wah-score {
+    text-decoration-color: currentColor;
+}
+
+.wah-score-pop {
+    position: fixed;
+    transform: translateY(-0.2rem) scale(0.98);
+    opacity: 0;
+    pointer-events: none;
+    min-width: 13.5rem;
+    max-width: 16.5rem;
+    border-radius: 0.625rem;
+    border: 0.0625rem solid var(--wah-border);
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.30);
+    padding: 0.5rem 0.625rem;
+    z-index: 99999;
+    transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
+}
+
+.wah-score-wrap.is-open .wah-score-pop {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.wah-score-pop-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.375rem;
+    text-align: center;
+}
+
+.wah-score-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.wah-score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.75rem;
+}
+
+.wah-score-cat {
+    opacity: 0.95;
+    text-align: left;
+}
+
+.wah-score-val {
+    font-weight: 700;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+#wah-overlay-root[data-pos="top-left"] {
+    top: 1rem;
+    left: 1rem;
+    right: auto;
+    bottom: auto;
+}
+
+#wah-overlay-root[data-pos="top-right"] {
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    bottom: auto;
+}
+
+#wah-overlay-root[data-pos="bottom-left"] {
+    bottom: 1rem;
+    left: 1rem;
+    right: auto;
+    top: auto;
+}
+
+#wah-overlay-root[data-pos="bottom-right"] {
+    bottom: 1rem;
+    right: 1rem;
+    left: auto;
+    top: auto;
+}
+
+#wah-overlay-root[data-pos="top-center"] {
+    top: 1rem;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%);
+}
+
+#wah-overlay-root[data-pos="bottom-center"] {
+    bottom: 1rem;
+    left: 50%;
+    right: auto;
+    top: auto;
+    transform: translateX(-50%);
+}
+
+#wah-overlay-root.wah-dragging {
+    transition: none !important;
+}
+
+#wah-overlay-root .wah-header {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#wah-overlay-root.wah-dragging .wah-header {
+    cursor: grabbing;
+}
+
+#wah-overlay-root.wah-snapping {
+    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@media (max-width: 480px) {
+    #wah-overlay-root {
+        width: min(92vw, 18rem);
+        font-size: clamp(0.75rem, 0.7rem + 0.6vw, 0.95rem);
+    }
+
+    #wah-overlay-root .wah-content {
+        max-height: min(50vh, 16rem);
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
+}
+
+.wah-pop {
+    position: fixed;
+    min-height: min(40vh, 12.5rem);
+    max-height: min(80vh, 30rem);
+    width: min(92vw, 20rem);
+    background: var(--wah-bg);
+    border: 0.0625rem solid var(--wah-accent-default);
+    border-radius: 0.75rem;
+    padding: 0.875rem 0.75rem 0.75rem;
+    z-index: 999999;
+    box-shadow: 0 0.875rem 1.875rem rgba(0, 0, 0, .40);
+    color: var(--wah-text);
+    backdrop-filter: blur(0.375rem);
+    font-family: var(--wah-font);
+    font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
+    opacity: 0;
+    transform: translateY(-0.375rem) scale(0.98);
+    transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
+    pointer-events: none;
+    overflow-y: auto;
+}
+
+.wah-pop.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.wah-pop-titleline {
+    font-size: 1.1em;
+    margin: 0 0 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.0125rem;
+    text-align: center;
+    font-family: inherit;
+}
+
+.wah-pop-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 0 0 0.75rem;
+    letter-spacing: 0.0125rem;
+    font-family: inherit;
+}
+
+.wah-pop-section {
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.wah-pop-body {
+    min-height: min(35vh, 11.25rem);
+}
+
+.wah-pop-body input[type="checkbox"] {
+    width: 0.875rem;
+    height: 0.875rem;
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-spacer {
+    height: 0.75rem;
+}
+
+.wah-pop-section-spaced {
+    margin-top: 0.375rem;
+}
+
+.wah-pop-row-space-between {
+    justify-content: space-between;
+}
+
+.wah-pop-section-centered {
+    text-align: center;
+    margin-bottom: 0.625rem;
+    font-size: 0.75rem;
+}
+
+.wah-pop-btn-full {
+    width: fit-content;
+}
+
+.wah-pop-btn-full+div {
+    margin-bottom: 0.75rem;
+}
+
+.wah-pop-settings {
+    display: flex;
+    justify-content: center;
+}
+
+.wah-pop-row {
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+    font-size: 0.95em;
+    padding: 0.45em 0.6em;
+    border-radius: 0.625rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wah-pop-row input[type="range"] {
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-row input[type="radio"] {
+    accent-color: var(--wah-border);
+}
+
+.wah-pop-row:hover {
+    background: rgba(56, 189, 248, 0.10);
+}
+
+.wah-pop-select {
+    flex: 1;
+    padding: 0.45em 0.6em;
+    background: var(--wah-bg);
+    color: var(--wah-text);
+    border: 1px solid var(--wah-border);
+    border-radius: 0.375rem;
+    font-size: 0.95em;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.wah-pop-info {
+    padding: 0.5rem 0.6rem;
+    background: rgba(56, 189, 248, 0.08);
+    border-left: 2px solid var(--wah-border);
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    color: var(--wah-text);
+    opacity: 0.75;
+    line-height: 1.4;
+}
+
+.wah-pop[data-theme="light"] .wah-pop-info {
+    opacity: 0.9;
+}
+
+.wah-pop-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
+}
+
+.wah-pop-head-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    flex: 1;
+}
+
+.wah-pop-title {
+    font-weight: 700;
+    font-size: 1em;
+}
+
+.wah-pop-page {
+    font-size: 0.8em;
+    opacity: 0.75;
+}
+
+.wah-pop-nav {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.625rem;
+    border: 0.0625rem solid var(--wah-dark-border);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: transform var(--wah-trans-quick) ease, background var(--wah-trans-quick) ease, opacity var(--wah-trans-quick) ease;
+    font-size: 0.95em;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wah-pop-nav:hover {
+    transform: translateY(-0.0625rem);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.wah-pop-note {
+    margin-top: 0.625rem;
+    font-size: 0.8em;
+    opacity: 0.75;
+}
+
+.wah-pop-btn {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.75rem;
+    border: 0.0625rem solid var(--wah-dark-border);
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background var(--wah-trans-quick) ease;
+}
+
+.wah-pop-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border: 0.0625rem solid var(--wah-border);
+}
+
+.wah-ui-reset {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: opacity var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
+    padding: 0;
+}
+
+.wah-ui-reset:hover {
+    transform: rotate(-30deg) scale(1.1);
+}
+
+.wah-rerun {
+    margin-top: 0.75rem;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 159, 14, 0.1);
+    border: 0.0625rem solid var(--wah-score-warning);
+    display: none;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
+}
+
+.wah-rerun:hover {
+    background: rgba(255, 159, 14, 0.15);
+    border-color: var(--wah-score-warning);
+    transform: translateY(-0.0625rem);
+}
+
+.wah-rerun span {
+    font-size: 0.85em;
+    color: var(--wah-score-warning);
+    font-weight: 500;
+}
+
+.wah-hide-select {
+    width: fit-content;
+    flex: 1;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.0625rem solid var(--wah-dark-border);
+    color: var(--wah-text);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease;
+}
+
+.wah-hide-select:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-border);
+}
+
+.wah-hide-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--wah-accent-default);
+}
+
+.wah-hide-select option {
+    background: var(--wah-bg);
+    color: var(--wah-text);
+}
+
+.wah-reset-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--wah-score-warning);
+    box-shadow: 0 0 0.625rem rgba(237, 171, 65, 0.3);
+}
+
+.wah-hide-for-label {
+    font-size: 0.9em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.wah-hide-for-row {
+    display: flex;
+    gap: 0.375rem;
+    margin-top: 0.375rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+
+.wah-hide-for-btn {
+    width: fit-content;
+    padding: 0.5rem 0.625rem;
+}
+
+.wah-hide-info {
+    font-size: 0.85em;
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.wah-color-input {
+    width: 2.375rem;
+    height: 1.375rem;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.wah-rerun-visible {
+    display: flex;
+}
+
+.wah-export-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.wah-export-content h3 {
+    margin: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: inherit;
+    letter-spacing: 0.0125rem;
+    text-align: center;
+}
+
+.wah-export-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+    padding: 0.75rem;
+    border: 0.0625rem solid var(--wah-dark-border);
+    border-radius: 0.625rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wah-text);
+    cursor: pointer;
+    transition: all 160ms ease;
+    font-family: inherit;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.wah-export-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--wah-border);
+    transform: translateY(-0.125rem);
+}
+
+.wah-export-btn:active {
+    transform: translateY(0);
+}
+
+.wah-export-btn .label {
+    font-size: 0.8125rem;
+    font-weight: bold;
+}
+
+.wah-export-btn .desc {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    font-weight: normal;
+}
+
+.wah-panel,
+.wah-all-panel {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scroll-snap-type: y proximity;
+    scroll-padding: 0.5rem 0;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    border: 0.0625rem solid var(--wah-dark-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.wah-all-panel {
+    max-height: min(40vh, 12.5rem);
+    margin-top: 0.375rem;
+}
+
+.wah-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issue-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 0.5rem 0.25rem;
+    border-bottom: 0.0625rem solid var(--wah-dark-border);
+    font-size: 0.9em;
+    scroll-snap-align: start;
+}
+
+.wah-issue-item:last-child {
+    border-bottom: none;
+}
+
+.wah-msg {
+    font-size: 0.8rem;
+    line-height: 1.25;
+}
+
+.wah-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 0.85em;
+    line-height: 1;
+}
+
+.wah-badge .wah-badge-symbol {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-badge.wah-critical {
+    color: var(--wah-score-bad);
+}
+
+.wah-badge.wah-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-badge.wah-recommendation {
+    color: var(--wah-badges-symbols);
+}
+
+.wah-panel::-webkit-scrollbar {
+    width: 0.625rem;
+}
+
+.wah-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.wah-panel::-webkit-scrollbar-thumb {
+    background: rgba(229, 231, 235, 0.18);
+    border-radius: 0.625rem;
+    border: 0.125rem solid transparent;
+    background-clip: content-box;
+}
+
+.wah-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 231, 235, 0.28);
+    border: 0.125rem solid transparent;
+    background-clip: content-box;
+}
+
+.score-excellent,
+.wah-score-excellent {
+    color: var(--wah-score-excellent);
+}
+
+.score-good,
+.wah-score-good {
+    color: var(--wah-score-good);
+}
+
+.score-warning,
+.wah-score-warning {
+    color: var(--wah-score-warning);
+}
+
+.score-bad,
+.wah-score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-critical {
+    text-align: left;
+}
+
+.wah-recommendation {
+    color: var(--wah-text);
+    opacity: .85;
+}
+
+.wah-chip,
+.wah-tool,
+.wah-all-toggle,
+.wah-pop-nav,
+.wah-pop-btn,
+.wah-hide-select {
+    border-radius: 0.625rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wah-text);
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, opacity 160ms ease;
+}
+
+.wah-filter {
+    display: flex;
+    gap: 0.375rem;
+    margin: 0.625rem 0 0.5rem;
+}
+
+.wah-msg.score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-msg.score-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-msg.text {
+    color: var(--wah-text);
+}
+
+.wah-chip {
+    flex: 1;
+    padding: 0.375rem 0.5rem;
+    border: 0.0625rem solid rgba(56, 189, 248, 0.6);
+    border-radius: 62.4375rem;
+    opacity: 0.9;
+    font-size: 0.75rem;
+}
+
+.wah-chip.is-active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--wah-border);
+    opacity: 1;
+}
+
+.wah-toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0.125rem;
+    align-items: center;
+}
+
+.wah-tool {
+    width: 2rem;
+    height: 1.75rem;
+    border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+    line-height: 1;
+    opacity: 0.9;
+    font-size: 0.875rem;
+}
+
+.wah-tool:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-0.0625rem);
+}
+
+.wah-tool.is-active {
+    border-color: rgba(56, 189, 248, 0.55);
+    background: rgba(56, 189, 248, 0.10);
+}
+
+.wah-counts {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    margin-top: 0.375rem;
+    opacity: 0.9;
+}
+
+.wah-counts .c {
+    color: var(--wah-score-bad);
+}
+
+.wah-counts .w {
+    color: var(--wah-score-warning);
+}
+
+.wah-counts .r {
+    color: var(--wah-text);
+}
+
+.wah-counts .r .r2 {
+    color: var(--wah-text);
+    font-weight: bold;
+}
+
+.wah-legend {
+    display: flex;
+    gap: 0.625rem;
+    justify-content: center;
+    font-size: 0.6875rem;
+    opacity: 0.9;
+    margin: 0.375rem 0 0.125rem;
+}
+
+.wah-legend-item {
+    display: inline-flex;
+    gap: 0.375rem;
+    align-items: center;
+}
+
+.wah-legend-sym {
+    font-size: 0.9375rem;
+}
+
+.wah-all-toggle {
+    width: 100%;
+    margin-top: 0.625rem;
+    padding: 0.375rem 0.5rem;
+    border: 0.0625rem solid var(--wah-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.wah-all-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issues {
+    margin: 0.375rem 0 0;
+    padding-left: 1rem;
+}
+
+.wah-issues li {
+    cursor: pointer;
+    margin-bottom: 0.375rem;
+    color: var(--wah-score-bad);
+    transition: opacity .15s ease;
+}
+
+.wah-issues li:hover {
+    text-decoration: underline;
+}
+
+.wah-ok {
+    margin: 0.375rem 0 0;
+    color: var(--wah-score-good);
+}
+`;

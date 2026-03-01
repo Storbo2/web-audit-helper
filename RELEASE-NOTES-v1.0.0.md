@@ -71,7 +71,7 @@ Breakdown:
 ```
 📚 docs/
 ├── configuration.md (Complete config reference - 250+ lines)
-├── rules.md (All 61 rules documented - 400+ lines)
+├── rules.md (All 60+ rules documented - 400+ lines)
 ├── architecture.md (System design & module organization - 350+ lines)
 └── api.md (Public API reference - 300+ lines)
 ```
@@ -118,9 +118,9 @@ await runWAH();
 
 // Or with config
 const result = await runWAH({
-  logs: true,
-  logLevel: 'full',
-  overlay: { enabled: true, position: 'bottom-right' }
+    logs: true,
+    logLevel: 'full',
+    overlay: { enabled: true, position: 'bottom-right' }
 });
 
 console.log(`Score: ${result.score}%`);
@@ -207,7 +207,7 @@ console.log(`Score: ${result.score}%`);
 
 All items completed:
 
-- [x] 61 rules fully functional
+- [x] 60+ rules fully functional
 - [x] Scoring system working (5 modes)
 - [x] Overlay UI complete
 - [x] Multi-format export (JSON/TXT/HTML)
