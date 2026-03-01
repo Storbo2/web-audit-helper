@@ -85,28 +85,28 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
         <div class="wah-pop-section">Opacity</div>
         <div class="wah-pop-row wah-pop-row-space-between">
             <span data-ui="opacityLabel">${Math.round(opacity * 100)}%</span>
-            <input type="range" min="0.3" max="1" step="0.05" value="${opacity}" data-ui="opacity"/>
+            <input type="range" min="0.3" max="1" step="0.05" value="${opacity}" data-ui="opacity" title="Adjust overlay opacity"/>
         </div>
 
         <div class="wah-pop-section">Accent</div>
         <label class="wah-pop-row wah-pop-row-space-between">
             <span>Color</span>
-            <input type="color" value="${accent}" data-ui="accent" class="wah-color-input"/>
+            <input type="color" value="${accent}" data-ui="accent" class="wah-color-input" title="Choose accent color"/>
         </label>
 
         <div class="wah-pop-section">Theme</div>
 
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Automatically detect theme based on system preferences">
             <input type="radio" name="wah-theme" value="auto" ${theme === "auto" ? "checked" : ""}>
             <span>Auto (system)</span>
         </label>
 
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Use dark theme">
             <input type="radio" name="wah-theme" value="dark" ${theme === "dark" ? "checked" : ""}>
             <span>Dark</span>
         </label>
 
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Use light theme">
             <input type="radio" name="wah-theme" value="light" ${theme === "light" ? "checked" : ""}>
             <span>Light</span>
         </label>

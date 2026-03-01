@@ -27,9 +27,11 @@ import {
     getRuleFix,
     validateRuleCategoryPrefix
 } from "./utils";
+import { getSettings, getActiveFilters, getActiveCategories } from "../overlay/config/settings";
 
 export function buildReportMeta(): AuditReportMeta {
-    return {
+    const settings = getSettings();
+    const meta: AuditReportMeta = {
         url: window.location.href,
         date: new Date().toISOString(),
         viewport: {
@@ -38,8 +40,21 @@ export function buildReportMeta(): AuditReportMeta {
         },
         userAgent: navigator.userAgent,
         version: WAH_VERSION,
-        mode: WAH_MODE
+        mode: WAH_MODE,
+        scoringMode: settings.scoringMode
     };
+
+    if (settings.scoringMode === "custom") {
+        const activeFilters = getActiveFilters();
+        const activeCategories = getActiveCategories();
+
+        meta.appliedFilters = {
+            severities: Array.from(activeFilters),
+            categories: Array.from(activeCategories)
+        };
+    }
+
+    return meta;
 }
 
 export function buildReportScore(categories: CategoryResult[], overallScore: number): AuditReportScore {
@@ -94,7 +109,7 @@ export function calculateRuleSummary(rules: RuleResult[]): RuleSummary {
     return { recommendation, warning, critical };
 }
 
-export function buildCategories(result: AuditResult): CategoryResult[] {
+export function buildCategories(result: AuditResult, byCategoryScores?: Partial<Record<IssueCategory, number>>): CategoryResult[] {
     const categorized = new Map<IssueCategory, typeof result.issues>();
 
     for (const issue of result.issues) {
@@ -163,7 +178,10 @@ export function buildCategories(result: AuditResult): CategoryResult[] {
         const failRules = rules.filter(r => r.status === "critical").length;
         const warnRules = rules.filter(r => r.status === "warning").length;
         const recommendationRules = rules.filter(r => r.status === "recommendation").length;
-        const categoryScore = Math.max(0, 100 - failRules * 20 - warnRules * 8 - recommendationRules * 4);
+
+        const categoryScore = typeof byCategoryScores?.[catId] === "number"
+            ? byCategoryScores[catId] as number
+            : Math.max(0, 100 - failRules * 20 - warnRules * 8 - recommendationRules * 4);
 
         categories.push({
             id: catId,

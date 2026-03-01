@@ -23,6 +23,25 @@ function escapeHtml(value: string): string {
         .replace(/'/g, "&#39;");
 }
 
+function formatScoringModeLabel(mode?: string): string {
+    if (!mode) return "normal";
+    return mode;
+}
+
+function formatAppliedFiltersText(report: AuditReport): string {
+    if (report.meta.scoringMode !== "custom" || !report.meta.appliedFilters) return "";
+
+    const severities = report.meta.appliedFilters.severities?.length
+        ? report.meta.appliedFilters.severities.join(", ")
+        : "none";
+
+    const categories = report.meta.appliedFilters.categories?.length
+        ? report.meta.appliedFilters.categories.join(", ")
+        : "none";
+
+    return `severities: ${severities} | categories: ${categories}`;
+}
+
 export function serializeReportToHTML(report: AuditReport): string {
     const categorySummaryParts: string[] = [];
     for (const category of CATEGORY_ORDER) {
@@ -147,6 +166,10 @@ export function serializeReportToHTML(report: AuditReport): string {
                     <p><strong>URL:</strong> ${escapeHtml(report.meta.url || "N/A")}</p>
                     <p><strong>Date:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(report.meta.date))}</p>
                     <p><strong>Viewport:</strong> ${report.meta.viewport.width}×${report.meta.viewport.height}</p>
+                    <p><strong>Scoring Mode:</strong> ${escapeHtml(formatScoringModeLabel(report.meta.scoringMode))}</p>
+                    ${report.meta.scoringMode === "custom"
+            ? `<p><strong>Applied Filters:</strong> ${escapeHtml(formatAppliedFiltersText(report))}</p>`
+            : ""}
                 </section>
 
                 <section class="summary">
@@ -181,6 +204,10 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push(`URL: ${report.meta.url || "N/A"}`);
     lines.push(`Date: ${formatDateISOToDDMMYYYY(report.meta.date)}`);
     lines.push(`Viewport: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
+    lines.push(`Scoring Mode: ${formatScoringModeLabel(report.meta.scoringMode)}`);
+    if (report.meta.scoringMode === "custom") {
+        lines.push(`Applied Filters: ${formatAppliedFiltersText(report)}`);
+    }
     lines.push("");
 
     lines.push(`Overall Score: ${report.score.overall} (Grade ${report.score.grade})`);

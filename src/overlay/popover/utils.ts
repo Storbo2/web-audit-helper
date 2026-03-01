@@ -1,9 +1,21 @@
 export type PopoverMode = "filters" | "ui" | "settings" | "export" | "score-breakdown";
 
-export let pendingChangesNeedRerun = false;
+const KEY_PENDING_CHANGES = "wah:pendingChanges";
+
+export function hasPendingChanges(): boolean {
+    return localStorage.getItem(KEY_PENDING_CHANGES) === "true";
+}
+
+export function setPendingChanges(pending: boolean) {
+    if (pending) {
+        localStorage.setItem(KEY_PENDING_CHANGES, "true");
+    } else {
+        localStorage.removeItem(KEY_PENDING_CHANGES);
+    }
+}
 
 export function resetPendingChangesState() {
-    pendingChangesNeedRerun = false;
+    setPendingChanges(false);
 }
 
 function ensureGlobalPop() {
@@ -35,10 +47,23 @@ function positionPop(anchor: HTMLElement, pop: HTMLElement) {
     const pr = pop.getBoundingClientRect();
     const M = 10;
 
+    const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
+    const overlayPos = overlay?.dataset.pos || "bottom-right";
+    const isOverlayAtBottom = overlayPos.startsWith("bottom");
+
     let left = ar.left + ar.width / 2 - pr.width / 2;
-    let top = ar.bottom + 10;
-    if (top + pr.height > window.innerHeight - M) {
+    let top: number;
+
+    if (isOverlayAtBottom) {
         top = ar.top - pr.height - 10;
+        if (top < M) {
+            top = ar.bottom + 10;
+        }
+    } else {
+        top = ar.bottom + 10;
+        if (top + pr.height > window.innerHeight - M) {
+            top = ar.top - pr.height - 10;
+        }
     }
 
     left = Math.max(M, Math.min(left, window.innerWidth - pr.width - M));
@@ -46,6 +71,7 @@ function positionPop(anchor: HTMLElement, pop: HTMLElement) {
 
     pop.style.left = `${Math.round(left)}px`;
     pop.style.top = `${Math.round(top)}px`;
+    pop.style.maxHeight = `${Math.max(200, window.innerHeight - top - M)}px`;
 }
 
 const POPOVER_TRANSITION_MS = 200;

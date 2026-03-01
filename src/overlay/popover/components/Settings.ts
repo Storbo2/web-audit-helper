@@ -1,19 +1,31 @@
 import {
-    getSettings, setLogLevel, setHighlightMs, setIgnoreRecommendationsInScore,
-    setLastSettingsPage, resetSettings
+    getSettings, setLogLevel, setHighlightMs,
+    getAppliedScoringMode,
+    setLastSettingsPage, resetSettings, setScoringMode
 } from "../../config/settings";
 import {
     getHideUntil, setHideForDuration, clearHideUntil,
     setHideUntilRefresh
 } from "../../config/hideStore";
+import { setPendingChanges, closePop } from "../utils";
 
 type SettingsPage = 0 | 1 | 2;
 
 type SettingsPageRef = { current: SettingsPage };
 
+type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
+
+const SCORING_MODE_INFO: Record<ScoringMode, string> = {
+    strict: "Strict: uses stricter thresholds and considers all severities (critical, warning, recommendation).",
+    normal: "Normal: uses standard thresholds and considers all severities.",
+    moderate: "Moderate: uses standard thresholds and ignores recommendations (only warning + critical).",
+    soft: "Soft: uses permissive thresholds and only considers critical issues.",
+    custom: "Consider filters in scoring: uses current chips (severity) and Extra filters (categories) for score and reports."
+};
+
 function renderRerunNotice(): string {
     return `
-        <div class="wah-rerun" style="display: none;">
+        <div class="wah-rerun" id="wah-rerun-notice" title="Click to re-run audit" style="display: none;">
             <span>Changes require re-run audit for effect.</span>
         </div>
     `;
@@ -39,7 +51,7 @@ function wirePage0(popBody: HTMLElement) {
     logLevelRadios.forEach(radio => {
         radio.checked = radio.value === settings.logLevel;
         radio.addEventListener("change", () => {
-            setLogLevel(radio.value as "full" | "critical-only" | "summary" | "none");
+            setLogLevel(radio.value as "full" | "summary" | "none");
         });
     });
 
@@ -57,20 +69,39 @@ function wirePage0(popBody: HTMLElement) {
     }
 }
 
-function wirePage1(popBody: HTMLElement, pageState: { needsRerun: boolean }) {
+function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
     const settings = getSettings();
+    const appliedMode = getAppliedScoringMode();
 
-    const ignoreCb = popBody.querySelector<HTMLInputElement>('[data-s="ignoreRec"]');
-    if (ignoreCb) {
-        ignoreCb.checked = settings.ignoreRecommendationsInScore;
-        ignoreCb.addEventListener("change", () => {
-            if (settings.ignoreRecommendationsInScore !== ignoreCb.checked) {
-                pageState.needsRerun = true;
-                const noticeEl = popBody.querySelector('.wah-rerun') as HTMLElement | null;
-                if (noticeEl) noticeEl.style.display = "flex";
-            }
+    const noticeEl = popBody.querySelector<HTMLElement>("#wah-rerun-notice");
+    const infoEl = popBody.querySelector<HTMLElement>('[data-s="scoringInfo"]');
 
-            setIgnoreRecommendationsInScore(ignoreCb.checked);
+    const updatePendingState = (selectedMode: ScoringMode) => {
+        if (infoEl) infoEl.textContent = SCORING_MODE_INFO[selectedMode];
+
+        const needsRerun = selectedMode !== appliedMode;
+        setPendingChanges(needsRerun);
+        if (noticeEl) noticeEl.style.display = needsRerun ? "flex" : "none";
+    };
+
+    const scoringModeSelect = popBody.querySelector<HTMLSelectElement>('[data-s="scoringMode"]');
+    if (!scoringModeSelect) return;
+
+    scoringModeSelect.value = settings.scoringMode;
+    updatePendingState(settings.scoringMode as ScoringMode);
+
+    scoringModeSelect.addEventListener("change", () => {
+        const selectedMode = scoringModeSelect.value as ScoringMode;
+        setScoringMode(selectedMode);
+        updatePendingState(selectedMode);
+    });
+
+    if (noticeEl && onRerunAudit) {
+        noticeEl.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closePop();
+            onRerunAudit();
         });
     }
 }
@@ -141,35 +172,32 @@ function wirePage2(popBody: HTMLElement) {
     resetBtn?.addEventListener("click", () => {
         resetSettings();
         clearHideUntil();
+        setPendingChanges(false);
         console.log("[WAH] All settings reset to defaults");
         const popBody = document.getElementById("wah-pop-body") as HTMLElement | null;
         if (popBody) {
             const pageRef: SettingsPageRef = { current: 0 };
-            renderSettingsPage(popBody, pageRef);
+            renderSettingsPage(popBody, pageRef, undefined);
         }
     });
 }
 
-export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef) {
+export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
     const page = pageRef.current;
     const total = 3;
-    const pageState = { needsRerun: false };
 
     if (page === 0) {
         popBody.innerHTML = `
         ${renderSettingsHeader("Settings", 1, total)}
 
         <div class="wah-pop-section">Console logs</div>
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Show full report in console with issue table">
             <input type="radio" name="wah-loglvl" value="full"> <span>Full report</span>
         </label>
-        <label class="wah-pop-row">
-            <input type="radio" name="wah-loglvl" value="critical-only"> <span>Only critical issues</span>
-        </label>
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Show only report summary in console">
             <input type="radio" name="wah-loglvl" value="summary"> <span>Report summary</span>
         </label>
-        <label class="wah-pop-row">
+        <label class="wah-pop-row" title="Disable all console logs">
             <input type="radio" name="wah-loglvl" value="none"> <span>No console logs</span>
         </label>
 
@@ -178,7 +206,7 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
         <div class="wah-pop-section wah-pop-section-spaced">Highlight duration</div>
         <div class="wah-pop-row wah-pop-row-space-between">
             <span data-s="hlLabel">750ms</span>
-            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750">
+            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="Adjust issue highlight duration">
         </div>
     `;
         wirePage0(popBody);
@@ -187,13 +215,26 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
     if (page === 1) {
         popBody.innerHTML = `
         ${renderSettingsHeader("Settings", 2, total)}
-        <div class="wah-pop-section">Scoring</div>
-        <label class="wah-pop-row">
-            <input type="checkbox" data-s="ignoreRec"> <span>Ignore recommendations in score</span>
-        </label>
+        <div class="wah-pop-section">Scoring Mode</div>
+        <div class="wah-pop-row">
+            <select id="wah-scoring-mode" data-s="scoringMode" class="wah-pop-select" title="Select scoring mode">
+                <option value="strict">Strict</option>
+                <option value="normal">Normal</option>
+                <option value="moderate">Moderate</option>
+                <option value="soft">Soft</option>
+                <option value="custom">Consider filters in scoring</option>
+            </select>
+        </div>
+
+        <div class="wah-pop-spacer"></div>
+
+        <div class="wah-pop-info">
+            <small data-s="scoringInfo"></small>
+        </div>
+
         ${renderRerunNotice()}
     `;
-        wirePage1(popBody, pageState);
+        wirePage1(popBody, onRerunAudit);
     }
 
     if (page === 2) {
@@ -201,19 +242,19 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
         ${renderSettingsHeader("Settings", 3, total)}
         <div class="wah-pop-section wah-pop-section-centered">Hide overlay</div>
         <div class="wah-pop-settings">
-            <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh">Hide until next refresh</button>
+            <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh" title="Hide overlay until the page is refreshed">Hide until next refresh</button>
         </div>
         <div class="wah-pop-settings">
             <div class="wah-hide-for-row">
                 <span class="wah-hide-for-label">Hide for</span>
-                <select data-s="hideForSelect" class="wah-hide-select">
+                <select id="wah-hide-for-select" data-s="hideForSelect" class="wah-hide-select" title="Select duration to hide overlay">
                     <option value="600000">10 minutes</option>
                     <option value="1800000">30 minutes</option>
                     <option value="3600000">1 hour</option>
                     <option value="10800000">3 hours</option>
                     <option value="86400000">1 day</option>
                 </select>
-                <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn">✔</button>
+                <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn" title="Confirm hide duration">✔</button>
             </div>
         </div>
         <div class="wah-hide-info" data-s="hideUntilInfo"></div>
@@ -221,7 +262,7 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
 
         <div class="wah-pop-section wah-pop-section-centered">Other options</div>
         <div class="wah-pop-settings">
-            <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset">Reset all settings</button>
+            <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset" title="Reset all settings to default values">Reset all settings</button>
         </div>
     `;
         wirePage2(popBody);
@@ -236,13 +277,13 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
         e.preventDefault();
         pageRef.current = wrap(pageRef.current - 1);
         setLastSettingsPage(pageRef.current);
-        renderSettingsPage(popBody, pageRef);
+        renderSettingsPage(popBody, pageRef, onRerunAudit);
     });
 
     nextBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         pageRef.current = wrap(pageRef.current + 1);
         setLastSettingsPage(pageRef.current);
-        renderSettingsPage(popBody, pageRef);
+        renderSettingsPage(popBody, pageRef, onRerunAudit);
     });
 }

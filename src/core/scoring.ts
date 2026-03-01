@@ -1,13 +1,15 @@
-import type { AuditIssue, IssueCategory, Severity } from "./types";
-import { loadSettings } from "../overlay/config/settings";
+import type { AuditIssue, IssueCategory, Severity, ScoringMode } from "./types";
+import { loadSettings, getActiveFilters, getActiveCategories } from "../overlay/config/settings";
 
-const CATEGORY_WEIGHTS: Partial<Record<IssueCategory, number>> = {
-    accessibility: 0.35,
-    seo: 0.25,
+const CATEGORY_WEIGHTS: Record<IssueCategory, number> = {
+    accessibility: 0.25,
+    seo: 0.20,
     responsive: 0.15,
     semantic: 0.10,
     security: 0.10,
-    quality: 0.05
+    quality: 0.10,
+    performance: 0.05,
+    form: 0.05
 };
 
 const SEVERITY_RANK: Record<Severity, number> = {
@@ -16,11 +18,70 @@ const SEVERITY_RANK: Record<Severity, number> = {
     critical: 3
 };
 
+export interface ScoringMultipliers {
+    critical: number;
+    warning: number;
+    recommendation: number;
+}
+
+export function getScoringMultipliers(mode: ScoringMode): ScoringMultipliers {
+    switch (mode) {
+        case "strict":
+            return { critical: 25, warning: 10, recommendation: 5 };
+        case "moderate":
+            return { critical: 20, warning: 8, recommendation: 0 };
+        case "soft":
+            return { critical: 20, warning: 0, recommendation: 0 };
+        case "normal":
+        case "custom":
+        default:
+            return { critical: 20, warning: 8, recommendation: 4 };
+    }
+}
+
+export function getAdjustedMultipliers(mode: ScoringMode): ScoringMultipliers {
+    const base = getScoringMultipliers(mode);
+
+    if (mode !== "custom") return base;
+
+    const activeCategories = getActiveCategories();
+    const categoryCount = activeCategories.size;
+
+    let categoryFactor = 1.0;
+    if (categoryCount === 1) categoryFactor = 0.25;
+    else if (categoryCount === 2) categoryFactor = 0.5;
+    else if (categoryCount <= 4) categoryFactor = 0.75;
+
+    return {
+        critical: Math.round(base.critical * categoryFactor),
+        warning: Math.round(base.warning * categoryFactor),
+        recommendation: Math.round(base.recommendation * categoryFactor)
+    };
+}
+
+export function filterIssuesForScoring(issues: AuditIssue[], mode?: ScoringMode): AuditIssue[] {
+    const scoringMode = mode ?? loadSettings().scoringMode;
+
+    if (scoringMode === "custom") {
+        const activeFilters = getActiveFilters();
+        const activeCategories = getActiveCategories();
+
+        return issues.filter(issue => {
+            if (!activeFilters.has(issue.severity)) return false;
+            const category = issue.category || "accessibility";
+            return activeCategories.has(category as IssueCategory);
+        });
+    }
+
+    return issues;
+}
+
 function severityToStatus(severity: Severity): Severity {
     return severity;
 }
 
-export function computeCategoryScores(issues: AuditIssue[]): Partial<Record<IssueCategory, number>> {
+export function computeCategoryScores(issues: AuditIssue[], multipliers?: ScoringMultipliers): Partial<Record<IssueCategory, number>> {
+    const mults = multipliers || getScoringMultipliers("normal");
     const perCategoryRuleWorst = new Map<IssueCategory, Map<string, Severity>>();
 
     for (const issue of issues) {
@@ -51,7 +112,7 @@ export function computeCategoryScores(issues: AuditIssue[]): Partial<Record<Issu
             else recommendation++;
         }
 
-        byCategory[category] = Math.max(0, 100 - critical * 20 - warning * 8 - recommendation * 4);
+        byCategory[category] = Math.max(0, 100 - critical * mults.critical - warning * mults.warning - recommendation * mults.recommendation);
     }
 
     return byCategory;
@@ -73,11 +134,9 @@ export function computeWeightedOverall(byCategory: Partial<Record<IssueCategory,
 }
 
 export function computeScore(issues: AuditIssue[]): number {
-    const { ignoreRecommendationsInScore } = loadSettings();
-    const filteredIssues = ignoreRecommendationsInScore
-        ? issues.filter(i => i.severity !== "recommendation")
-        : issues;
-
-    const byCategory = computeCategoryScores(filteredIssues);
+    const { scoringMode } = loadSettings();
+    const filteredIssues = filterIssuesForScoring(issues, scoringMode);
+    const multipliers = getAdjustedMultipliers(scoringMode);
+    const byCategory = computeCategoryScores(filteredIssues, multipliers);
     return computeWeightedOverall(byCategory);
 }

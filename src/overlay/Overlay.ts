@@ -7,9 +7,10 @@ import { applyUIToOverlay } from "./popover/components/UI";
 import { resetPendingChangesState, closePop } from "./popover/utils";
 import { runCoreAudit } from "../core";
 import { runReporters } from "../reporters";
-import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, type UIFilter } from "./config/settings";
+import { getSettings, getActiveFilters, setActiveFilters, getActiveCategories, setAppliedScoringMode, type UIFilter } from "./config/settings";
 import { setupDrag } from "./interactions/drag";
 import { readSavedPos, applyPos, setupPositionAutoUpdate, type OverlayPos } from "./interactions/position";
+import { logWAHResults } from "../utils/consoleLogger";
 import type { AuditIssue, AuditResult, WAHConfig } from "../core/types";
 import { renderOverlayHtml } from "./core/template";
 
@@ -104,7 +105,11 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
         refresh();
 
+        const activeFilters = getActiveFilters();
+        const activeCategories = getActiveCategories();
+        logWAHResults(results, s.logLevel, activeFilters, activeCategories);
         runReporters(results, configForRun);
+        setAppliedScoringMode(s.scoringMode);
 
         overlay.classList.add('wah-highlight');
         window.setTimeout(() => overlay.classList.remove('wah-highlight'), 700);

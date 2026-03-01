@@ -4,35 +4,35 @@ import { setActiveCategories } from "../../config/settings";
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<UICategory>, onChange: () => void) {
     popBody.innerHTML = `
     <div class="wah-pop-titleline">Filters by category</div>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by accessibility category">
         <input type="checkbox" data-cat="accessibility" ${catActive.has("accessibility") ? "checked" : ""}>
         <span>Accessibility</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by semantic category">
         <input type="checkbox" data-cat="semantic" ${catActive.has("semantic") ? "checked" : ""}>
         <span>Semantic</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by SEO category">
         <input type="checkbox" data-cat="seo" ${catActive.has("seo") ? "checked" : ""}>
         <span>SEO</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by responsive category">
         <input type="checkbox" data-cat="responsive" ${catActive.has("responsive") ? "checked" : ""}>
         <span>Responsive</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by quality category">
         <input type="checkbox" data-cat="quality" ${catActive.has("quality") ? "checked" : ""}>
         <span>Quality</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by security category">
         <input type="checkbox" data-cat="security" ${catActive.has("security") ? "checked" : ""}>
         <span>Security</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by performance category">
         <input type="checkbox" data-cat="performance" ${catActive.has("performance") ? "checked" : ""}>
         <span>Performance</span>
     </label>
-    <label class="wah-pop-row">
+    <label class="wah-pop-row" title="Filter issues by form category">
         <input type="checkbox" data-cat="form" ${catActive.has("form") ? "checked" : ""}>
         <span>Form</span>
     </label>

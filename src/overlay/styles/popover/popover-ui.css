@@ -22,6 +22,14 @@
     border: 0.0625rem solid var(--wah-score-warning);
     display: none;
     justify-content: center;
+    cursor: pointer;
+    transition: background var(--wah-trans-quick) ease, border-color var(--wah-trans-quick) ease, transform var(--wah-trans-quick) ease;
+}
+
+.wah-rerun:hover {
+    background: rgba(255, 159, 14, 0.15);
+    border-color: var(--wah-score-warning);
+    transform: translateY(-0.0625rem);
 }
 
 .wah-rerun span {

@@ -27,7 +27,7 @@ function denormalizeFromMobile(overlay: HTMLElement, pos: OverlayPos): OverlayPo
         const rect = overlay.getBoundingClientRect();
         const isCenterXBeforeMiddle = rect.left < window.innerWidth / 4;
         const isTopY = pos === "top-center";
-        
+
         if (isTopY) {
             return isCenterXBeforeMiddle ? "top-left" : "top-right";
         } else {

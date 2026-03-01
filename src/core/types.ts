@@ -1,6 +1,8 @@
 export type Severity = "critical" | "warning" | "recommendation";
 
-export type LogLevel = "full" | "critical-only" | "summary" | "none";
+export type LogLevel = "full" | "summary" | "none";
+
+export type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 
 export type IssueLevel = "critical" | "warnings" | "all";
 
@@ -91,6 +93,11 @@ export interface AuditReportMeta {
     userAgent: string;
     version: string;
     mode: AuditMode;
+    scoringMode?: ScoringMode;
+    appliedFilters?: {
+        severities?: string[];
+        categories?: string[];
+    };
 }
 
 export interface AuditReportScore {

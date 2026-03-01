@@ -7,17 +7,17 @@ export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, 
         <div class="wah-popover-content wah-export-content">
             <h3>Export Report</h3>
 
-            <button class="wah-export-btn wah-export-html" type="button">
+            <button class="wah-export-btn wah-export-html" type="button" title="Export as HTML print-friendly document">
                 <span class="label">🖨️ HTML (Print-friendly)</span>
                 <span class="desc">Readable document optimized for printing and sharing</span>
             </button>
 
-            <button class="wah-export-btn wah-export-txt" type="button">
+            <button class="wah-export-btn wah-export-txt" type="button" title="Export as human-readable text file">
                 <span class="label">📄 TXT (Human Review)</span>
                 <span class="desc">Readable summary report (ideal for quick inspection and sharing)</span>
             </button>
 
-            <button class="wah-export-btn wah-export-json" type="button">
+            <button class="wah-export-btn wah-export-json" type="button" title="Export as JSON for CI and automation">
                 <span class="label">📋 JSON (CI / Automation)</span>
                 <span class="desc">Machine-readable structured report (ideal for pipelines and diffing builds)</span>
             </button>
@@ -78,7 +78,8 @@ function buildReportFileName(
 ): string {
     const date = formatDateForFilename(report.meta.date);
     const score = report.score.overall;
-    return `wah-report-${date}-score_${score}.${format}`;
+    const mode = report.meta.scoringMode || "normal";
+    return `wah-report-${mode}-${date}-score_${score}.${format}`;
 }
 
 function formatDateForFilename(iso: string): string {

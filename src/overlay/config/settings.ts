@@ -1,4 +1,6 @@
-export type LogLevel = "full" | "critical-only" | "summary" | "none";
+export type LogLevel = "full" | "summary" | "none";
+
+export type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 
 export type UIFilter = "critical" | "warning" | "recommendation";
 export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "performance" | "form";
@@ -6,12 +8,13 @@ export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "
 export type WAHSettings = {
     logLevel: LogLevel;
     highlightMs: number;
-    ignoreRecommendationsInScore: boolean;
+    scoringMode: ScoringMode;
 };
 
 const KEY_LOG_LEVEL = "wah:settings:loglvl";
 const KEY_HIGHLIGHT_MS = "wah:settings:highlightMs";
-const KEY_IGNORE_REC_SCORE = "wah:settings:ignoreRecScore";
+const KEY_SCORING_MODE = "wah:settings:scoringMode";
+const KEY_APPLIED_SCORING_MODE = "wah:settings:appliedScoringMode";
 const KEY_SETTINGS_PAGE = "wah:settings:page";
 const KEY_ACTIVE_FILTERS = "wah:settings:activeFilters";
 const KEY_ACTIVE_CATEGORIES = "wah:settings:activeCategories";
@@ -19,12 +22,12 @@ const KEY_ACTIVE_CATEGORIES = "wah:settings:activeCategories";
 export const DEFAULT_SETTINGS: WAHSettings = {
     logLevel: "full",
     highlightMs: 750,
-    ignoreRecommendationsInScore: false,
+    scoringMode: "normal",
 };
 
 function loadLogLevel(): LogLevel {
     const v = localStorage.getItem(KEY_LOG_LEVEL);
-    if (v === "full" || v === "critical-only" || v === "summary" || v === "none") return v;
+    if (v === "full" || v === "summary" || v === "none") return v;
     return DEFAULT_SETTINGS.logLevel;
 }
 
@@ -34,16 +37,17 @@ function loadHighlightMs(): number {
     return Number.isFinite(n) && n > 0 ? n : DEFAULT_SETTINGS.highlightMs;
 }
 
-function loadIgnoreRecommendationsInScore(): boolean {
-    const v = localStorage.getItem(KEY_IGNORE_REC_SCORE);
-    return v === "true";
+function loadScoringMode(): ScoringMode {
+    const v = localStorage.getItem(KEY_SCORING_MODE);
+    if (v === "strict" || v === "normal" || v === "moderate" || v === "soft" || v === "custom") return v;
+    return DEFAULT_SETTINGS.scoringMode;
 }
 
 export function getSettings(): WAHSettings {
     return {
         logLevel: loadLogLevel(),
         highlightMs: loadHighlightMs(),
-        ignoreRecommendationsInScore: loadIgnoreRecommendationsInScore(),
+        scoringMode: loadScoringMode(),
     };
 }
 
@@ -59,8 +63,18 @@ export function setHighlightMs(ms: number) {
     if (ms > 0) localStorage.setItem(KEY_HIGHLIGHT_MS, String(ms));
 }
 
-export function setIgnoreRecommendationsInScore(ignore: boolean) {
-    localStorage.setItem(KEY_IGNORE_REC_SCORE, ignore ? "true" : "false");
+export function setScoringMode(mode: ScoringMode) {
+    localStorage.setItem(KEY_SCORING_MODE, mode);
+}
+
+export function getAppliedScoringMode(): ScoringMode {
+    const v = localStorage.getItem(KEY_APPLIED_SCORING_MODE);
+    if (v === "strict" || v === "normal" || v === "moderate" || v === "soft" || v === "custom") return v;
+    return DEFAULT_SETTINGS.scoringMode;
+}
+
+export function setAppliedScoringMode(mode: ScoringMode) {
+    localStorage.setItem(KEY_APPLIED_SCORING_MODE, mode);
 }
 
 export function getLastSettingsPage(): 0 | 1 | 2 {
@@ -97,7 +111,7 @@ export function getActiveCategories(): Set<UICategory> {
         try {
             const arr = JSON.parse(v) as UICategory[];
             const valid = arr.filter(c => defaultCategories.includes(c));
-            if (valid.length === defaultCategories.length) return new Set(valid);
+            return new Set(valid);
         } catch { }
     }
     return new Set(defaultCategories);
@@ -110,7 +124,8 @@ export function setActiveCategories(categories: Set<UICategory>) {
 export function resetSettings() {
     localStorage.removeItem(KEY_LOG_LEVEL);
     localStorage.removeItem(KEY_HIGHLIGHT_MS);
-    localStorage.removeItem(KEY_IGNORE_REC_SCORE);
+    localStorage.removeItem(KEY_SCORING_MODE);
+    localStorage.removeItem(KEY_APPLIED_SCORING_MODE);
     localStorage.removeItem(KEY_SETTINGS_PAGE);
     localStorage.removeItem(KEY_ACTIVE_FILTERS);
     localStorage.removeItem(KEY_ACTIVE_CATEGORIES);

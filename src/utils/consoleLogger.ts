@@ -1,6 +1,7 @@
 import { getScoreClass, getScreenSize } from "../overlay/core/utils";
 import { focusIssueElement, logIssueDetail } from "../overlay/interactions/highlight";
 import type { AuditResult, AuditIssue } from "../core/types";
+import type { UIFilter } from "../overlay/config/settings";
 
 const CONSOLE_COLORS = {
     "score-excellent": "color:#38bdf8;font-weight:bold;",
@@ -89,7 +90,12 @@ function getScoreMessage(score: number): string {
     return "❌ Many critical issues found, urgent review and optimization required.";
 }
 
-export function logWAHResults(results: AuditResult, logLevel: "full" | "critical-only" | "summary" | "none"): void {
+export function logWAHResults(
+    results: AuditResult,
+    logLevel: "full" | "summary" | "none",
+    activeFilters?: Set<UIFilter>,
+    activeCategories?: Set<string>
+): void {
     if (logLevel === "none") return;
 
     console.group("%c[WAH] Web Audit Report", CONSOLE_COLORS.header);
@@ -106,11 +112,28 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
         console.log("%cNo issues found! 🎉", "color:#22c55e;font-weight:bold;");
     }
 
-    if ((logLevel === "full" || logLevel === "critical-only") && results.issues.length > 0) {
+    if (logLevel === "full" && results.issues.length > 0) {
         let issuesToShow: AuditIssue[] = results.issues;
 
-        if (logLevel === "critical-only") {
-            issuesToShow = results.issues.filter((issue: AuditIssue) => issue.severity === "critical");
+        if (activeFilters && activeFilters.size > 0) {
+            const severityMap: Record<UIFilter, string> = {
+                "critical": "critical",
+                "warning": "warning",
+                "recommendation": "recommendation"
+            };
+
+            issuesToShow = results.issues.filter((issue: AuditIssue) => {
+                const severityKey = Object.entries(severityMap).find(([, val]) => val === issue.severity)?.[0] as UIFilter | undefined;
+                if (!severityKey || !activeFilters.has(severityKey)) return false;
+
+                if (activeCategories && activeCategories.size > 0 && issue.category) {
+                    return activeCategories.has(issue.category);
+                }
+
+                return true;
+            });
+        } else {
+            issuesToShow = [];
         }
 
         if (issuesToShow.length > 0) {
@@ -149,8 +172,6 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
 
             console.table(tableData);
             console.log('%cUse __WAH_FOCUS_ISSUE__(index) to highlight and log details', CONSOLE_COLORS.light);
-        } else {
-            console.log(`%cNo critical issues to show in table`, CONSOLE_COLORS.normal);
         }
     }
 
@@ -158,7 +179,7 @@ export function logWAHResults(results: AuditResult, logLevel: "full" | "critical
     console.groupEnd();
 }
 
-export function logHideMessage(hideReason: string, logLevel: "full" | "critical-only" | "summary" | "none"): void {
+export function logHideMessage(hideReason: string, logLevel: "full" | "summary" | "none"): void {
     if (logLevel === "none") return;
 
     console.log(`[WAH] Overlay hidden ${hideReason}`);

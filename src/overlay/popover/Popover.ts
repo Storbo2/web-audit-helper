@@ -22,7 +22,7 @@ type SetupPopoverArgs = {
 
 type SettingsPageRef = { current: 0 | 1 | 2 };
 
-export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl, results: auditResults }: SetupPopoverArgs) {
+export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl, onRerunAudit }: SetupPopoverArgs) {
     const filtersBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="filters"]');
     const uiBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="ui"]');
     const settingsBtn = overlay.querySelector<HTMLButtonElement>('.wah-tool[data-pop="settings"]');
@@ -38,13 +38,14 @@ export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl
             } else if (mode === "ui") {
                 renderUIPopover(popBody, overlay);
             } else if (mode === "settings") {
-                renderSettingsPage(popBody, settingsPageRef);
+                renderSettingsPage(popBody, settingsPageRef, onRerunAudit);
             } else if (mode === "export") {
                 renderExportPopover(popBody, overlay, getResults());
             } else if (mode === "score-breakdown") {
                 const s = getSettings();
-                if (auditResults) {
-                    popBody.innerHTML = renderCategoryScoreBreakdown(auditResults.issues, s.ignoreRecommendationsInScore);
+                const currentResults = getResults();
+                if (currentResults) {
+                    popBody.innerHTML = renderCategoryScoreBreakdown(currentResults.issues, s.scoringMode);
                 }
             }
         };

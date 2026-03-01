@@ -1,7 +1,7 @@
 import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
 import { defaultConfig } from "./config/defaultConfig";
-import { getSettings } from "./overlay/config/settings";
+import { getSettings, getActiveFilters, getActiveCategories, setAppliedScoringMode } from "./overlay/config/settings";
 import { ensureViewportMeta, resetViewportMetaPatch } from "./overlay/core/utils";
 import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/config/hideStore";
 import { resetPendingChangesState } from "./overlay/popover/utils";
@@ -67,8 +67,11 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
 
     createOverlay({ ...results, criticalIssues }, config);
 
-    logWAHResults(results, settings.logLevel);
+    const activeFilters = getActiveFilters();
+    const activeCategories = getActiveCategories();
+    logWAHResults(results, settings.logLevel, activeFilters, activeCategories);
     runReporters(results, config);
+    setAppliedScoringMode(settings.scoringMode);
 
     resetPendingChangesState();
 
