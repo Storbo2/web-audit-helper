@@ -1,6 +1,6 @@
 {
     "name": "web-audit-helper",
-    "version": "1.0",
+    "version": "1.0.0",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
     "main": "dist/index.cjs",
     "module": "dist/index.js",
@@ -10,14 +10,47 @@
     ],
     "sideEffects": false,
     "license": "MIT",
+    "author": "Storbo",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Storbo2/web-audit-helper.git"
+    },
+    "homepage": "https://github.com/Storbo2/web-audit-helper#readme",
+    "bugs": {
+        "url": "https://github.com/Storbo2/web-audit-helper/issues"
+    },
+    "keywords": [
+        "accessibility",
+        "audit",
+        "a11y",
+        "seo",
+        "semantic-html",
+        "web-audit",
+        "overlay",
+        "wcag",
+        "lighthouse",
+        "developer-tools",
+        "quality-assurance",
+        "responsive",
+        "performance"
+    ],
+    "engines": {
+        "node": ">=18.0.0"
+    },
     "devDependencies": {
         "@types/node": "^25.3.0",
+        "@vitest/ui": "^4.0.18",
+        "jsdom": "^25.0.1",
         "tsup": "^8.5.1",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.18"
     },
     "scripts": {
         "typecheck": "tsc --noEmit",
         "prebuild": "node scripts/gen-wah-css.mjs",
-        "build": "tsup --config tsup.config.ts"
+        "build": "tsup --config tsup.config.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui"
     }
 }
