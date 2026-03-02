@@ -82,27 +82,23 @@ jobs:
       id-token: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
           cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+          always-auth: true
 
-      - name: Verify and install dependencies
-        run: |
-          # Clean install to ensure all native modules are properly resolved
-          npm ci --prefer-offline --no-audit
-          # Verify critical dependencies are present
-          npm list rollup @rollup/rollup-linux-x64-gnu 2>/dev/null || npm ci --prefer-offline
-
-      - name: Build
-        run: npm run build
+      - run: npm ci --prefer-offline --no-audit
+      - run: npm run build
 
       - name: Publish to npm
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   notify:
     needs: [test-and-build, lint-and-format]
