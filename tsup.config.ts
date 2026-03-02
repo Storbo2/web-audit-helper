@@ -9,13 +9,18 @@ const wahMode = process.env.WAH_MODE === "ci" || process.env.CI === "true" ? "ci
 
 export default defineConfig({
     entry: ["src/index.ts"],
-    format: ["esm"],
+    format: ["esm", "cjs"],
     dts: true,
     minify: true,
     sourcemap: false,
     clean: true,
     treeshake: true,
     splitting: false,
+    outExtension({ format }) {
+        return {
+            js: format === "cjs" ? ".cjs" : ".mjs"
+        };
+    },
     define: {
         __WAH_VERSION__: JSON.stringify(wahVersion),
         __WAH_MODE__: JSON.stringify(wahMode)
