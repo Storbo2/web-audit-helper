@@ -44,14 +44,16 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.0.0/dist/index.js';
+    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.0.4/dist/index.js';
 
     // Run with default configuration
     await runWAH();
 </script>
 ```
 
-### Node.js / Module Bundler
+### Browser Bundlers (Vite / Create React App / Vue SPA)
+
+> **⚠️ SSR Frameworks**: If using Next.js, Nuxt, SvelteKit or similar, see the [Next.js / SSR Frameworks](#nextjs--ssr-frameworks) section below.
 
 ```javascript
 import { runWAH } from 'web-audit-helper';
@@ -75,6 +77,94 @@ await runWAH({
     }
 });
 ```
+
+### Next.js / SSR Frameworks
+
+**WAH runs in the browser only (requires DOM).**
+
+SSR frameworks must run it client-side using a **Client Component** + `useEffect`.
+
+Use **dynamic import** to avoid `window is not defined` errors.
+
+#### JavaScript Example (App Router)
+
+```jsx
+// src/components/WahRunner.jsx
+'use client';
+
+import { useEffect } from 'react';
+
+export default function WahRunner() {
+  useEffect(() => {
+    import('web-audit-helper')
+      .then(({ runWAH }) => runWAH())
+      .catch(console.error);
+  }, []);
+
+  return null;
+}
+```
+
+```jsx
+// app/layout.js
+import WahRunner from '@/components/WahRunner';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <WahRunner />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+#### TypeScript Example (App Router)
+
+```tsx
+// src/components/WahRunner.tsx
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function WahRunner() {
+  const ran = useRef(false);
+
+  useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+
+    import('web-audit-helper')
+      .then(({ runWAH }) => runWAH())
+      .catch(console.error);
+  }, []);
+
+  return null;
+}
+```
+
+```tsx
+// app/layout.tsx
+import type { ReactNode } from 'react';
+import WahRunner from '@/components/WahRunner';
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <WahRunner />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+**Why dynamic import?** It prevents the server from evaluating the module, eliminating `window is not defined` errors.
+
+**Why `useRef` in TypeScript?** React Strict Mode runs `useEffect` twice in development; `useRef` ensures WAH only runs once.
 
 ---
 
@@ -264,6 +354,70 @@ console.log(`Issues: ${result.issues.length}`);
 ```
 
 **For complete API documentation**, see [API Reference](docs/api.md).
+
+---
+
+## ❓ FAQ / Troubleshooting
+
+### `Module not found: Can't resolve 'web-audit-helper'`
+
+**Cause**: Package not installed, workspace misconfigured, or lockfile inconsistency.
+
+**Solution**:
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+Or verify the package is listed in `package.json` dependencies:
+```bash
+npm install web-audit-helper --save-dev
+```
+
+### `ReferenceError: window is not defined`
+
+**Cause**: You're importing or executing WAH during server-side rendering (SSR).
+
+**Solution**: Use a Client Component with dynamic import:
+```tsx
+'use client';
+import { useEffect } from 'react';
+
+export default function WahRunner() {
+  useEffect(() => {
+    import('web-audit-helper')
+      .then(({ runWAH }) => runWAH())
+      .catch(console.error);
+  }, []);
+  return null;
+}
+```
+
+See the [Next.js / SSR Frameworks](#nextjs--ssr-frameworks) section for complete examples.
+
+### WAH runs twice in development (React Strict Mode)
+
+**Cause**: React Strict Mode intentionally double-invokes `useEffect` in development to detect side effects.
+
+**Solution**: Use a `useRef` guard:
+```tsx
+const ran = useRef(false);
+
+useEffect(() => {
+  if (ran.current) return;
+  ran.current = true;
+  
+  import('web-audit-helper')
+    .then(({ runWAH }) => runWAH())
+    .catch(console.error);
+}, []);
+```
+
+### Issues detected vary between page refresh (F5) and re-run button
+
+**Cause**: DOM state may differ between fresh page load and re-audit after dynamic changes.
+
+**Solution**: Use `__WAH_RERUN__()` after significant DOM changes, or refresh the page (F5) for a clean audit.
 
 ---
 

@@ -1,6 +1,6 @@
 // AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → base.css → popover-base.css → popover-filters.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
+// Order: variables.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
 
 export const wahCss = `
 :root {

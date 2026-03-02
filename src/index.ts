@@ -9,6 +9,11 @@ import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import type { WAHConfig } from "./core/types";
 
+type WAHWindow = Window & {
+    __WAH_RESET_HIDE__?: () => void;
+    __WAH_RERUN__?: () => void;
+};
+
 async function waitForDocumentStable(): Promise<void> {
     if (document.readyState !== "complete") {
         await new Promise<void>((resolve) => {
@@ -19,32 +24,48 @@ async function waitForDocumentStable(): Promise<void> {
     await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 }
 
-(window as any).__WAH_RESET_HIDE__ = () => {
-    clearHideUntilRefresh();
-    clearHideUntil();
-    console.log("[WAH] Hide settings cleared. Reloading overlay...");
-    const rerunFn = (window as any).__WAH_RERUN__ as undefined | (() => void);
-    if (rerunFn) rerunFn();
-    else window.location.reload();
-};
+function cleanupWAH(): void {
+    document.getElementById("wah-overlay-root")?.remove();
+    document.getElementById("wah-pop")?.remove();
+    document.getElementById("wah-styles")?.remove();
+    resetViewportMetaPatch();
+    resetPendingChangesState();
+}
+
+function registerGlobalHandlers(userConfig: Partial<WAHConfig>): void {
+    const wahWindow = window as WAHWindow;
+
+    wahWindow.__WAH_RESET_HIDE__ = () => {
+        clearHideUntilRefresh();
+        clearHideUntil();
+        console.log("[WAH] Hide settings cleared. Reloading overlay...");
+        const rerunFn = wahWindow.__WAH_RERUN__;
+        if (rerunFn) rerunFn();
+        else window.location.reload();
+    };
+
+    wahWindow.__WAH_RERUN__ = () => {
+        cleanupWAH();
+        runWAH(userConfig);
+    };
+}
 
 export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+        return;
+    }
+
     await waitForDocumentStable();
     resetViewportMetaPatch();
     ensureViewportMeta();
+
+    registerGlobalHandlers(userConfig);
 
     const settings = getSettings();
 
     const config: WAHConfig = {
         ...defaultConfig,
         ...userConfig,
-    };
-
-    (window as any).__WAH_RERUN__ = () => {
-        document.getElementById("wah-overlay-root")?.remove();
-        document.getElementById("wah-pop")?.remove();
-        resetPendingChangesState();
-        runWAH(userConfig);
     };
 
     const shouldHideUntilRefresh = getHideUntilRefresh();

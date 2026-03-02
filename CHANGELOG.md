@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-03-02
+
+### Fixed
+- Fixed popover styling issues where Filters, Settings, and UI settings popovers displayed collapsed/overlapping text
+- Consolidated `.wah-pop-row` styles to `popover-base.css` for consistent styling across all popovers
+- Improved re-run consistency by implementing `cleanupWAH()` function that properly resets overlay, styles, and viewport patches between audits
+
+### Changed
+- Moved common popover styles from `popover-filters.css` to `popover-base.css` for better maintainability
+
+### Documentation
+- Added comprehensive Next.js / SSR frameworks section with JavaScript and TypeScript examples
+- Added FAQ / Troubleshooting section covering common errors (`Module not found`, `window is not defined`, React Strict Mode double execution)
+- Updated Quick Start section to distinguish between Browser Bundlers (SPAs) and SSR frameworks
+- Fixed CDN example version from 1.0.0 to 1.0.3
+- Added SSR-specific warnings and best practices
+
+## [1.0.3] - 2026-03-01
+
+### Fixed
+- Fixed SSR compatibility by moving `window` and `document` access from top-level to inside `runWAH()` function
+- Added SSR guard (`typeof window === "undefined"`) to prevent "window is not defined" errors in Next.js and other SSR frameworks
+- Moved global handler registration (`__WAH_RERUN__`, `__WAH_RESET_HIDE__`, `__WAH_FOCUS_ISSUE__`) inside function scope
+
+### Changed
+- Refactored module initialization to be SSR-safe with lazy window access
+- Module can now be safely imported in SSR contexts without runtime errors
+
+## [1.0.2] - 2026-02-28
+
+### Changed
+- Added dual module format support (ESM + CommonJS) for maximum compatibility
+- Updated build output to generate `.mjs` (ESM) and `.cjs` (CommonJS) files
+- Added conditional exports in package.json with proper type definitions for both formats
+- Enhanced tsup configuration to output separate `.d.ts` and `.d.cts` type definitions
+
+### Fixed
+- Fixed module resolution issues in CommonJS projects
+- Improved compatibility with bundlers that don't fully support ESM
+
+## [1.0.1] - 2026-02-27
+
+### Changed
+- Updated Node.js version requirement to >=18.0.0 in package.json
+- Created `.nvmrc` file specifying Node.js 22.12.0 for consistent development environment
+- Regenerated package-lock.json with clean install
+
+### Infrastructure
+- Enhanced GitHub Actions CI workflow with dependency verification
+- Added proper npm authentication using NODE_AUTH_TOKEN
+- Configured multi-Node testing matrix (18.x, 20.x, 21.x)
+- Fixed Rollup native dependency issues in CI pipeline
+
 ## [1.0.0] - 2026-03-01
 
 ### Added
