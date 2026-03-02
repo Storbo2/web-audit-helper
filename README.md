@@ -1,6 +1,6 @@
 # WAH – Web Audit Helper 🧠
 
-[![npm version](https://img.shields.io/npm/v/web-audit-helper)](https://www.npmjs.com/package/web-audit-helper)
+[![npm version](https://img.shields.io/npm/v/web-audit-helper?cacheSeconds=300)](https://www.npmjs.com/package/web-audit-helper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
