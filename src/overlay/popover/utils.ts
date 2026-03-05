@@ -50,9 +50,14 @@ function positionPop(anchor: HTMLElement, pop: HTMLElement) {
     const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
     const overlayPos = overlay?.dataset.pos || "bottom-right";
     const isOverlayAtBottom = overlayPos.startsWith("bottom");
+    const isOverlayAtRight = overlayPos.endsWith("right");
 
     let left = ar.left + ar.width / 2 - pr.width / 2;
     let top: number;
+
+    if (isOverlayAtRight && left + pr.width > window.innerWidth - M) {
+        left = ar.right - pr.width;
+    }
 
     if (isOverlayAtBottom) {
         top = ar.top - pr.height - 10;

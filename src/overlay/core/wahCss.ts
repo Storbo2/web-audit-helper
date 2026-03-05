@@ -1,6 +1,6 @@
 // AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
+// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
 
 export const wahCss = `
 :root {
@@ -41,6 +41,129 @@ export const wahCss = `
         --wah-text: var(--wah-text-light);
         --wah-dark-border: var(--wah-dark-border-light);
     }
+}
+
+#wah-overlay-root,
+#wah-overlay-root *,
+#wah-overlay-root *::before,
+#wah-overlay-root *::after {
+    box-sizing: border-box !important;
+}
+
+#wah-overlay-root input,
+#wah-overlay-root select,
+#wah-overlay-root textarea,
+#wah-overlay-root ul,
+#wah-overlay-root ol,
+#wah-overlay-root li,
+#wah-overlay-root h1,
+#wah-overlay-root h2,
+#wah-overlay-root h3,
+#wah-overlay-root h4,
+#wah-overlay-root h5,
+#wah-overlay-root h6,
+#wah-overlay-root p,
+#wah-overlay-root label,
+#wah-overlay-root fieldset,
+#wah-overlay-root legend {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#wah-overlay-root input,
+#wah-overlay-root select,
+#wah-overlay-root textarea {
+    font: inherit !important;
+    color: inherit !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+}
+
+#wah-overlay-root button {
+    cursor: pointer !important;
+    font: inherit !important;
+    color: inherit !important;
+    text-align: inherit !important;
+    line-height: inherit !important;
+}
+
+#wah-overlay-root button:not([class*="wah-"]) {
+    background: transparent !important;
+    border: none !important;
+}
+
+#wah-overlay-root input[type="checkbox"],
+#wah-overlay-root input[type="radio"] {
+    width: auto !important;
+    height: auto !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    vertical-align: baseline !important;
+}
+
+#wah-overlay-root input[type="range"] {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+#wah-overlay-root input[type="text"],
+#wah-overlay-root input[type="number"],
+#wah-overlay-root input[type="email"],
+#wah-overlay-root input[type="search"] {
+    width: auto !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#wah-overlay-root ul,
+#wah-overlay-root ol {
+    list-style: none !important;
+}
+
+#wah-overlay-root a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+#wah-overlay-root h1,
+#wah-overlay-root h2,
+#wah-overlay-root h3,
+#wah-overlay-root h4,
+#wah-overlay-root h5,
+#wah-overlay-root h6 {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+}
+
+#wah-overlay-root label {
+    font-weight: inherit !important;
+}
+
+#wah-overlay-root fieldset,
+#wah-overlay-root legend {
+    border: none !important;
+}
+
+#wah-overlay-root * {
+    transform-origin: initial !important;
+    transform-style: initial !important;
+    backface-visibility: initial !important;
+    animation: none !important;
+}
+
+#wah-overlay-root,
+#wah-overlay-root * {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
 }
 
 #wah-overlay-root {
@@ -706,8 +829,8 @@ export const wahCss = `
     flex: 1;
     min-height: 0;
     overflow: auto;
-    scroll-snap-type: y proximity;
-    scroll-padding: 0.5rem 0;
+    scroll-snap-type: none;
+    scroll-padding: 0.25rem 0;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
     border: 0.0625rem solid var(--wah-dark-border);
@@ -732,10 +855,10 @@ export const wahCss = `
     gap: 0.5rem;
     align-items: flex-start;
     cursor: pointer;
-    padding: 0.5rem 0.25rem;
+    padding: 0.625rem 0.375rem;
     border-bottom: 0.0625rem solid var(--wah-dark-border);
     font-size: 0.9em;
-    scroll-snap-align: start;
+    margin-bottom: 0.125rem;
 }
 
 .wah-issue-item:last-child {

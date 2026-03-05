@@ -38,6 +38,12 @@ export function getBackgroundColor(el: Element): string {
     while (current) {
         const style = window.getComputedStyle(current);
         const bgColor = style.backgroundColor;
+        const bgImage = style.backgroundImage;
+
+        if (bgImage && bgImage !== "none") {
+            current = current.parentElement;
+            continue;
+        }
 
         if (bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
             current = current.parentElement;
@@ -47,7 +53,7 @@ export function getBackgroundColor(el: Element): string {
         if (bgColor.includes("rgba")) {
             const match = bgColor.match(/rgba\(.+,\s*([\d.]+)\)/);
             const alpha = match ? parseFloat(match[1]) : 1;
-            if (alpha < 1) {
+            if (alpha < 0.9) {
                 current = current.parentElement;
                 continue;
             }

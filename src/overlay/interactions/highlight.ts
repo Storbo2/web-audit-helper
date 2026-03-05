@@ -85,7 +85,10 @@ export function focusIssueElement(issue: AuditIssue) {
     el.classList.add("wah-highlight");
     void el.offsetHeight;
 
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    try {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (e) {
+    }
 
     requestAnimationFrame(() => {
         el.classList.add("wah-highlight--on");

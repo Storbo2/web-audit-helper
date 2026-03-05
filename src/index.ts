@@ -11,7 +11,7 @@ import type { WAHConfig } from "./core/types";
 
 type WAHWindow = Window & {
     __WAH_RESET_HIDE__?: () => void;
-    __WAH_RERUN__?: () => void;
+    __WAH_RERUN__?: () => Promise<void>;
 };
 
 async function waitForDocumentStable(): Promise<void> {
@@ -44,9 +44,10 @@ function registerGlobalHandlers(userConfig: Partial<WAHConfig>): void {
         else window.location.reload();
     };
 
-    wahWindow.__WAH_RERUN__ = () => {
+    wahWindow.__WAH_RERUN__ = async () => {
         cleanupWAH();
-        runWAH(userConfig);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await runWAH(userConfig);
     };
 }
 

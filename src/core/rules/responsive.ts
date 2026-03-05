@@ -46,7 +46,7 @@ export function checkMissingViewportMeta(): AuditIssue[] {
 export function checkLargeFixedWidths(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
-    const excludedTags = new Set(['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'SPAN', 'LABEL', 'LI', 'UL', 'OL', 'STRONG', 'EM', 'B', 'I']);
+    const excludedTags = new Set(['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'SPAN', 'LABEL', 'LI', 'UL', 'OL', 'STRONG', 'EM', 'B', 'I', 'IMG', 'VIDEO', 'CANVAS', 'SVG']);
 
     const elements = Array.from(document.querySelectorAll("*"))
         .filter(el => !excludedTags.has(el.tagName) && el !== document.body && el !== document.documentElement)
@@ -64,7 +64,12 @@ export function checkLargeFixedWidths(): AuditIssue[] {
             const inlineWidth = htmlEl.style.width;
             const hasExplicitWidth = inlineWidth && inlineWidth !== "auto";
 
-            if (hasExplicitWidth) {
+            const isDecorative =
+                style.backgroundImage !== "none" ||
+                style.position === "absolute" && htmlEl.children.length === 0 ||
+                style.zIndex && parseInt(style.zIndex) < 0;
+
+            if (hasExplicitWidth && !isDecorative) {
                 issues.push({
                     rule: RULE_IDS.responsive.largeFixedWidth,
                     message: `Large fixed width detected (${Math.round(px)}px)`,
@@ -116,15 +121,24 @@ export function checkFixedElementOverlap(): AuditIssue[] {
         if (shouldIgnore(el)) return;
 
         const htmlEl = el as HTMLElement;
+        const style = getComputedStyle(htmlEl);
         const rect = htmlEl.getBoundingClientRect();
         const height = rect.height;
         const top = rect.top;
         const overlapRatio = viewportHeight > 0 ? height / viewportHeight : 0;
 
+        const isDecorative =
+            style.backgroundImage !== "none" ||
+            htmlEl.tagName === "IMG" ||
+            htmlEl.tagName === "VIDEO" ||
+            htmlEl.tagName === "CANVAS" ||
+            (style.zIndex && parseInt(style.zIndex) < 0) ||
+            (htmlEl.children.length === 0 && !htmlEl.textContent?.trim());
+
         const isTopAnchored = top <= 0;
         const passesRatioRule = overlapRatio >= minViewportRatio;
         const passesTopHeaderRule = isTopAnchored && height >= minPixelHeight;
-        const passes = !isNaN(height) && (passesRatioRule || passesTopHeaderRule);
+        const passes = !isNaN(height) && (passesRatioRule || passesTopHeaderRule) && !isDecorative;
 
         if (passes) {
             issues.push({
