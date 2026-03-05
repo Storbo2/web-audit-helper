@@ -58,7 +58,7 @@ export function renderList(list: AuditIssue[]) {
             ${list.map((issue, i) => `
                 <li title="Click to focus" class="wah-issue-item wah-${issue.severity}" data-idx="${i}">
                     <span class="wah-badge wah-${issue.severity}" title="${issue.severity}">
-                        <span class="wah-text">
+                        <span class="wah-badge-symbol">
                             ${badgeSymbol(issue.severity)}
                         </span>
                     </span>

@@ -835,7 +835,7 @@ export const wahCss = `
     -webkit-overflow-scrolling: touch;
     border: 0.0625rem solid var(--wah-dark-border);
     border-radius: 0.5rem;
-    padding: 0.5rem;
+    padding: 0;
     text-align: left;
 }
 
@@ -844,30 +844,39 @@ export const wahCss = `
     margin-top: 0.375rem;
 }
 
-.wah-list {
+#wah-overlay-root .wah-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
 }
 
-.wah-issue-item {
+#wah-overlay-root .wah-issue-item {
     display: flex;
     gap: 0.5rem;
     align-items: flex-start;
     cursor: pointer;
-    padding: 0.625rem 0.375rem;
+    padding: 0.375rem 0.5rem !important;
     border-bottom: 0.0625rem solid var(--wah-dark-border);
-    font-size: 0.9em;
-    margin-bottom: 0.125rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    border-radius: 0;
+    margin: 0 !important;
 }
 
-.wah-issue-item:last-child {
+#wah-overlay-root .wah-issue-item:last-child {
     border-bottom: none;
 }
 
+#wah-overlay-root .wah-issue-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
 .wah-msg {
-    font-size: 0.8rem;
-    line-height: 1.25;
+    font-size: 0.83rem;
+    line-height: 1.34;
 }
 
 .wah-badge {
@@ -879,7 +888,9 @@ export const wahCss = `
     line-height: 1;
 }
 
-.wah-badge .wah-badge-symbol {
+#wah-overlay-root .wah-badge .wah-badge-symbol {
+    display: inline-block;
+    margin-top: 0.12rem;
     color: var(--wah-badges-symbols);
 }
 
@@ -961,7 +972,7 @@ export const wahCss = `
 .wah-filter {
     display: flex;
     gap: 0.375rem;
-    margin: 0.625rem 0 0.5rem;
+    margin: 0.625rem 0.5rem 0.5rem;
 }
 
 .wah-msg.score-bad {
@@ -976,19 +987,32 @@ export const wahCss = `
     color: var(--wah-text);
 }
 
-.wah-chip {
+#wah-overlay-root .wah-chip {
     flex: 1;
-    padding: 0.375rem 0.5rem;
+    padding: 0.3rem 0.5rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
-    border-radius: 62.4375rem;
+    border-radius: 0.7rem;
     opacity: 0.9;
-    font-size: 0.75rem;
+    font-size: 0.9rem !important;
+    line-height: 1.2 !important;
+    text-align: center;
 }
 
-.wah-chip.is-active {
+#wah-overlay-root .wah-chip:hover {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.8);
+    opacity: 1;
+    transform: translateY(-0.0625rem);
+}
+
+#wah-overlay-root .wah-chip.is-active {
     background: rgba(56, 189, 248, 0.15);
     border-color: var(--wah-border);
     opacity: 1;
+}
+
+#wah-overlay-root .wah-chip.is-active:hover {
+    background: rgba(56, 189, 248, 0.2);
 }
 
 .wah-toolbar {
@@ -1006,6 +1030,15 @@ export const wahCss = `
     line-height: 1;
     opacity: 0.9;
     font-size: 0.875rem;
+}
+
+#wah-overlay-root .wah-tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    line-height: 1 !important;
+    text-align: center !important;
 }
 
 .wah-tool:hover {
