@@ -3,6 +3,20 @@ import { getCssSelector } from "../../../utils/dom";
 import { RULE_IDS } from "../../config/ruleIds";
 import { shouldIgnore, getRelativeLuminance, parseRGBColor, hasVisibleText, getBackgroundColor } from "./helpers";
 
+function hasActiveVisualEffects(style: CSSStyleDeclaration): boolean {
+    const animationDurations = style.animationDuration
+        .split(",")
+        .map(v => parseFloat(v.trim()) || 0);
+    const transitionDurations = style.transitionDuration
+        .split(",")
+        .map(v => parseFloat(v.trim()) || 0);
+
+    const hasAnimation = animationDurations.some(d => d > 0);
+    const hasTransition = transitionDurations.some(d => d > 0);
+
+    return hasAnimation || hasTransition;
+}
+
 export function checkFontSize(minSize: number): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
@@ -43,12 +57,10 @@ export function checkContrastRatio(minRatio: number = 4.5): AuditIssue[] {
         const fgColor = style.color;
         const bgColor = getBackgroundColor(el);
 
-        const hasAnimation = style.animation && style.animation !== "none";
-        const hasTransition = style.transition && style.transition !== "none" && style.transition !== "all 0s ease 0s";
+        if (hasActiveVisualEffects(style)) return;
 
-        if (hasAnimation || hasTransition) return;
-
-        if (bgColor === "rgb(255, 255, 255)" && getComputedStyle(el).backgroundImage !== "none") {
+        const backgroundImage = getComputedStyle(el).backgroundImage;
+        if (bgColor === "rgb(255, 255, 255)" && backgroundImage && backgroundImage !== "none") {
             return;
         }
 

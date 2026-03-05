@@ -168,10 +168,10 @@ export const wahCss = `
 
 #wah-overlay-root {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    width: min(92vw, 21.25rem);
-    max-width: 92vw;
+    bottom: 16px;
+    right: 16px;
+    width: min(90vw, 20rem);
+    max-width: 90vw;
     background: var(--wah-bg);
     color: var(--wah-text);
     border: 0.0625rem solid var(--wah-border);
@@ -363,35 +363,35 @@ export const wahCss = `
 }
 
 #wah-overlay-root[data-pos="top-left"] {
-    top: 1rem;
-    left: 1rem;
+    top: 16px;
+    left: 16px;
     right: auto;
     bottom: auto;
 }
 
 #wah-overlay-root[data-pos="top-right"] {
-    top: 1rem;
-    right: 1rem;
+    top: 16px;
+    right: 16px;
     left: auto;
     bottom: auto;
 }
 
 #wah-overlay-root[data-pos="bottom-left"] {
-    bottom: 1rem;
-    left: 1rem;
+    bottom: 16px;
+    left: 16px;
     right: auto;
     top: auto;
 }
 
 #wah-overlay-root[data-pos="bottom-right"] {
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 16px;
+    right: 16px;
     left: auto;
     top: auto;
 }
 
 #wah-overlay-root[data-pos="top-center"] {
-    top: 1rem;
+    top: 16px;
     left: 50%;
     right: auto;
     bottom: auto;
@@ -399,7 +399,7 @@ export const wahCss = `
 }
 
 #wah-overlay-root[data-pos="bottom-center"] {
-    bottom: 1rem;
+    bottom: 16px;
     left: 50%;
     right: auto;
     top: auto;
@@ -445,7 +445,7 @@ export const wahCss = `
     position: fixed;
     min-height: min(40vh, 12.5rem);
     max-height: min(80vh, 30rem);
-    width: min(92vw, 20rem);
+    width: min(90vw, 18.75rem);
     background: var(--wah-bg);
     border: 0.0625rem solid var(--wah-accent-default);
     border-radius: 0.75rem;
@@ -461,6 +461,43 @@ export const wahCss = `
     transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
     pointer-events: none;
     overflow-y: auto;
+}
+
+#wah-pop,
+#wah-pop * {
+    box-sizing: border-box !important;
+}
+
+#wah-pop input,
+#wah-pop select,
+#wah-pop textarea,
+#wah-pop ul,
+#wah-pop ol,
+#wah-pop li,
+#wah-pop h1,
+#wah-pop h2,
+#wah-pop h3,
+#wah-pop h4,
+#wah-pop h5,
+#wah-pop h6,
+#wah-pop p,
+#wah-pop label,
+#wah-pop fieldset,
+#wah-pop legend {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#wah-pop input,
+#wah-pop select,
+#wah-pop textarea,
+#wah-pop button {
+    font: inherit;
+    color: inherit;
+}
+
+#wah-pop label {
+    font-weight: inherit !important;
 }
 
 .wah-pop.is-open {
@@ -497,6 +534,27 @@ export const wahCss = `
 
 .wah-pop-body {
     min-height: min(35vh, 11.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+#wah-pop[data-mode="export"] {
+    width: min(85vw, 18rem);
+    overflow-x: hidden;
+}
+
+#wah-pop[data-mode="filters"] {
+    width: min(88vw, 17rem);
+}
+
+#wah-pop[data-mode="filters"] .wah-pop-body {
+    padding-inline: 0.3rem;
+}
+
+#wah-pop[data-mode="ui"] .wah-pop-body,
+#wah-pop[data-mode="settings"] .wah-pop-body {
+    padding-inline: 0.35rem;
 }
 
 .wah-pop-body input[type="checkbox"] {
@@ -537,7 +595,9 @@ export const wahCss = `
 }
 
 .wah-pop-row {
-    display: flex;
+    display: flex !important;
+    position: relative;
+    width: 100%;
     gap: 0.625rem;
     align-items: center;
     font-size: 0.95em;
@@ -545,6 +605,11 @@ export const wahCss = `
     border-radius: 0.625rem;
     cursor: pointer;
     user-select: none;
+}
+
+#wah-pop[data-mode="ui"] .wah-pop-row,
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="1"] .wah-pop-row {
+    padding: 0.38em 0.5em;
 }
 
 .wah-pop-row input[type="range"] {
@@ -569,6 +634,30 @@ export const wahCss = `
     font-size: 0.95em;
     font-family: inherit;
     cursor: pointer;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="2"] .wah-pop-select {
+    min-height: 2rem;
+    padding: 0.55rem 0.75rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] {
+    padding-inline: 0.4rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-select {
+    min-height: 2.05rem;
+    padding-top: 0.58rem;
+    padding-bottom: 0.58rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info {
+    margin-bottom: 0.35rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info:empty {
+    margin: 0;
+    display: none;
 }
 
 .wah-pop-info {
@@ -773,6 +862,8 @@ export const wahCss = `
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
+    width: 100%;
+    max-width: 100%;
 }
 
 .wah-export-content h3 {
@@ -789,6 +880,8 @@ export const wahCss = `
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
     gap: 0.375rem;
     padding: 0.75rem;
     border: 0.0625rem solid var(--wah-dark-border);
@@ -801,6 +894,9 @@ export const wahCss = `
     text-align: left;
     font-size: 0.875rem;
     font-weight: bold;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .wah-export-btn:hover {
@@ -814,14 +910,24 @@ export const wahCss = `
 }
 
 .wah-export-btn .label {
+    display: block;
+    width: 100%;
     font-size: 0.8125rem;
     font-weight: bold;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .wah-export-btn .desc {
+    display: block;
+    width: 100%;
     font-size: 0.6875rem;
     line-height: 1.3;
     font-weight: normal;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .wah-panel,
@@ -991,7 +1097,7 @@ export const wahCss = `
     flex: 1;
     padding: 0.3rem 0.5rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
     opacity: 0.9;
     font-size: 0.9rem !important;
     line-height: 1.2 !important;

@@ -32,6 +32,7 @@ await runWAH({
 | `logs`       | `boolean`                           | `true`   | Enable/disable console logging of audit results |
 | `logLevel`   | `'full' \| 'summary' \| 'none'`     | `'full'` | Console output verbosity                        |
 | `issueLevel` | `'critical' \| 'warnings' \| 'all'` | `'all'`  | Filter which issue severities to report         |
+| `scoringMode` | `'strict' \| 'normal' \| 'moderate' \| 'soft' \| 'custom'` | `'normal'` | Scoring profile and DOM visibility analysis mode |
 
 ### Accessibility Options
 
@@ -152,7 +153,21 @@ WAH scoring automatically uses different multipliers based on configuration:
 - **soft**: 20/0/0 (only critical)
 - **custom**: User-defined filters
 
-Scoring mode is changed via the overlay UI after initialization.
+Scoring mode can be changed via overlay UI after initialization (or passed directly in config).
+
+### DOM Visibility Behavior by Scoring Mode
+
+- **strict**: analyzes the full DOM, including hidden variants.
+- **normal / moderate / soft / custom**: analyzes perceivable elements only.
+
+Perceivable-only filtering excludes elements hidden via common mechanisms such as:
+
+- `display: none`
+- `visibility: hidden`
+- `opacity: 0`
+- `[hidden]`
+- `[inert]`
+- `aria-hidden="true"`
 
 ## Environment-Specific Configuration
 

@@ -49,8 +49,9 @@ export function setupDrag(overlay: HTMLElement, header: HTMLElement) {
     }
 
     function getSnapTarget(pos: OverlayPos) {
-        const w = overlay.offsetWidth;
-        const h = overlay.offsetHeight;
+        const rect = overlay.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
         const m = 16;
 
         let left = pos.endsWith("left") ? m : (window.innerWidth - w - m);

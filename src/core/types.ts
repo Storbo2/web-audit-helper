@@ -55,6 +55,7 @@ export interface WAHConfig {
 
     reporters?: ("console" | "json" | "text")[];
     breakpoints: Record<string, number>;
+    scoringMode?: ScoringMode;
 }
 
 export interface AffectedElement {

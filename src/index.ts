@@ -67,6 +67,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     const config: WAHConfig = {
         ...defaultConfig,
         ...userConfig,
+        scoringMode: userConfig.scoringMode ?? settings.scoringMode,
     };
 
     const shouldHideUntilRefresh = getHideUntilRefresh();

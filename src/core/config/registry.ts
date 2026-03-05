@@ -246,7 +246,7 @@ export const CORE_RULES_REGISTRY: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.responsive.fixedElementOverlap,
-        run: () => checkFixedElementOverlap()
+        run: (config) => checkFixedElementOverlap(config.scoringMode === "strict")
     },
     {
         id: RULE_IDS.responsive.problematic100vh,

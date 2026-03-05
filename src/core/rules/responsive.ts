@@ -12,6 +12,55 @@ function shouldIgnore(el: Element): boolean {
     return isWahIgnored(el);
 }
 
+function isElementHiddenFromViewport(el: HTMLElement, style: CSSStyleDeclaration): boolean {
+    return (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0" ||
+        el.hasAttribute("hidden") ||
+        el.hasAttribute("inert") ||
+        el.getAttribute("aria-hidden") === "true"
+    );
+}
+
+function hasFocusableDescendant(el: HTMLElement): boolean {
+    const focusableSelector = [
+        "a[href]",
+        "button",
+        "input",
+        "select",
+        "textarea",
+        "details",
+        "[tabindex]:not([tabindex='-1'])"
+    ].join(",");
+
+    return !!el.querySelector(focusableSelector);
+}
+
+function isDecorativeFixedElement(el: HTMLElement, style: CSSStyleDeclaration, includeHiddenElements: boolean = false): boolean {
+    const tagName = el.tagName;
+    const textContent = el.textContent?.trim() || "";
+    const zIndex = parseInt(style.zIndex || "", 10);
+    const hasOnlyVisualChildren =
+        el.children.length > 0 &&
+        Array.from(el.children).every((child) => {
+            const childTag = child.tagName;
+            return childTag === "CANVAS" || childTag === "SVG" || childTag === "IMG" || childTag === "VIDEO";
+        });
+
+    return (
+        style.backgroundImage !== "none" ||
+        tagName === "IMG" ||
+        tagName === "VIDEO" ||
+        tagName === "CANVAS" ||
+        tagName === "SVG" ||
+        (!isNaN(zIndex) && zIndex < 0) ||
+        (!includeHiddenElements && (el.getAttribute("role") === "presentation" || el.getAttribute("role") === "none" || el.getAttribute("aria-hidden") === "true") && !hasFocusableDescendant(el)) ||
+        (hasOnlyVisualChildren && textContent.length === 0 && !hasFocusableDescendant(el)) ||
+        (el.children.length === 0 && textContent.length === 0)
+    );
+}
+
 export function checkMissingViewportMeta(): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const snapshotContent = viewportMetaSnapshot;
@@ -103,12 +152,11 @@ export function checkHorizontalOverflow(): AuditIssue[] {
     return issues;
 }
 
-export function checkFixedElementOverlap(): AuditIssue[] {
+export function checkFixedElementOverlap(includeHiddenElements: boolean = false): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     const viewportHeight = window.innerHeight;
-    const minViewportRatio = 0.12;
-    const minPixelHeight = 120;
+    const minViewportRatio = 0.18;
 
     const elements = Array.from(document.querySelectorAll("*"))
         .filter((el) => {
@@ -122,23 +170,18 @@ export function checkFixedElementOverlap(): AuditIssue[] {
 
         const htmlEl = el as HTMLElement;
         const style = getComputedStyle(htmlEl);
+        if (!includeHiddenElements && isElementHiddenFromViewport(htmlEl, style)) return;
+
         const rect = htmlEl.getBoundingClientRect();
         const height = rect.height;
         const top = rect.top;
         const overlapRatio = viewportHeight > 0 ? height / viewportHeight : 0;
 
-        const isDecorative =
-            style.backgroundImage !== "none" ||
-            htmlEl.tagName === "IMG" ||
-            htmlEl.tagName === "VIDEO" ||
-            htmlEl.tagName === "CANVAS" ||
-            (style.zIndex && parseInt(style.zIndex) < 0) ||
-            (htmlEl.children.length === 0 && !htmlEl.textContent?.trim());
+        const isDecorative = isDecorativeFixedElement(htmlEl, style, includeHiddenElements);
 
         const isTopAnchored = top <= 0;
         const passesRatioRule = overlapRatio >= minViewportRatio;
-        const passesTopHeaderRule = isTopAnchored && height >= minPixelHeight;
-        const passes = !isNaN(height) && (passesRatioRule || passesTopHeaderRule) && !isDecorative;
+        const passes = !isNaN(height) && passesRatioRule && isTopAnchored && !isDecorative;
 
         if (passes) {
             issues.push({

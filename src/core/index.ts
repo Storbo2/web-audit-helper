@@ -4,6 +4,17 @@ import { CORE_RULES_REGISTRY } from "./config/registry";
 import { isWahIgnored } from "../utils/dom";
 import { setViewportMetaSnapshot } from "./rules/responsive";
 
+function isElementPerceivable(el: HTMLElement): boolean {
+    if (el.closest("[hidden], [inert], [aria-hidden='true']")) return false;
+
+    const style = window.getComputedStyle(el);
+    if (style.display === "none") return false;
+    if (style.visibility === "hidden") return false;
+    if (style.opacity === "0") return false;
+
+    return true;
+}
+
 function allowedSeverities(level: IssueLevel): Severity[] {
     if (level === "critical") return ["critical"];
     if (level === "warnings") return ["critical", "warning"];
@@ -12,6 +23,7 @@ function allowedSeverities(level: IssueLevel): Severity[] {
 
 export function runCoreAudit(config: WAHConfig): AuditResult {
     const allowed = allowedSeverities(config.issueLevel);
+    const analyzeFullDom = config.scoringMode === "strict";
 
     const viewportMeta = document.querySelector('meta[name="viewport"]:not([data-wah-generated="viewport"])') as HTMLMetaElement | null;
     const snapshotContent = viewportMeta
@@ -31,6 +43,7 @@ export function runCoreAudit(config: WAHConfig): AuditResult {
     const filteredIssues = issues.filter(i => {
         if (!allowed.includes(i.severity)) return false;
         if (i.element && isWahIgnored(i.element)) return false;
+        if (!analyzeFullDom && i.element && !isElementPerceivable(i.element)) return false;
         return true;
     });
     return { issues: filteredIssues, score: computeScore(filteredIssues) };

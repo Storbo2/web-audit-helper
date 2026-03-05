@@ -1,9 +1,9 @@
 #wah-overlay-root {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    width: min(92vw, 21.25rem);
-    max-width: 92vw;
+    bottom: 16px;
+    right: 16px;
+    width: min(90vw, 20rem);
+    max-width: 90vw;
     background: var(--wah-bg);
     color: var(--wah-text);
     border: 0.0625rem solid var(--wah-border);
@@ -195,35 +195,35 @@
 }
 
 #wah-overlay-root[data-pos="top-left"] {
-    top: 1rem;
-    left: 1rem;
+    top: 16px;
+    left: 16px;
     right: auto;
     bottom: auto;
 }
 
 #wah-overlay-root[data-pos="top-right"] {
-    top: 1rem;
-    right: 1rem;
+    top: 16px;
+    right: 16px;
     left: auto;
     bottom: auto;
 }
 
 #wah-overlay-root[data-pos="bottom-left"] {
-    bottom: 1rem;
-    left: 1rem;
+    bottom: 16px;
+    left: 16px;
     right: auto;
     top: auto;
 }
 
 #wah-overlay-root[data-pos="bottom-right"] {
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 16px;
+    right: 16px;
     left: auto;
     top: auto;
 }
 
 #wah-overlay-root[data-pos="top-center"] {
-    top: 1rem;
+    top: 16px;
     left: 50%;
     right: auto;
     bottom: auto;
@@ -231,7 +231,7 @@
 }
 
 #wah-overlay-root[data-pos="bottom-center"] {
-    bottom: 1rem;
+    bottom: 16px;
     left: 50%;
     right: auto;
     top: auto;

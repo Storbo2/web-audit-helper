@@ -16,11 +16,11 @@ type SettingsPageRef = { current: SettingsPage };
 type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 
 const SCORING_MODE_INFO: Record<ScoringMode, string> = {
-    strict: "Strict: uses stricter thresholds and considers all severities (critical, warning, recommendation).",
-    normal: "Normal: uses standard thresholds and considers all severities.",
-    moderate: "Moderate: uses standard thresholds and ignores recommendations (only warning + critical).",
-    soft: "Soft: uses permissive thresholds and only considers critical issues.",
-    custom: "Consider filters in scoring: uses current chips (severity) and Extra filters (categories) for score and reports."
+    strict: "Strict: uses stricter thresholds, considers all severities, and analyzes the full DOM (including hidden variants).",
+    normal: "Normal: uses standard thresholds, considers all severities, and analyzes perceivable-only elements.",
+    moderate: "Moderate: uses standard thresholds, ignores recommendations (warning + critical), and analyzes perceivable-only elements.",
+    soft: "Soft: uses permissive thresholds, only considers critical issues, and analyzes perceivable-only elements.",
+    custom: "Consider filters in scoring: uses current chips/categories for score and reports, with perceivable-only element analysis."
 };
 
 const LOG_LEVEL_OPTIONS: Array<{ value: "full" | "summary" | "none"; label: string; title: string }> = [
@@ -211,6 +211,7 @@ function wirePage2(popBody: HTMLElement) {
 export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
     const page = pageRef.current;
     const total = 3;
+    popBody.dataset.settingsPage = String(page + 1);
 
     if (page === 0) {
         popBody.innerHTML = `
