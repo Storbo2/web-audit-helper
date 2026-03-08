@@ -67,6 +67,74 @@ describe("ACC-25: contrast detection", () => {
         const issues = checkContrastRatio(4.5);
         expect(issues.some(issue => issue.element === p)).toBe(true);
     });
+
+    it("skips text hidden by ancestor opacity", () => {
+        const h1 = document.createElement("h1");
+        h1.style.opacity = "0";
+        const span = document.createElement("span");
+        span.textContent = "Paginas web";
+        h1.appendChild(span);
+        document.body.appendChild(h1);
+
+        const issues = checkContrastRatio(4.5);
+        expect(issues.some(issue => issue.element === span || issue.element === h1)).toBe(false);
+    });
+
+    it("skips contrast checks when background is visually undetermined", () => {
+        const link = document.createElement("a");
+        link.href = "/";
+        link.textContent = "OurWeb";
+        document.body.appendChild(link);
+
+        const originalGetComputedStyle = window.getComputedStyle.bind(window);
+        vi.spyOn(window, "getComputedStyle").mockImplementation((elt: Element) => {
+            const style = originalGetComputedStyle(elt) as CSSStyleDeclaration;
+
+            return new Proxy(style, {
+                get(target, prop, receiver) {
+                    if (elt === link && prop === "color") return "rgb(255, 255, 255)";
+                    if ((elt === link || elt === document.body || elt === document.documentElement) && prop === "backgroundColor") {
+                        return "rgba(0, 0, 0, 0)";
+                    }
+                    if ((elt === link || elt === document.body || elt === document.documentElement) && prop === "backgroundImage") {
+                        return "none";
+                    }
+                    if (elt === link && prop === "animationDuration") return "0s";
+                    if (elt === link && prop === "transitionDuration") return "0s";
+                    return Reflect.get(target, prop, receiver);
+                }
+            }) as CSSStyleDeclaration;
+        });
+
+        const issues = checkContrastRatio(4.5);
+        expect(issues.some(issue => issue.element === link)).toBe(false);
+    });
+
+    it("does not flag white text on explicit black ancestor background", () => {
+        const wrapper = document.createElement("div");
+        const span = document.createElement("span");
+        span.textContent = "OurWeb";
+        wrapper.appendChild(span);
+        document.body.appendChild(wrapper);
+
+        const originalGetComputedStyle = window.getComputedStyle.bind(window);
+        vi.spyOn(window, "getComputedStyle").mockImplementation((elt: Element) => {
+            const style = originalGetComputedStyle(elt) as CSSStyleDeclaration;
+            return new Proxy(style, {
+                get(target, prop, receiver) {
+                    if (elt === span && prop === "color") return "rgb(255, 255, 255)";
+                    if (elt === wrapper && prop === "backgroundColor") return "rgb(0, 0, 0)";
+                    if (prop === "backgroundImage") return "none";
+                    if (elt === span && prop === "animationDuration") return "0s";
+                    if (elt === span && prop === "transitionDuration") return "0s";
+                    return Reflect.get(target, prop, receiver);
+                }
+            }) as CSSStyleDeclaration;
+        });
+
+        const issues = checkContrastRatio(4.5);
+        expect(issues.some(issue => issue.element === span)).toBe(false);
+    });
 });
 
 describe("RWD-04: fixed element overlap", () => {

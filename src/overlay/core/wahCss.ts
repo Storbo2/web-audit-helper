@@ -456,6 +456,10 @@ export const wahCss = `
     backdrop-filter: blur(0.375rem);
     font-family: var(--wah-font);
     font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
+    line-height: 1.35;
+    text-align: left;
+    letter-spacing: normal;
+    word-spacing: normal;
     opacity: 0;
     transform: translateY(-0.375rem) scale(0.98);
     transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
@@ -466,6 +470,22 @@ export const wahCss = `
 #wah-pop,
 #wah-pop * {
     box-sizing: border-box !important;
+}
+
+#wah-pop * {
+    line-height: inherit;
+    text-align: inherit;
+    letter-spacing: normal;
+}
+
+#wah-pop label,
+#wah-pop span,
+#wah-pop small,
+#wah-pop strong {
+    display: inline;
+    width: auto;
+    min-width: 0;
+    max-width: none;
 }
 
 #wah-pop input,
@@ -607,6 +627,26 @@ export const wahCss = `
     user-select: none;
 }
 
+.wah-pop-row > input[type="radio"],
+.wah-pop-row > input[type="checkbox"] {
+    flex: 0 0 auto;
+    margin: 0 !important;
+}
+
+.wah-pop-row > label,
+.wah-pop-row > span,
+.wah-pop-row > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.wah-pop-row-text {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.3;
+}
+
 #wah-pop[data-mode="ui"] .wah-pop-row,
 #wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="1"] .wah-pop-row {
     padding: 0.38em 0.5em;
@@ -614,6 +654,8 @@ export const wahCss = `
 
 .wah-pop-row input[type="range"] {
     accent-color: var(--wah-border);
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .wah-pop-row input[type="radio"] {
@@ -673,6 +715,83 @@ export const wahCss = `
 
 .wah-pop[data-theme="light"] .wah-pop-info {
     opacity: 0.9;
+}
+
+@media (max-width: 32.5rem) {
+    .wah-pop {
+        width: min(94vw, 17.25rem);
+        max-height: min(78vh, 26rem);
+        padding: 0.75rem 0.625rem 0.625rem;
+        border-radius: 0.625rem;
+    }
+
+    .wah-pop-body {
+        gap: 0.3rem;
+        min-height: min(32vh, 10.5rem);
+    }
+
+    .wah-pop-titleline,
+    .wah-pop-header {
+        font-size: 1.02em;
+        margin-bottom: 0.625rem;
+    }
+
+    .wah-pop-row {
+        gap: 0.5rem;
+        padding: 0.38em 0.45em;
+        font-size: 0.92em;
+    }
+
+    .wah-pop-row-text {
+        line-height: 1.25;
+    }
+
+    .wah-pop-row input[type="range"] {
+        min-width: 6.25rem;
+    }
+
+    .wah-pop-select,
+    .wah-hide-select {
+        font-size: 0.9em;
+        min-height: 1.9rem;
+    }
+
+    .wah-pop-btn {
+        padding: 0.58rem 0.65rem;
+        font-size: 0.9em;
+    }
+
+    .wah-hide-for-row {
+        width: 100%;
+        justify-content: stretch;
+    }
+}
+
+@media (max-width: 26.25rem) {
+    .wah-pop {
+        width: min(96vw, 15.75rem);
+        padding: 0.625rem 0.5rem 0.5rem;
+        border-radius: 0.5625rem;
+    }
+
+    .wah-pop-row {
+        gap: 0.45rem;
+        padding: 0.35em 0.4em;
+        font-size: 0.9em;
+    }
+
+    .wah-pop-section {
+        font-size: 0.8em;
+    }
+
+    .wah-pop-titleline,
+    .wah-pop-header {
+        font-size: 0.98em;
+    }
+
+    .wah-hide-for-label {
+        font-size: 0.85em;
+    }
 }
 
 .wah-pop-head {

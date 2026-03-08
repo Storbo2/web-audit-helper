@@ -61,7 +61,8 @@ function renderSettingsHeader(title: string, page: number, total: number): strin
 function renderLogLevelOptions(): string {
     return LOG_LEVEL_OPTIONS.map(({ value, label, title }) => `
         <label class="wah-pop-row" title="${title}">
-            <input type="radio" name="wah-loglvl" value="${value}"> <span>${label}</span>
+            <input type="radio" name="wah-loglvl" value="${value}">
+            <span class="wah-pop-row-text">${label}</span>
         </label>
     `).join("");
 }
@@ -224,7 +225,7 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
 
         <div class="wah-pop-section wah-pop-section-spaced">Highlight duration</div>
         <div class="wah-pop-row wah-pop-row-space-between">
-            <span data-s="hlLabel">750ms</span>
+            <span class="wah-pop-row-text" data-s="hlLabel">750ms</span>
             <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="Adjust issue highlight duration">
         </div>
     `;

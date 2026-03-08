@@ -28,11 +28,28 @@ export function parseRGBColor(rgb: string): [number, number, number] | null {
 export function hasVisibleText(el: Element): boolean {
     const text = (el.textContent || "").trim();
     if (text.length === 0) return false;
-    const style = window.getComputedStyle(el);
-    return style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
+
+    let current: Element | null = el;
+    while (current) {
+        const style = window.getComputedStyle(current);
+        if (style.display === "none" || style.visibility === "hidden") return false;
+        if (parseFloat(style.opacity || "1") <= 0.01) return false;
+        current = current.parentElement;
+    }
+
+    return true;
 }
 
-export function getBackgroundColor(el: Element): string {
+function isTransparentColor(bgColor: string): boolean {
+    if (bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") return true;
+    if (!bgColor.includes("rgba")) return false;
+
+    const match = bgColor.match(/rgba\(.+,\s*([\d.]+)\)/);
+    const alpha = match ? parseFloat(match[1]) : 1;
+    return alpha < 0.9;
+}
+
+export function getBackgroundColor(el: Element): string | null {
     let current: Element | null = el;
 
     while (current) {
@@ -45,22 +62,21 @@ export function getBackgroundColor(el: Element): string {
             continue;
         }
 
-        if (bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
+        if (isTransparentColor(bgColor)) {
             current = current.parentElement;
             continue;
-        }
-
-        if (bgColor.includes("rgba")) {
-            const match = bgColor.match(/rgba\(.+,\s*([\d.]+)\)/);
-            const alpha = match ? parseFloat(match[1]) : 1;
-            if (alpha < 0.9) {
-                current = current.parentElement;
-                continue;
-            }
         }
 
         return bgColor;
     }
 
-    return "rgb(255, 255, 255)";
+    const docRoot = document.documentElement;
+    const body = document.body;
+    const docRootBg = window.getComputedStyle(docRoot).backgroundColor;
+    if (!isTransparentColor(docRootBg)) return docRootBg;
+
+    const bodyBg = window.getComputedStyle(body).backgroundColor;
+    if (!isTransparentColor(bodyBg)) return bodyBg;
+
+    return null;
 }

@@ -3,6 +3,21 @@ import { getCssSelector } from "../../../utils/dom";
 import { RULE_IDS } from "../../config/ruleIds";
 import { shouldIgnore, getRelativeLuminance, parseRGBColor, hasVisibleText, getBackgroundColor } from "./helpers";
 
+function resolveEffectiveTextColor(el: Element): string | null {
+    let current: Element | null = el;
+
+    while (current) {
+        const color = window.getComputedStyle(current).color;
+        if (!color || color === "transparent" || color === "rgba(0, 0, 0, 0)") {
+            current = current.parentElement;
+            continue;
+        }
+        return color;
+    }
+
+    return null;
+}
+
 function hasActiveVisualEffects(style: CSSStyleDeclaration): boolean {
     const animationDurations = style.animationDuration
         .split(",")
@@ -54,10 +69,12 @@ export function checkContrastRatio(minRatio: number = 4.5): AuditIssue[] {
         if (shouldIgnore(el) || !hasVisibleText(el)) return;
 
         const style = window.getComputedStyle(el);
-        const fgColor = style.color;
+        const fgColor = resolveEffectiveTextColor(el);
         const bgColor = getBackgroundColor(el);
 
         if (hasActiveVisualEffects(style)) return;
+
+        if (!fgColor || !bgColor) return;
 
         const backgroundImage = getComputedStyle(el).backgroundImage;
         if (bgColor === "rgb(255, 255, 255)" && backgroundImage && backgroundImage !== "none") {

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-03-08
+
+### Changed
+- Upgraded popover base typography and inheritance defaults (`line-height`, alignment, spacing inheritance) to reduce host-page style interference
+- Strengthened popover row layout for radios, checkboxes, labels, spans, and slider controls using explicit flex behavior
+- Added dedicated `.wah-pop-row-text` wrappers in Filters, Settings, and UI popovers for stable text flow and wrapping
+- Improved mobile responsiveness for popovers with tuned widths, paddings, control sizing, and compact row spacing at narrow breakpoints
+
+### Fixed
+- Fixed score breakdown popover open/close instability by aligning it with the shared popover lifecycle and click-outside handling
+- Fixed score breakdown overflow/placement edge cases when overlay is compact or near viewport boundaries
+- Fixed list scrolling ergonomics by enabling item-level scroll snapping so issues land cleanly in view with wheel/touch scroll
+
 ## [1.0.6] - 2026-03-05
 
 ### Added

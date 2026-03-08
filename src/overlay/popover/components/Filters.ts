@@ -16,7 +16,7 @@ function renderFilterRows(catActive: Set<UICategory>): string {
     return FILTER_CATEGORIES.map(({ id, label, title }) => `
     <label class="wah-pop-row" title="${title}">
         <input type="checkbox" data-cat="${id}" ${catActive.has(id) ? "checked" : ""}>
-        <span>${label}</span>
+        <span class="wah-pop-row-text">${label}</span>
     </label>
     `).join("");
 }
