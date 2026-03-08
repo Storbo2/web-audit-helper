@@ -54,7 +54,6 @@ export interface WAHConfig {
     };
 
     reporters?: ("console" | "json" | "text")[];
-    breakpoints: Record<string, number>;
     scoringMode?: ScoringMode;
 }
 
@@ -90,6 +89,11 @@ export interface AuditReportMeta {
     viewport: {
         width: number;
         height: number;
+    };
+    breakpoint?: {
+        name: string;
+        label: string;
+        devices: string;
     };
     userAgent: string;
     version: string;

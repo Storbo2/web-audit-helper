@@ -52,6 +52,21 @@ export function logIssueDetail(issue: AuditIssue) {
     console.groupEnd();
 }
 
+function isLargeElement(el: HTMLElement): boolean {
+    try {
+        const rect = el.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        const widthRatio = rect.width / vw;
+        const heightRatio = rect.height / vh;
+
+        return widthRatio > 0.5 || heightRatio > 0.5;
+    } catch (e) {
+        return false;
+    }
+}
+
 export function focusIssueElement(issue: AuditIssue) {
     const el = issue.element as HTMLElement | undefined;
     if (!el) return;
@@ -68,6 +83,7 @@ export function focusIssueElement(issue: AuditIssue) {
     if (lastHighlighted && lastHighlighted !== el) {
         const prev = lastHighlighted;
         prev.classList.remove("wah-highlight--on");
+        prev.classList.remove("wah-highlight--large");
 
         window.setTimeout(() => {
             prev.classList.remove("wah-highlight");
@@ -82,7 +98,12 @@ export function focusIssueElement(issue: AuditIssue) {
 
     el.style.setProperty("--wah-hl", color);
 
+    const isLarge = isLargeElement(el);
+
     el.classList.add("wah-highlight");
+    if (isLarge) {
+        el.classList.add("wah-highlight--large");
+    }
     void el.offsetHeight;
 
     try {
@@ -104,6 +125,7 @@ export function focusIssueElement(issue: AuditIssue) {
 
         cleanupTimer = window.setTimeout(() => {
             current.classList.remove("wah-highlight");
+            current.classList.remove("wah-highlight--large");
             current.style.removeProperty("--wah-hl");
         }, TRANSITION_MS);
 

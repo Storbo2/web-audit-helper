@@ -269,6 +269,51 @@ export const wahCss = `
     box-shadow: 0 0 0 0.25rem var(--wah-hl, var(--wah-score-bad));
 }
 
+/* Large element flash effect for better visibility */
+.wah-highlight.wah-highlight--large {
+    position: relative;
+}
+
+.wah-highlight.wah-highlight--large::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--wah-hl, var(--wah-score-bad));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999999;
+    transition: opacity 220ms ease;
+}
+
+.wah-highlight.wah-highlight--large.wah-highlight--on::before {
+    animation: wah-flash 1200ms ease-out;
+}
+
+@keyframes wah-flash {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.25;
+    }
+
+    40% {
+        opacity: 0.15;
+    }
+
+    60% {
+        opacity: 0.08;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 .wah-top {
     display: flex;
     flex-direction: column;
@@ -550,6 +595,7 @@ export const wahCss = `
 .wah-pop-section {
     font-size: 0.85em;
     font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
 .wah-pop-body {
@@ -617,7 +663,6 @@ export const wahCss = `
 .wah-pop-row {
     display: flex !important;
     position: relative;
-    width: 100%;
     gap: 0.625rem;
     align-items: center;
     font-size: 0.95em;
@@ -627,15 +672,15 @@ export const wahCss = `
     user-select: none;
 }
 
-.wah-pop-row > input[type="radio"],
-.wah-pop-row > input[type="checkbox"] {
+.wah-pop-row>input[type="radio"],
+.wah-pop-row>input[type="checkbox"] {
     flex: 0 0 auto;
     margin: 0 !important;
 }
 
-.wah-pop-row > label,
-.wah-pop-row > span,
-.wah-pop-row > div {
+.wah-pop-row>label,
+.wah-pop-row>span,
+.wah-pop-row>div {
     flex: 1 1 auto;
     min-width: 0;
 }
@@ -1197,7 +1242,7 @@ export const wahCss = `
 .wah-filter {
     display: flex;
     gap: 0.375rem;
-    margin: 0.625rem 0.5rem 0.5rem;
+    margin: 0.5rem 0;
 }
 
 .wah-msg.score-bad {
@@ -1214,7 +1259,7 @@ export const wahCss = `
 
 #wah-overlay-root .wah-chip {
     flex: 1;
-    padding: 0.3rem 0.5rem !important;
+    padding: 0.35rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
     border-radius: 0.8rem;
     opacity: 0.9;

@@ -107,6 +107,7 @@
 .wah-pop-section {
     font-size: 0.85em;
     font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
 .wah-pop-body {
@@ -174,7 +175,6 @@
 .wah-pop-row {
     display: flex !important;
     position: relative;
-    width: 100%;
     gap: 0.625rem;
     align-items: center;
     font-size: 0.95em;

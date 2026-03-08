@@ -64,6 +64,7 @@ function isDecorativeFixedElement(el: HTMLElement, style: CSSStyleDeclaration, i
 export function checkMissingViewportMeta(): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const snapshotContent = viewportMetaSnapshot;
+    const meta = document.querySelector('meta[name="viewport"]:not([data-wah-generated="viewport"])') as HTMLMetaElement | null;
 
     if (snapshotContent !== undefined) {
         if (snapshotContent === null || !snapshotContent.includes("width=device-width")) {
@@ -72,12 +73,12 @@ export function checkMissingViewportMeta(): AuditIssue[] {
                 message: "Missing or incomplete viewport meta tag",
                 severity: "warning",
                 category: "responsive",
+                element: meta as HTMLElement | undefined,
+                selector: meta ? getCssSelector(meta) : undefined
             });
         }
         return issues;
     }
-
-    const meta = document.querySelector('meta[name="viewport"]:not([data-wah-generated="viewport"])') as HTMLMetaElement | null;
 
     const wasPatchedByWah = !!meta?.hasAttribute("data-wah-viewport-patched");
     if (!meta || wasPatchedByWah || !(meta.content || "").includes("width=device-width")) {
@@ -86,6 +87,8 @@ export function checkMissingViewportMeta(): AuditIssue[] {
             message: "Missing or incomplete viewport meta tag",
             severity: "warning",
             category: "responsive",
+            element: meta as HTMLElement | undefined,
+            selector: meta ? getCssSelector(meta) : undefined
         });
     }
 
@@ -99,7 +102,7 @@ export function checkLargeFixedWidths(): AuditIssue[] {
 
     const elements = Array.from(document.querySelectorAll("*"))
         .filter(el => !excludedTags.has(el.tagName) && el !== document.body && el !== document.documentElement)
-        .slice(0, 50);
+        .slice(0, 300);
 
     elements.forEach((el) => {
         if (shouldIgnore(el)) return;
@@ -163,7 +166,7 @@ export function checkFixedElementOverlap(includeHiddenElements: boolean = false)
             const style = getComputedStyle(el);
             return style.position === "fixed" || style.position === "sticky";
         })
-        .slice(0, 100);
+        .slice(0, 300);
 
     elements.forEach((el) => {
         if (shouldIgnore(el)) return;

@@ -1,5 +1,6 @@
 import type { AuditIssue } from "../types";
 import { RULE_IDS } from "../config/ruleIds";
+import { getCssSelector } from "../../utils/dom";
 
 export function checkMissingTitle(): AuditIssue[] {
     const issues: AuditIssue[] = [];
@@ -10,7 +11,9 @@ export function checkMissingTitle(): AuditIssue[] {
             rule: RULE_IDS.seo.missingTitle,
             message: "Missing or empty <title>",
             severity: "critical",
-            category: "seo"
+            category: "seo",
+            element: title as HTMLElement | undefined,
+            selector: title ? getCssSelector(title) : undefined
         });
     }
 
@@ -26,7 +29,9 @@ export function checkMissingMetaDescription(): AuditIssue[] {
             rule: RULE_IDS.seo.weakOrMissingDescription,
             message: "Missing meta description",
             severity: "warning",
-            category: "seo"
+            category: "seo",
+            element: meta as HTMLElement | undefined,
+            selector: meta ? getCssSelector(meta) : undefined
         });
     }
 
@@ -52,13 +57,16 @@ export function checkMissingMetaCharset(): AuditIssue[] {
 export function checkMissingCanonical(): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    const rawHref = (canonical?.getAttribute("href") || "").trim();
 
-    if (!canonical || !(canonical.href || "").trim()) {
+    if (!canonical || !rawHref) {
         issues.push({
             rule: RULE_IDS.seo.missingCanonical,
             message: "Missing canonical link",
             severity: "recommendation",
-            category: "seo"
+            category: "seo",
+            element: canonical as HTMLElement | undefined,
+            selector: canonical ? getCssSelector(canonical) : undefined
         });
     }
 
@@ -76,7 +84,9 @@ export function checkMetaRobotsNoindex(): AuditIssue[] {
                 rule: RULE_IDS.seo.metaRobotsNoindex,
                 message: "Meta robots contains \"noindex\" directive",
                 severity: "warning",
-                category: "seo"
+                category: "seo",
+                element: metaRobots as HTMLElement,
+                selector: getCssSelector(metaRobots)
             });
         }
     }
@@ -96,11 +106,14 @@ export function checkMissingOpenGraph(): AuditIssue[] {
     if (!ogImage || !(ogImage.content || "").trim()) missing.push("og:image");
 
     if (missing.length > 0) {
+        const anchor = ogTitle || ogDescription || ogImage;
         issues.push({
             rule: RULE_IDS.seo.missingOpenGraph,
             message: `Missing Open Graph meta tags: ${missing.join(", ")}`,
             severity: "recommendation",
-            category: "seo"
+            category: "seo",
+            element: anchor as HTMLElement | undefined,
+            selector: anchor ? getCssSelector(anchor) : undefined
         });
     }
 

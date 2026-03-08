@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2026-03-08
+
+### Added
+- Added breakpoint information to all report formats (JSON, TXT, HTML) showing viewport classification and typical device types
+- Added internal breakpoint utility system with standard breakpoints (xs, sm, md, lg, xl, 2xl, 3xl)
+- Enhanced large element highlighting with visual flash effect for better visibility on viewport-filling elements (html, body)
+
+### Changed
+- Removed `breakpoints` from user configuration (WAHConfig) - now uses fixed internal breakpoints for consistency
+- Reports now display breakpoint context (e.g., "Breakpoint: xl (laptops, desktops)") alongside viewport dimensions
+
+### Fixed
+- Improved element highlight visibility for large elements that cover significant viewport area using animated flash overlay
+
 ## [1.0.7] - 2026-03-08
 
 ### Changed

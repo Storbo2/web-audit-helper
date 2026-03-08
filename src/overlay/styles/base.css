@@ -101,6 +101,51 @@
     box-shadow: 0 0 0 0.25rem var(--wah-hl, var(--wah-score-bad));
 }
 
+/* Large element flash effect for better visibility */
+.wah-highlight.wah-highlight--large {
+    position: relative;
+}
+
+.wah-highlight.wah-highlight--large::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--wah-hl, var(--wah-score-bad));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999999;
+    transition: opacity 220ms ease;
+}
+
+.wah-highlight.wah-highlight--large.wah-highlight--on::before {
+    animation: wah-flash 1200ms ease-out;
+}
+
+@keyframes wah-flash {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.25;
+    }
+
+    40% {
+        opacity: 0.15;
+    }
+
+    60% {
+        opacity: 0.08;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 .wah-top {
     display: flex;
     flex-direction: column;

@@ -15,6 +15,10 @@ function isElementPerceivable(el: HTMLElement): boolean {
     return true;
 }
 
+function isHeadElement(el: HTMLElement): boolean {
+    return !!document.head && document.head.contains(el);
+}
+
 function allowedSeverities(level: IssueLevel): Severity[] {
     if (level === "critical") return ["critical"];
     if (level === "warnings") return ["critical", "warning"];
@@ -43,7 +47,7 @@ export function runCoreAudit(config: WAHConfig): AuditResult {
     const filteredIssues = issues.filter(i => {
         if (!allowed.includes(i.severity)) return false;
         if (i.element && isWahIgnored(i.element)) return false;
-        if (!analyzeFullDom && i.element && !isElementPerceivable(i.element)) return false;
+        if (!analyzeFullDom && i.element && !isHeadElement(i.element) && !isElementPerceivable(i.element)) return false;
         return true;
     });
     return { issues: filteredIssues, score: computeScore(filteredIssues) };

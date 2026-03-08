@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkContrastRatio } from "../accessibility/text";
 import { checkFixedElementOverlap } from "../responsive";
+import { checkExcessiveInlineStyles } from "../quality";
 import { RULE_IDS } from "../../config/ruleIds";
 import { runCoreAudit } from "../../index";
 
@@ -371,6 +372,42 @@ describe("RWD-04: fixed element overlap", () => {
     });
 });
 
+describe("QLT-01: excessive inline styles", () => {
+    beforeEach(() => {
+        document.body.innerHTML = "";
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = "";
+    });
+
+    it("includes a focus target selector", () => {
+        for (let i = 0; i < 3; i++) {
+            const el = document.createElement("div");
+            el.className = `inline-${i}`;
+            el.setAttribute("style", "color: red;");
+            document.body.appendChild(el);
+        }
+
+        const issues = checkExcessiveInlineStyles(2);
+        const issue = issues.find(i => i.rule === RULE_IDS.quality.excessiveInlineStyles);
+
+        expect(issue).toBeTruthy();
+        expect(issue?.message).toContain("Excessive use of inline styles");
+        expect(issue?.selector).toBeTruthy();
+        expect(issue?.element).toBeInstanceOf(HTMLElement);
+    });
+
+    it("does not create issue when under threshold", () => {
+        const el = document.createElement("div");
+        el.setAttribute("style", "color: red;");
+        document.body.appendChild(el);
+
+        const issues = checkExcessiveInlineStyles(2);
+        expect(issues.some(i => i.rule === RULE_IDS.quality.excessiveInlineStyles)).toBe(false);
+    });
+});
+
 describe("Scoring mode visibility behavior", () => {
     beforeEach(() => {
         document.body.innerHTML = "";
@@ -401,14 +438,6 @@ describe("Scoring mode visibility behavior", () => {
                 enabled: true,
                 position: "bottom-right" as const,
                 theme: "dark" as const,
-            },
-            breakpoints: {
-                xs: 480,
-                sm: 640,
-                md: 768,
-                lg: 1024,
-                xl: 1280,
-                "2xl": 1536,
             },
         };
 
@@ -463,5 +492,56 @@ describe("Scoring mode visibility behavior", () => {
 
         expect(strictResult.issues.some(issue => issue.rule === RULE_IDS.accessibility.controlMissingIdOrName)).toBe(true);
         expect(moderateResult.issues.some(issue => issue.rule === RULE_IDS.accessibility.controlMissingIdOrName)).toBe(false);
+    });
+
+    it("normal mode keeps SEO issues from head metadata", () => {
+        document.head.innerHTML = `
+            <title></title>
+            <meta name="description" content="" />
+            <meta name="robots" content="noindex" />
+            <link rel="canonical" href="" />
+        `;
+        document.body.innerHTML = "<h1>Title</h1>";
+
+        const config = {
+            logs: true,
+            logLevel: "full" as const,
+            issueLevel: "all" as const,
+            accessibility: { minFontSize: 12, contrastLevel: "AA" as const },
+            quality: { inlineStylesThreshold: 10 },
+            overlay: { enabled: true, position: "bottom-right" as const, theme: "dark" as const },
+            scoringMode: "normal" as const,
+        };
+
+        const result = runCoreAudit(config);
+
+        expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.missingTitle)).toBe(true);
+        expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.weakOrMissingDescription)).toBe(true);
+        expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.metaRobotsNoindex)).toBe(true);
+        expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.missingCanonical)).toBe(true);
+    });
+
+    it("normal mode keeps head performance issues", () => {
+        document.head.innerHTML = `
+            <meta charset="utf-8" />
+            <title>ok</title>
+            <meta name="description" content="ok" />
+            <script src="/app.js"></script>
+        `;
+        document.body.innerHTML = "<h1>Title</h1>";
+
+        const config = {
+            logs: true,
+            logLevel: "full" as const,
+            issueLevel: "all" as const,
+            accessibility: { minFontSize: 12, contrastLevel: "AA" as const },
+            quality: { inlineStylesThreshold: 10 },
+            overlay: { enabled: true, position: "bottom-right" as const, theme: "dark" as const },
+            scoringMode: "normal" as const,
+        };
+
+        const result = runCoreAudit(config);
+
+        expect(result.issues.some(issue => issue.rule === RULE_IDS.performance.scriptWithoutDefer)).toBe(true);
     });
 });

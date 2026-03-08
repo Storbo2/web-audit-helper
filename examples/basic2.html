@@ -2,8 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="initial-scale=1.0" />
     <title>Test Page - Incompatible Rules</title>
     <meta name="description" content="Test page for mutually exclusive audit rules" />
     <link rel="canonical" href="https://example.com" />
@@ -16,6 +15,49 @@
     <!-- ✅ SEM-04: no main element exists on this page (incompatible with SEM-05 which is in basic.html) -->
     <p>This page only tests rules ACC-09 and SEM-04 which are mutually exclusive with
         ACC-08 and SEM-05.</p>
+
+    <!-- SEM-02: low semantic structure (high div ratio, no semantic containers) -->
+    <div>Block 1</div>
+    <div>Block 2</div>
+    <div>Block 3</div>
+    <div>Block 4</div>
+    <div>Block 5</div>
+    <div>Block 6</div>
+    <div>Block 7</div>
+    <div>Block 8</div>
+    <div>Block 9</div>
+    <div>Block 10</div>
+    <div>Block 11</div>
+    <div>Block 12</div>
+    <div>Block 13</div>
+    <div>Block 14</div>
+    <div>Block 15</div>
+    <div>Block 16</div>
+    <div>Block 17</div>
+    <div>Block 18</div>
+    <div>Block 19</div>
+    <div>Block 20</div>
+    <div>Block 21</div>
+    <div>Block 22</div>
+    <div>Block 23</div>
+    <div>Block 24</div>
+    <div>Block 25</div>
+    <div>Block 26</div>
+    <div>Block 27</div>
+    <div>Block 28</div>
+    <div>Block 29</div>
+    <div>Block 30</div>
+    <div>Block 31</div>
+    <div>Block 32</div>
+    <div>Block 33</div>
+    <div>Block 34</div>
+    <div>Block 35</div>
+    <div>Block 36</div>
+    <div>Block 37</div>
+    <div>Block 38</div>
+    <div>Block 39</div>
+    <div>Block 40</div>
+    <div>Block 41</div>
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";

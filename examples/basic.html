@@ -59,6 +59,11 @@
         Small text <!-- ACC-22: small text + QUAL-01: inline styles -->
     </p>
 
+    <!-- RWD-01: Large fixed width (kept near top so sampling rules catch it consistently) -->
+    <div style="width: 1200px; background: #eee; padding: 10px;">
+        This div has a fixed width of 1200px (too large for mobile)
+    </div>
+
     <a href="#">Click here</a> <!-- ACC-19: vague link text + QLT-02: dummy link -->
     <a>Link without href</a> <!-- ACC-20: link without href -->
     <a href="/destination"></a> <!-- ACC-03: link without accessible name -->
@@ -78,6 +83,9 @@
 
     <video autoplay width="160" height="90" src="./../public/videos/video.mp4"></video>
     <!-- ACC-16: video without controls + MEDIA-01: autoplay without muted -->
+
+    <video width="180" height="100" src="./../public/videos/video.mp4"></video>
+    <!-- ACC-16: video without controls (non-autoplay path) -->
 
     <table>
         <tr>
@@ -126,6 +134,9 @@
     <img src="./../public/favicon-32x32.png" width="32" height="32" loading="lazy" decoding="async">
     <!-- ACC-02: without alt -->
 
+    <img src="../public/images/hero.svg" alt="Decorative hero">
+    <!-- IMG-01: image missing width/height -->
+
     <!-- PERF-01: Image without srcset (>100x100px) - keeping 1 for single error -->
     <img src="../public/images/hero.svg" alt="Hero" width="800" height="600" loading="lazy" decoding="async" />
 
@@ -142,11 +153,6 @@
     <audio src="../public/audio/audio.mp3" controls></audio>
 
     <button type="submit">Submit outside</button> <!-- FORM-01: submit outside form -->
-
-    <!-- RWD-01: Large fixed width -->
-    <div style="width: 1200px; background: #eee; padding: 10px;">
-        This div has a fixed width of 1200px (too large for mobile)
-    </div>
 
     <!-- RWD-05: Problematic 100vh -->
     <section style="height: 100vh; background: #f0f0f0; padding: 20px;">
@@ -185,6 +191,8 @@
         <input type="text" id="name" name="name" required />
         <input type="text" name="email" placeholder="Email" />
         <!-- FORM-03: should be type=email + FORM-04: without autocomplete -->
+        <input type="email" name="contactEmail" placeholder="Contact email" />
+        <!-- FORM-04: missing autocomplete -->
         <button type="submit">Submit</button>
     </form>
 
@@ -210,6 +218,8 @@
         /* ACC-21: Focus not visible */
         .no-focus {
             outline: none;
+            border: none;
+            box-shadow: none;
         }
 
         /* ACC-26: Line-height too low */

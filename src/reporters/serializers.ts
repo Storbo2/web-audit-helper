@@ -166,6 +166,7 @@ export function serializeReportToHTML(report: AuditReport): string {
                     <p><strong>URL:</strong> ${escapeHtml(report.meta.url || "N/A")}</p>
                     <p><strong>Date:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(report.meta.date))}</p>
                     <p><strong>Viewport:</strong> ${report.meta.viewport.width}×${report.meta.viewport.height}</p>
+                    ${report.meta.breakpoint ? `<p><strong>Breakpoint:</strong> ${escapeHtml(report.meta.breakpoint.name)} (${escapeHtml(report.meta.breakpoint.devices)})</p>` : ""}
                     <p><strong>Scoring Mode:</strong> ${escapeHtml(formatScoringModeLabel(report.meta.scoringMode))}</p>
                     ${report.meta.scoringMode === "custom"
             ? `<p><strong>Applied Filters:</strong> ${escapeHtml(formatAppliedFiltersText(report))}</p>`
@@ -204,6 +205,9 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push(`URL: ${report.meta.url || "N/A"}`);
     lines.push(`Date: ${formatDateISOToDDMMYYYY(report.meta.date)}`);
     lines.push(`Viewport: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
+    if (report.meta.breakpoint) {
+        lines.push(`Breakpoint: ${report.meta.breakpoint.name} (${report.meta.breakpoint.devices})`);
+    }
     lines.push(`Scoring Mode: ${formatScoringModeLabel(report.meta.scoringMode)}`);
     if (report.meta.scoringMode === "custom") {
         lines.push(`Applied Filters: ${formatAppliedFiltersText(report)}`);
