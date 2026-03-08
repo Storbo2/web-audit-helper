@@ -565,6 +565,45 @@ export const wahCss = `
     font-weight: inherit !important;
 }
 
+#wah-pop input[type="checkbox"],
+#wah-pop input[type="radio"],
+#wah-pop input[type="color"] {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: static !important;
+    z-index: auto !important;
+    clip: auto !important;
+    clip-path: none !important;
+    transform: none !important;
+    filter: none !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+#wah-pop input[type="checkbox"],
+#wah-pop input[type="radio"] {
+    display: inline-block !important;
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+    margin: 0 !important;
+    accent-color: var(--wah-border);
+    flex: 0 0 auto;
+    cursor: pointer !important;
+}
+
+#wah-pop input[type="color"] {
+    display: inline-block !important;
+    width: 2.375rem !important;
+    height: 1.375rem !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer !important;
+}
+
 .wah-pop.is-open {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -676,6 +715,7 @@ export const wahCss = `
 .wah-pop-row>input[type="checkbox"] {
     flex: 0 0 auto;
     margin: 0 !important;
+    width: auto;
 }
 
 .wah-pop-row>label,
@@ -705,6 +745,7 @@ export const wahCss = `
 
 .wah-pop-row input[type="radio"] {
     accent-color: var(--wah-border);
+    width: auto;
 }
 
 .wah-pop-row:hover {
@@ -1010,7 +1051,7 @@ export const wahCss = `
 }
 
 .wah-color-input {
-    width: 2.375rem;
+    width: 2.375rem !important;
     height: 1.375rem;
     border: none;
     background: transparent;

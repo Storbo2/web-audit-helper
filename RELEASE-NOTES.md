@@ -1,55 +1,31 @@
-# WAH v1.0.8 Release Notes
+# WAH v1.0.9 Release Notes
 
 **Release Date**: March 8, 2026  
-**Type**: Minor Enhancement (Breakpoint Context + Visual Improvements)
+**Type**: Patch (Contrast Detection Improvements)
 
 ---
 
 ## Overview
 
-Version 1.0.8 enhances report context by adding breakpoint classification to all export formats and improves visual feedback for large element highlighting. This release removes unused configuration while adding valuable viewport context to help understand audit results in responsive design contexts.
+Version 1.0.9 further refines contrast detection (ACC-25) to virtually eliminate false positives, especially in strict mode. This patch improves element analysis by detecting and skipping text adjacent to visual elements like animations and background images.
 
 ---
 
 ## Added
 
-### Report Enhancements
-- **Breakpoint information in all reports**: JSON, TXT, and HTML exports now include breakpoint classification alongside viewport dimensions
-  - Example: `Breakpoint: xl (laptops, desktops)`
-- **Standard breakpoint system**: Internal utility classifies viewports into xs/sm/md/lg/xl/2xl/3xl with device type descriptions
-- **Device context**: Reports now show typical device types for the current viewport (e.g., "mobile phones (portrait)", "tablets (landscape)", "large desktops, monitors")
-
-### Visual Improvements
-- **Enhanced large element highlighting**: Elements covering >50% of viewport now receive animated flash overlay effect for better visibility
-- **Improved highlight UX**: Critical issues on `<html>`, `<body>`, or large sections now clearly visible with pulsing color overlay
-
----
-
-## Changed
-
-### Configuration
-- **Removed `breakpoints` from WAHConfig**: Previously unused configuration option has been removed for cleaner API
-  - **Breaking Change**: If you were passing `breakpoints` in config, you can safely remove it - it was never used by any rules
-  - **Migration**: Simply delete the `breakpoints` property from your config object
-- **Simplified config**: Default configuration is now more focused with fewer unused options
-
-### Report Format
-- All report formats now include breakpoint metadata:
-  ```json
-  "breakpoint": {
-    "name": "xl",
-    "label": "Extra Large", 
-    "devices": "laptops, desktops"
-  }
-  ```
+### Contrast Detection Improvements
+- **Sibling element detection**: Automatically skips text contrast analysis when adjacent siblings contain images or background images
+- **Parent animation detection**: Detects animations/transitions in parent elements and skips analysis accordingly
+- **Tolerance tuning**: Increased tolerance threshold from 95% to 90% of minimum contrast ratio for edge cases
 
 ---
 
 ## Fixed
 
-### Highlighting
-- Large elements (html, body, full-page sections) now properly highlighted with visible flash effect instead of just border
-- Improved perceivability of issue elements that span most/all of the viewport
+### Contrast Ratio (ACC-25)
+- Significantly reduced false positives in all scoring modes, particularly in strict mode
+- Fixed issue where white text on black backgrounds could incorrectly flag as low-contrast when near animated or image-containing elements
+- Improved detection of legitimate contrast scenarios with complex layouts
 
 ---
 
@@ -88,17 +64,10 @@ npm update web-audit-helper
 
 If your code previously included `breakpoints` in the config:
 
-**Before (1.0.7):**
-```javascript
-await runWAH({
-    logs: true,
-    overlay: { enabled: true },
-    breakpoints: {  // ← Remove this
-        xs: 480,
-        sm: 640,
-        // ...
-    }
-});
+**Before (1.0.7):**9`)
+- `CHANGELOG.md` (new `1.0.9` entry)
+- `RELEASE-NOTES.md` (this file)
+- `src/core/rules/accessibility/text.ts` (improved contrast detection with nearby element checkin
 ```
 
 **After (1.0.8):**
@@ -114,22 +83,36 @@ The `breakpoints` were never used by any rules or functionality, so removing the
 
 ---
 
+## NNo breaking changes from 1.0.8
+
+---
+
+## Upgrade
+
+```bash
+npm update web-audit-helper
+```
+
+No breaking changes. Fully backward compatible with `v1.0.8`.
+
+---
+
 ## Notes for Maintainers
 
 Suggested release commit message:
 
 ```bash
-git commit -m "chore: release v1.0.8 - breakpoint context in reports + visual improvements"
+git commit -m "chore: release v1.0.9 - improved contrast detection (ACC-25 false positives fix)"
 ```
 
 Suggested tag:
 
 ```bash
-git tag v1.0.8
+git tag v1.0.9
 ```
 
 ---
 
 ## Previous Release
 
-For v1.0.7 notes, see the previous version of this file or CHANGELOG.md.
+For v1.0.8

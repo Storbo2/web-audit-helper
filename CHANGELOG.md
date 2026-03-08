@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2026-03-08
+
+### Fixed
+- Reduced false positives in contrast ratio detection (ACC-25) by checking for nearby visual elements (background images, parent animations, adjacent sibling content)
+- Increased contrast ratio tolerance from 95% to 90% of minimum requirement to account for edge cases with animations and complex layouts
+- Fixed white-on-black text incorrectly flagging as low contrast in strict mode when near animated or image-containing elements
+
 ## [1.0.8] - 2026-03-08
 
 ### Added

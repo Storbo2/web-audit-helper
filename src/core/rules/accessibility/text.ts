@@ -32,6 +32,39 @@ function hasActiveVisualEffects(style: CSSStyleDeclaration): boolean {
     return hasAnimation || hasTransition;
 }
 
+function hasNearbyVisualElements(el: Element): boolean {
+    const style = window.getComputedStyle(el);
+    if (style.backgroundImage && style.backgroundImage !== "none") {
+        return true;
+    }
+
+    let parent = el.parentElement;
+    while (parent) {
+        const parentStyle = window.getComputedStyle(parent);
+        if (hasActiveVisualEffects(parentStyle)) {
+            return true;
+        }
+        parent = parent.parentElement;
+    }
+
+    const prevSibling = el.previousElementSibling;
+    const nextSibling = el.nextElementSibling;
+
+    for (const sibling of [prevSibling, nextSibling]) {
+        if (sibling) {
+            const sibStyle = window.getComputedStyle(sibling);
+            if (sibStyle.backgroundImage && sibStyle.backgroundImage !== "none") {
+                return true;
+            }
+            if (sibling.querySelector("img")) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 export function checkFontSize(minSize: number): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
@@ -72,7 +105,7 @@ export function checkContrastRatio(minRatio: number = 4.5): AuditIssue[] {
         const fgColor = resolveEffectiveTextColor(el);
         const bgColor = getBackgroundColor(el);
 
-        if (hasActiveVisualEffects(style)) return;
+        if (hasActiveVisualEffects(style) || hasNearbyVisualElements(el)) return;
 
         if (!fgColor || !bgColor) return;
 
@@ -92,7 +125,9 @@ export function checkContrastRatio(minRatio: number = 4.5): AuditIssue[] {
         const darker = Math.min(l1, l2);
         const ratio = (lighter + 0.05) / (darker + 0.05);
 
-        if (ratio < minRatio * 0.95) {
+        const threshold = minRatio * 0.90;
+
+        if (ratio < threshold) {
             issues.push({
                 rule: RULE_IDS.accessibility.contrastInsufficient,
                 message: `Insufficient contrast ratio (${ratio.toFixed(2)}:1, needs ${minRatio}:1)`,
