@@ -177,6 +177,7 @@ WAH supports extensive configuration options for customization:
 | `logs`                        | `boolean`                           | `true`           | Enable console logging                                         |
 | `logLevel`                    | `'full' \| 'summary' \| 'none'`     | `'full'`         | Console verbosity level                                        |
 | `issueLevel`                  | `'critical' \| 'warnings' \| 'all'` | `'all'`          | Filter which issues to report                                  |
+| `locale`                      | `'en' \| 'es'`                      | auto             | User-facing language (`es` if browser language is Spanish)     |
 | `accessibility.minFontSize`   | `number`                            | `12`             | Minimum font size in pixels                                    |
 | `accessibility.contrastLevel` | `'AA' \| 'AAA'`                     | `'AA'`           | WCAG contrast requirement level                                |
 | `overlay.enabled`             | `boolean`                           | `true`           | Show visual overlay interface                                  |
@@ -184,6 +185,7 @@ WAH supports extensive configuration options for customization:
 | `overlay.hide`                | `number`                            | `0`              | Hide overlay for X milliseconds on load                        |
 
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
+Spanish version: [Guia de Configuracion](docs/es/configuration.md).
 
 ---
 
@@ -242,6 +244,7 @@ Image optimization, lazy loading, async decode, script placement, fonts, caching
 Submit buttons, required indicators, input types, autocomplete
 
 **For complete rules reference**, see [Rules Documentation](docs/rules.md).
+Spanish version: [Documentacion de Reglas](docs/es/rules.md).
 
 ---
 
@@ -315,7 +318,7 @@ The overlay provides a floating interface with:
 - **Issue list**: Filterable by severity (critical/warning/recommendation) and category
 - **Issue focus**: Click to highlight elements in the DOM
 - **Filters**: Toggle severities and categories to customize scoring
-- **Settings**: Configure min font size, contrast level, scoring mode
+- **Settings**: Configure scoring mode, hide behavior, and language selector (`en`/`es`) with persistence across reloads
 - **Export**: Download audit reports in JSON, TXT, or HTML format
 - **Hide**: Temporarily hide overlay for X minutes or until next refresh
 
@@ -331,6 +334,7 @@ WAH is organized into clear modules:
 - **`utils/`**: Shared utilities (console logging, DOM helpers)
 
 **For architecture details**, see [Architecture Guide](docs/architecture.md).
+Spanish version: [Guia de Arquitectura](docs/es/architecture.md).
 
 ---
 
@@ -354,6 +358,21 @@ console.log(`Issues: ${result.issues.length}`);
 ```
 
 **For complete API documentation**, see [API Reference](docs/api.md).
+Spanish version: [Referencia de API](docs/es/api.md).
+
+---
+
+## 🌐 Internationalization
+
+- Built-in locales: `en`, `es`
+- Internal IDs and config keys remain in English
+- User-facing strings are localized (overlay, console, TXT/HTML reports, docs)
+- Locale resolution order: `userConfig.locale` -> persisted selector value -> browser detection (`es*` => `es`, otherwise `en`)
+- Runtime translations are loaded from JSON locale payloads in `locales/<lang>/common.json`
+- JSON reports stay in English for machine integrations
+- Overlay header title is fixed as `WAH Report`; report title is fixed as `Web Audit Helper Report`
+
+For contribution workflow and community translation model, see [Translations Guide](docs/translations.md).
 
 ---
 

@@ -1,6 +1,7 @@
 import type { AuditReport } from "../core/types";
 import { CATEGORY_ORDER, CATEGORY_SHORT_LABELS, ELEMENTS_TXT_PREVIEW_LIMIT } from "./constants";
 import { toSentenceCase, sortRulesById } from "./utils";
+import { t } from "../utils/i18n";
 
 function formatDateISOToDDMMYYYY(iso: string): string {
     const d = new Date(iso);
@@ -29,20 +30,22 @@ function formatScoringModeLabel(mode?: string): string {
 }
 
 function formatAppliedFiltersText(report: AuditReport): string {
+    const dict = t();
     if (report.meta.scoringMode !== "custom" || !report.meta.appliedFilters) return "";
 
     const severities = report.meta.appliedFilters.severities?.length
         ? report.meta.appliedFilters.severities.join(", ")
-        : "none";
+        : dict.notAvailable;
 
     const categories = report.meta.appliedFilters.categories?.length
         ? report.meta.appliedFilters.categories.join(", ")
-        : "none";
+        : dict.notAvailable;
 
     return `severities: ${severities} | categories: ${categories}`;
 }
 
 export function serializeReportToHTML(report: AuditReport): string {
+    const dict = t();
     const categorySummaryParts: string[] = [];
     for (const category of CATEGORY_ORDER) {
         const score = report.score.byCategory[category];
@@ -64,10 +67,10 @@ export function serializeReportToHTML(report: AuditReport): string {
                     ? "status-warn"
                     : "status-recommendation";
             const statusLabel = rule.status === "critical"
-                ? "CRITICAL"
+                ? dict.critical.toUpperCase()
                 : rule.status === "warning"
-                    ? "WARNING"
-                    : "RECOMMENDATION";
+                    ? dict.warning.toUpperCase()
+                    : dict.recommendation.toUpperCase();
             const icon = rule.status === "critical"
                 ? "✖"
                 : rule.status === "warning"
@@ -87,13 +90,13 @@ export function serializeReportToHTML(report: AuditReport): string {
                                 ${elem.note ? `<div class="note">${escapeHtml(toSentenceCase(elem.note))}</div>` : ""}
                             </li>
                         `).join("")}
-                        ${totalOmitted > 0 ? `<li class="omitted">... and ${totalOmitted} more</li>` : ""}
+                        ${totalOmitted > 0 ? `<li class="omitted">${dict.reportAndMore(totalOmitted)}</li>` : ""}
                     </ul>
                 `
                 : "";
 
             const fixHtml = rule.fix
-                ? `<p class="fix"><strong>Fix:</strong> ${escapeHtml(rule.fix)}</p>`
+                ? `<p class="fix"><strong>${dict.reportFix}:</strong> ${escapeHtml(rule.fix)}</p>`
                 : "";
 
             return `
@@ -114,8 +117,8 @@ export function serializeReportToHTML(report: AuditReport): string {
         return `
             <section class="category">
             <h2>${escapeHtml(cat.title)} <span class="cat-score">(${cat.score}/100)</span></h2>
-            <div class="cat-summary">${failRules.length} critical, ${warnRules.length} warning${recommendationRules.length > 0 ? `, ${recommendationRules.length} recommendation` : ""}</div>
-            ${rulesHtml || '<p class="empty">No findings in this category.</p>'}
+            <div class="cat-summary">${failRules.length} ${dict.reportStatsCritical}, ${warnRules.length} ${dict.reportStatsWarning}${recommendationRules.length > 0 ? `, ${recommendationRules.length} ${dict.reportStatsRecommendation}` : ""}</div>
+            ${rulesHtml || `<p class="empty">${dict.reportNoFindings}</p>`}
             </section>
         `;
     }).join("");
@@ -126,7 +129,7 @@ export function serializeReportToHTML(report: AuditReport): string {
         <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>WAH Report</title>
+            <title>${dict.reportTitle}</title>
             <style>
                 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 24px; color: #111827; }
                 h1 { margin: 0 0 8px; }
@@ -161,33 +164,33 @@ export function serializeReportToHTML(report: AuditReport): string {
         </head>
         <body>
             <main>
-                <h1>WAH Report — Web Audit Helper</h1>
+                <h1>${dict.reportTitle}</h1>
                 <section class="meta">
-                    <p><strong>URL:</strong> ${escapeHtml(report.meta.url || "N/A")}</p>
-                    <p><strong>Date:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(report.meta.date))}</p>
-                    <p><strong>Viewport:</strong> ${report.meta.viewport.width}×${report.meta.viewport.height}</p>
-                    ${report.meta.breakpoint ? `<p><strong>Breakpoint:</strong> ${escapeHtml(report.meta.breakpoint.name)} (${escapeHtml(report.meta.breakpoint.devices)})</p>` : ""}
-                    <p><strong>Scoring Mode:</strong> ${escapeHtml(formatScoringModeLabel(report.meta.scoringMode))}</p>
+                    <p><strong>${dict.reportUrl}:</strong> ${escapeHtml(report.meta.url || dict.notAvailable)}</p>
+                    <p><strong>${dict.reportDate}:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(report.meta.date))}</p>
+                    <p><strong>${dict.reportViewport}:</strong> ${report.meta.viewport.width}×${report.meta.viewport.height}</p>
+                    ${report.meta.breakpoint ? `<p><strong>${dict.reportBreakpoint}:</strong> ${escapeHtml(report.meta.breakpoint.name)} (${escapeHtml(report.meta.breakpoint.devices)})</p>` : ""}
+                    <p><strong>${dict.reportScoringMode}:</strong> ${escapeHtml(formatScoringModeLabel(report.meta.scoringMode))}</p>
                     ${report.meta.scoringMode === "custom"
-            ? `<p><strong>Applied Filters:</strong> ${escapeHtml(formatAppliedFiltersText(report))}</p>`
+            ? `<p><strong>${dict.reportAppliedFilters}:</strong> ${escapeHtml(formatAppliedFiltersText(report))}</p>`
             : ""}
                 </section>
 
                 <section class="summary">
-                    <p><strong>Overall Score:</strong> ${report.score.overall} (Grade ${escapeHtml(report.score.grade)})</p>
-                    ${categorySummaryParts.length > 0 ? `<p><strong>Categories:</strong> ${escapeHtml(categorySummaryParts.join(" | "))}</p>` : ""}
-                    <p><strong>Stats:</strong> ${report.stats.failed} critical, ${report.stats.warnings} warning, ${report.stats.recommendations} recommendation</p>
+                    <p><strong>${dict.reportOverallScore}:</strong> ${report.score.overall} (Grade ${escapeHtml(report.score.grade)})</p>
+                    ${categorySummaryParts.length > 0 ? `<p><strong>${dict.reportCategories}:</strong> ${escapeHtml(categorySummaryParts.join(" | "))}</p>` : ""}
+                    <p><strong>${dict.reportStats}:</strong> ${report.stats.failed} ${dict.reportStatsCritical}, ${report.stats.warnings} ${dict.reportStatsWarning}, ${report.stats.recommendations} ${dict.reportStatsRecommendation}</p>
                     <br>
-                    <p class="legend"><span class="legend-fail">CRITICAL = needs fixing</span> <span class="legend-warn">WARNING = improvement recommended</span> <strong>RECOMMENDATION = suggested improvement</strong></p>
+                    <p class="legend"><span class="legend-fail">${dict.critical.toUpperCase()} = ${dict.reportLegendNeedsFix}</span> <span class="legend-warn">${dict.warning.toUpperCase()} = ${dict.reportLegendImprovement}</span> <strong>${dict.recommendation.toUpperCase()} = ${dict.reportLegendSuggested}</strong></p>
                 </section>
 
                 ${categoriesHtml}
             </main>
 
             <footer>
-                <p>Generated by Web Audit Helper v${escapeHtml(report.meta.version)} (${escapeHtml(report.meta.mode)})</p>
-                <p>Timestamp: ${escapeHtml(report.meta.date)}</p>
-                <p>User Agent: ${escapeHtml(report.meta.userAgent)}</p>
+                <p>${dict.reportGeneratedBy} v${escapeHtml(report.meta.version)} (${escapeHtml(report.meta.mode)})</p>
+                <p>${dict.reportTimestamp}: ${escapeHtml(report.meta.date)}</p>
+                <p>${dict.reportUserAgent}: ${escapeHtml(report.meta.userAgent)}</p>
             </footer>
         </body>
     </html>
@@ -195,26 +198,27 @@ export function serializeReportToHTML(report: AuditReport): string {
 }
 
 export function serializeReportToTXT(report: AuditReport): string {
+    const dict = t();
     const lines: string[] = [];
 
     lines.push("=".repeat(60));
-    lines.push("WAH Report — Web Audit Helper");
+    lines.push(dict.reportTitle);
     lines.push("=".repeat(60));
     lines.push("");
 
-    lines.push(`URL: ${report.meta.url || "N/A"}`);
-    lines.push(`Date: ${formatDateISOToDDMMYYYY(report.meta.date)}`);
-    lines.push(`Viewport: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
+    lines.push(`${dict.reportUrl}: ${report.meta.url || dict.notAvailable}`);
+    lines.push(`${dict.reportDate}: ${formatDateISOToDDMMYYYY(report.meta.date)}`);
+    lines.push(`${dict.reportViewport}: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
     if (report.meta.breakpoint) {
-        lines.push(`Breakpoint: ${report.meta.breakpoint.name} (${report.meta.breakpoint.devices})`);
+        lines.push(`${dict.reportBreakpoint}: ${report.meta.breakpoint.name} (${report.meta.breakpoint.devices})`);
     }
-    lines.push(`Scoring Mode: ${formatScoringModeLabel(report.meta.scoringMode)}`);
+    lines.push(`${dict.reportScoringMode}: ${formatScoringModeLabel(report.meta.scoringMode)}`);
     if (report.meta.scoringMode === "custom") {
-        lines.push(`Applied Filters: ${formatAppliedFiltersText(report)}`);
+        lines.push(`${dict.reportAppliedFilters}: ${formatAppliedFiltersText(report)}`);
     }
     lines.push("");
 
-    lines.push(`Overall Score: ${report.score.overall} (Grade ${report.score.grade})`);
+    lines.push(`${dict.reportOverallScore}: ${report.score.overall} (Grade ${report.score.grade})`);
     const categorySummaryParts: string[] = [];
     for (const category of CATEGORY_ORDER) {
         const score = report.score.byCategory[category];
@@ -224,15 +228,15 @@ export function serializeReportToTXT(report: AuditReport): string {
     }
 
     if (categorySummaryParts.length > 0) {
-        lines.push(`Categories: ${categorySummaryParts.join(" | ")}`);
+        lines.push(`${dict.reportCategories}: ${categorySummaryParts.join(" | ")}`);
     }
     lines.push("");
 
-    lines.push("Stats:");
-    lines.push(`  ! Recommendations: ${report.stats.recommendations}`);
-    lines.push(`  ⚠ Warnings: ${report.stats.warnings}`);
-    lines.push(`  ✖ Failed: ${report.stats.failed}`);
-    lines.push(`  Triggered/Available Rules: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
+    lines.push(`${dict.reportStats}:`);
+    lines.push(`  ! ${dict.recommendation}: ${report.stats.recommendations}`);
+    lines.push(`  ⚠ ${dict.warning}: ${report.stats.warnings}`);
+    lines.push(`  ✖ ${dict.critical}: ${report.stats.failed}`);
+    lines.push(`  ${dict.reportTriggeredRules}: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
     lines.push("");
 
     for (const cat of report.categories) {
@@ -240,7 +244,7 @@ export function serializeReportToTXT(report: AuditReport): string {
         const warnRules = cat.rules.filter(r => r.status === "warning").length;
         const recommendationRules = cat.rules.filter(r => r.status === "recommendation").length;
 
-        lines.push(`${cat.title} (${cat.score}/100) — ${failRules} critical, ${warnRules} warning, ${recommendationRules} recommendation`);
+        lines.push(`${cat.title} (${cat.score}/100) — ${failRules} ${dict.reportStatsCritical}, ${warnRules} ${dict.reportStatsWarning}, ${recommendationRules} ${dict.reportStatsRecommendation}`);
         lines.push("-".repeat(60));
 
         const sortedRules = [
@@ -258,11 +262,11 @@ export function serializeReportToTXT(report: AuditReport): string {
             if (rule.status !== currentStatus) {
                 if (currentStatus !== null) lines.push("");
                 if (rule.status === "critical") {
-                    lines.push("CRITICAL:");
+                    lines.push(`${dict.critical.toUpperCase()}:`);
                 } else if (rule.status === "warning") {
-                    lines.push("WARNING:");
+                    lines.push(`${dict.warning.toUpperCase()}:`);
                 } else if (rule.status === "recommendation") {
-                    lines.push("RECOMMENDATION:");
+                    lines.push(`${dict.recommendation.toUpperCase()}:`);
                 }
                 currentStatus = rule.status;
             }
@@ -271,7 +275,7 @@ export function serializeReportToTXT(report: AuditReport): string {
             lines.push(`${icon} [${rule.id}] ${rule.title}`);
             lines.push(`   ${rule.message}`);
             if (rule.fix) {
-                lines.push(`   Fix: ${rule.fix}`);
+                lines.push(`   ${dict.reportFix}: ${rule.fix}`);
             }
 
             if (rule.elements && rule.elements.length > 0) {
@@ -284,12 +288,12 @@ export function serializeReportToTXT(report: AuditReport): string {
                 const hiddenFromPreview = Math.max(0, rule.elements.length - ELEMENTS_TXT_PREVIEW_LIMIT);
                 const totalOmitted = hiddenFromPreview + (rule.elementsOmitted || 0);
                 if (totalOmitted > 0) {
-                    lines.push(`   ... and ${totalOmitted} more`);
+                    lines.push(`   ${dict.reportAndMore(totalOmitted)}`);
                 }
             }
 
             if (rule.help) {
-                lines.push(`   Help: ${rule.help}`);
+                lines.push(`   ${dict.reportHelp}: ${rule.help}`);
             }
 
             lines.push("");
@@ -297,7 +301,7 @@ export function serializeReportToTXT(report: AuditReport): string {
     }
 
     if (report.highlights && report.highlights.length > 0) {
-        lines.push("Key Suggestions:");
+        lines.push(`${dict.reportKeySuggestions}:`);
         lines.push("-".repeat(40));
         for (const highlight of report.highlights) {
             lines.push(`• ${highlight}`);

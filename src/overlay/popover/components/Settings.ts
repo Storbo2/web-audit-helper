@@ -8,6 +8,8 @@ import {
     setHideUntilRefresh
 } from "../../config/hideStore";
 import { setPendingChanges, closePop } from "../utils";
+import { clearStoredLocale, getLocale, getSupportedLocales, initI18n, setLocale, t } from "../../../utils/i18n";
+import type { Locale } from "../../../core/types";
 
 type SettingsPage = 0 | 1 | 2;
 
@@ -15,51 +17,62 @@ type SettingsPageRef = { current: SettingsPage };
 
 type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 
-const SCORING_MODE_INFO: Record<ScoringMode, string> = {
-    strict: "Strict: uses stricter thresholds, considers all severities, and analyzes the full DOM (including hidden variants).",
-    normal: "Normal: uses standard thresholds, considers all severities, and analyzes perceivable-only elements.",
-    moderate: "Moderate: uses standard thresholds, ignores recommendations (warning + critical), and analyzes perceivable-only elements.",
-    soft: "Soft: uses permissive thresholds, only considers critical issues, and analyzes perceivable-only elements.",
-    custom: "Consider filters in scoring: uses current chips/categories for score and reports, with perceivable-only element analysis."
-};
+function getScoringModeInfo(): Record<ScoringMode, string> {
+    const dict = t();
+    return {
+        strict: dict.scoringModeStrictDesc,
+        normal: dict.scoringModeNormalDesc,
+        moderate: dict.scoringModeModerateDesc,
+        soft: dict.scoringModeSoftDesc,
+        custom: dict.scoringModeCustomDesc
+    };
+}
 
-const LOG_LEVEL_OPTIONS: Array<{ value: "full" | "summary" | "none"; label: string; title: string }> = [
-    { value: "full", label: "Full report", title: "Show full report in console with issue table" },
-    { value: "summary", label: "Report summary", title: "Show only report summary in console" },
-    { value: "none", label: "No console logs", title: "Disable all console logs" }
-];
+function getLogLevelOptions(): Array<{ value: "full" | "summary" | "none"; label: string; title: string }> {
+    const dict = t();
+    return [
+        { value: "full", label: dict.fullReport, title: dict.fullReportDescription },
+        { value: "summary", label: dict.reportSummary, title: dict.reportSummaryDescription },
+        { value: "none", label: dict.noConsoleLogs, title: dict.noConsoleLogsDescription }
+    ];
+}
 
-const HIDE_DURATIONS: Array<{ value: number; label: string }> = [
-    { value: 600000, label: "10 minutes" },
-    { value: 1800000, label: "30 minutes" },
-    { value: 3600000, label: "1 hour" },
-    { value: 10800000, label: "3 hours" },
-    { value: 86400000, label: "1 day" }
-];
+function getHideDurations(): Array<{ value: number; label: string }> {
+    const dict = t();
+    return [
+        { value: 600000, label: dict.minutes10 },
+        { value: 1800000, label: dict.minutes30 },
+        { value: 3600000, label: dict.hour1 },
+        { value: 10800000, label: dict.hours3 },
+        { value: 86400000, label: dict.day1 }
+    ];
+}
 
 function renderRerunNotice(): string {
+    const dict = t();
     return `
-        <div class="wah-rerun" id="wah-rerun-notice" title="Click to re-run audit" style="display: none;">
-            <span>Changes require re-run audit for effect.</span>
+        <div class="wah-rerun" id="wah-rerun-notice" title="${dict.clickToRerunAudit}" style="display: none;">
+            <span>${dict.changesRequireRerun}</span>
         </div>
     `;
 }
 
 function renderSettingsHeader(title: string, page: number, total: number): string {
+    const dict = t();
     return `
         <div class="wah-pop-head">
-            <button class="wah-pop-nav" data-nav="prev" title="Previous">❮</button>
+            <button class="wah-pop-nav" data-nav="prev" title="${dict.previousPage}">❮</button>
             <div class="wah-pop-head-center">
                 <div class="wah-pop-title">${title}</div>
-                <div class="wah-pop-page">${page}/${total}</div>
+                <div class="wah-pop-page">${dict.pageIndicator(page, total)}</div>
             </div>
-            <button class="wah-pop-nav" data-nav="next" title="Next">❯</button>
+            <button class="wah-pop-nav" data-nav="next" title="${dict.nextPage}">❯</button>
         </div>
     `;
 }
 
 function renderLogLevelOptions(): string {
-    return LOG_LEVEL_OPTIONS.map(({ value, label, title }) => `
+    return getLogLevelOptions().map(({ value, label, title }) => `
         <label class="wah-pop-row" title="${title}">
             <input type="radio" name="wah-loglvl" value="${value}">
             <span class="wah-pop-row-text">${label}</span>
@@ -68,7 +81,7 @@ function renderLogLevelOptions(): string {
 }
 
 function renderHideDurationOptions(): string {
-    return HIDE_DURATIONS.map(({ value, label }) => `<option value="${value}">${label}</option>`).join("");
+    return getHideDurations().map(({ value, label }) => `<option value="${value}">${label}</option>`).join("");
 }
 
 function wirePage0(popBody: HTMLElement) {
@@ -97,6 +110,7 @@ function wirePage0(popBody: HTMLElement) {
 }
 
 function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
+    const scoringInfo = getScoringModeInfo();
     const settings = getSettings();
     const appliedMode = getAppliedScoringMode();
 
@@ -104,7 +118,7 @@ function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
     const infoEl = popBody.querySelector<HTMLElement>('[data-s="scoringInfo"]');
 
     const updatePendingState = (selectedMode: ScoringMode) => {
-        if (infoEl) infoEl.textContent = SCORING_MODE_INFO[selectedMode];
+        if (infoEl) infoEl.textContent = scoringInfo[selectedMode];
 
         const needsRerun = selectedMode !== appliedMode;
         setPendingChanges(needsRerun);
@@ -131,9 +145,26 @@ function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void) {
             onRerunAudit();
         });
     }
+
+    // Wire language selector
+    const localeSelect = popBody.querySelector<HTMLSelectElement>('[data-s="locale"]');
+    if (localeSelect) {
+        localeSelect.value = getLocale();
+        localeSelect.addEventListener("change", () => {
+            const selected = localeSelect.value as Locale;
+            setLocale(selected, true);
+            const nextDict = t();
+            const selectedLabel = selected === "es" ? nextDict.languageSpanish : nextDict.languageEnglish;
+            console.log(`[WAH] ${nextDict.languageChanged(selectedLabel)}`);
+            closePop();
+            onRerunAudit?.();
+        });
+    }
 }
 
 function wirePage2(popBody: HTMLElement) {
+    const dict = t();
+
     function closePopover() {
         const pop = document.getElementById("wah-pop") as HTMLElement | null;
         if (pop && pop.classList.contains("is-open")) {
@@ -152,7 +183,7 @@ function wirePage2(popBody: HTMLElement) {
         if (overlay) {
             overlay.remove();
         }
-        console.log("[WAH] Overlay hidden until next page refresh");
+        console.log(`[WAH] ${dict.overlayHiddenUntilRefresh}`);
     });
 
     const hideForSelect = popBody.querySelector<HTMLSelectElement>('[data-s="hideForSelect"]');
@@ -164,11 +195,11 @@ function wirePage2(popBody: HTMLElement) {
         if (current && current > Date.now()) {
             const remaining = current - Date.now();
             const mins = Math.round(remaining / 60000);
-            if (hideInfo) hideInfo.textContent = `Hidden for ${mins} min (until ${new Date(current).toLocaleString()})`;
-            if (hideForBtn) hideForBtn.textContent = "Show overlay";
+            if (hideInfo) hideInfo.textContent = dict.hiddenForMin(mins, new Date(current).toLocaleString());
+            if (hideForBtn) hideForBtn.textContent = dict.showOverlayNow;
         } else {
             if (hideInfo) hideInfo.textContent = "";
-            if (hideForBtn) hideForBtn.textContent = "Hide";
+            if (hideForBtn) hideForBtn.textContent = dict.hideForButton;
         }
     }
 
@@ -179,7 +210,7 @@ function wirePage2(popBody: HTMLElement) {
             if (isHidden) {
                 clearHideUntil();
                 renderHideInfo();
-                console.log("[WAH] Overlay will show now (hide cleared)");
+                console.log(`[WAH] ${dict.overlayWillShowNow}`);
                 return;
             }
 
@@ -191,7 +222,7 @@ function wirePage2(popBody: HTMLElement) {
             closePopover();
             const overlay = document.getElementById("wah-overlay-root") as HTMLElement | null;
             if (overlay) overlay.remove();
-            console.log(`[WAH] Overlay hidden for ${Math.round(val / 60000)} minutes`);
+            console.log(`[WAH] ${dict.overlayHiddenForMinutes(Math.round(val / 60000))}`);
         });
     }
 
@@ -199,8 +230,10 @@ function wirePage2(popBody: HTMLElement) {
     resetBtn?.addEventListener("click", () => {
         resetSettings();
         clearHideUntil();
+        clearStoredLocale();
+        initI18n();
         setPendingChanges(false);
-        console.log("[WAH] All settings reset to defaults");
+        console.log(`[WAH] ${t().allSettingsReset}`);
         const popBody = document.getElementById("wah-pop-body") as HTMLElement | null;
         if (popBody) {
             const pageRef: SettingsPageRef = { current: 0 };
@@ -210,39 +243,47 @@ function wirePage2(popBody: HTMLElement) {
 }
 
 export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRef, onRerunAudit?: () => void) {
+    const dict = t();
     const page = pageRef.current;
     const total = 3;
     popBody.dataset.settingsPage = String(page + 1);
 
     if (page === 0) {
         popBody.innerHTML = `
-        ${renderSettingsHeader("Settings", 1, total)}
+        ${renderSettingsHeader(dict.settingsTitle, 1, total)}
 
-        <div class="wah-pop-section">Console logs</div>
+        <div class="wah-pop-section">${dict.consoleLog}</div>
         ${renderLogLevelOptions()}
 
         <div class="wah-pop-spacer"></div>
 
-        <div class="wah-pop-section wah-pop-section-spaced">Highlight duration</div>
+        <div class="wah-pop-section wah-pop-section-spaced">${dict.highlightDuration}</div>
         <div class="wah-pop-row wah-pop-row-space-between">
             <span class="wah-pop-row-text" data-s="hlLabel">750ms</span>
-            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="Adjust issue highlight duration">
+            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="${dict.highlightDuration}">
         </div>
     `;
         wirePage0(popBody);
     }
 
     if (page === 1) {
+        const localeOptions = getSupportedLocales()
+            .map((locale) => {
+                const label = locale === "es" ? dict.languageSpanish : dict.languageEnglish;
+                return `<option value="${locale}">${label}</option>`;
+            })
+            .join("");
+
         popBody.innerHTML = `
-        ${renderSettingsHeader("Settings", 2, total)}
-        <div class="wah-pop-section">Scoring Mode</div>
+        ${renderSettingsHeader(dict.settingsTitle, 2, total)}
+        <div class="wah-pop-section">${dict.scoringMode}</div>
         <div class="wah-pop-row">
-            <select id="wah-scoring-mode" data-s="scoringMode" class="wah-pop-select" title="Select scoring mode">
-                <option value="strict">Strict</option>
-                <option value="normal">Normal</option>
-                <option value="moderate">Moderate</option>
-                <option value="soft">Soft</option>
-                <option value="custom">Consider filters in scoring</option>
+            <select id="wah-scoring-mode" data-s="scoringMode" class="wah-pop-select" title="${dict.selectScoringMode}">
+                <option value="strict">${dict.scoringModeStrict}</option>
+                <option value="normal">${dict.scoringModeNormal}</option>
+                <option value="moderate">${dict.scoringModeModerate}</option>
+                <option value="soft">${dict.scoringModeSoft}</option>
+                <option value="custom">${dict.scoringModeCustom}</option>
             </select>
         </div>
 
@@ -253,32 +294,42 @@ export function renderSettingsPage(popBody: HTMLElement, pageRef: SettingsPageRe
         </div>
 
         ${renderRerunNotice()}
+
+        <div class="wah-pop-spacer"></div>
+
+        <div class="wah-pop-section">${dict.languageSettings}</div>
+        <div class="wah-pop-row">
+            <select id="wah-locale-select" data-s="locale" class="wah-pop-select" title="${dict.selectLanguage}">
+                ${localeOptions}
+            </select>
+        </div>
     `;
         wirePage1(popBody, onRerunAudit);
     }
 
     if (page === 2) {
         popBody.innerHTML = `
-        ${renderSettingsHeader("Settings", 3, total)}
-        <div class="wah-pop-section wah-pop-section-centered">Hide overlay</div>
+        ${renderSettingsHeader(dict.settingsTitle, 3, total)}
+
+        <div class="wah-pop-section wah-pop-section-centered">${dict.hideOverlay}</div>
         <div class="wah-pop-settings">
-            <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh" title="Hide overlay until the page is refreshed">Hide until next refresh</button>
+            <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh" title="${dict.hideUntilRefreshTitle}">${dict.hideUntilRefresh}</button>
         </div>
         <div class="wah-pop-settings">
             <div class="wah-hide-for-row">
-                <span class="wah-hide-for-label">Hide for</span>
-                <select id="wah-hide-for-select" data-s="hideForSelect" class="wah-hide-select" title="Select duration to hide overlay">
+                <span class="wah-hide-for-label">${dict.hideForDuration}</span>
+                <select id="wah-hide-for-select" data-s="hideForSelect" class="wah-hide-select" title="${dict.selectHideDuration}">
                     ${renderHideDurationOptions()}
                 </select>
-                <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn" title="Confirm hide duration">✔</button>
+                <button class="wah-pop-btn wah-hide-for-btn" data-s="hideForBtn" title="${dict.hideForConfirmTitle}">✔</button>
             </div>
         </div>
         <div class="wah-hide-info" data-s="hideUntilInfo"></div>
 
 
-        <div class="wah-pop-section wah-pop-section-centered">Other options</div>
+        <div class="wah-pop-section wah-pop-section-centered">${dict.otherOptions}</div>
         <div class="wah-pop-settings">
-            <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset" title="Reset all settings to default values">Reset all settings</button>
+            <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset" title="${dict.resetAllSettingsTitle}">${dict.resetAllSettings}</button>
         </div>
     `;
         wirePage2(popBody);

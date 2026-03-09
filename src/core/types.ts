@@ -16,6 +16,8 @@ export type AuditMode = "dev" | "ci";
 
 export type ContrastLevel = "AA" | "AAA";
 
+export type Locale = "en" | "es";
+
 export interface AuditIssue {
     rule: string;
     message: string;
@@ -33,6 +35,7 @@ export interface AuditResult {
 export interface WAHConfig {
     logs: boolean;
     logLevel?: LogLevel;
+    locale?: Locale;
 
     issueLevel: IssueLevel;
 
@@ -50,7 +53,7 @@ export interface WAHConfig {
     overlay: {
         enabled: boolean;
         position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-        theme: "dark" | "light";
+        theme: "auto" | "dark" | "light";
     };
 
     reporters?: ("console" | "json" | "text")[];

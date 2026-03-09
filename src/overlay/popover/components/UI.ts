@@ -1,3 +1,5 @@
+import { t } from "../../../utils/i18n";
+
 type UITheme = "auto" | "dark" | "light";
 
 export const UI_DEFAULTS = {
@@ -75,40 +77,41 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     const theme = getTheme();
     const accent = getAccent();
     const opacity = getOpacity();
+    const dict = t();
 
     popBody.innerHTML = `
         <div class="wah-pop-header">
-            <span>UI settings</span>
-            <button class="wah-ui-reset" title="Restore default UI settings">🔄</button>
+            <span>${dict.uiSettingsTitle}</span>
+            <button class="wah-ui-reset" title="${dict.restoreDefaultUISettings}">🔄</button>
         </div>
 
-        <div class="wah-pop-section">Opacity</div>
+        <div class="wah-pop-section">${dict.opacity}</div>
         <div class="wah-pop-row wah-pop-row-space-between">
             <span class="wah-pop-row-text" data-ui="opacityLabel">${Math.round(opacity * 100)}%</span>
-            <input type="range" min="0.3" max="1" step="0.05" value="${opacity}" data-ui="opacity" title="Adjust overlay opacity"/>
+            <input type="range" min="0.3" max="1" step="0.05" value="${opacity}" data-ui="opacity" title="${dict.adjustOverlayOpacity}"/>
         </div>
 
-        <div class="wah-pop-section">Accent</div>
+        <div class="wah-pop-section">${dict.accent}</div>
         <label class="wah-pop-row wah-pop-row-space-between">
-            <span class="wah-pop-row-text">Color</span>
-            <input type="color" value="${accent}" data-ui="accent" class="wah-color-input" title="Choose accent color"/>
+            <span class="wah-pop-row-text">${dict.accent}</span>
+            <input type="color" value="${accent}" data-ui="accent" class="wah-color-input" title="${dict.chooseAccentColor}"/>
         </label>
 
-        <div class="wah-pop-section">Theme</div>
+        <div class="wah-pop-section">${dict.theme}</div>
 
-        <label class="wah-pop-row" title="Automatically detect theme based on system preferences">
+        <label class="wah-pop-row" title="${dict.themeAutoDescription}">
             <input type="radio" name="wah-theme" value="auto" ${theme === "auto" ? "checked" : ""}>
-            <span class="wah-pop-row-text">Auto (system)</span>
+            <span class="wah-pop-row-text">${dict.themeAuto}</span>
         </label>
 
-        <label class="wah-pop-row" title="Use dark theme">
+        <label class="wah-pop-row" title="${dict.themeDarkDescription}">
             <input type="radio" name="wah-theme" value="dark" ${theme === "dark" ? "checked" : ""}>
-            <span class="wah-pop-row-text">Dark</span>
+            <span class="wah-pop-row-text">${dict.themeDark}</span>
         </label>
 
-        <label class="wah-pop-row" title="Use light theme">
+        <label class="wah-pop-row" title="${dict.themeLightDescription}">
             <input type="radio" name="wah-theme" value="light" ${theme === "light" ? "checked" : ""}>
-            <span class="wah-pop-row-text">Light</span>
+            <span class="wah-pop-row-text">${dict.themeLight}</span>
         </label>
     `;
 
@@ -164,7 +167,7 @@ export function renderUIPopover(popBody: HTMLElement, overlay: HTMLElement) {
     const resetBtnRefresh = popBody.querySelector(".wah-ui-reset") as HTMLButtonElement | null;
     resetBtnRefresh?.addEventListener("click", () => {
         resetUISettings();
-        console.log("[WAH] All UI settings reset to defaults");
+        console.log(`[WAH] ${dict.allUISettingsReset}`);
 
         const defaults = UI_DEFAULTS;
         overlay.style.setProperty("--wah-border", defaults.accent);

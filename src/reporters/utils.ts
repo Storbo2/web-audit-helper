@@ -7,6 +7,7 @@ import {
     SEVERITY_RANK,
     WAH_MODE
 } from "./constants";
+import { translateRuleFix, translateRuleLabel } from "../utils/i18n";
 
 export function scoreToGrade(score: number): Grade {
     if (score >= 90) return "A";
@@ -64,8 +65,8 @@ export function generateRuleFix(ruleId: string): string | undefined {
 
 export function getRuleTitle(ruleId: string, fallbackMessage: string): string {
     const token = RULE_TOKENS_COMPACT[ruleId];
-    if (token) return decodeRuleTitle(token);
-    return toSentenceCase(fallbackMessage);
+    if (token) return translateRuleLabel(ruleId, decodeRuleTitle(token));
+    return translateRuleLabel(ruleId, toSentenceCase(fallbackMessage));
 }
 
 export function getRuleDescription(ruleId: string, title: string): string {
@@ -73,7 +74,7 @@ export function getRuleDescription(ruleId: string, title: string): string {
 }
 
 export function getRuleFix(ruleId: string): string | undefined {
-    return generateRuleFix(ruleId);
+    return translateRuleFix(ruleId, generateRuleFix(ruleId));
 }
 
 export function getRulePrefix(ruleId: string): string {

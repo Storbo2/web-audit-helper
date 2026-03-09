@@ -1,29 +1,36 @@
 import type { UICategory } from "../../config/settings";
 import { setActiveCategories } from "../../config/settings";
+import { t } from "../../../utils/i18n";
 
-const FILTER_CATEGORIES: Array<{ id: UICategory; label: string; title: string }> = [
-    { id: "accessibility", label: "Accessibility", title: "Filter issues by accessibility category" },
-    { id: "semantic", label: "Semantic", title: "Filter issues by semantic category" },
-    { id: "seo", label: "SEO", title: "Filter issues by SEO category" },
-    { id: "responsive", label: "Responsive", title: "Filter issues by responsive category" },
-    { id: "quality", label: "Quality", title: "Filter issues by quality category" },
-    { id: "security", label: "Security", title: "Filter issues by security category" },
-    { id: "performance", label: "Performance", title: "Filter issues by performance category" },
-    { id: "form", label: "Form", title: "Filter issues by form category" }
+const FILTER_CATEGORIES: Array<{ id: UICategory }> = [
+    { id: "accessibility" },
+    { id: "semantic" },
+    { id: "seo" },
+    { id: "responsive" },
+    { id: "quality" },
+    { id: "security" },
+    { id: "performance" },
+    { id: "form" }
 ];
 
 function renderFilterRows(catActive: Set<UICategory>): string {
-    return FILTER_CATEGORIES.map(({ id, label, title }) => `
+    const dict = t();
+    return FILTER_CATEGORIES.map(({ id }) => {
+        const label = dict[id];
+        const title = dict.filterByCategoryTooltip(label);
+        return `
     <label class="wah-pop-row" title="${title}">
         <input type="checkbox" data-cat="${id}" ${catActive.has(id) ? "checked" : ""}>
         <span class="wah-pop-row-text">${label}</span>
     </label>
-    `).join("");
+    `;
+    }).join("");
 }
 
 export function renderFiltersPopover(popBody: HTMLElement, catActive: Set<UICategory>, onChange: () => void) {
+    const dict = t();
     popBody.innerHTML = `
-    <div class="wah-pop-titleline">Filters by category</div>
+    <div class="wah-pop-titleline">${dict.filtersByCategory}</div>
     ${renderFilterRows(catActive)}
     `;
 

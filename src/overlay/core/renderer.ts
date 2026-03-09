@@ -1,12 +1,14 @@
 import type { AuditIssue, IssueCategory, ScoringMode } from "../../core/types";
 import { escapeHtml, badgeSymbol } from "./utils";
-import { CATEGORY_ORDER, CATEGORY_TITLES } from "../../reporters/constants";
+import { CATEGORY_ORDER } from "../../reporters/constants";
 import { computeCategoryScores, filterIssuesForScoring, getAdjustedMultipliers } from "../../core/scoring";
 import { getActiveCategories } from "../config/settings";
+import { t, translateCategory, translateIssueMessage, translateSeverity } from "../../utils/i18n";
 
 const ORDER: Array<"critical" | "warning" | "recommendation"> = ["critical", "warning", "recommendation"];
 
 export function renderCategoryScoreBreakdown(issues: AuditIssue[], scoringMode: ScoringMode): string {
+    const dict = t();
     const filteredIssues = filterIssuesForScoring(issues, scoringMode);
     const byCategory = computeCategoryScores(filteredIssues, getAdjustedMultipliers(scoringMode));
 
@@ -20,7 +22,7 @@ export function renderCategoryScoreBreakdown(issues: AuditIssue[], scoringMode: 
             const scoreClass = score >= 95 ? "score-excellent" : score >= 85 ? "score-good" : score >= 70 ? "score-warning" : "score-bad";
             return `
                 <li class="wah-score-row">
-                    <span class="wah-score-cat">${escapeHtml(CATEGORY_TITLES[category])}</span>
+                    <span class="wah-score-cat">${escapeHtml(translateCategory(category))}</span>
                     <span class="wah-score-val ${scoreClass}">(${score}/100)</span>
                 </li>
             `;
@@ -28,7 +30,7 @@ export function renderCategoryScoreBreakdown(issues: AuditIssue[], scoringMode: 
         .join("");
 
     return `
-        <div class="wah-score-pop-title">Score by category</div>
+        <div class="wah-score-pop-title">${dict.scoreByCategory}</div>
         <ul class="wah-score-list">${rows}</ul>
     `;
 }
@@ -51,18 +53,19 @@ export function getFilteredIssues(
 }
 
 export function renderList(list: AuditIssue[]) {
-    if (list.length === 0) return `<div class="wah-empty">No issues selected</div>`;
+    const dict = t();
+    if (list.length === 0) return `<div class="wah-empty">${dict.noIssuesSelected}</div>`;
 
     return `
         <ul class="wah-list">
             ${list.map((issue, i) => `
-                <li title="Click to focus" class="wah-issue-item wah-${issue.severity}" data-idx="${i}">
-                    <span class="wah-badge wah-${issue.severity}" title="${issue.severity}">
+                <li title="${dict.clickToFocus}" class="wah-issue-item wah-${issue.severity}" data-idx="${i}">
+                    <span class="wah-badge wah-${issue.severity}" title="${translateSeverity(issue.severity)}">
                         <span class="wah-badge-symbol">
                             ${badgeSymbol(issue.severity)}
                         </span>
                     </span>
-                    <span class="wah-msg wah-${issue.severity === 'critical' ? 'score-bad' : issue.severity === 'warning' ? 'score-warning' : 'text'}">${escapeHtml(issue.message)}</span>
+                    <span class="wah-msg wah-${issue.severity === 'critical' ? 'score-bad' : issue.severity === 'warning' ? 'score-warning' : 'text'}">${escapeHtml(translateIssueMessage(issue.rule, issue.message))}</span>
                 </li>
             `).join("")}
         </ul>

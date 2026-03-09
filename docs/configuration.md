@@ -11,6 +11,7 @@ await runWAH({
     logs: true,
     logLevel: 'full',
     issueLevel: 'all',
+    locale: 'en',
     accessibility: {
         minFontSize: 12,
         contrastLevel: 'AA'
@@ -32,7 +33,19 @@ await runWAH({
 | `logs`       | `boolean`                           | `true`   | Enable/disable console logging of audit results |
 | `logLevel`   | `'full' \| 'summary' \| 'none'`     | `'full'` | Console output verbosity                        |
 | `issueLevel` | `'critical' \| 'warnings' \| 'all'` | `'all'`  | Filter which issue severities to report         |
+| `locale`     | `'en' \| 'es'`                      | auto     | User-facing language for overlay, console, and TXT/HTML reports |
 | `scoringMode` | `'strict' \| 'normal' \| 'moderate' \| 'soft' \| 'custom'` | `'normal'` | Scoring profile and DOM visibility analysis mode |
+
+### Locale Resolution and Persistence
+
+- `runWAH({ locale })` has highest priority.
+- If no locale is provided in config, WAH uses the persisted language selected in Settings page 2.
+- If no persisted language exists, WAH auto-detects browser language (`es*` -> `es`, otherwise `en`).
+
+Notes:
+- Overlay main title is always `WAH Report`.
+- Human-facing report title is always `Web Audit Helper Report`.
+- JSON report output remains English for integrations.
 
 ### Accessibility Options
 

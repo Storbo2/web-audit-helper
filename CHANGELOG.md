@@ -271,6 +271,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance improvements for large DOMs
 - Advanced rule customization
 - CLI tool for programmatic access
+- i18n runtime externalized to `locales/*/common.json` (dictionary, rule labels, fixes, issue messages)
+- Settings popover language selector (`en`/`es`) with persisted preference across reloads
+- Standardized report titles: overlay header `WAH Report`, report title `Web Audit Helper Report`
 
 ### [2.0.0] - Future
 

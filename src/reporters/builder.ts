@@ -11,7 +11,6 @@ import type {
 } from "../core/types";
 import { CORE_RULES_REGISTRY } from "../core/config/registry";
 import {
-    CATEGORY_TITLES,
     CATEGORY_ORDER,
     ELEMENTS_EXPORT_LIMIT,
     WAH_VERSION,
@@ -29,6 +28,7 @@ import {
 } from "./utils";
 import { getSettings, getActiveFilters, getActiveCategories } from "../overlay/config/settings";
 import { getBreakpointInfo } from "../utils/breakpoints";
+import { translateCategory, translateIssueMessage } from "../utils/i18n";
 
 export function buildReportMeta(): AuditReportMeta {
     const settings = getSettings();
@@ -161,7 +161,7 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
                     if (!elementMap.has(key)) {
                         elementMap.set(key, {
                             selector: issue.selector,
-                            note: issue.message
+                            note: translateIssueMessage(ruleId, issue.message)
                         });
                     }
                 }
@@ -176,7 +176,7 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
                 title,
                 description: getRuleDescription(ruleId, title),
                 status,
-                message: toSentenceCase(firstIssue.message),
+                message: toSentenceCase(translateIssueMessage(ruleId, firstIssue.message)),
                 ...(getRuleFix(ruleId) ? { fix: getRuleFix(ruleId) } : {}),
                 ...(elements.length ? { elements } : {}),
                 ...(elementsOmitted > 0 ? { elementsOmitted } : {})
@@ -195,7 +195,7 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
 
         categories.push({
             id: catId,
-            title: CATEGORY_TITLES[catId],
+            title: translateCategory(catId),
             score: categoryScore,
             rules,
             summary: calculateRuleSummary(rules)

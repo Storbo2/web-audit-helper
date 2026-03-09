@@ -7,6 +7,7 @@ import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUnti
 import { resetPendingChangesState } from "./overlay/popover/utils";
 import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
+import { initI18n, t } from "./utils/i18n";
 import type { WAHConfig } from "./core/types";
 
 type WAHWindow = Window & {
@@ -57,6 +58,9 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     }
 
     await waitForDocumentStable();
+
+    initI18n(userConfig.locale);
+
     resetViewportMetaPatch();
     ensureViewportMeta();
 
@@ -74,7 +78,10 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     const hideUntil = getHideUntil();
 
     if (shouldHideUntilRefresh || (hideUntil && Date.now() < hideUntil)) {
-        const hideReason = shouldHideUntilRefresh ? 'until refresh' : `until ${new Date(hideUntil!).toLocaleString()}`;
+        const dict = t();
+        const hideReason = shouldHideUntilRefresh
+            ? dict.hideUntilRefresh
+            : `${dict.overlayHiddenUntil.toLowerCase()} ${new Date(hideUntil!).toLocaleString()}`;
         logHideMessage(hideReason, settings.logLevel);
         return;
     }

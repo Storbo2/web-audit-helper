@@ -13,6 +13,7 @@ import { readSavedPos, applyPos, setupPositionAutoUpdate, type OverlayPos } from
 import { logWAHResults } from "../utils/consoleLogger";
 import type { AuditIssue, AuditResult, WAHConfig } from "../core/types";
 import { renderOverlayHtml } from "./core/template";
+import { t } from "../utils/i18n";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
@@ -71,7 +72,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         if (scoreEl) {
             const scoreClass = getScoreClass(results.score);
             scoreEl.className = `wah-score ${scoreClass}`;
-            scoreEl.textContent = `Score: ${results.score}%`;
+            scoreEl.textContent = `${t().score}: ${results.score}%`;
         }
 
         countsEl.innerHTML = renderCounts(results.issues);
