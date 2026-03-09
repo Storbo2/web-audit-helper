@@ -1,5 +1,7 @@
 import type { AuditIssue } from "../../core/types";
 import { loadSettings } from "../config/settings";
+import { getRuleFix } from "../../reporters/utils";
+import { t, translateCategory, translateIssueMessage, translateRuleFix, translateSeverity } from "../../utils/i18n";
 
 const TRANSITION_MS = 250;
 
@@ -18,6 +20,7 @@ export function getHighlightDurationMs() {
 }
 
 export function logIssueDetail(issue: AuditIssue) {
+    const dict = t();
     const varName =
         issue.severity === "critical" ? "--wah-score-bad" :
             issue.severity === "warning" ? "--wah-score-warning" :
@@ -42,13 +45,15 @@ export function logIssueDetail(issue: AuditIssue) {
     }
 
     const style = `color: ${colorValue}; font-weight: bold;`;
+    const fix = translateRuleFix(issue.rule, getRuleFix(issue.rule));
 
-    console.groupCollapsed(`%c[WAH] Issue "${issue.rule}" details:`, style);
-    console.log("Message:", issue.message);
-    console.log("Severity:", issue.severity);
-    console.log("Category:", issue.category);
-    console.log("Selector:", issue.selector ?? "-");
-    console.log("Element:", issue.element ?? null);
+    console.groupCollapsed(`%c[WAH] ${dict.issueDetails(issue.rule)}`, style);
+    console.log(`${dict.messageLabel}:`, translateIssueMessage(issue.rule, issue.message));
+    console.log(`${dict.severityLabel}:`, translateSeverity(issue.severity));
+    console.log(`${dict.categoryLabel}:`, translateCategory(issue.category));
+    console.log(`${dict.selectorLabel}:`, issue.selector ?? "-");
+    console.log(`${dict.elementLabel}:`, issue.element ?? null);
+    console.log(`${dict.fixLabel}:`, fix ?? dict.notAvailable);
     console.groupEnd();
 }
 

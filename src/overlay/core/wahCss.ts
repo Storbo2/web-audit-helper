@@ -565,6 +565,17 @@ export const wahCss = `
     font-weight: inherit !important;
 }
 
+#wah-pop label,
+#wah-pop .wah-pop-row,
+#wah-pop .wah-pop-row-text,
+#wah-pop .wah-pop-row>span,
+#wah-pop .wah-pop-row>div {
+    pointer-events: auto !important;
+    position: static !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 #wah-pop input[type="checkbox"],
 #wah-pop input[type="radio"],
 #wah-pop input[type="color"] {
@@ -774,7 +785,7 @@ export const wahCss = `
 }
 
 #wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-select {
-    min-height: 2.05rem;
+    min-height: 2.5rem;
     padding-top: 0.58rem;
     padding-bottom: 0.58rem;
 }
