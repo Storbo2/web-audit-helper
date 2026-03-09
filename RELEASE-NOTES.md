@@ -1,56 +1,127 @@
-# WAH v1.0.9 Release Notes
+# WAH v1.1.0 Release Notes
 
-**Release Date**: March 8, 2026  
-**Type**: Patch (Contrast Detection Improvements)
+**Release Date**: March 9, 2026  
+**Type**: Minor (New Features + Enhancements)
 
 ---
 
 ## Overview
 
-Version 1.0.9 further refines contrast detection (ACC-25) to virtually eliminate false positives, especially in strict mode. This patch improves element analysis by detecting and skipping text adjacent to visual elements like animations and background images.
+Version 1.1.0 is a significant feature release introducing **complete internationalization (i18n)**, **6 new audit rules**, **end-to-end testing infrastructure**, and **bilingual documentation**. This release brings multilingual support to all user-facing components while maintaining full backward compatibility.
 
 ---
 
 ## Added
 
-### Contrast Detection Improvements
-- **Sibling element detection**: Automatically skips text contrast analysis when adjacent siblings contain images or background images
-- **Parent animation detection**: Detects animations/transitions in parent elements and skips analysis accordingly
-- **Tolerance tuning**: Increased tolerance threshold from 95% to 90% of minimum contrast ratio for edge cases
+### Internationalization System (i18n)
+- **Bilingual Support**: Complete English and Spanish translations for all user-facing content
+- **Automatic Language Detection**: Auto-detects browser language with fallback to English
+- **Manual Language Selection**: Settings popover includes persistent language selector (page 2)
+- **Live Language Switching**: Audit automatically re-runs when locale changes for immediate UI update
+- **Comprehensive Translation Coverage**:
+  - Overlay UI and all popovers (Filters, Settings, Export, UI)
+  - Report formats (HTML, TXT, JSON)
+  - Console logger messages
+  - 61 audit rules (labels, fixes, and issue messages)
+- **Extensible Architecture**: Dictionary-based system designed for community contributions
+- **Developer Guide**: New `docs/translations.md` with detailed instructions for adding new languages
+
+### New Audit Rules (6 Total, bringing total to 65+)
+
+- **ACC-27** (Accessibility): Click events without keyboard support
+- **UX-01** (UX): Touch targets smaller than 44x44px
+- **HTML-01** (Quality): Obsolete HTML elements (marquee, center, font, etc.)
+- **HTML-02** (Quality): Obsolete HTML attributes (align, bgcolor, border, etc.)
+- **PERF-07** (Performance): @import in CSS (render-blocking)
+- **PERF-08** (Performance): Images without modern formats (WebP/AVIF)
+
+### Testing Infrastructure
+- **End-to-End Tests**: Playwright test suite with smoke tests and audit flow validation
+- **Coverage Enforcement**: Automated coverage thresholds (80%+ for branches/functions/lines/statements)
+- **Targeted Unit Tests**: New test coverage for scoring engine and settings persistence
+- **Current Coverage**: 81.32% branches, 92.13% statements, 100% functions, 97.75% lines
+
+### Bilingual Documentation
+- **API Reference**: English (`docs/api.md`) + Spanish (`docs/es/api.md`)
+- **Architecture Guide**: English (`docs/architecture.md`) + Spanish (`docs/es/architecture.md`)
+- **Configuration Guide**: English (`docs/configuration.md`) + Spanish (`docs/es/configuration.md`)
+- **Rules Catalog**: English (`docs/rules.md`) + Spanish (`docs/es/rules.md`)
+- **Translation Guide**: Comprehensive guide for contributing new languages (`docs/translations.md`)
+
+---
+
+## Changed
+
+### Standardization
+- **Report Titles**: Unified naming: "WAH Report" (overlay), "Web Audit Helper Report" (exports)
+- **Scoring System**: Enhanced custom mode with category-based multiplier auto-scaling
+- **Settings Persistence**: Improved localStorage handling with robust fallback for invalid values
+
+### Developer Experience
+- **TypeScript Configuration**: Added Vitest globals to tsconfig for proper test type inference
+- **Test Reliability**: Improved E2E test stability with correct selectors and localStorage cleanup
 
 ---
 
 ## Fixed
 
-### Contrast Ratio (ACC-25)
-- Significantly reduced false positives in all scoring modes, particularly in strict mode
-- Fixed issue where white text on black backgrounds could incorrectly flag as low-contrast when near animated or image-containing elements
-- Improved detection of legitimate contrast scenarios with complex layouts
+### TypeScript Compilation
+- Resolved missing type definitions for Vitest test globals (describe, it, expect, beforeEach)
+- All test files now pass TypeScript strict mode checks
+
+### Contrast Detection
+- Refined ACC-25 algorithm to reduce false positives near animated or image-containing elements (inherited from v1.0.9)
 
 ---
 
 ## Files Updated (High Level)
 
-- `package.json` (version bump to `1.0.8`)
-- `CHANGELOG.md` (new `1.0.8` entry)
+**Core:**
+- `package.json` (version bump to `1.1.0`)
+- `tsconfig.json` (added Vitest type definitions)
+- `CHANGELOG.md` (new `1.1.0` entry)
 - `RELEASE-NOTES.md` (this file)
-- `src/utils/breakpoints.ts` (NEW - breakpoint classification utility)
-- `src/core/types.ts` (removed `breakpoints` from WAHConfig, added to AuditReportMeta)
-- `src/config/defaultConfig.ts` (removed breakpoints)
-- `src/reporters/builder.ts` (added breakpoint info to report meta)
-- `src/reporters/serializers.ts` (display breakpoint in TXT and HTML)
-- `src/overlay/interactions/highlight.ts` (large element detection and flash effect)
-- `src/overlay/styles/base.css` (flash animation for large elements)
-- All test files (removed unused breakpoints config)
+
+**Internationalization:**
+- `locales/en/common.json` (NEW - English dictionary)
+- `locales/es/common.json` (NEW - Spanish dictionary)
+- `src/core/types.ts` (added Locale type and localization interfaces)
+- `src/config/defaultConfig.ts` (added locale detection)
+- `src/overlay/popover/components/SettingsPopover.ts` (added language selector)
+- `src/reporters/*.ts` (integrated translations)
+- `src/utils/consoleLogger.ts` (integrated translations)
+
+**Rules:**
+- `src/core/rules/accessibility/keyboard.ts` (NEW - ACC-27)
+- `src/core/rules/ux/touchTargets.ts` (NEW - UX-01)
+- `src/core/rules/quality/obsoleteElements.ts` (NEW - HTML-01)
+- `src/core/rules/quality/obsoleteAttributes.ts` (NEW - HTML-02)
+- `src/core/rules/performance/cssImport.ts` (NEW - PERF-07)
+- `src/core/rules/performance/modernImageFormats.ts` (NEW - PERF-08)
+
+**Testing:**
+- `src/core/scoring.test.ts` (NEW - scoring engine tests)
+- `src/overlay/config/settings.test.ts` (NEW - settings tests)
+- `tests/e2e/smoke.spec.ts` (NEW - smoke tests)
+- `tests/e2e/audit-flow.spec.ts` (NEW - interaction tests)
+- `playwright.config.ts` (NEW - E2E configuration)
+- `vitest.config.mjs` (updated coverage thresholds)
+
+**Documentation:**
+- `docs/translations.md` (NEW - translation guide)
+- `docs/es/*.md` (NEW - Spanish documentation)
+- Updated all existing English docs with v1.1.0 features
 
 ---
 
 ## Validation
 
-- ✅ `npm test` passed (38/38 tests)
-- ✅ `npm run build` passed
+- ✅ `npm run typecheck` passed (0 errors)
+- ✅ `npm test` passed (52/52 tests)
+- ✅ `npm run test:coverage` passed (81.32% branches, exceeds 80% threshold)
+- ✅ `npm run build` successful
 - ✅ All TypeScript compilation clean
-- ✅ Backwards compatible (except unused `breakpoints` config removal)
+- ✅ Backward compatible (no breaking changes)
 
 ---
 
@@ -62,38 +133,46 @@ npm update web-audit-helper
 
 ### Migration Notes
 
-If your code previously included `breakpoints` in the config:
+**No breaking changes.** Fully backward compatible with `v1.0.x`.
 
-**Before (1.0.7):**9`)
-- `CHANGELOG.md` (new `1.0.9` entry)
-- `RELEASE-NOTES.md` (this file)
-- `src/core/rules/accessibility/text.ts` (improved contrast detection with nearby element checkin
-```
+**New Configuration Options:**
 
-**After (1.0.8):**
 ```javascript
 await runWAH({
-    logs: true,
-    overlay: { enabled: true }
-    // breakpoints removed - handled internally
+    locale: 'es', // Optional: 'en' | 'es' (auto-detected if omitted)
+    // All existing options remain unchanged
 });
 ```
 
-The `breakpoints` were never used by any rules or functionality, so removing them has zero functional impact.
+**Language Detection Order:**
+1. Explicit `locale` in configuration
+2. Persisted preference in localStorage (`wah:settings:locale`)
+3. Browser language detection (`navigator.language`)
+4. Default fallback: `'en'`
+
+**Adding a New Language:**
+
+See `docs/translations.md` for detailed instructions. Summary:
+1. Copy `locales/en/common.json` to `locales/{locale}/common.json`
+2. Translate all keys while preserving structure
+3. Update `src/core/types.ts` to add new locale to `Locale` type
+4. Follow pattern matching for issue messages (exact + regex patterns)
 
 ---
 
-## NNo breaking changes from 1.0.8
+## Roadmap
 
----
+**v1.2.0** (Future):
+- Per-rule enable/disable configuration
+- Custom thresholds for accessibility rules
+- Audit performance metrics and profiling
+- Additional languages (community contributions only)
 
-## Upgrade
-
-```bash
-npm update web-audit-helper
-```
-
-No breaking changes. Fully backward compatible with `v1.0.8`.
+**v2.0.0** (Future Major Release):
+- CLI tool for batch auditing and CI/CD integration
+- Plugin system for custom rules and reporters
+- DevTools browser extension
+- Dashboard and analytics with historical tracking
 
 ---
 
@@ -102,17 +181,24 @@ No breaking changes. Fully backward compatible with `v1.0.8`.
 Suggested release commit message:
 
 ```bash
-git commit -m "chore: release v1.0.9 - improved contrast detection (ACC-25 false positives fix)"
+git commit -m "feat: release v1.1.0 - internationalization, 6 new rules, E2E testing"
 ```
 
 Suggested tag:
 
 ```bash
-git tag v1.0.9
+git tag v1.1.0
+git push origin v1.1.0
+```
+
+npm publish:
+
+```bash
+npm publish
 ```
 
 ---
 
-## Previous Release
+## Contributors
 
-For v1.0.8
+Thank you to everyone who contributed to this release through code, testing, documentation, and feedback!

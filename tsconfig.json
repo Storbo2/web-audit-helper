@@ -9,7 +9,11 @@
         "noUnusedParameters": true,
         "moduleResolution": "Bundler",
         "resolveJsonModule": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "types": [
+            "vitest/globals",
+            "node"
+        ]
     },
     "include": [
         "src"

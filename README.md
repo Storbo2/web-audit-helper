@@ -12,12 +12,12 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 
 ## ✨ Features
 
-- ♿ **60+ Accessibility checks** (WCAG AA/AAA, font size, alt text, labels, contrast, ARIA, skip links)
+- ♿ **65+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
+- 🌐 **Internationalization** with English and Spanish support
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
 - 🔒 **Security checks** (target=_blank, tabnabbing, unsafe patterns)
-- ✨ **Code quality patterns** (inline styles, semantic IDs/classes, deprecated elements)
 - ⚡ **Performance optimization** (image optimization, lazy loading, async decode, script placement, caching, render-blocking resources)
 - 📋 **Form validation** (proper types, autocomplete, required indicators, label association)
 - 🎨 **Interactive overlay** with drag, hide, category filters, and issue focus
@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.0.4/dist/index.js';
+    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.1.0/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -215,7 +215,7 @@ Multipliers automatically calibrate based on active categories:
 
 ---
 
-## 🎯 Audit Rules (+60 Total)
+## 🎯 Audit Rules (65+ Total)
 
 WAH implements comprehensive audit rules across **8 categories**:
 
@@ -462,25 +462,27 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📋 Roadmap
 
-### v1.0.0 (Current)
-- 60+ audit rules implemented
+### v1.1.0 (Current)
+- +65 audit rules implemented (6 new rules in v1.1.0)
+- Complete internationalization (English + Spanish)
 - Visual overlay with filtering and export
 - 5 scoring modes with auto-calibration
+- End-to-end testing with Playwright
+- 80%+ test coverage
+- Bilingual documentation
 - Console diagnostics and commands
 - Zero runtime dependencies
 
-### v1.1.0 (Planned)
-- 10+ additional rules (obsolete elements, ARIA, touch targets, etc.)
-- Extended testing framework
-- Comprehensive documentation
-- Performance improvements
+### v1.2.0 (Planned)
+- Rule-level customization (enable/disable, custom thresholds)
+- Additional languages (community contributions only)
 
 ### v2.0.0 (Future)
-- CLI tool for CI/CD integration
-- Framework plugins (React, Vue, Angular)
-- Advanced performance profiling
-- DevTools integration
-- Custom rule registration
+- CLI tool for CI/CD integration and batch auditing
+- Plugin system for custom rules and reporters
+- DevTools browser extension
+- Dashboard and analytics
+- Historical audit tracking
 
 ---
 

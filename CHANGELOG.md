@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-09
+
+### Added
+- **Internationalization (i18n) System**: Complete bilingual support for English and Spanish
+  - Dictionary-based translation system with locale detection (`locales/en/` and `locales/es/`)
+  - Automatic language detection from browser settings with manual override
+  - Language selector in Settings popover (page 2) with persistent storage
+  - Auto-rerun of audit when locale changes for immediate UI update
+  - Translated overlay UI, popovers, reports (HTML/TXT/JSON), and console messages
+  - 61 rules with translated labels, fixes, and issue messages
+  - Extensible system for community-contributed translations (see `docs/translations.md`)
+- **6 New Audit Rules** (Total: 65+):
+  - ACC-27: Click events without keyboard support
+  - UX-01: Touch targets smaller than 44x44px
+  - HTML-01: Obsolete HTML elements (marquee, center, font, etc.)
+  - HTML-02: Obsolete HTML attributes (align, bgcolor, border, etc.)
+  - PERF-07: @import in CSS (render-blocking)
+  - PERF-08: Images without modern formats (WebP/AVIF)
+
+- **Testing Infrastructure**:
+  - End-to-end testing with Playwright (smoke tests + audit flow tests)
+  - Improved test coverage with targeted unit tests for scoring and settings modules
+  - Coverage monitoring with 80%+ thresholds enforced (branches: 81.32%, statements: 92.13%)
+- **Bilingual Documentation**: Complete docs in English and Spanish
+  - API reference (`docs/api.md`, `docs/es/api.md`)
+  - Architecture guide (`docs/architecture.md`, `docs/es/architecture.md`)
+  - Configuration guide (`docs/configuration.md`, `docs/es/configuration.md`)
+  - Rules catalog (`docs/rules.md`, `docs/es/rules.md`)
+  - Translation contribution guide (`docs/translations.md`)
+
+### Changed
+- Standardized report titles: "WAH Report" (overlay), "Web Audit Helper Report" (exports)
+- Enhanced scoring system to properly handle custom mode with category-based multiplier scaling
+- Improved settings persistence with fallback handling for invalid localStorage values
+
+### Fixed
+- Fixed TypeScript compilation for test files by adding Vitest globals to tsconfig
+- Improved contrast detection algorithm to reduce false positives near animated or image-containing elements
+
 ## [1.0.9] - 2026-03-08
 
 ### Fixed
