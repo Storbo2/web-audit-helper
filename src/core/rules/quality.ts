@@ -1,10 +1,6 @@
 import type { AuditIssue } from "../types";
-import { isWahIgnored } from "../../utils/dom";
 import { RULE_IDS } from "../config/ruleIds";
-
-function shouldIgnore(el: Element): boolean {
-    return isWahIgnored(el);
-}
+import { shouldIgnore } from "./helpers";
 
 function getInlineStyleSelector(el: Element): string {
     const node = el as HTMLElement;

@@ -1,10 +1,7 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector, isWahIgnored } from "../../utils/dom";
+import { getCssSelector } from "../../utils/dom";
 import { RULE_IDS } from "../config/ruleIds";
-
-function shouldIgnore(el: Element): boolean {
-    return isWahIgnored(el);
-}
+import { shouldIgnore } from "./helpers";
 
 export function checkMultipleH1(): AuditIssue[] {
     const issues: AuditIssue[] = [];

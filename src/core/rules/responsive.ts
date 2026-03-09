@@ -1,15 +1,12 @@
 import type { AuditIssue } from "../types";
-import { getCssSelector, isWahIgnored } from "../../utils/dom";
+import { getCssSelector } from "../../utils/dom";
 import { RULE_IDS } from "../config/ruleIds";
+import { shouldIgnore } from "./helpers";
 
 let viewportMetaSnapshot: string | null | undefined = undefined;
 
 export function setViewportMetaSnapshot(content: string | null | undefined): void {
     viewportMetaSnapshot = content;
-}
-
-function shouldIgnore(el: Element): boolean {
-    return isWahIgnored(el);
 }
 
 function isElementHiddenFromViewport(el: HTMLElement, style: CSSStyleDeclaration): boolean {

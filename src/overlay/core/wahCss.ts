@@ -269,7 +269,6 @@ export const wahCss = `
     box-shadow: 0 0 0 0.25rem var(--wah-hl, var(--wah-score-bad));
 }
 
-/* Large element flash effect for better visibility */
 .wah-highlight.wah-highlight--large {
     position: relative;
 }
