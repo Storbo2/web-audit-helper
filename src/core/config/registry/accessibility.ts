@@ -25,7 +25,8 @@ import {
     checkVideosWithoutControls,
     checkContrastRatio,
     checkFocusNotVisible,
-    checkLineHeightTooLow
+    checkLineHeightTooLow,
+    checkClickWithoutKeyboard
 } from "../../rules/accessibility";
 
 export const accessibilityRules: RegisteredRule[] = [
@@ -128,5 +129,9 @@ export const accessibilityRules: RegisteredRule[] = [
     {
         id: RULE_IDS.accessibility.lineHeightTooLow,
         run: (config) => checkLineHeightTooLow(config.accessibility.minLineHeight ?? 1.4)
+    },
+    {
+        id: RULE_IDS.accessibility.clickWithoutKeyboard,
+        run: () => checkClickWithoutKeyboard()
     }
 ];

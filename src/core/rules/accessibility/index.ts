@@ -6,6 +6,6 @@ export { checkVagueLinks, checkLinksWithoutHref, checkLinksWithoutAccessibleName
 export { checkButtonsWithoutAccessibleName } from "./buttons";
 export { checkAriaLabelledbyTargets, checkAriaDescribedbyTargets, checkPositiveTabindex } from "./aria";
 export { checkMissingAlt, checkIframesWithoutTitle, checkVideosWithoutControls, checkTablesWithoutCaption, checkTableHeadersWithoutScope } from "./media";
-export { checkNestedInteractiveElements, checkFocusNotVisible } from "./interactive";
+export { checkNestedInteractiveElements, checkFocusNotVisible, checkClickWithoutKeyboard } from "./interactive";
 
 export { hasAccessibleName, shouldIgnore } from "./helpers";

@@ -10,7 +10,9 @@ import {
     checkTooManyScripts,
     checkScriptWithoutDefer,
     checkRenderBlockingCSS,
-    checkMissingCacheHeaders
+    checkMissingCacheHeaders,
+    checkCSSImportUsage,
+    checkImageMissingModernFormat
 } from "../../rules/performance";
 
 export const performanceRules: RegisteredRule[] = [
@@ -53,5 +55,13 @@ export const performanceRules: RegisteredRule[] = [
     {
         id: RULE_IDS.performance.missingCacheHeaders,
         run: () => checkMissingCacheHeaders()
+    },
+    {
+        id: RULE_IDS.performance.cssImportUsage,
+        run: () => checkCSSImportUsage()
+    },
+    {
+        id: RULE_IDS.performance.imageMissingModernFormat,
+        run: () => checkImageMissingModernFormat()
     }
 ];

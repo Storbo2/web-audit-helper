@@ -24,7 +24,8 @@ export const RULE_IDS = {
         missingSkipLink: "ACC-24",
         focusNotVisible: "ACC-21",
         contrastInsufficient: "ACC-25",
-        lineHeightTooLow: "ACC-26"
+        lineHeightTooLow: "ACC-26",
+        clickWithoutKeyboard: "ACC-27"
     },
     seo: {
         missingTitle: "SEO-01",
@@ -49,7 +50,10 @@ export const RULE_IDS = {
     },
     quality: {
         excessiveInlineStyles: "QLT-01",
-        dummyLink: "QLT-02"
+        dummyLink: "QLT-02",
+        obsoleteElements: "HTML-01",
+        obsoleteAttributes: "HTML-02",
+        smallTouchTargets: "UX-01"
     },
     responsive: {
         largeFixedWidth: "RWD-01",
@@ -68,7 +72,9 @@ export const RULE_IDS = {
         tooManyScripts: "PERF-03",
         scriptWithoutDefer: "PERF-04",
         renderBlockingCSS: "PERF-05",
-        missingCacheHeaders: "PERF-06"
+        missingCacheHeaders: "PERF-06",
+        cssImportUsage: "PERF-07",
+        imageMissingModernFormat: "PERF-08"
     },
     form: {
         submitButtonOutsideForm: "FORM-01",

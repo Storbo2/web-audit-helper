@@ -3,18 +3,28 @@
 
 <head>
     <meta name="viewport" content="initial-scale=1.0" />
-    <title>Test Page - Incompatible Rules</title>
-    <meta name="description" content="Test page for mutually exclusive audit rules" />
+    <title>Test Page - Incompatible Rules + v1.1.0 Rules</title>
+    <meta name="description" content="Test page for mutually exclusive audit rules and new v1.1.0 rules" />
     <link rel="canonical" href="https://example.com" />
+    <!-- PERF-07: CSS @import usage (2 imports to trigger rule) -->
+    <style>
+        @import url("../public/styles/style-legacy.css");
+        @import url("../public/styles/another-style.css");
+
+        .section {
+            margin: 20px 0;
+            padding: 12px;
+            border: 1px solid #555;
+        }
+    </style>
 </head>
 
 <body style="max-width: fit-content;">
-    <!-- ✅ ACC-09: no H1 exists on this page (incompatible with ACC-08 which is in basic.html) -->
+    <!-- Keep no H1 to preserve ACC-09 from this fixture -->
     <h2>Main Section</h2>
 
-    <!-- ✅ SEM-04: no main element exists on this page (incompatible with SEM-05 which is in basic.html) -->
-    <p>This page only tests rules ACC-09 and SEM-04 which are mutually exclusive with
-        ACC-08 and SEM-05.</p>
+    <!-- Keep no <main> to preserve SEM-04 from this fixture -->
+    <p>This page tests mutually exclusive rules plus the additional v1.1.0 rules in a single fixture.</p>
 
     <!-- SEM-02: low semantic structure (high div ratio, no semantic containers) -->
     <div>Block 1</div>
@@ -58,10 +68,99 @@
     <div>Block 39</div>
     <div>Block 40</div>
     <div>Block 41</div>
+    <div>Block 42</div>
+    <div>Block 43</div>
+    <div>Block 44</div>
+    <div>Block 45</div>
+    <div>Block 46</div>
+    <div>Block 47</div>
+    <div>Block 48</div>
+    <div>Block 49</div>
+    <div>Block 50</div>
+    <div>Block 51</div>
+    <div>Block 52</div>
+    <div>Block 53</div>
+    <div>Block 54</div>
+    <div>Block 55</div>
+    <div>Block 56</div>
+    <div>Block 57</div>
+    <div>Block 58</div>
+    <div>Block 59</div>
+    <div>Block 60</div>
+    <div>Block 61</div>
+
+    <!-- ACC-27: click without keyboard support -->
+    <div class="section">
+        <h3>ACC-27</h3>
+        <div onclick="alert('Clicked!')" style="cursor: pointer; background: lightblue; padding: 10px;">Div with onclick
+            only</div>
+        <span onclick="showDetails()" style="cursor: pointer; text-decoration: underline;">Clickable span without
+            keyboard support</span>
+        <p onclick="handleClick()">Paragraph with onclick</p>
+    </div>
+
+    <!-- HTML-01: obsolete elements -->
+    <div class="section">
+        <h3>HTML-01</h3>
+        <marquee>Deprecated marquee</marquee>
+        <center>Deprecated center</center>
+        <font color="red" size="5">Deprecated font</font>
+        <strike>Deprecated strike</strike>
+        <big>Deprecated big</big>
+        <tt>Deprecated tt</tt>
+    </div>
+
+    <!-- HTML-02: obsolete attributes -->
+    <div class="section" align="center" bgcolor="#f0f0f0" style="padding: 10px;">
+        <h3>HTML-02</h3>
+        <p align="right">Paragraph with obsolete align</p>
+        <img src="../public/images/placeholder.jpg" alt="Test" hspace="10" vspace="10" border="5" />
+        <table border="2" cellpadding="10" cellspacing="5">
+            <caption>Table with obsolete cellpadding/cellspacing</caption>
+            <tr>
+                <td nowrap>Cell with obsolete nowrap</td>
+                <td>Normal cell</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- UX-01: touch targets too small -->
+    <div class="section">
+        <h3>UX-01</h3>
+        <button style="width: 30px; height: 30px; font-size: 10px;">x</button>
+        <a href="#" style="display: inline-block; width: 20px; height: 20px; background: blue;"></a>
+        <input type="checkbox" style="width: 15px; height: 15px;" />
+        <select style="width: 40px; height: 25px; font-size: 10px;">
+            <option>small</option>
+        </select>
+    </div>
+
+    <!-- PERF-07: additional @import in inline style (rare case) -->
+    <div class="section">
+        <h3>PERF-07 (inline)</h3>
+        <div style="@import url('../public/styles/inline.css'); color: red;">Inline @import in style attribute</div>
+    </div>
+
+    <!-- PERF-08: legacy images without modern formats -->
+    <div class="section">
+        <h3>PERF-08</h3>
+        <img src="../public/images/placeholder.jpg" alt="Legacy JPG" />
+        <img src="../public/images/placeholder.png" alt="Legacy PNG" />
+        <img src="../public/videos/video.gif" alt="Legacy GIF" />
+    </div>
 
     <script type="module">
         import { runWAH } from "../dist/index.mjs";
         runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });
+    </script>
+    <script>
+        function showDetails() {
+            return true;
+        }
+
+        function handleClick() {
+            return true;
+        }
     </script>
 </body>
 

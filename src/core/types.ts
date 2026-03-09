@@ -48,6 +48,7 @@ export interface WAHConfig {
 
     quality?: {
         inlineStylesThreshold?: number;
+        minTouchSize?: number;
     };
 
     overlay: {

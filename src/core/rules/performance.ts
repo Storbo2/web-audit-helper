@@ -243,3 +243,77 @@ export function checkMissingCacheHeaders(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkCSSImportUsage(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("style").forEach((style) => {
+        if (shouldIgnore(style)) return;
+
+        const content = style.textContent || "";
+        const importMatches = content.match(/@import\s+/g);
+
+        if (importMatches && importMatches.length > 0) {
+            issues.push({
+                rule: RULE_IDS.performance.cssImportUsage,
+                message: `Found ${importMatches.length} @import rule(s) in <style>. Use <link> instead to enable parallel loading.`,
+                severity: "warning",
+                category: "performance",
+                element: style as HTMLElement,
+                selector: getCssSelector(style)
+            });
+        }
+    });
+
+    document.querySelectorAll("[style]").forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const inlineStyle = el.getAttribute("style") || "";
+        if (inlineStyle.includes("@import")) {
+            issues.push({
+                rule: RULE_IDS.performance.cssImportUsage,
+                message: "@import in inline style attribute blocks rendering. Use <link> instead.",
+                severity: "warning",
+                category: "performance",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}
+
+export function checkImageMissingModernFormat(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    document.querySelectorAll("img").forEach((img) => {
+        if (shouldIgnore(img)) return;
+
+        if (img.closest("picture")) return;
+
+        const src = img.getAttribute("src") || "";
+        const srcset = img.getAttribute("srcset") || "";
+
+        if (srcset && (srcset.includes(".webp") || srcset.includes(".avif"))) {
+            return;
+        }
+
+        if (src.match(/\.(webp|avif)$/i)) {
+            return;
+        }
+
+        if (src.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            issues.push({
+                rule: RULE_IDS.performance.imageMissingModernFormat,
+                message: "Image uses legacy format. Consider using <picture> with WebP/AVIF sources for better performance.",
+                severity: "recommendation",
+                category: "performance",
+                element: img as HTMLElement,
+                selector: getCssSelector(img)
+            });
+        }
+    });
+
+    return issues;
+}

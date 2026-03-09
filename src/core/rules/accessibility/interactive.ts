@@ -62,3 +62,40 @@ export function checkFocusNotVisible(): AuditIssue[] {
 
     return issues;
 }
+
+export function checkClickWithoutKeyboard(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+
+    const nonInteractiveTags = ["div", "span", "p", "img", "li", "td", "th", "section", "article", "aside", "header", "footer", "nav"];
+
+    document.querySelectorAll("[onclick]").forEach((el) => {
+        if (shouldIgnore(el)) return;
+
+        const tag = el.tagName.toLowerCase();
+
+        if (tag === "button" || tag === "a" || tag === "input" || tag === "select" || tag === "textarea") {
+            return;
+        }
+
+        const role = el.getAttribute("role");
+        if (role === "button" || role === "link") {
+            const hasKeyHandler = el.hasAttribute("onkeydown") || el.hasAttribute("onkeypress") || el.hasAttribute("onkeyup");
+            if (hasKeyHandler) return;
+        }
+
+        const hasKeyHandler = el.hasAttribute("onkeydown") || el.hasAttribute("onkeypress") || el.hasAttribute("onkeyup");
+
+        if (!hasKeyHandler && nonInteractiveTags.includes(tag)) {
+            issues.push({
+                rule: RULE_IDS.accessibility.clickWithoutKeyboard,
+                message: `Element with onclick lacks keyboard support. Add onkeydown/onkeypress or use a <button> tag`,
+                severity: "warning",
+                category: "accessibility",
+                element: el as HTMLElement,
+                selector: getCssSelector(el)
+            });
+        }
+    });
+
+    return issues;
+}

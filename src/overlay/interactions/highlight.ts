@@ -66,7 +66,7 @@ function isLargeElement(el: HTMLElement): boolean {
         const widthRatio = rect.width / vw;
         const heightRatio = rect.height / vh;
 
-        return widthRatio > 0.5 || heightRatio > 0.5;
+        return widthRatio > 0.35 || heightRatio > 0.35;
     } catch (e) {
         return false;
     }
