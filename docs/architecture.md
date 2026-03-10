@@ -4,7 +4,7 @@ Overview of WAH's system design and module organization.
 
 ## System Architecture
 
-```
+```text
 ┌─────────────────────────────────┐
 │     Browser Environment         │
 │  (DOM, CSS, JavaScript APIs)    │
@@ -48,7 +48,7 @@ Overview of WAH's system design and module organization.
 
 **Structure**:
 
-```
+```text
 src/core/
 ├── index.ts           # Main runCoreAudit() export
 ├── types.ts          # Type definitions (IssueCategory, Severity, etc.)
@@ -86,7 +86,7 @@ src/core/
 
 **Structure**:
 
-```
+```text
 src/overlay/
 ├── Overlay.ts        # Main overlay component lifecycle
 ├── config/
@@ -129,7 +129,7 @@ src/overlay/
 
 **Structure**:
 
-```
+```text
 src/reporters/
 ├── index.ts           # Main export
 ├── auditReport.ts     # Report building logic
@@ -195,7 +195,7 @@ src/reporters/
 
 **Structure**:
 
-```
+```text
 src/utils/
 ├── dom.ts            # DOM helpers (getCssSelector, etc.)
 └── consoleLogger.ts  # Console table formatting & logging
@@ -205,7 +205,7 @@ src/utils/
 
 ### Rule Execution Flow
 
-```
+```text
 runCoreAudit()
   ├── Instantiate each rule checker
   │   (e.g., checkMissingAlt, checkMissingTitle, etc.)
@@ -220,7 +220,7 @@ runCoreAudit()
 
 ### Scoring Flow
 
-```
+```text
 computeScore(issues)
   ├── filterIssuesForScoring()
   │   └── Apply custom filters if mode='custom'
@@ -241,7 +241,7 @@ computeScore(issues)
 
 ### UI Rendering Flow
 
-```
+```text
 createOverlay()
   ├── Render overlay root
   ├── Display score badge
@@ -269,7 +269,7 @@ createOverlay()
 
 For each category:
 
-```
+```text
 1. Count critical, warning, recommendation issues
 2. Apply multipliers (varies by mode)
 3. categoryScore = max(0, 100 - (critical*20 + warning*8 + recommendation*4))
@@ -277,7 +277,7 @@ For each category:
 
 ### Weighted Overall Score
 
-```
+```text
 Weights:
     accessibility: 0.25
     seo:          0.20

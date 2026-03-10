@@ -65,6 +65,7 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 
 - **TypeScript Configuration**: Added Vitest globals to tsconfig for proper test type inference
 - **Test Reliability**: Improved E2E test stability with correct selectors and localStorage cleanup
+- **v1.2 Groundwork**: Added rule-level overrides foundation and audit timing metrics pipeline (core + console filters + optional report export)
 
 ---
 

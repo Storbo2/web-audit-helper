@@ -4,7 +4,7 @@ Visión general del diseño del sistema WAH y organización de módulos.
 
 ## Arquitectura del sistema
 
-```
+```text
 ┌─────────────────────────────────┐
 │     Entorno de navegador        │
 │   (DOM, CSS, APIs JavaScript)   │
@@ -48,7 +48,7 @@ Visión general del diseño del sistema WAH y organización de módulos.
 
 **Estructura**:
 
-```
+```text
 src/core/
 ├── index.ts           # Export principal runCoreAudit()
 ├── types.ts           # Definiciones de tipos (IssueCategory, Severity, etc.)
@@ -86,7 +86,7 @@ src/core/
 
 **Estructura**:
 
-```
+```text
 src/overlay/
 ├── Overlay.ts         # Ciclo de vida principal del overlay
 ├── config/
@@ -129,7 +129,7 @@ src/overlay/
 
 **Estructura**:
 
-```
+```text
 src/reporters/
 ├── index.ts           # Export principal
 ├── auditReport.ts     # Lógica de construcción de reportes
@@ -195,7 +195,7 @@ src/reporters/
 
 **Estructura**:
 
-```
+```text
 src/utils/
 ├── dom.ts             # Helpers DOM (getCssSelector, etc.)
 ├── breakpoints.ts     # Información de breakpoints y viewport
@@ -207,7 +207,7 @@ src/utils/
 
 ### Flujo de ejecución de reglas
 
-```
+```text
 runCoreAudit()
   ├── Instancia cada regla
   │   (ej.: checkMissingAlt, checkMissingTitle, etc.)
@@ -222,7 +222,7 @@ runCoreAudit()
 
 ### Flujo de scoring
 
-```
+```text
 computeScore(issues)
   ├── filterIssuesForScoring()
   │   └── Aplica filtros custom si mode='custom'
@@ -243,7 +243,7 @@ computeScore(issues)
 
 ### Flujo de render UI
 
-```
+```text
 createOverlay()
   ├── Render overlay root
   ├── Muestra badge de score
@@ -271,7 +271,7 @@ createOverlay()
 
 Para cada categoría:
 
-```
+```text
 1. Cuenta issues critical, warning, recommendation
 2. Aplica multiplicadores (según modo)
 3. categoryScore = max(0, 100 - (critical*20 + warning*8 + recommendation*4))
@@ -279,7 +279,7 @@ Para cada categoría:
 
 ### Score global ponderado
 
-```
+```text
 Pesos:
  accessibility: 0.25
  seo:          0.20

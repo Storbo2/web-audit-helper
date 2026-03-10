@@ -29,13 +29,30 @@ await runWAH({
 
 ### Opciones de nivel raíz
 
-| Opción        | Tipo                                | Default  | Descripción                                                  |
-| ------------- | ----------------------------------- | -------- | ------------------------------------------------------------ |
-| `logs`        | `boolean`                           | `true`   | Activar/desactivar el logging de resultados en consola       |
-| `logLevel`    | `'full' \| 'summary' \| 'none'`    | `'full'` | Verbosidad de salida en consola                              |
-| `issueLevel`  | `'critical' \| 'warnings' \| 'all'`| `'all'`  | Filtra qué severidades reportar                              |
-| `locale`      | `'en' \| 'es'`                      | auto     | Idioma de mensajes para usuario (si no se define, autodetecta) |
-| `scoringMode` | `'strict' \| 'normal' \| 'moderate' \| 'soft' \| 'custom'` | `'normal'` | Perfil de scoring y modo de análisis de visibilidad DOM |
+- `logs`
+  Tipo: `boolean`
+  Default: `true`
+  Descripción: Activar/desactivar el logging de resultados en consola.
+
+- `logLevel`
+  Tipo: `'full' | 'summary' | 'none'`
+  Default: `'full'`
+  Descripción: Verbosidad de salida en consola.
+
+- `issueLevel`
+  Tipo: `'critical' | 'warnings' | 'all'`
+  Default: `'all'`
+  Descripción: Filtra qué severidades reportar.
+
+- `locale`
+  Tipo: `'en' | 'es'`
+  Default: `auto`
+  Descripción: Idioma de mensajes para usuario (si no se define, autodetecta).
+
+- `scoringMode`
+  Tipo: `'strict' | 'normal' | 'moderate' | 'soft' | 'custom'`
+  Default: `'normal'`
+  Descripción: Perfil de scoring y modo de análisis de visibilidad DOM.
 
 ### Resolucion y persistencia de locale
 

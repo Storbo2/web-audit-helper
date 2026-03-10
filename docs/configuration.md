@@ -28,13 +28,30 @@ await runWAH({
 
 ### Root Level Options
 
-| Option       | Type                                | Default  | Description                                     |
-| ------------ | ----------------------------------- | -------- | ----------------------------------------------- |
-| `logs`       | `boolean`                           | `true`   | Enable/disable console logging of audit results |
-| `logLevel`   | `'full' \| 'summary' \| 'none'`     | `'full'` | Console output verbosity                        |
-| `issueLevel` | `'critical' \| 'warnings' \| 'all'` | `'all'`  | Filter which issue severities to report         |
-| `locale`     | `'en' \| 'es'`                      | auto     | User-facing language for overlay, console, and TXT/HTML reports |
-| `scoringMode` | `'strict' \| 'normal' \| 'moderate' \| 'soft' \| 'custom'` | `'normal'` | Scoring profile and DOM visibility analysis mode |
+- `logs`
+    Type: `boolean`
+    Default: `true`
+    Description: Enable/disable console logging of audit results.
+
+- `logLevel`
+    Type: `'full' | 'summary' | 'none'`
+    Default: `'full'`
+    Description: Console output verbosity.
+
+- `issueLevel`
+    Type: `'critical' | 'warnings' | 'all'`
+    Default: `'all'`
+    Description: Filter which issue severities to report.
+
+- `locale`
+    Type: `'en' | 'es'`
+    Default: `auto`
+    Description: User-facing language for overlay, console, and TXT/HTML reports.
+
+- `scoringMode`
+    Type: `'strict' | 'normal' | 'moderate' | 'soft' | 'custom'`
+    Default: `'normal'`
+    Description: Scoring profile and DOM visibility analysis mode.
 
 ### Locale Resolution and Persistence
 

@@ -66,6 +66,12 @@ await runWAH({
     logs: true,
     logLevel: 'full',
     issueLevel: 'all',
+  auditMetrics: {
+    enabled: true,
+    includeInReports: false,
+    consoleTopSlowRules: 10,
+    consoleMinRuleMs: 0
+  },
   rules: {
     'ACC-02': 'off',
     'ACC-22': { severity: 'warning', threshold: 14 },
@@ -197,6 +203,13 @@ Initial support in place:
 - `'off'` disables a rule by ID.
 - Severity override (`'critical'`, `'warning'`, `'recommendation'`) is applied by rule ID.
 - `threshold` is active for rules that expose numeric thresholds (for now: `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`).
+
+Audit metrics options:
+
+- `auditMetrics.enabled` (default: `true`): enable total and per-rule timing collection.
+- `auditMetrics.includeInReports` (default: `false`): include metrics in JSON/TXT/HTML reports.
+- `auditMetrics.consoleTopSlowRules` (default: `10`): max slow rules shown in console timing table.
+- `auditMetrics.consoleMinRuleMs` (default: `0`): minimum ms threshold to appear in timing table.
 
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
 Spanish version: [Guia de Configuracion](docs/es/configuration.md).
