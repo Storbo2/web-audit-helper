@@ -1,44 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { logWAHResults } from "./consoleLogger";
+import "./consoleLogger.mockSetup";
 import { setLocale } from "./i18n";
 import * as settingsModule from "../overlay/config/settings";
-
-vi.mock("../overlay/config/settings", () => ({
-    loadSettings: vi.fn(),
-    getActiveFilters: vi.fn(),
-    getActiveCategories: vi.fn()
-}));
-
-vi.mock("../overlay/core/utils", () => ({
-    getScoreClass: () => "score-good",
-    getScreenSize: () => "1920x1080"
-}));
-
-vi.mock("../overlay/interactions/highlight", () => ({
-    focusIssueElement: vi.fn(),
-    logIssueDetail: vi.fn()
-}));
-
-vi.mock("./breakpoints", () => ({
-    getBreakpointInfo: () => ({
-        name: "xl",
-        label: "Extra Large",
-        devices: "Desktops"
-    })
-}));
+import { createConsoleSpies, makeIssue, resetConsoleSpies, runLogger } from "./consoleLogger.testUtils";
 
 describe("console logger enhanced features", () => {
-    const groupSpy = vi.spyOn(console, "group").mockImplementation(() => { });
-    const groupEndSpy = vi.spyOn(console, "groupEnd").mockImplementation(() => { });
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => { });
-    const tableSpy = vi.spyOn(console, "table").mockImplementation(() => { });
+    const spies = createConsoleSpies();
 
     beforeEach(() => {
         setLocale("en", false);
-        tableSpy.mockClear();
-        logSpy.mockClear();
-        groupSpy.mockClear();
-        groupEndSpy.mockClear();
+        resetConsoleSpies(spies);
 
         vi.mocked(settingsModule.loadSettings).mockReturnValue({
             scoringMode: "normal",
@@ -54,142 +25,91 @@ describe("console logger enhanced features", () => {
     });
 
     it("shows statistics summary when enabled", () => {
-        logWAHResults(
-            {
-                score: 75,
-                issues: [
-                    {
-                        rule: "ACC-01",
-                        message: "Test",
-                        severity: "critical",
-                        category: "accessibility"
-                    },
-                    {
-                        rule: "ACC-02",
-                        message: "Test",
-                        severity: "warning",
-                        category: "accessibility"
-                    },
-                    {
-                        rule: "SEO-01",
-                        message: "Test",
-                        severity: "recommendation",
-                        category: "seo"
-                    }
-                ]
-            },
-            "full",
-            new Set(["critical", "warning", "recommendation"]),
-            new Set(["accessibility", "seo"]),
-            undefined,
-            false,
-            {
+        runLogger({
+            issues: [
+                makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
+                makeIssue({ rule: "ACC-02", severity: "warning", category: "accessibility" }),
+                makeIssue({ rule: "SEO-01", severity: "recommendation", category: "seo" })
+            ],
+            loggingConfig: {
                 showStatsSummary: true,
                 groupByCategory: false,
                 useIcons: false,
                 timestamps: false
-            }
-        );
+            },
+            score: 75,
+            activeFilters: new Set(["critical", "warning", "recommendation"]),
+            activeCategories: new Set(["accessibility", "seo"])
+        });
 
-        const statsGroup = groupSpy.mock.calls.find(call =>
-            call[0]?.includes("Issue Statistics")
-        );
+        const statsGroup = spies.group.mock.calls.find((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && first.includes("Issue Statistics");
+        });
         expect(statsGroup).toBeDefined();
-        expect(tableSpy).toHaveBeenCalled();
+        expect(spies.table).toHaveBeenCalled();
     });
 
     it("groups issues by category when enabled", () => {
-        logWAHResults(
-            {
-                score: 80,
-                issues: [
-                    {
-                        rule: "ACC-01",
-                        message: "Test",
-                        severity: "critical",
-                        category: "accessibility"
-                    },
-                    {
-                        rule: "SEO-01",
-                        message: "Test",
-                        severity: "warning",
-                        category: "seo"
-                    }
-                ]
-            },
-            "full",
-            new Set(["critical", "warning"]),
-            new Set(["accessibility", "seo"]),
-            undefined,
-            false,
-            {
+        runLogger({
+            issues: [
+                makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
+                makeIssue({ rule: "SEO-01", severity: "warning", category: "seo" })
+            ],
+            loggingConfig: {
                 showStatsSummary: false,
                 groupByCategory: true,
                 useIcons: false,
                 timestamps: false
-            }
-        );
+            },
+            score: 80,
+            activeFilters: new Set(["critical", "warning"]),
+            activeCategories: new Set(["accessibility", "seo"])
+        });
 
-        const categoryGroups = groupSpy.mock.calls.filter(call =>
-            call[0]?.includes("Accessibility") || call[0]?.includes("SEO")
-        );
+        const categoryGroups = spies.group.mock.calls.filter((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && (first.includes("Accessibility") || first.includes("SEO"));
+        });
         expect(categoryGroups.length).toBeGreaterThan(0);
     });
 
     it("includes timestamp when enabled", () => {
-        logWAHResults(
-            {
-                score: 90,
-                issues: []
-            },
-            "full",
-            undefined,
-            undefined,
-            undefined,
-            false,
-            {
+        runLogger({
+            issues: [],
+            loggingConfig: {
                 timestamps: true,
                 groupByCategory: false,
                 showStatsSummary: false,
                 useIcons: false
-            }
-        );
+            },
+            score: 90
+        });
 
-        const headerCall = groupSpy.mock.calls.find(call =>
-            call[0]?.includes("[WAH]")
-        );
+        const headerCall = spies.group.mock.calls.find((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && first.includes("[WAH]");
+        });
         expect(headerCall).toBeDefined();
         expect(headerCall![0]).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
     });
 
     it("uses icons when enabled", () => {
-        logWAHResults(
-            {
-                score: 85,
-                issues: [
-                    {
-                        rule: "ACC-01",
-                        message: "Test",
-                        severity: "critical",
-                        category: "accessibility"
-                    }
-                ]
-            },
-            "full",
-            new Set(["critical"]),
-            new Set(["accessibility"]),
-            undefined,
-            false,
-            {
+        runLogger({
+            issues: [makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" })],
+            loggingConfig: {
                 timestamps: false,
                 groupByCategory: false,
                 showStatsSummary: false,
                 useIcons: true
-            }
-        );
+            },
+            score: 85,
+            activeFilters: new Set(["critical"]),
+            activeCategories: new Set(["accessibility"])
+        });
 
-        expect(tableSpy).toHaveBeenCalled();
-        const tableCall = tableSpy.mock.calls[0][0];
+        expect(spies.table).toHaveBeenCalled();
+        const tableCall = spies.table.mock.calls[0][0];
         const hasIcons = JSON.stringify(tableCall).includes("⛔") ||
             JSON.stringify(tableCall).includes("⚠️") ||
             JSON.stringify(tableCall).includes("!");
@@ -197,50 +117,38 @@ describe("console logger enhanced features", () => {
     });
 
     it("respects all logging config options together", () => {
-        logWAHResults(
-            {
-                score: 70,
-                issues: [
-                    {
-                        rule: "ACC-01",
-                        message: "Test",
-                        severity: "critical",
-                        category: "accessibility"
-                    },
-                    {
-                        rule: "SEO-01",
-                        message: "Test",
-                        severity: "warning",
-                        category: "seo"
-                    }
-                ]
-            },
-            "full",
-            new Set(["critical", "warning"]),
-            new Set(["accessibility", "seo"]),
-            undefined,
-            false,
-            {
+        runLogger({
+            issues: [
+                makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
+                makeIssue({ rule: "SEO-01", severity: "warning", category: "seo" })
+            ],
+            loggingConfig: {
                 timestamps: true,
                 groupByCategory: true,
                 showStatsSummary: true,
                 useIcons: true
-            }
-        );
+            },
+            score: 70,
+            activeFilters: new Set(["critical", "warning"]),
+            activeCategories: new Set(["accessibility", "seo"])
+        });
 
-        const headerCall = groupSpy.mock.calls.find(call =>
-            call[0]?.includes("[WAH]") && call[0]?.match(/\[\d{2}:\d{2}:\d{2}\]/)
-        );
+        const headerCall = spies.group.mock.calls.find((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && first.includes("[WAH]") && /\[\d{2}:\d{2}:\d{2}\]/.test(first);
+        });
         expect(headerCall).toBeDefined();
 
-        const statsGroup = groupSpy.mock.calls.find(call =>
-            call[0]?.includes("Issue Statistics")
-        );
+        const statsGroup = spies.group.mock.calls.find((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && first.includes("Issue Statistics");
+        });
         expect(statsGroup).toBeDefined();
 
-        const categoryGroups = groupSpy.mock.calls.filter(call =>
-            call[0] && (call[0].includes("♿") || call[0].includes("🔍"))
-        );
+        const categoryGroups = spies.group.mock.calls.filter((call: unknown[]) => {
+            const first = call[0];
+            return typeof first === "string" && (first.includes("♿") || first.includes("🔍"));
+        });
         expect(categoryGroups.length).toBeGreaterThan(0);
     });
 });

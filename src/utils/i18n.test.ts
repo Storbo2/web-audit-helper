@@ -14,6 +14,11 @@ import {
     initI18n
 } from "./i18n";
 
+function expectNonEmptyString(value: unknown): void {
+    expect(typeof value).toBe("string");
+    expect((value as string).length).toBeGreaterThan(0);
+}
+
 describe("i18n utilities", () => {
     describe("t - Dictionary retrieval", () => {
         it("should return dictionary object", () => {
@@ -30,21 +35,9 @@ describe("i18n utilities", () => {
     });
 
     describe("translateCategory", () => {
-        it("should translate accessibility category", () => {
-            const result = translateCategory("accessibility");
-            expect(typeof result).toBe("string");
-            expect(result.length).toBeGreaterThan(0);
-        });
-
-        it("should translate seo category", () => {
-            const result = translateCategory("seo");
-            expect(typeof result).toBe("string");
-            expect(result.length).toBeGreaterThan(0);
-        });
-
-        it("should translate semantic category", () => {
-            const result = translateCategory("semantic");
-            expect(typeof result).toBe("string");
+        it.each(["accessibility", "seo", "semantic"])("should translate %s category", (category) => {
+            const result = translateCategory(category);
+            expectNonEmptyString(result);
         });
 
         it("should handle unknown category gracefully", () => {
@@ -59,29 +52,9 @@ describe("i18n utilities", () => {
     });
 
     describe("translateSeverity", () => {
-        it("should translate critical severity", () => {
-            const result = translateSeverity("critical");
-            expect(typeof result).toBe("string");
-            expect(result.length).toBeGreaterThan(0);
-        });
-
-        it("should translate warning severity", () => {
-            const result = translateSeverity("warning");
-            expect(typeof result).toBe("string");
-        });
-
-        it("should translate recommendation severity", () => {
-            const result = translateSeverity("recommendation");
-            expect(typeof result).toBe("string");
-        });
-
-        it("should handle all standard severities", () => {
-            const severities = ["critical", "warning", "recommendation"];
-            for (const severity of severities) {
-                const result = translateSeverity(severity);
-                expect(typeof result).toBe("string");
-                expect(result.length).toBeGreaterThan(0);
-            }
+        it.each(["critical", "warning", "recommendation"])("should translate %s severity", (severity) => {
+            const result = translateSeverity(severity);
+            expectNonEmptyString(result);
         });
     });
 
@@ -145,6 +118,7 @@ describe("i18n utilities", () => {
             const locales = getSupportedLocales();
             expect(Array.isArray(locales)).toBe(true);
             expect(locales.length).toBeGreaterThan(0);
+            expect(locales).toEqual(expect.arrayContaining(["en", "es"]));
         });
 
         it("should detect browser locale", () => {
@@ -161,5 +135,3 @@ describe("i18n utilities", () => {
         });
     });
 });
-
-

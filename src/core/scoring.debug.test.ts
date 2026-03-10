@@ -1,13 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import "./scoring.mockSetup";
 import { computeScoreDebug } from "./scoring";
 import type { AuditIssue } from "./types";
 import * as settingsModule from "../overlay/config/settings";
-
-vi.mock("../overlay/config/settings", () => ({
-    loadSettings: vi.fn(),
-    getActiveFilters: vi.fn(),
-    getActiveCategories: vi.fn()
-}));
 
 describe("Score Debugging", () => {
     beforeEach(() => {

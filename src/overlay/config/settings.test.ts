@@ -110,8 +110,8 @@ describe('overlay config settings', () => {
 
     it('loads consoleOutput with default value', () => {
         const settings = getSettings();
-        expect(settings.consoleOutput === undefined || 
-               ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+        expect(settings.consoleOutput === undefined ||
+            ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
     });
 
     it('persists and reads consoleOutput value', () => {
@@ -131,8 +131,8 @@ describe('overlay config settings', () => {
     it('handles invalid consoleOutput value gracefully', () => {
         localStorage.setItem('wah:settings:consoleOutput', 'invalid');
         const settings = getSettings();
-        expect(settings.consoleOutput === undefined || 
-               ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+        expect(settings.consoleOutput === undefined ||
+            ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
     });
 
     it('persists all valid consoleOutput levels', () => {
