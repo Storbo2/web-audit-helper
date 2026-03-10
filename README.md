@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.1.0/dist/index.js';
+    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.2.0/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -574,26 +574,22 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📋 Roadmap
 
-### v1.1.0 (Current)
+### v1.2.0 (Current)
+
+- Rule-level customization by stable ID (`off`, severity overrides, per-rule thresholds)
+- Rule thresholds enabled for `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`
+- Audit performance metrics (total + per-rule timings) with optional report export
+- Console output presets (`none`, `minimal`, `standard`, `detailed`, `debug`)
+- Score debugging + improved logging controls
+- Overlay/settings UX refinements and keyboard shortcuts
+- Docs updated in EN/ES (README, configuration, changelog, release notes)
+
+### v1.1.0 (Previous)
 
 - +65 audit rules implemented (6 new rules in v1.1.0)
 - Complete internationalization (English + Spanish)
-- Visual overlay with filtering and export
-- 5 scoring modes with auto-calibration
 - End-to-end testing with Playwright
-- 80%+ test coverage
 - Bilingual documentation
-- Console diagnostics and commands
-- Zero runtime dependencies
-
-### v1.2 - Rule Intelligence (Planned)
-
-Objective: make WAH adaptable to different projects.
-
-- Rule-level customization (enable/disable by rule ID, severity overrides, custom thresholds)
-- Stable rule IDs + centralized rule registry + override system
-- Audit performance metrics (total audit time + per-rule timings)
-- Minor improvements: score debugging, logging upgrades, overlay UX polish
 
 ### v1.3 - Documentation & Developer Guidance (Planned)
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { badgeSymbol, escapeHtml, getScreenSize } from "./utils";
+import { badgeSymbol, ensureViewportMeta, escapeHtml, getScoreClass, getScreenSize, resetViewportMetaPatch } from "./utils";
 
 describe("Overlay Utils", () => {
     describe("badgeSymbol", () => {
@@ -86,6 +86,92 @@ describe("Overlay Utils", () => {
             const size1 = getScreenSize();
             const size2 = getScreenSize();
             expect(size1).toBe(size2);
+        });
+    });
+
+    describe("getScoreClass", () => {
+        it("returns score-excellent for >= 95", () => {
+            expect(getScoreClass(95)).toBe("score-excellent");
+            expect(getScoreClass(100)).toBe("score-excellent");
+        });
+
+        it("returns score-good for >= 85 and < 95", () => {
+            expect(getScoreClass(85)).toBe("score-good");
+            expect(getScoreClass(94)).toBe("score-good");
+        });
+
+        it("returns score-warning for >= 70 and < 85", () => {
+            expect(getScoreClass(70)).toBe("score-warning");
+            expect(getScoreClass(84)).toBe("score-warning");
+        });
+
+        it("returns score-bad for < 70", () => {
+            expect(getScoreClass(69)).toBe("score-bad");
+            expect(getScoreClass(0)).toBe("score-bad");
+        });
+    });
+
+    describe("viewport meta helpers", () => {
+        beforeEach(() => {
+            document.head.innerHTML = "";
+        });
+
+        it("creates viewport meta when missing", () => {
+            const changed = ensureViewportMeta();
+            const viewport = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
+
+            expect(changed).toBe(true);
+            expect(viewport).not.toBeNull();
+            expect(viewport?.getAttribute("data-wah-generated")).toBe("viewport");
+            expect(viewport?.content).toContain("width=device-width");
+        });
+
+        it("patches existing viewport meta missing width=device-width", () => {
+            const viewport = document.createElement("meta");
+            viewport.name = "viewport";
+            viewport.content = "initial-scale=1";
+            document.head.appendChild(viewport);
+
+            const changed = ensureViewportMeta();
+
+            expect(changed).toBe(true);
+            expect(viewport.getAttribute("data-wah-viewport-patched")).toBe("true");
+            expect(viewport.getAttribute("data-wah-original-content")).toBe("initial-scale=1");
+            expect(viewport.content).toContain("width=device-width");
+        });
+
+        it("does nothing when viewport meta is already valid", () => {
+            const viewport = document.createElement("meta");
+            viewport.name = "viewport";
+            viewport.content = "width=device-width, initial-scale=1";
+            document.head.appendChild(viewport);
+
+            const changed = ensureViewportMeta();
+
+            expect(changed).toBe(false);
+            expect(viewport.getAttribute("data-wah-viewport-patched")).toBeNull();
+        });
+
+        it("resets generated and patched viewport meta", () => {
+            const generated = document.createElement("meta");
+            generated.name = "viewport";
+            generated.content = "width=device-width, initial-scale=1";
+            generated.setAttribute("data-wah-generated", "viewport");
+            document.head.appendChild(generated);
+
+            const patched = document.createElement("meta");
+            patched.name = "viewport";
+            patched.content = "initial-scale=1, width=device-width";
+            patched.setAttribute("data-wah-viewport-patched", "true");
+            patched.setAttribute("data-wah-original-content", "initial-scale=1");
+            document.head.appendChild(patched);
+
+            resetViewportMetaPatch();
+
+            expect(document.querySelector('meta[name="viewport"][data-wah-generated="viewport"]')).toBeNull();
+            expect(patched.content).toBe("initial-scale=1");
+            expect(patched.hasAttribute("data-wah-viewport-patched")).toBe(false);
+            expect(patched.hasAttribute("data-wah-original-content")).toBe(false);
         });
     });
 });

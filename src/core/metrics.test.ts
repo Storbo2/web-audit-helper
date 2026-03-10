@@ -105,4 +105,94 @@ describe("core metrics", () => {
 
         expect(result.metrics).toBeUndefined();
     });
+
+    it("applies severity override when configured as string", () => {
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: { "TST-02": "critical" }
+        });
+
+        const issue = result.issues.find((i) => i.rule === "TST-02");
+        expect(issue?.severity).toBe("critical");
+    });
+
+    it("applies severity override when configured as object", () => {
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: { "TST-02": { severity: "critical", threshold: 99 } }
+        });
+
+        const issue = result.issues.find((i) => i.rule === "TST-02");
+        expect(issue?.severity).toBe("critical");
+    });
+
+    it("skips rule when object config sets severity off", () => {
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: { "TST-02": { severity: "off" } }
+        });
+
+        const issue = result.issues.find((i) => i.rule === "TST-02");
+        expect(issue).toBeUndefined();
+    });
+
+    it("keeps original severity when override object has no severity", () => {
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: { "TST-02": { threshold: 123 } }
+        });
+
+        const issue = result.issues.find((i) => i.rule === "TST-02");
+        expect(issue?.severity).toBe("warning");
+    });
+
+    it("runs without rules overrides when rules config is undefined", () => {
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: undefined
+        });
+
+        expect(result.issues.length).toBe(2);
+    });
+
+    it("handles override object with severity off for non-registered issue id", () => {
+        const originalRegistry = [...CORE_RULES_REGISTRY];
+
+        CORE_RULES_REGISTRY.splice(0, CORE_RULES_REGISTRY.length, {
+            id: "TST-RAW",
+            run: () => [{
+                rule: "RAW-01",
+                message: "raw issue",
+                severity: "warning",
+                category: "accessibility"
+            }]
+        });
+
+        const result = runCoreAudit({
+            ...BASE_CONFIG,
+            rules: {
+                "RAW-01": { severity: "off" }
+            }
+        });
+
+        expect(result.issues[0]?.rule).toBe("RAW-01");
+        expect(result.issues[0]?.severity).toBe("warning");
+
+        CORE_RULES_REGISTRY.splice(0, CORE_RULES_REGISTRY.length, ...originalRegistry);
+    });
+
+    it("collects metrics using Date.now fallback when performance is unavailable", () => {
+        const originalPerformance = (globalThis as { performance?: Performance }).performance;
+
+        // Force nowMs() to use Date.now branch.
+        delete (globalThis as { performance?: Performance }).performance;
+
+        try {
+            const result = runCoreAudit({ ...BASE_CONFIG, rules: {} });
+            expect(result.metrics).toBeDefined();
+            expect(result.metrics?.totalMs).toBeGreaterThanOrEqual(0);
+        } finally {
+            (globalThis as { performance?: Performance }).performance = originalPerformance;
+        }
+    });
 });

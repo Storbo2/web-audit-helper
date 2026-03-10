@@ -152,4 +152,28 @@ describe("console logger enhanced features", () => {
         });
         expect(categoryGroups.length).toBeGreaterThan(0);
     });
+
+    it("warns when __WAH_FOCUS_ISSUE__ receives an invalid index", () => {
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => { });
+
+        runLogger({
+            issues: [makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" })],
+            loggingConfig: {
+                timestamps: false,
+                groupByCategory: false,
+                showStatsSummary: false,
+                useIcons: false
+            },
+            score: 85,
+            activeFilters: new Set(["critical"]),
+            activeCategories: new Set(["accessibility"])
+        });
+
+        const focusIssue = (window as Window & { __WAH_FOCUS_ISSUE__?: (index: number) => unknown }).__WAH_FOCUS_ISSUE__;
+        expect(focusIssue).toBeTypeOf("function");
+        expect(focusIssue?.(999)).toBeNull();
+        expect(warnSpy).toHaveBeenCalled();
+
+        warnSpy.mockRestore();
+    });
 });
