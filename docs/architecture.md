@@ -47,6 +47,7 @@ Overview of WAH's system design and module organization.
 **Responsibility**: Audit engine logic
 
 **Structure**:
+
 ```
 src/core/
 ├── index.ts           # Main runCoreAudit() export
@@ -74,6 +75,7 @@ src/core/
 ```
 
 **Key Functions**:
+
 - `runCoreAudit(config)`: Executes all rules, returns `AuditResult`
 - `computeScore(issues)`: Calculates overall score based on severity and multipliers
 - `computeCategoryScores(issues)`: Calculates per-category scores
@@ -83,6 +85,7 @@ src/core/
 **Responsibility**: Visual UI components and interaction logic
 
 **Structure**:
+
 ```
 src/overlay/
 ├── Overlay.ts        # Main overlay component lifecycle
@@ -112,6 +115,7 @@ src/overlay/
 ```
 
 **Key Responsibilities**:
+
 - Create floating overlay with score badge
 - Manage issue list display and filtering
 - Handle user interactions (drag, click, filters)
@@ -124,6 +128,7 @@ src/overlay/
 **Responsibility**: Generate and serialize audit reports
 
 **Structure**:
+
 ```
 src/reporters/
 ├── index.ts           # Main export
@@ -137,12 +142,14 @@ src/reporters/
 ```
 
 **Key Functions**:
+
 - `buildAuditReport(result)`: Creates structured report object
 - `serializeReportToJSON(report)`: Exports as JSON
 - `serializeReportToTXT(report)`: Exports as formatted text
 - `serializeReportToHTML(report)`: Exports as styled HTML
 
 **Report Format**:
+
 ```json
 {
     "meta": {
@@ -187,6 +194,7 @@ src/reporters/
 **Responsibility**: Shared utility functions
 
 **Structure**:
+
 ```
 src/utils/
 ├── dom.ts            # DOM helpers (getCssSelector, etc.)
@@ -194,7 +202,6 @@ src/utils/
 ```
 
 ## Data Flow
-
 
 ### Rule Execution Flow
 
@@ -261,6 +268,7 @@ createOverlay()
 ### Per-Category Score Calculation
 
 For each category:
+
 ```
 1. Count critical, warning, recommendation issues
 2. Apply multipliers (varies by mode)
@@ -286,6 +294,7 @@ overallScore = sum(categoryScore * weight) / totalWeight
 ### Custom Filter Calibration
 
 When 1 category is active, multipliers are divided by 4:
+
 - critical: 20 → 5
 - warning: 8 → 2
 - recommendation: 4 → 1

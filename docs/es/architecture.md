@@ -9,35 +9,35 @@ Visión general del diseño del sistema WAH y organización de módulos.
 │     Entorno de navegador        │
 │   (DOM, CSS, APIs JavaScript)   │
 └────────────┬────────────────────┘
-			 │
-	 ┌───────┴────────┐
-	 │    Núcleo WAH  │
-	 └───────┬────────┘
-			 │
-	┌────────┴─────────┐
-	│                  │
-	▼                  ▼
+    │
+  ┌───────┴────────┐
+  │    Núcleo WAH  │
+  └───────┬────────┘
+    │
+ ┌────────┴─────────┐
+ │                  │
+ ▼                  ▼
 ┌──────────────┐  ┌──────────────┐
 │ Motor Reglas │  │ Motor Scoring│
 │  (60+ reglas)│  │              │
 └──────┬───────┘  └──────┬───────┘
-	   │                 │
-	   └────────┬────────┘
-				│
-		┌───────▼────────┐
-		│  AuditResult   │
-		│ (issues +      │
-		│ score/grade)   │
-		└───────┬────────┘
-				│
-	┌───────────┴───────────┐
-	│                       │
-	▼                       ▼
+    │                 │
+    └────────┬────────┘
+    │
+  ┌───────▼────────┐
+  │  AuditResult   │
+  │ (issues +      │
+  │ score/grade)   │
+  └───────┬────────┘
+    │
+ ┌───────────┴───────────┐
+ │                       │
+ ▼                       ▼
 ┌─────────────┐      ┌──────────────┐
 │ Overlay UI  │      │  Reporters   │
 │(drag, hide) │      │ (JSON/TXT/   │
 └─────────────┘      │  HTML)       │
-					 └──────────────┘
+      └──────────────┘
 ```
 
 ## Organización de módulos
@@ -47,6 +47,7 @@ Visión general del diseño del sistema WAH y organización de módulos.
 **Responsabilidad**: lógica del motor de auditoría.
 
 **Estructura**:
+
 ```
 src/core/
 ├── index.ts           # Export principal runCoreAudit()
@@ -56,24 +57,25 @@ src/core/
 │   ├── registry.ts    # Registro de reglas - agrega todas las reglas
 │   └── ruleIds.ts     # Constantes de Rule ID (ACC-01, SEO-05, etc.)
 └── rules/
-	├── index.ts       # Re-exporta todas las reglas
-	├── accessibility/ # 26 reglas de accesibilidad
-	│   ├── aria.ts
-	│   ├── buttons.ts
-	│   ├── forms.ts
-	│   ├── media.ts
-	│   ├── text.ts
-	│   └── ...
-	├── semantic.ts    # 7 reglas semánticas
-	├── seo.ts         # 8 reglas SEO
-	├── responsive.ts  # 5 reglas responsive
-	├── security.ts    # 1 regla seguridad
-	├── quality.ts     # 2 reglas calidad
-	├── performance.ts # 10 reglas rendimiento
-	└── form.ts        # 4 reglas formularios
+ ├── index.ts       # Re-exporta todas las reglas
+ ├── accessibility/ # 26 reglas de accesibilidad
+ │   ├── aria.ts
+ │   ├── buttons.ts
+ │   ├── forms.ts
+ │   ├── media.ts
+ │   ├── text.ts
+ │   └── ...
+ ├── semantic.ts    # 7 reglas semánticas
+ ├── seo.ts         # 8 reglas SEO
+ ├── responsive.ts  # 5 reglas responsive
+ ├── security.ts    # 1 regla seguridad
+ ├── quality.ts     # 2 reglas calidad
+ ├── performance.ts # 10 reglas rendimiento
+ └── form.ts        # 4 reglas formularios
 ```
 
 **Funciones clave**:
+
 - `runCoreAudit(config)`: ejecuta todas las reglas y retorna `AuditResult`.
 - `computeScore(issues)`: calcula score global en base a severidad y multiplicadores.
 - `computeCategoryScores(issues)`: calcula score por categoría.
@@ -83,6 +85,7 @@ src/core/
 **Responsabilidad**: componentes UI y lógica de interacción visual.
 
 **Estructura**:
+
 ```
 src/overlay/
 ├── Overlay.ts         # Ciclo de vida principal del overlay
@@ -101,17 +104,18 @@ src/overlay/
 │   ├── highlight.ts   # Resaltado de elementos con incidencias
 │   └── position.ts    # Lógica de posicionamiento del overlay
 └── popover/
-	├── Popover.ts     # Componente principal de popovers
-	├── utils.ts       # Utilidades de popover
-	└── components/
-		├── Filters.ts
-		├── Settings.ts
-		├── UI.ts
-		├── Export.ts
-		└── index.ts
+ ├── Popover.ts     # Componente principal de popovers
+ ├── utils.ts       # Utilidades de popover
+ └── components/
+  ├── Filters.ts
+  ├── Settings.ts
+  ├── UI.ts
+  ├── Export.ts
+  └── index.ts
 ```
 
 **Responsabilidades clave**:
+
 - Crear overlay flotante con badge de score.
 - Gestionar render y filtros de incidencias.
 - Manejar interacciones (drag, click, filtros).
@@ -124,6 +128,7 @@ src/overlay/
 **Responsabilidad**: generar y serializar reportes de auditoría.
 
 **Estructura**:
+
 ```
 src/reporters/
 ├── index.ts           # Export principal
@@ -137,48 +142,50 @@ src/reporters/
 ```
 
 **Funciones clave**:
+
 - `buildAuditReport(result)`: crea objeto de reporte estructurado.
 - `serializeReportToJSON(report)`: exporta a JSON.
 - `serializeReportToTXT(report)`: exporta a texto.
 - `serializeReportToHTML(report)`: exporta a HTML.
 
 **Formato de reporte**:
+
 ```json
 {
-	"meta": {
-		"url": "...",
-		"date": "2026-03-01T...",
-		"viewport": { "width": 1920, "height": 1080 },
-		"scoringMode": "normal",
-		"appliedFilters": { "severities": [...], "categories": [...] }
-	},
-	"score": {
-		"overall": 75,
-		"grade": "C",
-		"byCategory": { "accessibility": 65, "seo": 80, ... }
-	},
-	"categories": [
-		{
-		"id": "accessibility",
-		"title": "Accessibility",
-		"score": 65,
-		"rules": [
-			{
-			"id": "ACC-02",
-			"title": "Image missing alt",
-			"status": "critical",
-			"message": "...",
-			"fix": "...",
-			"elements": [...]
-			}
-		]
-		}
-	],
-	"stats": {
-		"failed": 12,
-		"warnings": 18,
-		"recommendations": 5
-	}
+ "meta": {
+  "url": "...",
+  "date": "2026-03-01T...",
+  "viewport": { "width": 1920, "height": 1080 },
+  "scoringMode": "normal",
+  "appliedFilters": { "severities": [...], "categories": [...] }
+ },
+ "score": {
+  "overall": 75,
+  "grade": "C",
+  "byCategory": { "accessibility": 65, "seo": 80, ... }
+ },
+ "categories": [
+  {
+  "id": "accessibility",
+  "title": "Accessibility",
+  "score": 65,
+  "rules": [
+   {
+   "id": "ACC-02",
+   "title": "Image missing alt",
+   "status": "critical",
+   "message": "...",
+   "fix": "...",
+   "elements": [...]
+   }
+  ]
+  }
+ ],
+ "stats": {
+  "failed": 12,
+  "warnings": 18,
+  "recommendations": 5
+ }
 }
 ```
 
@@ -187,6 +194,7 @@ src/reporters/
 **Responsabilidad**: funciones utilitarias compartidas.
 
 **Estructura**:
+
 ```
 src/utils/
 ├── dom.ts             # Helpers DOM (getCssSelector, etc.)
@@ -208,8 +216,8 @@ runCoreAudit()
   │   └── Cada issue: { rule, message, severity, category, element, selector }
   │
   └── Retorna AuditResult
-	  ├── issues: AuditIssue[]
-	  └── score: number
+   ├── issues: AuditIssue[]
+   └── score: number
 ```
 
 ### Flujo de scoring
@@ -262,6 +270,7 @@ createOverlay()
 ### Cálculo por categoría
 
 Para cada categoría:
+
 ```
 1. Cuenta issues critical, warning, recommendation
 2. Aplica multiplicadores (según modo)
@@ -272,14 +281,14 @@ Para cada categoría:
 
 ```
 Pesos:
-	accessibility: 0.25
-	seo:          0.20
-	responsive:   0.15
-	semantic:     0.10
-	security:     0.10
-	quality:      0.10
-	performance:  0.05
-	form:         0.05
+ accessibility: 0.25
+ seo:          0.20
+ responsive:   0.15
+ semantic:     0.10
+ security:     0.10
+ quality:      0.10
+ performance:  0.05
+ form:         0.05
 
 overallScore = sum(categoryScore * weight) / totalWeight
 ```
@@ -287,6 +296,7 @@ overallScore = sum(categoryScore * weight) / totalWeight
 ### Calibración en filtros custom
 
 Cuando hay 1 categoría activa, los multiplicadores se dividen por 4:
+
 - critical: 20 → 5
 - warning: 8 → 2
 - recommendation: 4 → 1
@@ -299,44 +309,44 @@ Esto evita que el score se hunda con filtros demasiado restrictivos.
 
 ```typescript
 interface AuditIssue {
-	rule: string;
-	message: string;
-	severity: Severity;
-	category?: IssueCategory;
-	selector?: string;
-	element?: HTMLElement;
+ rule: string;
+ message: string;
+ severity: Severity;
+ category?: IssueCategory;
+ selector?: string;
+ element?: HTMLElement;
 }
 
 interface AuditResult {
-	issues: AuditIssue[];
-	score: number;
+ issues: AuditIssue[];
+ score: number;
 }
 
 interface WAHConfig {
-	logs: boolean;
-	logLevel: LogLevel;
-	issueLevel: IssueLevel;
-	locale?: 'en' | 'es';
-	accessibility: {
-		minFontSize: number;
-		contrastLevel: ContrastLevel;
-	};
-	overlay: {
-		enabled: boolean;
-		position: string;
-		theme: 'auto' | 'dark' | 'light';
-		hide?: number;
-	};
-	quality?: {
-		inlineStylesThreshold?: number;
-	};
+ logs: boolean;
+ logLevel: LogLevel;
+ issueLevel: IssueLevel;
+ locale?: 'en' | 'es';
+ accessibility: {
+  minFontSize: number;
+  contrastLevel: ContrastLevel;
+ };
+ overlay: {
+  enabled: boolean;
+  position: string;
+  theme: 'auto' | 'dark' | 'light';
+  hide?: number;
+ };
+ quality?: {
+  inlineStylesThreshold?: number;
+ };
 }
 
 interface AuditReport {
-	meta: ReportMeta;
-	score: ReportScore;
-	categories: CategoryReport[];
-	stats: AuditStats;
+ meta: ReportMeta;
+ score: ReportScore;
+ categories: CategoryReport[];
+ stats: AuditStats;
 }
 ```
 

@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- markdownlint-disable MD024 -->
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -8,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-03-09
 
 ### Added
+
 - **Internationalization (i18n) System**: Complete bilingual support for English and Spanish
   - Dictionary-based translation system with locale detection (`locales/en/` and `locales/es/`)
   - Automatic language detection from browser settings with manual override
@@ -36,17 +39,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Translation contribution guide (`docs/translations.md`)
 
 ### Changed
+
 - Standardized report titles: "WAH Report" (overlay), "Web Audit Helper Report" (exports)
 - Enhanced scoring system to properly handle custom mode with category-based multiplier scaling
 - Improved settings persistence with fallback handling for invalid localStorage values
 
 ### Fixed
+
 - Fixed TypeScript compilation for test files by adding Vitest globals to tsconfig
 - Improved contrast detection algorithm to reduce false positives near animated or image-containing elements
 
 ## [1.0.9] - 2026-03-08
 
 ### Fixed
+
 - Reduced false positives in contrast ratio detection (ACC-25) by checking for nearby visual elements (background images, parent animations, adjacent sibling content)
 - Increased contrast ratio tolerance from 95% to 90% of minimum requirement to account for edge cases with animations and complex layouts
 - Fixed white-on-black text incorrectly flagging as low contrast in strict mode when near animated or image-containing elements
@@ -54,26 +60,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.8] - 2026-03-08
 
 ### Added
+
 - Added breakpoint information to all report formats (JSON, TXT, HTML) showing viewport classification and typical device types
 - Added internal breakpoint utility system with standard breakpoints (xs, sm, md, lg, xl, 2xl, 3xl)
 - Enhanced large element highlighting with visual flash effect for better visibility on viewport-filling elements (html, body)
 
 ### Changed
+
 - Removed `breakpoints` from user configuration (WAHConfig) - now uses fixed internal breakpoints for consistency
 - Reports now display breakpoint context (e.g., "Breakpoint: xl (laptops, desktops)") alongside viewport dimensions
 
 ### Fixed
+
 - Improved element highlight visibility for large elements that cover significant viewport area using animated flash overlay
 
 ## [1.0.7] - 2026-03-08
 
 ### Changed
+
 - Upgraded popover base typography and inheritance defaults (`line-height`, alignment, spacing inheritance) to reduce host-page style interference
 - Strengthened popover row layout for radios, checkboxes, labels, spans, and slider controls using explicit flex behavior
 - Added dedicated `.wah-pop-row-text` wrappers in Filters, Settings, and UI popovers for stable text flow and wrapping
 - Improved mobile responsiveness for popovers with tuned widths, paddings, control sizing, and compact row spacing at narrow breakpoints
 
 ### Fixed
+
 - Fixed score breakdown popover open/close instability by aligning it with the shared popover lifecycle and click-outside handling
 - Fixed score breakdown overflow/placement edge cases when overlay is compact or near viewport boundaries
 - Fixed list scrolling ergonomics by enabling item-level scroll snapping so issues land cleanly in view with wheel/touch scroll
@@ -81,38 +92,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2026-03-05
 
 ### Added
+
 - Added scoring-mode visibility behavior tests to validate strict full-DOM analysis and perceivable-only filtering in other modes
 
 ### Changed
+
 - `strict` mode now analyzes all elements present in the DOM (including hidden variants)
 - `normal`, `moderate`, `soft`, and `custom` modes now apply perceivable-only filtering during audit aggregation
 - Updated Settings popover scoring mode descriptions to document the new visibility behavior
 
 ### Fixed
+
 - Improved fixed/sticky overlap rule behavior (`RWD-04`) so hidden variant handling is mode-aware and consistent with scoring mode intent
 
 ## [1.0.5] - 2026-03-05
 
 ### Fixed
+
 - Refined popover placement behavior so menus open consistently around their trigger button while staying inside viewport bounds
 - Fixed alignment of toolbar button emojis/icons so they render centered inside each button
 - Added dedicated badge symbol styling (`.wah-badge-symbol`) and applied targeted vertical offset for better symbol alignment
 
 ### Changed
+
 - Rebalanced overlay spacing in list/filter areas (`.wah-filter`, `.wah-panel`, `.wah-list`, `.wah-issue-item`) to avoid excessive padding and improve readability
 - Updated chip styling (`.wah-chip`) with tuned typography and corner radius for a less aggressive pill shape
 
 ## [1.0.4] - 2026-03-02
 
 ### Fixed
+
 - Fixed popover styling issues where Filters, Settings, and UI settings popovers displayed collapsed/overlapping text
 - Consolidated `.wah-pop-row` styles to `popover-base.css` for consistent styling across all popovers
 - Improved re-run consistency by implementing `cleanupWAH()` function that properly resets overlay, styles, and viewport patches between audits
 
 ### Changed
+
 - Moved common popover styles from `popover-filters.css` to `popover-base.css` for better maintainability
 
 ### Documentation
+
 - Added comprehensive Next.js / SSR frameworks section with JavaScript and TypeScript examples
 - Added FAQ / Troubleshooting section covering common errors (`Module not found`, `window is not defined`, React Strict Mode double execution)
 - Updated Quick Start section to distinguish between Browser Bundlers (SPAs) and SSR frameworks
@@ -122,34 +141,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.3] - 2026-03-01
 
 ### Fixed
+
 - Fixed SSR compatibility by moving `window` and `document` access from top-level to inside `runWAH()` function
 - Added SSR guard (`typeof window === "undefined"`) to prevent "window is not defined" errors in Next.js and other SSR frameworks
 - Moved global handler registration (`__WAH_RERUN__`, `__WAH_RESET_HIDE__`, `__WAH_FOCUS_ISSUE__`) inside function scope
 
 ### Changed
+
 - Refactored module initialization to be SSR-safe with lazy window access
 - Module can now be safely imported in SSR contexts without runtime errors
 
 ## [1.0.2] - 2026-02-28
 
 ### Changed
+
 - Added dual module format support (ESM + CommonJS) for maximum compatibility
 - Updated build output to generate `.mjs` (ESM) and `.cjs` (CommonJS) files
 - Added conditional exports in package.json with proper type definitions for both formats
 - Enhanced tsup configuration to output separate `.d.ts` and `.d.cts` type definitions
 
 ### Fixed
+
 - Fixed module resolution issues in CommonJS projects
 - Improved compatibility with bundlers that don't fully support ESM
 
 ## [1.0.1] - 2026-02-27
 
 ### Changed
+
 - Updated Node.js version requirement to >=18.0.0 in package.json
 - Created `.nvmrc` file specifying Node.js 22.12.0 for consistent development environment
 - Regenerated package-lock.json with clean install
 
 ### Infrastructure
+
 - Enhanced GitHub Actions CI workflow with dependency verification
 - Added proper npm authentication using NODE_AUTH_TOKEN
 - Configured multi-Node testing matrix (18.x, 20.x, 21.x)
@@ -160,6 +185,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Core Features
+
 - **61 comprehensive audit rules** across 8 categories (Accessibility, SEO, Semantic HTML, Responsive Design, Security, Quality, Performance, Forms)
 - **Visual overlay interface** with drag & drop, collapsible panels, and responsive positioning
 - **Interactive popover** with advanced filtering by severity and category
@@ -170,6 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Global commands**: `__WAH_RERUN__()`, `__WAH_RESET_HIDE__()`, `__WAH_FOCUS_ISSUE__(index)`
 
 #### Accessibility Checks (26)
+
 - ACC-01: Missing HTML lang attribute
 - ACC-02: Image missing alt text
 - ACC-03: Link missing accessible name
@@ -197,6 +224,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ACC-26: Low line-height (< 1.4 detected)
 
 #### SEO Checks (8)
+
 - SEO-01: Missing or empty title element
 - SEO-02: Missing meta description
 - SEO-03: Missing charset declaration
@@ -206,7 +234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SEO-08: Missing Twitter Card tags
 
 #### Semantic HTML Checks (7)
-- SEM-01: Improper use of <b>/<i> instead of <strong>/<em>
+
+- SEM-01: Improper use of `<b>/<i>` instead of `<strong>/<em>`
 - SEM-02: Low semantic structure (excessive generic divs)
 - SEM-03: Multiple H1 elements
 - SEM-04: Missing main element
@@ -215,6 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SEM-07: False list structure (divs instead of li)
 
 #### Responsive Design Checks (5)
+
 - RWD-01: Large fixed-width elements
 - RWD-02: Missing viewport meta tag
 - RWD-03: Horizontal overflow detected
@@ -222,13 +252,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RWD-05: Problematic 100vh usage
 
 #### Security Checks (1)
+
 - SEC-01: target=_blank without noopener/noreferrer
 
 #### Quality Checks (2)
+
 - QLT-01: Excessive inline styles
 - QLT-02: Dummy links (href="#" patterns)
 
 #### Performance Checks (10)
+
 - PERF-01: Images missing srcset/sizes
 - PERF-02: Excessive font families/weights
 - PERF-03: Excessive external scripts
@@ -241,12 +274,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MEDIA-01: Video autoplay without muted
 
 #### Form Checks (4)
+
 - FORM-01: Submit button outside form
 - FORM-02: Required input without indicator
 - FORM-03: Email/tel input with wrong type
 - FORM-04: Missing autocomplete attribute
 
 #### UI & Configuration
+
 - Framework-agnostic overlay positioning (bottom-right, bottom-left, top-right, top-left)
 - Configurable minimum font size (default: 12px)
 - Configurable WCAG contrast level (AA/AAA)
@@ -257,6 +292,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Responsive design with mobile support
 
 #### Output & Reporting
+
 - **JSON export**: Complete audit data with metadata
 - **TXT export**: Human-readable format with issue details
 - **HTML export**: Styled report with visual score indicators
@@ -267,6 +303,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Issue summary statistics
 
 #### Developer Experience
+
 - Zero runtime dependencies (TypeScript + tsup only)
 - Full TypeScript support with strict mode enabled
 - Console-friendly diagnostic tables
@@ -303,24 +340,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Planned Changes
 
-### [1.1.0] - Planned
+### [1.2] - Rule Intelligence (Planned)
 
-- 10+ additional audit rules (deprecated HTML, ARIA validation, touch targets, etc.)
-- Extended testing coverage (>80%)
-- Performance improvements for large DOMs
-- Advanced rule customization
-- CLI tool for programmatic access
-- i18n runtime externalized to `locales/*/common.json` (dictionary, rule labels, fixes, issue messages)
-- Settings popover language selector (`en`/`es`) with persisted preference across reloads
-- Standardized report titles: overlay header `WAH Report`, report title `Web Audit Helper Report`
+- Rule-level customization by rule ID (on/off, severity override, thresholds)
+- Stable rule IDs + centralized registry + override pipeline
+- Audit performance metrics (global timing + per-rule timings)
+- Minor UX/logging/score-debugging improvements
 
-### [2.0.0] - Future
+### [1.3] - Documentation & Developer Guidance (Planned)
 
-- CLI tool for CI/CD integration
-- Framework-specific plugins (React, Vue, Angular)
-- Performance profiling and metrics
-- Chrome DevTools integration
-- Custom rule registration API
+- Rule Fix Guides for each rule (Problem, Why, Fix, Bad/Good examples)
+- "Learn more" links from overlay and reports to rule docs
+- Expanded architecture/rules/contribution guides
+
+### [1.4] - External Auditing (Planned)
+
+- Official bookmarklet for auditing any site
+- Export enhancements (run comparison, richer metadata, better HTML report, code suggestions)
+
+### [1.5] - Ecosystem Preparation (Planned)
+
+- Experimental Plugin API
+- Internal registry hardening for plugins, advanced configuration, and auto-doc generation
+
+### [2.0] - Automation & Ecosystem (Future)
+
+- CLI audits for URLs/files with headless automation
+- CI/CD integration with score thresholds
+- Official plugin system
+
+### [2.x] - Ecosystem Growth (Future)
+
+- DevTools browser extension
+- Team/company policy profiles and standards
 
 ---
 
@@ -335,6 +387,7 @@ This is the initial release. No migration needed.
 ## Support
 
 For issues, feature requests, or questions:
-- 📧 GitHub Issues: https://github.com/Storbo2/web-audit-helper/issues
+
+- 📧 GitHub Issues: <https://github.com/Storbo2/web-audit-helper/issues>
 - 📖 Documentation: See docs/ folder
 - 💬 Discussions: GitHub Discussions (coming soon)

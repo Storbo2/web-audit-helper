@@ -16,7 +16,8 @@ Be respectful and constructive in all interactions.
 4. **Describe expected vs actual behavior**
 
 Example:
-```
+
+```text
 Title: ACC-02 rule incorrectly flags images with empty alt=""
 
 Browser: Chrome 120
@@ -159,6 +160,7 @@ describe('ACC-XX: Your rule', () => {
 - **Comments**: JSDoc for public APIs
 
 Example:
+
 ```typescript
 /**
     * Checks for missing alt text on images
@@ -178,6 +180,7 @@ npm run test:ui     # Interactive UI
 ```
 
 Tests should:
+
 - Use descriptive names
 - Test both positive and negative cases
 - Be isolated and not depend on DOM state
@@ -187,7 +190,7 @@ Tests should:
 
 Use clear, conventional commits:
 
-```
+```text
 feat: Add new ACC-XX rule for validation
 fix: Correct false positive in existing rule
 docs: Update README with configuration example
@@ -230,7 +233,7 @@ npm run typecheck && npm run build && npm run test
 
 ## Project Structure
 
-```
+```text
 src/
 ├── core/              # Audit engine
 │   ├── rules/        # All 61 audit rules

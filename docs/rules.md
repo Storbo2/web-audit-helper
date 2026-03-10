@@ -5,6 +5,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Accessibility Rules (26)
 
 ### ACC-01: Missing HTML Lang Attribute
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures the HTML element includes a valid lang attribute for language identification
@@ -12,6 +13,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 3.1.1 (Level A)
 
 ### ACC-02: Image Missing Alt Text
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Ensures meaningful images include non-empty alt text
@@ -19,6 +21,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.1.1 (Level A)
 
 ### ACC-03: Link Missing Accessible Name
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures links expose accessible text for screen readers
@@ -26,6 +29,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.1.1 (Level A)
 
 ### ACC-04: Button Missing Accessible Name
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures buttons expose accessible names
@@ -33,6 +37,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.1.1 (Level A)
 
 ### ACC-05: Form Control Missing ID or Name
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Ensures form controls provide unique identifiers
@@ -40,6 +45,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-06: Label Missing For Association
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures labels properly associate with form controls
@@ -47,6 +53,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-07: Form Control Missing Label
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Ensures form controls are properly labeled
@@ -54,6 +61,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-09: Missing H1 Heading
+
 - **Severity**: Warning
 - **Category**: Accessibility, SEO
 - **Description**: Ensures page has at least one H1 as main heading
@@ -61,6 +69,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-10: Heading Hierarchy Jump
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures headings follow consistent hierarchical order
@@ -68,6 +77,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-11: Invalid aria-labelledby References
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Ensures aria-labelledby references existing element IDs
@@ -75,6 +85,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-12: Invalid aria-describedby References
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures aria-describedby references existing element IDs
@@ -82,6 +93,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-13: Positive Tabindex
+
 - **Severity**: Recommendation
 - **Category**: Accessibility
 - **Description**: Detects positive tabindex which can break keyboard navigation
@@ -89,6 +101,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.1.1 (Level A)
 
 ### ACC-14: Nested Interactive Elements
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Detects nested interactive elements that confuse screen readers
@@ -96,6 +109,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.1.1 (Level A)
 
 ### ACC-15: Iframe Missing Title
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures iframes include descriptive titles
@@ -103,6 +117,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.4.1 (Level A)
 
 ### ACC-16: Video Missing Controls
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures video elements have accessible controls
@@ -110,6 +125,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.1.1 (Level A)
 
 ### ACC-17: Table Missing Caption
+
 - **Severity**: Recommendation
 - **Category**: Accessibility
 - **Description**: Ensures tables have meaningful captions or labels
@@ -117,6 +133,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-18: Table Header Missing Scope
+
 - **Severity**: Recommendation
 - **Category**: Accessibility
 - **Description**: Ensures table headers include scope attributes
@@ -124,6 +141,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-19: Vague Link Text
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Detects vague link text like "click here"
@@ -131,6 +149,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.4.4 (Level A)
 
 ### ACC-20: Link Missing Href
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Ensures anchors include href attributes
@@ -138,6 +157,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.3.1 (Level A)
 
 ### ACC-21: Focus Not Visible
+
 - **Severity**: Warning
 - **Category**: Accessibility
 - **Description**: Detects elements with outline explicitly disabled
@@ -145,6 +165,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.4.7 (Level AA)
 
 ### ACC-22: Text Too Small
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Detects text below minimum readability threshold
@@ -152,6 +173,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.4.4 (Level AA)
 
 ### ACC-23: Duplicate IDs
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Ensures DOM IDs are unique
@@ -159,6 +181,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **HTML**: Standard requirement
 
 ### ACC-24: Missing Skip Link
+
 - **Severity**: Recommendation
 - **Category**: Accessibility
 - **Description**: Detects missing skip link to main content
@@ -166,6 +189,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 2.4.1 (Level A)
 
 ### ACC-25: Insufficient Color Contrast
+
 - **Severity**: Critical
 - **Category**: Accessibility
 - **Description**: Detects text with insufficient contrast ratio
@@ -173,6 +197,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 - **WCAG**: 1.4.3 (Level AA) / 1.4.11 (Level AAA)
 
 ### ACC-26: Low Line-Height
+
 - **Severity**: Recommendation
 - **Category**: Accessibility
 - **Description**: Detects line-height below readability threshold
@@ -184,30 +209,37 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## SEO Rules (8)
 
 ### SEO-01: Missing Title
+
 - **Description**: Missing or empty `<title>` element
 - **Fix**: Add a descriptive `<title>` element in the document `<head>`
 
 ### SEO-02: Weak Meta Description
+
 - **Description**: Missing meta description tag
 - **Fix**: Add a meta description tag with a concise summary of the page content
 
 ### SEO-03: Missing Charset
+
 - **Description**: Missing charset declaration
 - **Fix**: Add `<meta charset="UTF-8">` in the `<head>` to declare document encoding
 
 ### SEO-05: Missing Canonical
+
 - **Description**: Missing canonical link tag
 - **Fix**: Add a canonical link tag to specify the preferred URL for this page
 
 ### SEO-06: Noindex Directive
+
 - **Description**: Meta robots contains "noindex" directive
 - **Fix**: Remove or revise meta robots noindex directive to allow search engine indexing
 
 ### SEO-07: Missing Open Graph
+
 - **Description**: Missing Open Graph meta tags
 - **Fix**: Add Open Graph meta tags (og:title, og:description, og:image) for better social sharing
 
 ### SEO-08: Missing Twitter Card
+
 - **Description**: Missing Twitter Card meta tags
 - **Fix**: Add Twitter Card meta tags (twitter:card, twitter:title, twitter:description) for better Twitter sharing
 
@@ -216,30 +248,37 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Semantic HTML Rules (7)
 
 ### SEM-01: Use Strong/Em Instead of B/I
+
 - **Description**: Use of non-semantic tags `<b>` and `<i>`
 - **Fix**: Use semantic elements like `<strong>` instead of `<b>`, and `<em>` instead of `<i>`
 
 ### SEM-02: Low Semantic Structure
+
 - **Description**: Document has low semantic structure (too many generic divs)
 - **Fix**: Improve semantic structure by using appropriate HTML5 elements (header, nav, main, article, section, aside, footer)
 
 ### SEM-03: Multiple H1 Elements
+
 - **Description**: Page has more than one H1 heading
 - **Fix**: Use only one H1 per page as the primary heading
 
 ### SEM-04: Missing Main Element
+
 - **Description**: Page missing `<main>` element
 - **Fix**: Add a `<main>` element to identify the primary content area of the page
 
 ### SEM-05: Multiple Main Elements
+
 - **Description**: Page has more than one `<main>` element
 - **Fix**: Use only one `<main>` element per page
 
 ### SEM-06: Navigation Without List
+
 - **Description**: `<nav>` element doesn't contain a list
 - **Fix**: Wrap navigation links inside a list (ul/ol) for better structure and accessibility
 
 ### SEM-07: False List Structure
+
 - **Description**: List contains non-list children (divs instead of li)
 - **Fix**: Replace non-list children (like divs) with proper `<li>` elements inside ul/ol
 
@@ -248,22 +287,27 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Responsive Design Rules (5)
 
 ### RWD-01: Large Fixed-Width Elements
+
 - **Description**: Elements using fixed pixel widths
 - **Fix**: Use relative units (%, rem, em) or max-width instead of fixed pixel widths
 
 ### RWD-02: Missing Viewport Meta
+
 - **Description**: Missing viewport meta tag
 - **Fix**: Add a viewport meta tag: `<meta name="viewport" content="width=device-width, initial-scale=1">`
 
 ### RWD-03: Horizontal Overflow
+
 - **Description**: Horizontal overflow detected
 - **Fix**: Fix horizontal overflow by removing fixed widths or using max-width with overflow-x: hidden
 
 ### RWD-04: Fixed Element Obscuring Content
+
 - **Description**: Fixed/sticky element takes up significant viewport space
 - **Fix**: Reduce the height of fixed/sticky elements or ensure they don't obstruct important content
 
 ### RWD-05: Problematic 100vh Usage
+
 - **Description**: Element uses 100vh which can cause overflow on mobile
 - **Fix**: Use 100% or min(100vh, 100%) instead of 100vh, or use viewport-relative units that account for address bars
 
@@ -272,6 +316,7 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Security Rules (1)
 
 ### SEC-01: Unsafe target=_blank
+
 - **Description**: Link with target="_blank" missing rel="noopener noreferrer"
 - **Fix**: For target=_blank links, include rel="noopener noreferrer" to block tabnabbing
 
@@ -280,10 +325,12 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Quality Rules (2)
 
 ### QLT-01: Excessive Inline Styles
+
 - **Description**: Excessive use of inline styles
 - **Fix**: Move inline styles to external CSS files or style blocks for better maintainability
 
 ### QLT-02: Dummy Links
+
 - **Description**: Link with dummy href like "#"
 - **Fix**: Replace dummy href="#" with proper URLs or convert to buttons for actions
 
@@ -292,42 +339,52 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Performance Rules (10)
 
 ### IMG-01: Images Missing Dimensions
+
 - **Description**: Images without width/height attributes
 - **Fix**: Add width and height attributes to images to prevent layout shifts
 
 ### IMG-02: Images Missing Lazy Loading
+
 - **Description**: Images not using lazy loading
 - **Fix**: Add `loading="lazy"` to images below the fold for better performance
 
 ### IMG-03: Images Missing Async Decode
+
 - **Description**: Images not using async decoding
 - **Fix**: Add `decoding="async"` to images for non-blocking rendering
 
 ### MEDIA-01: Video Autoplay Without Muted
+
 - **Description**: Video with autoplay but missing muted attribute
 - **Fix**: Add muted attribute to videos with autoplay to comply with browser autoplay policies
 
 ### PERF-01: Images Missing Srcset
+
 - **Description**: Images missing srcset and sizes attributes
 - **Fix**: Add srcset and sizes attributes to provide responsive images for different screen sizes
 
 ### PERF-02: Excessive Fonts/Weights
+
 - **Description**: Too many font families or weights loaded
 - **Fix**: Reduce the number of font families and weights; consider using system fonts
 
 ### PERF-03: Excessive Scripts
+
 - **Description**: Too many external scripts loaded
 - **Fix**: Bundle scripts or remove unused dependencies to reduce HTTP requests
 
 ### PERF-04: Scripts Without Defer
+
 - **Description**: Scripts in head without defer/async attributes
 - **Fix**: Add defer or async attributes to scripts in `<head>` to avoid blocking page rendering
 
 ### PERF-05: Render-Blocking CSS
+
 - **Description**: CSS that may block page rendering
 - **Fix**: Inline critical CSS or use preload for CSS; consider async loading non-critical styles
 
 ### PERF-06: Missing Cache Headers
+
 - **Description**: Static resources without cache headers configuration
 - **Fix**: Configure server Cache-Control headers or use CDN edge caching for static assets
 
@@ -336,21 +393,25 @@ Complete reference for all 61 audit rules implemented in WAH.
 ## Form Rules (4)
 
 ### FORM-01: Submit Button Outside Form
+
 - **Severity**: Warning
 - **Description**: Submit button not inside form element
 - **Fix**: Place submit buttons inside their form or bind them with the form attribute
 
 ### FORM-02: Required Input Without Indicator
+
 - **Severity**: Recommendation
 - **Description**: Required field label doesn't visually indicate it's required
 - **Fix**: Indicate required fields visually in the label (e.g., with * or "(required)")
 
 ### FORM-03: Email/Tel Without Proper Type
+
 - **Severity**: Recommendation
 - **Description**: Email/phone input with wrong type
 - **Fix**: Use type="email" for email inputs and type="tel" for phone inputs for better validation and mobile keyboards
 
 ### FORM-04: Missing Autocomplete
+
 - **Severity**: Recommendation
 - **Description**: Common form fields missing autocomplete attributes
 - **Fix**: Add autocomplete attributes to common fields (name, email, tel, etc.) for better UX

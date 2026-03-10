@@ -13,7 +13,6 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 ## ✨ Features
 
 - ♿ **65+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
-- 🌐 **Internationalization** with English and Spanish support
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
@@ -27,6 +26,7 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 - 🧹 **Zero runtime dependencies** (only dev dependencies)
 - ⏳ **Temporary hide system** (hide overlay for X minutes or until next refresh)
 - 🧠 **Console diagnostics** with issue focusing and timestamps
+- 🌐 **Internationalization** with English and Spanish support
 
 ---
 
@@ -66,6 +66,13 @@ await runWAH({
     logs: true,
     logLevel: 'full',
     issueLevel: 'all',
+  rules: {
+    'ACC-02': 'off',
+    'ACC-22': { severity: 'warning', threshold: 14 },
+    'ACC-10': 'critical',
+    'ACC-25': { threshold: 5 },
+    'UX-01': { threshold: 48 }
+  },
     accessibility: {
         minFontSize: 12,
         contrastLevel: 'AA'
@@ -178,11 +185,18 @@ WAH supports extensive configuration options for customization:
 | `logLevel`                    | `'full' \| 'summary' \| 'none'`     | `'full'`         | Console verbosity level                                        |
 | `issueLevel`                  | `'critical' \| 'warnings' \| 'all'` | `'all'`          | Filter which issues to report                                  |
 | `locale`                      | `'en' \| 'es'`                      | auto             | User-facing language (`es` if browser language is Spanish)     |
+| `rules`                       | `Record<string, RuleOverrideValue>` | `undefined`      | Rule-level overrides by stable rule ID (v1.2 groundwork)       |
 | `accessibility.minFontSize`   | `number`                            | `12`             | Minimum font size in pixels                                    |
 | `accessibility.contrastLevel` | `'AA' \| 'AAA'`                     | `'AA'`           | WCAG contrast requirement level                                |
 | `overlay.enabled`             | `boolean`                           | `true`           | Show visual overlay interface                                  |
 | `overlay.position`            | `string`                            | `'bottom-right'` | Overlay position (bottom-left/bottom-right/top-left/top-right) |
 | `overlay.hide`                | `number`                            | `0`              | Hide overlay for X milliseconds on load                        |
+
+Initial support in place:
+
+- `'off'` disables a rule by ID.
+- Severity override (`'critical'`, `'warning'`, `'recommendation'`) is applied by rule ID.
+- `threshold` is active for rules that expose numeric thresholds (for now: `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`).
 
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
 Spanish version: [Guia de Configuracion](docs/es/configuration.md).
@@ -204,10 +218,12 @@ WAH calculates a score from **0-100** with letter grades **A-F**:
 ### Custom Filters
 
 Enable custom mode to filter by:
+
 - **Severities**: critical, warning, recommendation
 - **Categories**: accessibility, seo, semantic, responsive, security, quality, performance, form
 
 Multipliers automatically calibrate based on active categories:
+
 - 1 category: 4x reduction
 - 2 categories: 2x reduction
 - 3-4 categories: 1.33x reduction
@@ -220,27 +236,35 @@ Multipliers automatically calibrate based on active categories:
 WAH implements comprehensive audit rules across **8 categories**:
 
 ### Accessibility
+
 Font size, alt text, labels, links, buttons, ARIA, skip links, headings, focus, contrast, line-height, etc.
 
 ### Semantic HTML
+
 H1 hierarchy, semantic elements (strong/em), main, nav, canonical structure
 
 ### SEO
+
 Title, meta description, viewport, canonical, Open Graph, Twitter Cards, charset, robots
 
 ### Responsive Design
+
 Viewport meta, fixed widths, overflow, fixed elements, 100vh issues
 
 ### Security
+
 Target=_blank security (tabnabbing prevention)
 
 ### Quality
+
 Inline styles, dummy links, semantic naming
 
 ### Performance
+
 Image optimization, lazy loading, async decode, script placement, fonts, caching, render-blocking CSS
 
 ### Forms
+
 Submit buttons, required indicators, input types, autocomplete
 
 **For complete rules reference**, see [Rules Documentation](docs/rules.md).
@@ -253,19 +277,25 @@ Spanish version: [Documentacion de Reglas](docs/es/rules.md).
 WAH exposes global commands for interaction:
 
 ### `__WAH_FOCUS_ISSUE__(index)`
+
 Highlights a specific issue element in the DOM and logs its details.
+
 ```javascript
 __WAH_FOCUS_ISSUE__(0)  // Focus on first issue
 ```
 
 ### `__WAH_RESET_HIDE__()`
+
 Clears hide settings and reloads the overlay.
+
 ```javascript
 __WAH_RESET_HIDE__()  // Restore overlay immediately
 ```
 
 ### `__WAH_RERUN__()`
+
 Re-runs the audit after DOM changes without page reload.
+
 ```javascript
 __WAH_RERUN__()  // Refresh audit
 ```
@@ -290,6 +320,7 @@ await runWAH({
 ```
 
 Reports include:
+
 - Overall score and grade
 - Score by category
 - Detailed issue list with CSS selectors
@@ -345,12 +376,15 @@ Spanish version: [Guia de Arquitectura](docs/es/architecture.md).
 Main entry point to run the audit.
 
 **Parameters:**
+
 - `userConfig` (optional): Partial configuration object to override defaults
 
 **Returns:**
+
 - `AuditResult`: Object containing issues array and overall score
 
 **Example:**
+
 ```javascript
 const result = await runWAH({ logLevel: 'summary' });
 console.log(`Score: ${result.score}%`);
@@ -383,12 +417,14 @@ For contribution workflow and community translation model, see [Translations Gui
 **Cause**: Package not installed, workspace misconfigured, or lockfile inconsistency.
 
 **Solution**:
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
 Or verify the package is listed in `package.json` dependencies:
+
 ```bash
 npm install web-audit-helper --save-dev
 ```
@@ -398,6 +434,7 @@ npm install web-audit-helper --save-dev
 **Cause**: You're importing or executing WAH during server-side rendering (SSR).
 
 **Solution**: Use a Client Component with dynamic import:
+
 ```tsx
 'use client';
 import { useEffect } from 'react';
@@ -419,6 +456,7 @@ See the [Next.js / SSR Frameworks](#nextjs--ssr-frameworks) section for complete
 **Cause**: React Strict Mode intentionally double-invokes `useEffect` in development to detect side effects.
 
 **Solution**: Use a `useRef` guard:
+
 ```tsx
 const ran = useRef(false);
 
@@ -453,6 +491,7 @@ npm run test:ui     # Interactive UI
 ## 🤝 Contributing
 
 We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+
 - Reporting issues
 - Submitting pull requests
 - Adding new rules
@@ -463,6 +502,7 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ## 📋 Roadmap
 
 ### v1.1.0 (Current)
+
 - +65 audit rules implemented (6 new rules in v1.1.0)
 - Complete internationalization (English + Spanish)
 - Visual overlay with filtering and export
@@ -473,16 +513,49 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 - Console diagnostics and commands
 - Zero runtime dependencies
 
-### v1.2.0 (Planned)
-- Rule-level customization (enable/disable, custom thresholds)
-- Additional languages (community contributions only)
+### v1.2 - Rule Intelligence (Planned)
 
-### v2.0.0 (Future)
-- CLI tool for CI/CD integration and batch auditing
-- Plugin system for custom rules and reporters
-- DevTools browser extension
-- Dashboard and analytics
-- Historical audit tracking
+Objective: make WAH adaptable to different projects.
+
+- Rule-level customization (enable/disable by rule ID, severity overrides, custom thresholds)
+- Stable rule IDs + centralized rule registry + override system
+- Audit performance metrics (total audit time + per-rule timings)
+- Minor improvements: score debugging, logging upgrades, overlay UX polish
+
+### v1.3 - Documentation & Developer Guidance (Planned)
+
+Objective: turn WAH into an educational tool.
+
+- Rule Fix Guides for each rule: Problem, Why it matters, How to fix, Bad/Good examples
+- "Learn more" links in overlay and reports to rule-specific docs
+- Stronger docs set: architecture guide, rules guide, and contribution guide
+
+### v1.4 - External Auditing (Planned)
+
+Objective: audit websites without installing WAH in the target project.
+
+- Official bookmarklet for one-click audits on any site
+- Export report improvements: run comparison, richer metadata, improved HTML visuals, fix code suggestions
+
+### v1.5 - Ecosystem Preparation (Planned)
+
+Objective: prepare WAH for long-term ecosystem growth.
+
+- Experimental Plugin API for external/custom rules
+- Strong internal rule registry to support plugins, advanced configuration, and auto-generated docs
+
+### v2.0 - Automation & Ecosystem (Future)
+
+Objective: make WAH a professional auditing platform.
+
+- CLI tool for URL/file auditing with headless browser automation
+- CI/CD integration with score-based fail conditions
+- Official plugin system (React, Next.js, ecommerce, advanced a11y use cases)
+
+### v2.x - Ecosystem Growth (Future)
+
+- DevTools browser extension for auditing any page from the browser
+- Team/company standards with custom rule policies and severity profiles
 
 ---
 

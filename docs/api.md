@@ -9,12 +9,15 @@ Complete reference for WAH's public API.
 Runs the complete audit and initializes the overlay.
 
 **Parameters:**
+
 - `userConfig` (optional): Partial configuration to override defaults
 
 **Returns:**
+
 - `Promise<AuditResult>` containing issues array and overall score
 
 **Example:**
+
 ```javascript
 import { runWAH } from 'web-audit-helper';
 
@@ -37,12 +40,15 @@ console.log(`Found ${result.issues.length} issues`);
 Focuses on a specific issue by highlighting its DOM element.
 
 **Parameters:**
+
 - `index`: Issue index from the console table
 
 **Returns:**
+
 - Issue object or `null` if not found
 
 **Example:**
+
 ```javascript
 __WAH_FOCUS_ISSUE__(0)  // Highlight first issue
 __WAH_FOCUS_ISSUE__(5)  // Highlight sixth issue
@@ -53,6 +59,7 @@ __WAH_FOCUS_ISSUE__(5)  // Highlight sixth issue
 Clears the hide state and reloads the overlay.
 
 **Example:**
+
 ```javascript
 __WAH_RESET_HIDE__()  // Restore overlay if hidden
 ```
@@ -62,6 +69,7 @@ __WAH_RESET_HIDE__()  // Restore overlay if hidden
 Re-runs the audit after DOM changes.
 
 **Example:**
+
 ```javascript
 // Make DOM changes
 document.querySelector('img').setAttribute('alt', 'Fixed');
@@ -355,6 +363,7 @@ try {
 ## Versioning
 
 WAH follows semantic versioning:
+
 - **MAJOR**: Breaking API changes
 - **MINOR**: New features (backward compatible)
 - **PATCH**: Bug fixes

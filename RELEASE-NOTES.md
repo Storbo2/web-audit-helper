@@ -14,6 +14,7 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 ## Added
 
 ### Internationalization System (i18n)
+
 - **Bilingual Support**: Complete English and Spanish translations for all user-facing content
 - **Automatic Language Detection**: Auto-detects browser language with fallback to English
 - **Manual Language Selection**: Settings popover includes persistent language selector (page 2)
@@ -36,12 +37,14 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 - **PERF-08** (Performance): Images without modern formats (WebP/AVIF)
 
 ### Testing Infrastructure
+
 - **End-to-End Tests**: Playwright test suite with smoke tests and audit flow validation
 - **Coverage Enforcement**: Automated coverage thresholds (80%+ for branches/functions/lines/statements)
 - **Targeted Unit Tests**: New test coverage for scoring engine and settings persistence
 - **Current Coverage**: 81.32% branches, 92.13% statements, 100% functions, 97.75% lines
 
 ### Bilingual Documentation
+
 - **API Reference**: English (`docs/api.md`) + Spanish (`docs/es/api.md`)
 - **Architecture Guide**: English (`docs/architecture.md`) + Spanish (`docs/es/architecture.md`)
 - **Configuration Guide**: English (`docs/configuration.md`) + Spanish (`docs/es/configuration.md`)
@@ -53,11 +56,13 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 ## Changed
 
 ### Standardization
+
 - **Report Titles**: Unified naming: "WAH Report" (overlay), "Web Audit Helper Report" (exports)
 - **Scoring System**: Enhanced custom mode with category-based multiplier auto-scaling
 - **Settings Persistence**: Improved localStorage handling with robust fallback for invalid values
 
 ### Developer Experience
+
 - **TypeScript Configuration**: Added Vitest globals to tsconfig for proper test type inference
 - **Test Reliability**: Improved E2E test stability with correct selectors and localStorage cleanup
 
@@ -66,10 +71,12 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 ## Fixed
 
 ### TypeScript Compilation
+
 - Resolved missing type definitions for Vitest test globals (describe, it, expect, beforeEach)
 - All test files now pass TypeScript strict mode checks
 
 ### Contrast Detection
+
 - Refined ACC-25 algorithm to reduce false positives near animated or image-containing elements (inherited from v1.0.9)
 
 ---
@@ -77,12 +84,14 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 ## Files Updated (High Level)
 
 **Core:**
+
 - `package.json` (version bump to `1.1.0`)
 - `tsconfig.json` (added Vitest type definitions)
 - `CHANGELOG.md` (new `1.1.0` entry)
 - `RELEASE-NOTES.md` (this file)
 
 **Internationalization:**
+
 - `locales/en/common.json` (NEW - English dictionary)
 - `locales/es/common.json` (NEW - Spanish dictionary)
 - `src/core/types.ts` (added Locale type and localization interfaces)
@@ -92,6 +101,7 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 - `src/utils/consoleLogger.ts` (integrated translations)
 
 **Rules:**
+
 - `src/core/rules/accessibility/keyboard.ts` (NEW - ACC-27)
 - `src/core/rules/ux/touchTargets.ts` (NEW - UX-01)
 - `src/core/rules/quality/obsoleteElements.ts` (NEW - HTML-01)
@@ -100,6 +110,7 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 - `src/core/rules/performance/modernImageFormats.ts` (NEW - PERF-08)
 
 **Testing:**
+
 - `src/core/scoring.test.ts` (NEW - scoring engine tests)
 - `src/overlay/config/settings.test.ts` (NEW - settings tests)
 - `tests/e2e/smoke.spec.ts` (NEW - smoke tests)
@@ -108,6 +119,7 @@ Version 1.1.0 is a significant feature release introducing **complete internatio
 - `vitest.config.mjs` (updated coverage thresholds)
 
 **Documentation:**
+
 - `docs/translations.md` (NEW - translation guide)
 - `docs/es/*.md` (NEW - Spanish documentation)
 - Updated all existing English docs with v1.1.0 features
@@ -145,6 +157,7 @@ await runWAH({
 ```
 
 **Language Detection Order:**
+
 1. Explicit `locale` in configuration
 2. Persisted preference in localStorage (`wah:settings:locale`)
 3. Browser language detection (`navigator.language`)
@@ -153,6 +166,7 @@ await runWAH({
 **Adding a New Language:**
 
 See `docs/translations.md` for detailed instructions. Summary:
+
 1. Copy `locales/en/common.json` to `locales/{locale}/common.json`
 2. Translate all keys while preserving structure
 3. Update `src/core/types.ts` to add new locale to `Locale` type
@@ -162,17 +176,39 @@ See `docs/translations.md` for detailed instructions. Summary:
 
 ## Roadmap
 
-**v1.2.0** (Future):
-- Per-rule enable/disable configuration
-- Custom thresholds for accessibility rules
-- Audit performance metrics and profiling
-- Additional languages (community contributions only)
+### v1.2 - Rule Intelligence
 
-**v2.0.0** (Future Major Release):
-- CLI tool for batch auditing and CI/CD integration
-- Plugin system for custom rules and reporters
+- Rule-level customization (enable/disable by rule ID, severity overrides, custom thresholds)
+- Stable rule IDs + centralized registry + override system
+- Audit performance metrics (total duration + per-rule timings)
+- Minor improvements (score debugging, logging upgrades, overlay UX polish)
+
+### v1.3 - Documentation & Developer Guidance
+
+- Rule Fix Guides (Problem, Why it matters, How to fix, Bad/Good examples)
+- "Learn more" links from overlay/reports to rule-specific documentation
+- Stronger architecture/rules/contribution guides
+
+### v1.4 - External Auditing
+
+- Official bookmarklet for one-click audits on any site
+- Export improvements (run comparison, richer metadata, visual enhancements, code suggestions)
+
+### v1.5 - Ecosystem Preparation
+
+- Experimental Plugin API for external rules
+- Internal rule registry hardening for plugins, advanced config, and doc generation
+
+### v2.0 - Automation & Ecosystem
+
+- CLI tool for URL/file audits with headless browser automation
+- CI/CD integration with score-based fail conditions
+- Official plugin system for framework/domain extensions
+
+### v2.x - Ecosystem Growth
+
 - DevTools browser extension
-- Dashboard and analytics with historical tracking
+- Team/company policy profiles with custom rule standards
 
 ---
 

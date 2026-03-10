@@ -1,6 +1,7 @@
 # Translations Guide
 
 This project currently ships with two built-in locales:
+
 - `en`
 - `es`
 

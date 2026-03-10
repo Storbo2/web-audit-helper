@@ -44,6 +44,7 @@ await runWAH({
 - Si no existe idioma persistido, WAH autodetecta el navegador (`es*` -> `es`, cualquier otro -> `en`).
 
 Notas:
+
 - El titulo principal del overlay se mantiene siempre como `WAH Report`.
 - El titulo del reporte visible para usuario se mantiene como `Web Audit Helper Report`.
 - El export JSON se mantiene en ingles para integraciones.
@@ -273,6 +274,7 @@ await runWAH(config);
 ## FAQ
 
 **P: ¿Cómo desactivo el overlay pero mantengo los logs en consola?**
+
 ```javascript
 await runWAH({
   logs: true,
@@ -284,6 +286,7 @@ await runWAH({
 R: No. Configura antes de llamar `runWAH()`. Para re-ejecutar con otra configuración, usa `__WAH_RERUN__()` y vuelve a llamar `runWAH()`.
 
 **P: ¿Cuál es la diferencia entre `logLevel` y `issueLevel`?**
+
 - `logLevel`: controla la verbosidad de salida en consola (`full/summary/none`).
 - `issueLevel`: filtra qué severidades se reportan (`critical/warnings/all`).
 
