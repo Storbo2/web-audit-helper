@@ -99,7 +99,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
 
     const activeFilters = getActiveFilters();
     const activeCategories = getActiveCategories();
-    logWAHResults(results, settings.logLevel, activeFilters, activeCategories);
+    logWAHResults(results, settings.logLevel, activeFilters, activeCategories, config.auditMetrics, config.scoreDebug, config.logging);
     runReporters(results, config);
     setAppliedScoringMode(settings.scoringMode);
 

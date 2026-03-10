@@ -25,7 +25,7 @@ test.describe('WAH Audit Flow', () => {
         await openPopover(page, 'filters');
         await expect(page.locator('#wah-pop')).toBeVisible();
 
-        await page.click('h1');
+        await page.click('body', { position: { x: 10, y: 400 } });
         await page.waitForSelector('#wah-pop[hidden]', { timeout: 5000 });
     });
 

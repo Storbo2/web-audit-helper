@@ -1,6 +1,24 @@
 export type Severity = "critical" | "warning" | "recommendation";
 
+export type RuleOverrideSeverity = "off" | Severity;
+
+export interface RuleOverrideConfig {
+    severity?: RuleOverrideSeverity;
+    threshold?: number;
+}
+
+export type RuleOverrideValue = RuleOverrideSeverity | RuleOverrideConfig;
+
 export type LogLevel = "full" | "summary" | "none";
+
+export type ConsoleOutputLevel = "minimal" | "standard" | "detailed" | "debug";
+
+export interface LoggingConfig {
+    timestamps?: boolean;
+    groupByCategory?: boolean;
+    showStatsSummary?: boolean;
+    useIcons?: boolean;
+}
 
 export type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 
@@ -27,15 +45,40 @@ export interface AuditIssue {
     element?: HTMLElement;
 }
 
+export interface RuleTiming {
+    rule: string;
+    ms: number;
+    issues: number;
+}
+
+export interface AuditMetrics {
+    totalMs: number;
+    executedRules: number;
+    skippedRules: number;
+    ruleTimings: RuleTiming[];
+}
+
+export interface AuditMetricsConfig {
+    enabled?: boolean;
+    includeInReports?: boolean;
+    consoleTopSlowRules?: number;
+    consoleMinRuleMs?: number;
+}
+
 export interface AuditResult {
     issues: AuditIssue[];
     score: number;
+    metrics?: AuditMetrics;
 }
 
 export interface WAHConfig {
     logs: boolean;
     logLevel?: LogLevel;
+    consoleOutput?: ConsoleOutputLevel;
+    logging?: LoggingConfig;
     locale?: Locale;
+    rules?: Record<string, RuleOverrideValue>;
+    scoreDebug?: boolean;
 
     issueLevel: IssueLevel;
 
@@ -59,6 +102,7 @@ export interface WAHConfig {
 
     reporters?: ("console" | "json" | "text")[];
     scoringMode?: ScoringMode;
+    auditMetrics?: AuditMetricsConfig;
 }
 
 export interface AffectedElement {
@@ -135,5 +179,6 @@ export interface AuditReport {
     score: AuditReportScore;
     categories: CategoryResult[];
     stats: AuditReportStats;
+    metrics?: AuditMetrics;
     highlights?: string[];
 }

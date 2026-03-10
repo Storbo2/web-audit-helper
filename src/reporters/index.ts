@@ -9,10 +9,10 @@ export function runReporters(
     const reporters = config.reporters ?? ["console"];
 
     if (reporters.includes("json")) {
-        jsonReporter(result);
+        jsonReporter(result, config);
     }
 
     if (reporters.includes("text")) {
-        textReporter(result);
+        textReporter(result, config);
     }
 }

@@ -161,12 +161,12 @@
 
     <!-- RWD-04: Fixed element overlap (header simulation) -->
     <header
-        style="position: fixed; top: 0; width: 100%; height: 150px; background: #333; color: white; padding: 10px; z-index: 1000;">
-        Fixed header overlapping 30% of viewport
+        style="position: fixed; top: 0; width: 100%; height: 80px; background: #333; color: white; padding: 10px; z-index: 100;">
+        Fixed header (reduced for E2E tests)
     </header>
 
     <!-- RWD-03: Horizontal overflow - very wide table -->
-    <div style="margin-top: 160px;">
+    <div style="margin-top: 90px;">
         <table style="width: 2000px; border-collapse: collapse;">
             <caption style="text-align:left; padding: 6px 0;">Wide responsive test table</caption>
             <tr>
@@ -229,7 +229,23 @@
     </style>
     <script type="module">
         import { runWAH } from "../dist/index.mjs";
-        runWAH({ overlay: { enabled: true, position: "bottom-right", theme: "dark" }, reporters: ["console"] });
+        runWAH({
+            overlay: { enabled: true, position: "bottom-right", theme: "dark" },
+            reporters: ["console"],
+            scoreDebug: true,
+            auditMetrics: {
+                enabled: true,
+                includeInReports: false,
+                consoleTopSlowRules: 10,
+                consoleMinRuleMs: 0
+            },
+            logging: {
+                timestamps: true,
+                groupByCategory: true,
+                showStatsSummary: true,
+                useIcons: true
+            }
+        });
     </script>
 </body>
 

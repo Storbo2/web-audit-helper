@@ -1,6 +1,6 @@
 // AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
+// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css → enhancements.css
 
 export const wahCss = `
 :root {
@@ -1452,5 +1452,225 @@ export const wahCss = `
 .wah-ok {
     margin: 0.375rem 0 0;
     color: var(--wah-score-good);
+}
+
+.wah-rerun-btn.wah-loading {
+    opacity: 0.6;
+    cursor: wait;
+    animation: wah-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes wah-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.wah-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    animation: wah-fade-in 0.2s ease;
+}
+
+@keyframes wah-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.wah-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 0.1875rem solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--wah-text);
+    border-radius: 50%;
+    animation: wah-spin 0.8s linear infinite;
+}
+
+@keyframes wah-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#wah-panel.wah-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.wah-rerun-animation {
+    animation: wah-rerun-pulse 0.6s ease-out;
+}
+
+@keyframes wah-rerun-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 0.5rem rgba(56, 189, 248, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+    }
+}
+
+.wah-chip,
+.wah-tool,
+.wah-toggle,
+.wah-rerun-btn {
+    transition: all 0.2s ease;
+}
+
+.wah-chip:hover,
+.wah-tool:hover {
+    transform: translateY(-0.0625rem);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.wah-chip:active,
+.wah-tool:active {
+    transform: translateY(0);
+}
+
+.wah-chip:focus-visible,
+.wah-tool:focus-visible,
+.wah-toggle:focus-visible,
+.wah-rerun-btn:focus-visible {
+    outline: 0.125rem solid var(--wah-text);
+    outline-offset: 0.125rem;
+}
+
+.wah-chip.is-active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: scale(1.05);
+}
+
+@media (max-width: 400px) {
+    #wah-overlay-root {
+        width: calc(100vw - 2rem);
+        font-size: 0.8125rem;
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
+
+    .wah-content {
+        padding: 0.5rem;
+    }
+
+    .wah-filter {
+        gap: 0.25rem;
+    }
+
+    .wah-chip {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .wah-toolbar {
+        gap: 0.25rem;
+    }
+}
+
+#wah-overlay-root.wah-collapsed {
+    height: auto;
+}
+
+#wah-overlay-root:not(.wah-collapsed) {
+    animation: wah-expand 0.3s ease-out;
+}
+
+@keyframes wah-expand {
+    from {
+        opacity: 0.8;
+        transform: translateY(0.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[title] {
+    position: relative;
+}
+
+#wah-panel.wah-loading>*:not(.wah-loading-overlay) {
+    opacity: 0.5;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.wah-score {
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.wah-score:hover {
+    transform: scale(1.05);
+}
+
+:focus-visible {
+    outline: 0.125rem solid var(--wah-text);
+    outline-offset: 0.125rem;
+}
+
+@media (prefers-contrast: high) {
+    .wah-chip.is-active {
+        border-width: 0.125rem;
+    }
+
+    :focus-visible {
+        outline-width: 0.1875rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .wah-rerun-btn:hover {
+        transform: none;
+    }
+
+    .wah-chip:hover,
+    .wah-tool:hover {
+        transform: none;
+    }
 }
 `;

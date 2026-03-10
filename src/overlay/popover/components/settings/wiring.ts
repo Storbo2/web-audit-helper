@@ -10,7 +10,8 @@ import {
     resetSettings,
     setHighlightMs,
     setLogLevel,
-    setScoringMode
+    setScoringMode,
+    setConsoleOutput
 } from "../../../config/settings";
 import type { Locale } from "../../../../core/types";
 import { clearStoredLocale, getLocale, initI18n, setLocale, t } from "../../../../utils/i18n";
@@ -26,6 +27,14 @@ export function wirePage0(popBody: HTMLElement): void {
         radio.checked = radio.value === settings.logLevel;
         radio.addEventListener("change", () => {
             setLogLevel(radio.value as "full" | "summary" | "none");
+        });
+    });
+
+    const consoleOutputRadios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-console-output"]');
+    consoleOutputRadios.forEach(radio => {
+        radio.checked = radio.value === settings.consoleOutput;
+        radio.addEventListener("change", () => {
+            setConsoleOutput(radio.value as any);
         });
     });
 

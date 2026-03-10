@@ -1,5 +1,7 @@
 import { t } from "../../../../utils/i18n";
 import type { ScoringMode } from "./types";
+import { consoleOutputDescriptions } from "../../../../config/defaultConfig";
+import type { ConsoleOutputLevel } from "../../../../core/types";
 
 export function getScoringModeInfo(): Record<ScoringMode, string> {
     const dict = t();
@@ -66,4 +68,22 @@ export function renderLogLevelOptions(): string {
 
 export function renderHideDurationOptions(): string {
     return getHideDurations().map(({ value, label }) => `<option value="${value}">${label}</option>`).join("");
+}
+
+export function getConsoleOutputOptions(): Array<{ value: ConsoleOutputLevel; label: string; description: string }> {
+    const levels: ConsoleOutputLevel[] = ["minimal", "standard", "detailed", "debug"];
+    return levels.map((level) => ({
+        value: level,
+        label: consoleOutputDescriptions[level].label,
+        description: consoleOutputDescriptions[level].description
+    }));
+}
+
+export function renderConsoleOutputOptions(): string {
+    return getConsoleOutputOptions()
+        .map(({ value, label, description }) => {
+            const radioHtml = `<input type="radio" name="wah-console-output" value="${value}">`;
+            return `<label class="wah-pop-row" title="${description}">${radioHtml}<span class="wah-pop-row-text">${label}</span></label>`;
+        })
+        .join("");
 }

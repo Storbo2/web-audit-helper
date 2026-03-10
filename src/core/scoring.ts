@@ -24,6 +24,23 @@ export interface ScoringMultipliers {
     recommendation: number;
 }
 
+export interface CategoryBreakdown {
+    category: IssueCategory;
+    criticalCount: number;
+    warningCount: number;
+    recommendationCount: number;
+    score: number;
+    weight: number;
+    weightedScore: number;
+}
+
+export interface ScoreDebugInfo {
+    scoringMode: ScoringMode;
+    multipliers: ScoringMultipliers;
+    categories: CategoryBreakdown[];
+    finalScore: number;
+}
+
 export function getScoringMultipliers(mode: ScoringMode): ScoringMultipliers {
     switch (mode) {
         case "strict":
@@ -139,4 +156,68 @@ export function computeScore(issues: AuditIssue[]): number {
     const multipliers = getAdjustedMultipliers(scoringMode);
     const byCategory = computeCategoryScores(filteredIssues, multipliers);
     return computeWeightedOverall(byCategory);
+}
+
+export function computeScoreDebug(issues: AuditIssue[]): ScoreDebugInfo {
+    const { scoringMode } = loadSettings();
+    const filteredIssues = filterIssuesForScoring(issues, scoringMode);
+    const multipliers = getAdjustedMultipliers(scoringMode);
+
+    const mults = multipliers;
+    const perCategoryRuleWorst = new Map<IssueCategory, Map<string, Severity>>();
+
+    for (const issue of filteredIssues) {
+        const category = issue.category || "accessibility";
+        let ruleMap = perCategoryRuleWorst.get(category);
+        if (!ruleMap) {
+            ruleMap = new Map<string, Severity>();
+            perCategoryRuleWorst.set(category, ruleMap);
+        }
+
+        const current = ruleMap.get(issue.rule);
+        if (!current || SEVERITY_RANK[issue.severity] > SEVERITY_RANK[current]) {
+            ruleMap.set(issue.rule, issue.severity);
+        }
+    }
+
+    const categories: CategoryBreakdown[] = [];
+    const byCategory: Partial<Record<IssueCategory, number>> = {};
+
+    for (const [category, rules] of perCategoryRuleWorst) {
+        let critical = 0;
+        let warning = 0;
+        let recommendation = 0;
+
+        for (const severity of rules.values()) {
+            const status = severityToStatus(severity);
+            if (status === "critical") critical++;
+            else if (status === "warning") warning++;
+            else recommendation++;
+        }
+
+        const score = Math.max(0, 100 - critical * mults.critical - warning * mults.warning - recommendation * mults.recommendation);
+        byCategory[category] = score;
+
+        const weight = CATEGORY_WEIGHTS[category] || 0;
+        const weightedScore = score * weight;
+
+        categories.push({
+            category,
+            criticalCount: critical,
+            warningCount: warning,
+            recommendationCount: recommendation,
+            score,
+            weight,
+            weightedScore
+        });
+    }
+
+    const finalScore = computeWeightedOverall(byCategory);
+
+    return {
+        scoringMode,
+        multipliers,
+        categories,
+        finalScore
+    };
 }

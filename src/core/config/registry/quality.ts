@@ -1,4 +1,4 @@
-import type { RegisteredRule } from "./types";
+import { getRuleThreshold, type RegisteredRule } from "./types";
 import { RULE_IDS } from "../ruleIds";
 import {
     checkExcessiveInlineStyles,
@@ -22,6 +22,9 @@ export const qualityRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.quality.smallTouchTargets,
-        run: (config) => checkSmallTouchTargets(config.quality?.minTouchSize)
+        run: (config) => checkSmallTouchTargets(
+            getRuleThreshold(config, RULE_IDS.quality.smallTouchTargets)
+            ?? config.quality?.minTouchSize
+        )
     }
 ];

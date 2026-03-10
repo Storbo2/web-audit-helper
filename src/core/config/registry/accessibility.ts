@@ -1,4 +1,4 @@
-import type { RegisteredRule } from "./types";
+import { getRuleThreshold, type RegisteredRule } from "./types";
 import { RULE_IDS } from "../ruleIds";
 import {
     checkAriaDescribedbyTargets,
@@ -36,7 +36,10 @@ export const accessibilityRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.accessibility.textTooSmall,
-        run: (config) => checkFontSize(config.accessibility.minFontSize)
+        run: (config) => checkFontSize(
+            getRuleThreshold(config, RULE_IDS.accessibility.textTooSmall)
+            ?? config.accessibility.minFontSize
+        )
     },
     {
         id: RULE_IDS.accessibility.imgMissingAlt,
@@ -120,7 +123,11 @@ export const accessibilityRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.accessibility.contrastInsufficient,
-        run: (config) => checkContrastRatio(config.accessibility.minContrastRatio ?? 4.5)
+        run: (config) => checkContrastRatio(
+            getRuleThreshold(config, RULE_IDS.accessibility.contrastInsufficient)
+            ?? config.accessibility.minContrastRatio
+            ?? 4.5
+        )
     },
     {
         id: RULE_IDS.accessibility.focusNotVisible,
@@ -128,7 +135,11 @@ export const accessibilityRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.accessibility.lineHeightTooLow,
-        run: (config) => checkLineHeightTooLow(config.accessibility.minLineHeight ?? 1.4)
+        run: (config) => checkLineHeightTooLow(
+            getRuleThreshold(config, RULE_IDS.accessibility.lineHeightTooLow)
+            ?? config.accessibility.minLineHeight
+            ?? 1.4
+        )
     },
     {
         id: RULE_IDS.accessibility.clickWithoutKeyboard,

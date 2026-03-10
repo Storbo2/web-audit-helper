@@ -1,7 +1,7 @@
-import type { AuditResult } from "../core/types";
+import type { AuditResult, WAHConfig } from "../core/types";
 import { buildAuditReport, serializeReportToTXT } from "./auditReport";
 
-export function textReporter(result: AuditResult) {
-    const report = buildAuditReport(result);
+export function textReporter(result: AuditResult, config: WAHConfig) {
+    const report = buildAuditReport(result, config);
     console.log(serializeReportToTXT(report));
 }

@@ -5,15 +5,19 @@ export type ScoringMode = "strict" | "normal" | "moderate" | "soft" | "custom";
 export type UIFilter = "critical" | "warning" | "recommendation";
 export type UICategory = "accessibility" | "semantic" | "seo" | "responsive" | "quality" | "security" | "performance" | "form";
 
+import type { ConsoleOutputLevel } from "../../core/types";
+
 export type WAHSettings = {
     logLevel: LogLevel;
     highlightMs: number;
     scoringMode: ScoringMode;
+    consoleOutput?: ConsoleOutputLevel;
 };
 
 const KEY_LOG_LEVEL = "wah:settings:loglvl";
 const KEY_HIGHLIGHT_MS = "wah:settings:highlightMs";
 const KEY_SCORING_MODE = "wah:settings:scoringMode";
+const KEY_CONSOLE_OUTPUT = "wah:settings:consoleOutput";
 const KEY_APPLIED_SCORING_MODE = "wah:settings:appliedScoringMode";
 const KEY_SETTINGS_PAGE = "wah:settings:page";
 const KEY_ACTIVE_FILTERS = "wah:settings:activeFilters";
@@ -43,11 +47,18 @@ function loadScoringMode(): ScoringMode {
     return DEFAULT_SETTINGS.scoringMode;
 }
 
+function loadConsoleOutput(): ConsoleOutputLevel | undefined {
+    const v = localStorage.getItem(KEY_CONSOLE_OUTPUT) as ConsoleOutputLevel | null;
+    if (v === "minimal" || v === "standard" || v === "detailed" || v === "debug") return v;
+    return undefined;
+}
+
 export function getSettings(): WAHSettings {
     return {
         logLevel: loadLogLevel(),
         highlightMs: loadHighlightMs(),
         scoringMode: loadScoringMode(),
+        consoleOutput: loadConsoleOutput(),
     };
 }
 
@@ -61,6 +72,10 @@ export function setLogLevel(level: LogLevel) {
 
 export function setHighlightMs(ms: number) {
     if (ms > 0) localStorage.setItem(KEY_HIGHLIGHT_MS, String(ms));
+}
+
+export function setConsoleOutput(level: ConsoleOutputLevel) {
+    localStorage.setItem(KEY_CONSOLE_OUTPUT, level);
 }
 
 export function setScoringMode(mode: ScoringMode) {

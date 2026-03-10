@@ -1,5 +1,5 @@
 import { getSupportedLocales, t } from "../../../../utils/i18n";
-import { renderHideDurationOptions, renderLogLevelOptions, renderRerunNotice, renderSettingsHeader } from "./helpers";
+import { renderHideDurationOptions, renderLogLevelOptions, renderRerunNotice, renderSettingsHeader, renderConsoleOutputOptions } from "./helpers";
 
 export function renderPage0(totalPages: number): string {
     const dict = t();
@@ -8,6 +8,9 @@ export function renderPage0(totalPages: number): string {
 
         <div class="wah-pop-section">${dict.consoleLog}</div>
         ${renderLogLevelOptions()}
+
+        <div class="wah-pop-subsection">Console Output Level</div>
+        ${renderConsoleOutputOptions()}
 
         <div class="wah-pop-spacer"></div>
 

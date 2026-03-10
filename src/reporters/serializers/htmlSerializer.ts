@@ -32,9 +32,9 @@ export function serializeReportToHTML(report: AuditReport): string {
                     ? dict.warning.toUpperCase()
                     : dict.recommendation.toUpperCase();
             const icon = rule.status === "critical"
-                ? "✖"
+                ? "⛔"
                 : rule.status === "warning"
-                    ? "⚠"
+                    ? "⚠️"
                     : "<strong>!</strong>";
 
             const elementsPreview = rule.elements?.slice(0, 5) || [];
@@ -82,6 +82,24 @@ export function serializeReportToHTML(report: AuditReport): string {
             </section>
         `;
     }).join("");
+
+    const metricsHtml = report.metrics
+        ? `
+            <section class="summary">
+                <p><strong>Audit Metrics:</strong> ${report.metrics.totalMs}ms total, ${report.metrics.executedRules} rules executed, ${report.metrics.skippedRules} skipped</p>
+                ${report.metrics.ruleTimings.length > 0 ? `
+                    <p><strong>Slowest rules:</strong></p>
+                    <ul class="elements">
+                        ${[...report.metrics.ruleTimings]
+                .sort((a, b) => b.ms - a.ms)
+                .slice(0, 10)
+                .map((timing) => `<li><code>${escapeHtml(timing.rule)}</code> - ${timing.ms}ms (${timing.issues} issues)</li>`)
+                .join("")}
+                    </ul>
+                ` : ""}
+            </section>
+        `
+        : "";
 
     return `
     <!doctype html>
@@ -143,6 +161,8 @@ export function serializeReportToHTML(report: AuditReport): string {
                     <br>
                     <p class="legend"><span class="legend-fail">${dict.critical.toUpperCase()} = ${dict.reportLegendNeedsFix}</span> <span class="legend-warn">${dict.warning.toUpperCase()} = ${dict.reportLegendImprovement}</span> <strong>${dict.recommendation.toUpperCase()} = ${dict.reportLegendSuggested}</strong></p>
                 </section>
+
+                ${metricsHtml}
 
                 ${categoriesHtml}
             </main>

@@ -14,7 +14,8 @@ const cssFileOrder = [
     { dir: popoverStylesDir, file: "popover-ui.css" },
     { dir: popoverStylesDir, file: "popover-export.css" },
     { dir: stylesDir, file: "items.css" },
-    { dir: stylesDir, file: "utilities.css" }
+    { dir: stylesDir, file: "utilities.css" },
+    { dir: stylesDir, file: "enhancements.css" }
 ];
 
 const cssFiles = cssFileOrder
@@ -33,7 +34,7 @@ const css = cssFiles.join("\n\n").replaceAll("`", "\\`");
 const content =
     `// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css
+// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css → enhancements.css
 
 export const wahCss = \`\n${css}\n\`;
 `;

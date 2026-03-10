@@ -14,6 +14,8 @@ import { logWAHResults } from "../utils/consoleLogger";
 import type { AuditIssue, AuditResult, WAHConfig } from "../core/types";
 import { renderOverlayHtml } from "./core/template";
 import { t } from "../utils/i18n";
+import { setupKeyboardShortcuts, setupFocusManagement } from "./interactions/keyboard";
+import { showLoadingState, addRerunAnimation } from "./interactions/loading";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
@@ -84,36 +86,50 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     }
 
     const toggleBtn = overlay.querySelector(".wah-toggle") as HTMLButtonElement | null;
+
+    function toggleOverlay() {
+        if (!toggleBtn) return;
+        const collapsed = overlay.classList.toggle("wah-collapsed");
+        toggleBtn.textContent = collapsed ? "+" : "–";
+        const dict = t();
+        toggleBtn.setAttribute("aria-label", collapsed ? dict.minimize : dict.minimize);
+        toggleBtn.setAttribute("title", collapsed ? dict.minimize : dict.minimize);
+    }
+
     if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-            const collapsed = overlay.classList.toggle("wah-collapsed");
-            toggleBtn.textContent = collapsed ? "+" : "–";
-        });
+        toggleBtn.addEventListener("click", toggleOverlay);
     }
 
     const rerunHeaderBtn = overlay.querySelector('.wah-rerun-btn') as HTMLButtonElement | null;
 
     function rerunAudit() {
-        const s = getSettings();
-        const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel };
+        const clearLoading = showLoadingState(overlay);
 
-        resetViewportMetaPatch();
-        ensureViewportMeta();
-        const newResult = runCoreAudit(configForRun);
-        const criticalIssues = newResult.issues.filter(i => i.severity === "critical").slice(0, 3);
+        window.setTimeout(() => {
+            try {
+                const s = getSettings();
+                const configForRun: WAHConfig = { ..._config, logLevel: s.logLevel };
 
-        results = { ...newResult, criticalIssues };
+                resetViewportMetaPatch();
+                ensureViewportMeta();
+                const newResult = runCoreAudit(configForRun);
+                const criticalIssues = newResult.issues.filter(i => i.severity === "critical").slice(0, 3);
 
-        refresh();
+                results = { ...newResult, criticalIssues };
 
-        const activeFilters = getActiveFilters();
-        const activeCategories = getActiveCategories();
-        logWAHResults(results, s.logLevel, activeFilters, activeCategories);
-        runReporters(results, configForRun);
-        setAppliedScoringMode(s.scoringMode);
+                refresh();
 
-        overlay.classList.add('wah-highlight');
-        window.setTimeout(() => overlay.classList.remove('wah-highlight'), 700);
+                const activeFilters = getActiveFilters();
+                const activeCategories = getActiveCategories();
+                logWAHResults(results, s.logLevel, activeFilters, activeCategories, configForRun.auditMetrics, configForRun.scoreDebug, configForRun.logging);
+                runReporters(results, configForRun);
+                setAppliedScoringMode(s.scoringMode);
+
+                addRerunAnimation(overlay);
+            } finally {
+                clearLoading();
+            }
+        }, 100);
     }
 
     rerunHeaderBtn?.addEventListener("pointerdown", (e: PointerEvent) => {
@@ -168,4 +184,8 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     });
 
     refresh();
+
+    setupKeyboardShortcuts(overlay, rerunAudit, toggleOverlay);
+
+    setupFocusManagement(overlay);
 }

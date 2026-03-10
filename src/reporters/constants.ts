@@ -171,7 +171,7 @@ export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
     seo: ["SEO"],
     responsive: ["RWD"],
     security: ["SEC"],
-    quality: ["QLT"],
+    quality: ["QLT", "UX"],
     performance: ["PERF", "IMG", "MEDIA"],
     form: ["FORM"]
 };

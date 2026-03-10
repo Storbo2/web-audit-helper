@@ -211,6 +211,56 @@ Audit metrics options:
 - `auditMetrics.consoleTopSlowRules` (default: `10`): max slow rules shown in console timing table.
 - `auditMetrics.consoleMinRuleMs` (default: `0`): minimum ms threshold to appear in timing table.
 
+Score debugging option:
+
+- `scoreDebug` (default: `false`): when enabled, console output includes detailed score breakdown showing how the final score is calculated per category with multipliers, rule counts, and weighted contributions.
+
+Enhanced logging options (`logging` object):
+
+- `timestamps` (default: `false`): include timestamps in console logs for development tracking.
+- `groupByCategory` (default: `true`): organize issues by category in console output for better readability.
+- `showStatsSummary` (default: `true`): display statistical summary tables (severity distribution, category breakdown) before detailed issues.
+- `useIcons` (default: `true`): add visual icons/emojis to severities (🔴 critical, ⚠️ warning, 💡 recommendation) and categories (♿ accessibility, 🔍 SEO, etc.) for quick visual scanning.
+
+### Configuration Examples
+
+```javascript
+// Full developer experience with all enhancements
+await runWAH({
+  scoreDebug: true,
+  logging: {
+    timestamps: true,
+    groupByCategory: true,
+    showStatsSummary: true,
+    useIcons: true
+  }
+});
+
+// Minimal clean output
+await runWAH({
+  logging: {
+    timestamps: false,
+    groupByCategory: false,
+    showStatsSummary: false,
+    useIcons: false
+  }
+});
+
+// Custom rule configuration with metrics
+await runWAH({
+  rules: {
+    'ACC-22': { threshold: 16 },  // Custom font size minimum
+    'ACC-01': 'off',              // Disable html lang check
+    'SEO-01': { severity: 'critical' }  // Upgrade to critical
+  },
+  auditMetrics: {
+    enabled: true,
+    consoleTopSlowRules: 5,
+    consoleMinRuleMs: 1
+  }
+});
+```
+
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
 Spanish version: [Guia de Configuracion](docs/es/configuration.md).
 
@@ -312,6 +362,17 @@ Re-runs the audit after DOM changes without page reload.
 ```javascript
 __WAH_RERUN__()  // Refresh audit
 ```
+
+## ⌨️ Keyboard Shortcuts
+
+WAH overlay supports keyboard shortcuts for improved accessibility and productivity:
+
+- **Escape**: Toggle overlay collapse/expand
+- **Ctrl/Cmd + E**: Rerun audit
+- **Alt + W**: Focus on overlay (for keyboard navigation)
+- **Tab/Shift+Tab**: Navigate through overlay controls with focus trap
+
+All interactive elements support keyboard navigation with visible focus indicators.
 
 ---
 

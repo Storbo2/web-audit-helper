@@ -41,10 +41,27 @@ export function serializeReportToTXT(report: AuditReport): string {
 
     lines.push(`${dict.reportStats}:`);
     lines.push(`  ! ${dict.recommendation}: ${report.stats.recommendations}`);
-    lines.push(`  ⚠ ${dict.warning}: ${report.stats.warnings}`);
-    lines.push(`  ✖ ${dict.critical}: ${report.stats.failed}`);
+    lines.push(`  ⚠️ ${dict.warning}: ${report.stats.warnings}`);
+    lines.push(`  ⛔ ${dict.critical}: ${report.stats.failed}`);
     lines.push(`  ${dict.reportTriggeredRules}: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
     lines.push("");
+
+    if (report.metrics) {
+        lines.push("Audit Metrics:");
+        lines.push(`  Total: ${report.metrics.totalMs}ms`);
+        lines.push(`  Rules executed: ${report.metrics.executedRules}`);
+        lines.push(`  Rules skipped: ${report.metrics.skippedRules}`);
+        if (report.metrics.ruleTimings.length > 0) {
+            lines.push("  Slowest rules:");
+            const topTimings = [...report.metrics.ruleTimings]
+                .sort((a, b) => b.ms - a.ms)
+                .slice(0, 10);
+            for (const timing of topTimings) {
+                lines.push(`    - ${timing.rule}: ${timing.ms}ms (${timing.issues} issues)`);
+            }
+        }
+        lines.push("");
+    }
 
     for (const cat of report.categories) {
         const failRules = cat.rules.filter(r => r.status === "critical").length;
@@ -78,7 +95,7 @@ export function serializeReportToTXT(report: AuditReport): string {
                 currentStatus = rule.status;
             }
 
-            const icon = rule.status === "critical" ? "✖" : rule.status === "warning" ? "⚠" : "!";
+            const icon = rule.status === "critical" ? "⛔" : rule.status === "warning" ? "⚠️" : "!";
             lines.push(`${icon} [${rule.id}] ${rule.title}`);
             lines.push(`   ${rule.message}`);
             if (rule.fix) {

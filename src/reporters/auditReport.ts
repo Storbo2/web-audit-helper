@@ -1,10 +1,10 @@
-import type { AuditResult, AuditReport } from "../core/types";
+import type { AuditResult, AuditReport, WAHConfig } from "../core/types";
 import { buildCategories, buildReportScore, buildReportStatsFromCategories, buildReportMeta } from "./builder";
 import { serializeReportToJSON, serializeReportToTXT, serializeReportToHTML } from "./serializers";
 import { getSettings } from "../overlay/config/settings";
 import { computeCategoryScores, computeScore, filterIssuesForScoring, getAdjustedMultipliers } from "../core/scoring";
 
-export function buildAuditReport(result: AuditResult): AuditReport {
+export function buildAuditReport(result: AuditResult, config?: WAHConfig): AuditReport {
     const settings = getSettings();
     const filteredIssues = filterIssuesForScoring(result.issues, settings.scoringMode);
     const byCategoryScores = computeCategoryScores(filteredIssues, getAdjustedMultipliers(settings.scoringMode));
@@ -16,7 +16,8 @@ export function buildAuditReport(result: AuditResult): AuditReport {
         meta: buildReportMeta(),
         score,
         categories,
-        stats
+        stats,
+        ...(config?.auditMetrics?.includeInReports ? { metrics: result.metrics } : {})
     };
 }
 

@@ -13,6 +13,7 @@ import {
     setLastSettingsPage,
     setLogLevel,
     setScoringMode,
+    setConsoleOutput,
 } from './settings';
 
 describe('overlay config settings', () => {
@@ -105,5 +106,40 @@ describe('overlay config settings', () => {
         expect(localStorage.getItem('wah:settings:page')).toBeNull();
         expect(localStorage.getItem('wah:settings:activeFilters')).toBeNull();
         expect(localStorage.getItem('wah:settings:activeCategories')).toBeNull();
+    });
+
+    it('loads consoleOutput with default value', () => {
+        const settings = getSettings();
+        expect(settings.consoleOutput === undefined || 
+               ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+    });
+
+    it('persists and reads consoleOutput value', () => {
+        setConsoleOutput('detailed');
+        expect(getSettings().consoleOutput).toBe('detailed');
+
+        setConsoleOutput('debug');
+        expect(getSettings().consoleOutput).toBe('debug');
+    });
+
+    it('includes consoleOutput in getSettings', () => {
+        setConsoleOutput('minimal');
+        const settings = getSettings();
+        expect(settings.consoleOutput).toBe('minimal');
+    });
+
+    it('handles invalid consoleOutput value gracefully', () => {
+        localStorage.setItem('wah:settings:consoleOutput', 'invalid');
+        const settings = getSettings();
+        expect(settings.consoleOutput === undefined || 
+               ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+    });
+
+    it('persists all valid consoleOutput levels', () => {
+        const levels = ['minimal', 'standard', 'detailed', 'debug'] as const;
+        for (const level of levels) {
+            setConsoleOutput(level);
+            expect(getSettings().consoleOutput).toBe(level);
+        }
     });
 });
