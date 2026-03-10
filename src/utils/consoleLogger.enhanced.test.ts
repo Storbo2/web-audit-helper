@@ -14,7 +14,8 @@ describe("console logger enhanced features", () => {
         vi.mocked(settingsModule.loadSettings).mockReturnValue({
             scoringMode: "normal",
             logLevel: "full",
-            highlightMs: 750
+            highlightMs: 750,
+            consoleOutput: "standard"
         });
         vi.mocked(settingsModule.getActiveFilters).mockReturnValue(new Set(["critical", "warning", "recommendation"]));
         vi.mocked(settingsModule.getActiveCategories).mockReturnValue(new Set(["accessibility", "seo"]));

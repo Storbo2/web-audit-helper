@@ -11,7 +11,7 @@ export type RuleOverrideValue = RuleOverrideSeverity | RuleOverrideConfig;
 
 export type LogLevel = "full" | "summary" | "none";
 
-export type ConsoleOutputLevel = "minimal" | "standard" | "detailed" | "debug";
+export type ConsoleOutputLevel = "none" | "minimal" | "standard" | "detailed" | "debug";
 
 export interface LoggingConfig {
     timestamps?: boolean;

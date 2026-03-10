@@ -14,15 +14,6 @@ export function getScoringModeInfo(): Record<ScoringMode, string> {
     };
 }
 
-export function getLogLevelOptions(): Array<{ value: "full" | "summary" | "none"; label: string; title: string }> {
-    const dict = t();
-    return [
-        { value: "full", label: dict.fullReport, title: dict.fullReportDescription },
-        { value: "summary", label: dict.reportSummary, title: dict.reportSummaryDescription },
-        { value: "none", label: dict.noConsoleLogs, title: dict.noConsoleLogsDescription }
-    ];
-}
-
 export function getHideDurations(): Array<{ value: number; label: string }> {
     const dict = t();
     return [
@@ -57,21 +48,12 @@ export function renderSettingsHeader(title: string, page: number, total: number)
     `;
 }
 
-export function renderLogLevelOptions(): string {
-    return getLogLevelOptions().map(({ value, label, title }) => `
-        <label class="wah-pop-row" title="${title}">
-            <input type="radio" name="wah-loglvl" value="${value}">
-            <span class="wah-pop-row-text">${label}</span>
-        </label>
-    `).join("");
-}
-
 export function renderHideDurationOptions(): string {
     return getHideDurations().map(({ value, label }) => `<option value="${value}">${label}</option>`).join("");
 }
 
 export function getConsoleOutputOptions(): Array<{ value: ConsoleOutputLevel; label: string; description: string }> {
-    const levels: ConsoleOutputLevel[] = ["minimal", "standard", "detailed", "debug"];
+    const levels: ConsoleOutputLevel[] = ["none", "minimal", "standard", "detailed", "debug"];
     return levels.map((level) => ({
         value: level,
         label: consoleOutputDescriptions[level].label,
@@ -86,4 +68,8 @@ export function renderConsoleOutputOptions(): string {
             return `<label class="wah-pop-row" title="${description}">${radioHtml}<span class="wah-pop-row-text">${label}</span></label>`;
         })
         .join("");
+}
+
+export function getConsoleOutputInfo(level: ConsoleOutputLevel): string {
+    return consoleOutputDescriptions[level].details;
 }

@@ -185,42 +185,41 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
 WAH supports extensive configuration options for customization:
 
-| Option                        | Type                                | Default          | Description                                                    |
-| ----------------------------- | ----------------------------------- | ---------------- | -------------------------------------------------------------- |
-| `logs`                        | `boolean`                           | `true`           | Enable console logging                                         |
-| `logLevel`                    | `'full' \| 'summary' \| 'none'`     | `'full'`         | Console verbosity level                                        |
-| `issueLevel`                  | `'critical' \| 'warnings' \| 'all'` | `'all'`          | Filter which issues to report                                  |
-| `locale`                      | `'en' \| 'es'`                      | auto             | User-facing language (`es` if browser language is Spanish)     |
-| `rules`                       | `Record<string, RuleOverrideValue>` | `undefined`      | Rule-level overrides by stable rule ID (v1.2 groundwork)       |
-| `accessibility.minFontSize`   | `number`                            | `12`             | Minimum font size in pixels                                    |
-| `accessibility.contrastLevel` | `'AA' \| 'AAA'`                     | `'AA'`           | WCAG contrast requirement level                                |
-| `overlay.enabled`             | `boolean`                           | `true`           | Show visual overlay interface                                  |
-| `overlay.position`            | `string`                            | `'bottom-right'` | Overlay position (bottom-left/bottom-right/top-left/top-right) |
-| `overlay.hide`                | `number`                            | `0`              | Hide overlay for X milliseconds on load                        |
+- `logs` (`boolean`, default: `true`): Enable console logging.
+- `consoleOutput` (`'none' | 'minimal' | 'standard' | 'detailed' | 'debug'`, default: `'standard'`): Console output preset (controls `logLevel`, `logging`, `scoreDebug`, and `auditMetrics`).
+- `issueLevel` (`'critical' | 'warnings' | 'all'`, default: `'all'`): Filter which issues to report.
+- `locale` (`'en' | 'es'`, default: auto): User-facing language (`es` if browser language is Spanish).
+- `rules` (`Record<string, RuleOverrideValue>`, default: `undefined`): Rule-level overrides by stable rule ID (disable, severity, threshold).
+- `accessibility.minFontSize` (`number`, default: `12`): Minimum font size in pixels.
+- `accessibility.contrastLevel` (`'AA' | 'AAA'`, default: `'AA'`): WCAG contrast requirement level.
+- `overlay.enabled` (`boolean`, default: `true`): Show visual overlay interface.
+- `overlay.position` (`string`, default: `'bottom-right'`): Overlay position (`bottom-left`/`bottom-right`/`top-left`/`top-right`).
+- `overlay.hide` (`number`, default: `0`): Hide overlay for X milliseconds on load.
 
-Initial support in place:
+**Rule overrides** (`rules` field):
 
-- `'off'` disables a rule by ID.
-- Severity override (`'critical'`, `'warning'`, `'recommendation'`) is applied by rule ID.
-- `threshold` is active for rules that expose numeric thresholds (for now: `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`).
+- `'off'` disables a rule entirely by ID — it is skipped at runtime.
+- Severity override — string: `'critical'`, `'warning'`, `'recommendation'` — or object: `{ severity: 'warning' }`.
+- `threshold` is supported for: `ACC-22` (min font size px), `ACC-25` (min contrast ratio), `ACC-26` (min line-height), `UX-01` (min touch target px).
+- Threshold and severity can be combined: `{ severity: 'critical', threshold: 16 }`.
 
-Audit metrics options:
+Audit metrics options (`auditMetrics` field):
 
-- `auditMetrics.enabled` (default: `true`): enable total and per-rule timing collection.
-- `auditMetrics.includeInReports` (default: `false`): include metrics in JSON/TXT/HTML reports.
-- `auditMetrics.consoleTopSlowRules` (default: `10`): max slow rules shown in console timing table.
-- `auditMetrics.consoleMinRuleMs` (default: `0`): minimum ms threshold to appear in timing table.
+- `enabled` (default: `true`): track total and per-rule execution time.
+- `includeInReports` (default: `false`): include metrics in JSON/TXT/HTML exports.
+- `consoleTopSlowRules` (default: `10`): max slow rules shown in console timing table.
+- `consoleMinRuleMs` (default: `0`): minimum ms threshold to appear in timing table.
 
-Score debugging option:
+Score debugging:
 
-- `scoreDebug` (default: `false`): when enabled, console output includes detailed score breakdown showing how the final score is calculated per category with multipliers, rule counts, and weighted contributions.
+- `scoreDebug` (default: `false`): shows detailed per-category score breakdown with multipliers and weighted contributions in the console.
 
 Enhanced logging options (`logging` object):
 
-- `timestamps` (default: `false`): include timestamps in console logs for development tracking.
-- `groupByCategory` (default: `true`): organize issues by category in console output for better readability.
-- `showStatsSummary` (default: `true`): display statistical summary tables (severity distribution, category breakdown) before detailed issues.
-- `useIcons` (default: `true`): add visual icons/emojis to severities (🔴 critical, ⚠️ warning, 💡 recommendation) and categories (♿ accessibility, 🔍 SEO, etc.) for quick visual scanning.
+- `timestamps` (default: `false`): include timestamps in console logs.
+- `groupByCategory` (default: `true` only in detailed/debug presets): group issues by category.
+- `showStatsSummary` (default: `true` only in detailed/debug presets): display statistics tables.
+- `useIcons` (default: `true` in standard/detailed/debug): add visual icons (🔴 ⚠️ 💡) to issues.
 
 ### Configuration Examples
 

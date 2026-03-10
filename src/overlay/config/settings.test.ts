@@ -42,6 +42,7 @@ describe('overlay config settings', () => {
             logLevel: 'summary',
             highlightMs: 1200,
             scoringMode: 'strict',
+            consoleOutput: 'standard',
         });
         expect(getAppliedScoringMode()).toBe('custom');
         expect(getLastSettingsPage()).toBe(2);
@@ -106,12 +107,12 @@ describe('overlay config settings', () => {
         expect(localStorage.getItem('wah:settings:page')).toBeNull();
         expect(localStorage.getItem('wah:settings:activeFilters')).toBeNull();
         expect(localStorage.getItem('wah:settings:activeCategories')).toBeNull();
+        expect(localStorage.getItem('wah:settings:consoleOutput')).toBeNull();
     });
 
     it('loads consoleOutput with default value', () => {
         const settings = getSettings();
-        expect(settings.consoleOutput === undefined ||
-            ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+        expect(settings.consoleOutput).toBe('standard');
     });
 
     it('persists and reads consoleOutput value', () => {
@@ -131,12 +132,11 @@ describe('overlay config settings', () => {
     it('handles invalid consoleOutput value gracefully', () => {
         localStorage.setItem('wah:settings:consoleOutput', 'invalid');
         const settings = getSettings();
-        expect(settings.consoleOutput === undefined ||
-            ['minimal', 'standard', 'detailed', 'debug'].includes(settings.consoleOutput as string)).toBe(true);
+        expect(settings.consoleOutput).toBe('standard');
     });
 
     it('persists all valid consoleOutput levels', () => {
-        const levels = ['minimal', 'standard', 'detailed', 'debug'] as const;
+        const levels = ['none', 'minimal', 'standard', 'detailed', 'debug'] as const;
         for (const level of levels) {
             setConsoleOutput(level);
             expect(getSettings().consoleOutput).toBe(level);

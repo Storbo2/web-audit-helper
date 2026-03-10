@@ -1,6 +1,5 @@
 import { runCoreAudit } from "./core";
 import { createOverlay } from "./overlay/Overlay";
-import { defaultConfig } from "./config/defaultConfig";
 import { getSettings, getActiveFilters, getActiveCategories, setAppliedScoringMode } from "./overlay/config/settings";
 import { ensureViewportMeta, resetViewportMetaPatch } from "./overlay/core/utils";
 import { getHideUntil, getHideUntilRefresh, clearHideUntilRefresh, clearHideUntil } from "./overlay/config/hideStore";
@@ -9,6 +8,7 @@ import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import { initI18n, t } from "./utils/i18n";
 import type { WAHConfig } from "./core/types";
+import { loadConfig } from "./config/loadConfig";
 
 type WAHWindow = Window & {
     __WAH_RESET_HIDE__?: () => void;
@@ -68,11 +68,11 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
 
     const settings = getSettings();
 
-    const config: WAHConfig = {
-        ...defaultConfig,
+    const config: WAHConfig = loadConfig({
         ...userConfig,
         scoringMode: userConfig.scoringMode ?? settings.scoringMode,
-    };
+    });
+    const effectiveLogLevel: "full" | "summary" | "none" = config.logLevel ?? "full";
 
     const shouldHideUntilRefresh = getHideUntilRefresh();
     const hideUntil = getHideUntil();
@@ -82,7 +82,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
         const hideReason = shouldHideUntilRefresh
             ? dict.hideUntilRefresh
             : `${dict.overlayHiddenUntil.toLowerCase()} ${new Date(hideUntil!).toLocaleString()}`;
-        logHideMessage(hideReason, settings.logLevel);
+        logHideMessage(hideReason, effectiveLogLevel);
         return;
     }
 
@@ -99,7 +99,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
 
     const activeFilters = getActiveFilters();
     const activeCategories = getActiveCategories();
-    logWAHResults(results, settings.logLevel, activeFilters, activeCategories, config.auditMetrics, config.scoreDebug, config.logging);
+    logWAHResults(results, effectiveLogLevel, activeFilters, activeCategories, config.auditMetrics, config.scoreDebug, config.logging);
     runReporters(results, config);
     setAppliedScoringMode(settings.scoringMode);
 

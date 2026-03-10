@@ -254,6 +254,185 @@ try {
 }
 ```
 
+## Rule Intelligence
+
+### Disabling Rules by ID
+
+Any rule can be disabled entirely by passing `'off'` as its value. A disabled rule is skipped at runtime — it does not execute and its count is reflected in `AuditMetrics.skippedRules`.
+
+```javascript
+await runWAH({
+    rules: {
+        'ACC-02': 'off',   // Disable alt-text check
+        'SEO-05': 'off',   // Disable canonical check
+        'PERF-06': 'off'   // Disable cache headers check
+    }
+});
+```
+
+### Severity Overrides
+
+You can change the severity of any rule without disabling it. The rule still runs normally — WAH replaces the severity on all issues returned by that rule before score calculation and `issueLevel` filtering.
+
+**String shorthand (most common):**
+
+```javascript
+await runWAH({
+    rules: {
+        'PERF-01': 'recommendation',    // Downgrade: was warning, now recommendation
+        'SEO-02': 'critical',           // Upgrade: was warning, now critical
+        'ACC-13': 'warning'             // Upgrade: was recommendation, now warning
+    }
+});
+```
+
+**Object form (allows combining with threshold):**
+
+```javascript
+await runWAH({
+    rules: {
+        'ACC-10': { severity: 'warning' }   // same as 'warning' string form
+    }
+});
+```
+
+Valid severity values: `'critical'` | `'warning'` | `'recommendation'` | `'off'`
+
+> **Note**: Setting `{ severity: 'off' }` or the string `'off'` both disable the rule.
+
+### Per-Rule Thresholds
+
+Four rules expose a configurable numeric threshold that overrides the corresponding global setting:
+
+| Rule ID | Controls | Unit | Replaces |
+| --------- | ---------- | ------ | --------- |
+| `ACC-22` | Minimum font size | pixels | `accessibility.minFontSize` |
+| `ACC-25` | Minimum contrast ratio | ratio | derived from `contrastLevel` (4.5 / 7) |
+| `ACC-26` | Minimum line-height | unitless value | `accessibility.minLineHeight` |
+| `UX-01` | Minimum touch target size | pixels | `quality.minTouchSize` |
+
+```javascript
+await runWAH({
+    rules: {
+        'ACC-22': { threshold: 16 },    // Require font size >= 16px
+        'ACC-25': { threshold: 5.0 },   // Require contrast ratio >= 5.0
+        'ACC-26': { threshold: 1.5 },   // Require line-height >= 1.5
+        'UX-01':  { threshold: 48 }     // Require touch targets >= 48px
+    }
+});
+```
+
+Threshold and severity can be combined in the same rule:
+
+```javascript
+await runWAH({
+    rules: {
+        'ACC-22': { severity: 'critical', threshold: 16 },   // Both override threshold AND upgrade severity
+        'UX-01':  { severity: 'recommendation', threshold: 40 }  // More lenient + downgraded
+    }
+});
+```
+
+### Rule IDs Reference
+
+All stable rule IDs are available in `RULE_IDS` (exported from the package for TypeScript users):
+
+```typescript
+import { RULE_IDS } from 'web-audit-helper';
+
+await runWAH({
+    rules: {
+        [RULE_IDS.accessibility.imgMissingAlt]: 'off',
+        [RULE_IDS.accessibility.textTooSmall]: { threshold: 16 }
+    }
+});
+```
+
+Or use string literals directly — IDs are stable across minor versions:
+
+```text
+Accessibility: ACC-01 – ACC-27
+SEO:           SEO-01 – SEO-08
+Semantics:     SEM-01 – SEM-07
+Responsive:    RWD-01 – RWD-05
+Security:      SEC-01
+Quality:       HTML-01, HTML-02, QLT-01, QLT-02, UX-01
+Performance:   IMG-01 – IMG-03, MEDIA-01, PERF-01 – PERF-08
+Forms:         FORM-01 – FORM-04
+```
+
+---
+
+## Console Output Preset
+
+The `consoleOutput` option selects a preset that controls all console output behavior as a single cohesive choice. It can be set in code or changed interactively via the Settings overlay (persisted to `localStorage`).
+
+```javascript
+await runWAH({
+    consoleOutput: 'standard'   // 'none' | 'minimal' | 'standard' | 'detailed' | 'debug'
+});
+```
+
+| Level | Description |
+| ------- | ------------- |
+| `'none'` | Disables all audit output. Only essential WAH hide/reset notices still appear |
+| `'minimal'` | Compact summary only: screen context, score, issue count |
+| `'standard'` | Single flat issue table sorted by severity (no category grouping) |
+| `'detailed'` | Issues grouped by category + statistics summary |
+| `'debug'` | Everything from Detailed plus score breakdown, timestamps, and per-rule metrics |
+
+> Each preset sets `logLevel`, `logging`, `scoreDebug`, and `auditMetrics` as a unit. If you pass `consoleOutput`, those individual fields are overridden by the preset.
+
+### Audit Performance Metrics
+
+Controlled by `auditMetrics` (or automatically by the `debug` console preset):
+
+```javascript
+await runWAH({
+    auditMetrics: {
+        enabled: true,                // Track total + per-rule execution time (default: true)
+        includeInReports: true,       // Include metrics section in JSON/TXT/HTML exports (default: false)
+        consoleTopSlowRules: 5,       // Show top N slowest rules in console table (default: 10)
+        consoleMinRuleMs: 1           // Minimum ms a rule must take to appear in the table (default: 0)
+    }
+});
+```
+
+The `AuditResult` returned by `runWAH()` always contains a `metrics` object when `enabled: true`:
+
+```typescript
+const result = await runWAH({ auditMetrics: { enabled: true } });
+console.log(result.metrics?.totalMs);        // Total audit time in ms
+console.log(result.metrics?.executedRules);  // Number of rules that ran
+console.log(result.metrics?.skippedRules);   // Number of rules disabled via overrides
+console.log(result.metrics?.ruleTimings);    // Per-rule timing array
+```
+
+### Score Debugging
+
+```javascript
+await runWAH({ scoreDebug: true });
+```
+
+When enabled, the console output includes a detailed score breakdown showing how the final score is calculated: per-category scores, multipliers, rule counts, and weighted contributions.
+
+### Enhanced Logging Options
+
+```javascript
+await runWAH({
+    logging: {
+        timestamps: true,           // Include timestamps in console output
+        groupByCategory: true,      // Group issues by category block instead of flat table
+        showStatsSummary: true,     // Display statistics tables (severity distribution, category breakdown)
+        useIcons: true              // Add visual icons to severities and categories (🔴 ⚠️ 💡)
+    }
+});
+```
+
+> These options are most useful when setting `consoleOutput` to `'none'` or building a custom output pipeline. For typical usage, the `consoleOutput` preset is the recommended approach.
+
+---
+
 ## Type Definitions
 
 ```typescript
@@ -261,8 +440,12 @@ import type { WAHConfig } from 'web-audit-helper';
 
 const config: WAHConfig = {
     logs: true,
-    logLevel: 'full',
+    consoleOutput: 'standard',
     issueLevel: 'all',
+    rules: {
+        'ACC-02': 'off',
+        'ACC-22': { severity: 'critical', threshold: 16 }
+    },
     accessibility: {
         minFontSize: 12,
         contrastLevel: 'AA'
@@ -274,6 +457,10 @@ const config: WAHConfig = {
     },
     quality: {
         inlineStylesThreshold: 10
+    },
+    auditMetrics: {
+        enabled: true,
+        includeInReports: false
     }
 };
 
@@ -299,8 +486,17 @@ A: No, configure before calling `runWAH()`. To re-run with different config, use
 - `logLevel`: Controls console output verbosity (full/summary/none)
 - `issueLevel`: Filters which severities are reported (critical/warnings/all)
 
+**Q: What's the difference between `consoleOutput` and `logLevel`?**
+A: `consoleOutput` is the recommended high-level preset (`none/minimal/standard/detailed/debug`). It sets `logLevel`, `logging`, `scoreDebug`, and `auditMetrics` together as a unit. Use it for typical usage. `logLevel` is a lower-level field that `consoleOutput` overrides.
+
+**Q: Can I disable a rule for a single page only?**
+A: Yes — pass `rules: { 'RULE-ID': 'off' }` when calling `runWAH()`. Since WAH runs per page-load, this naturally scopes to that run.
+
+**Q: Do severity overrides affect the score?**
+A: Yes. The overridden severity is used everywhere: score calculation, `issueLevel` filtering, overlay display, and reports.
+
 **Q: Should I use AAA contrast level?**
 A: AA (4.5:1) covers most cases. AAA (7:1) is recommended for body text in important applications.
 
-**Q: Can I hide sensit data from exported reports?**
-A: Currently no, but you can use `logLevel: 'none'` and disable console sharing.
+**Q: Can I hide sensitive data from exported reports?**
+A: Currently no, but you can use `consoleOutput: 'none'` and set `auditMetrics: { includeInReports: false }` to minimize output.

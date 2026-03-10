@@ -9,34 +9,36 @@ import {
     getSettings,
     resetSettings,
     setHighlightMs,
-    setLogLevel,
     setScoringMode,
     setConsoleOutput
 } from "../../../config/settings";
 import type { Locale } from "../../../../core/types";
 import { clearStoredLocale, getLocale, initI18n, setLocale, t } from "../../../../utils/i18n";
 import { closePop, setPendingChanges } from "../../utils";
-import { getScoringModeInfo } from "./helpers";
+import { getConsoleOutputInfo, getScoringModeInfo } from "./helpers";
 import type { ScoringMode, SettingsPageRef } from "./types";
 
 export function wirePage0(popBody: HTMLElement): void {
     const settings = getSettings();
-
-    const logLevelRadios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-loglvl"]');
-    logLevelRadios.forEach(radio => {
-        radio.checked = radio.value === settings.logLevel;
-        radio.addEventListener("change", () => {
-            setLogLevel(radio.value as "full" | "summary" | "none");
-        });
-    });
+    const consoleOutputInfo = popBody.querySelector<HTMLElement>('[data-s="consoleOutputInfo"]');
 
     const consoleOutputRadios = popBody.querySelectorAll<HTMLInputElement>('input[name="wah-console-output"]');
     consoleOutputRadios.forEach(radio => {
         radio.checked = radio.value === settings.consoleOutput;
+        if (radio.checked && consoleOutputInfo) {
+            consoleOutputInfo.textContent = getConsoleOutputInfo(radio.value as any);
+        }
         radio.addEventListener("change", () => {
             setConsoleOutput(radio.value as any);
+            if (consoleOutputInfo) {
+                consoleOutputInfo.textContent = getConsoleOutputInfo(radio.value as any);
+            }
         });
     });
+
+    if (consoleOutputInfo && !consoleOutputInfo.textContent) {
+        consoleOutputInfo.textContent = getConsoleOutputInfo(settings.consoleOutput);
+    }
 
     const hlSlider = popBody.querySelector<HTMLInputElement>('[data-s="hl"]');
     const hlLabel = popBody.querySelector<HTMLElement>('[data-s="hlLabel"]');
@@ -69,16 +71,16 @@ export function wirePage1(popBody: HTMLElement, onRerunAudit?: () => void): void
     };
 
     const scoringModeSelect = popBody.querySelector<HTMLSelectElement>('[data-s="scoringMode"]');
-    if (!scoringModeSelect) return;
+    if (scoringModeSelect) {
+        scoringModeSelect.value = settings.scoringMode;
+        updatePendingState(settings.scoringMode as ScoringMode);
 
-    scoringModeSelect.value = settings.scoringMode;
-    updatePendingState(settings.scoringMode as ScoringMode);
-
-    scoringModeSelect.addEventListener("change", () => {
-        const selectedMode = scoringModeSelect.value as ScoringMode;
-        setScoringMode(selectedMode);
-        updatePendingState(selectedMode);
-    });
+        scoringModeSelect.addEventListener("change", () => {
+            const selectedMode = scoringModeSelect.value as ScoringMode;
+            setScoringMode(selectedMode);
+            updatePendingState(selectedMode);
+        });
+    }
 
     if (noticeEl && onRerunAudit) {
         noticeEl.addEventListener("click", (e) => {

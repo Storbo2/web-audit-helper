@@ -1,23 +1,26 @@
 import { getSupportedLocales, t } from "../../../../utils/i18n";
-import { renderHideDurationOptions, renderLogLevelOptions, renderRerunNotice, renderSettingsHeader, renderConsoleOutputOptions } from "./helpers";
+import { renderHideDurationOptions, renderRerunNotice, renderSettingsHeader, renderConsoleOutputOptions } from "./helpers";
 
 export function renderPage0(totalPages: number): string {
     const dict = t();
     return `
         ${renderSettingsHeader(dict.settingsTitle, 1, totalPages)}
 
-        <div class="wah-pop-section">${dict.consoleLog}</div>
-        ${renderLogLevelOptions()}
+        <div class="wah-pop-section">${dict.highlightDuration}</div>
+        <div class="wah-pop-row wah-pop-row-space-between">
+            <span class="wah-pop-row-text" data-s="hlLabel">750ms</span>
+            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="${dict.highlightDuration}">
+        </div>
 
-        <div class="wah-pop-subsection">Console Output Level</div>
+        <div class="wah-pop-spacer"></div>
+
+        <div class="wah-pop-section wah-pop-section-spaced">Console logs level</div>
         ${renderConsoleOutputOptions()}
 
         <div class="wah-pop-spacer"></div>
 
-        <div class="wah-pop-section wah-pop-section-spaced">${dict.highlightDuration}</div>
-        <div class="wah-pop-row wah-pop-row-space-between">
-            <span class="wah-pop-row-text" data-s="hlLabel">750ms</span>
-            <input data-s="hl" type="range" min="200" max="3000" step="50" value="750" title="${dict.highlightDuration}">
+        <div class="wah-pop-info">
+            <small data-s="consoleOutputInfo"></small>
         </div>
     `;
 }
@@ -33,6 +36,16 @@ export function renderPage1(totalPages: number): string {
 
     return `
         ${renderSettingsHeader(dict.settingsTitle, 2, totalPages)}
+
+        <div class="wah-pop-section">${dict.languageSettings}</div>
+        <div class="wah-pop-row">
+            <select id="wah-locale-select" data-s="locale" class="wah-pop-select" title="${dict.selectLanguage}">
+                ${localeOptions}
+            </select>
+        </div>
+
+        <div class="wah-pop-spacer"></div>
+
         <div class="wah-pop-section">${dict.scoringMode}</div>
         <div class="wah-pop-row">
             <select id="wah-scoring-mode" data-s="scoringMode" class="wah-pop-select" title="${dict.selectScoringMode}">
@@ -44,22 +57,11 @@ export function renderPage1(totalPages: number): string {
             </select>
         </div>
 
-        <div class="wah-pop-spacer"></div>
-
         <div class="wah-pop-info">
             <small data-s="scoringInfo"></small>
         </div>
 
         ${renderRerunNotice()}
-
-        <div class="wah-pop-spacer"></div>
-
-        <div class="wah-pop-section">${dict.languageSettings}</div>
-        <div class="wah-pop-row">
-            <select id="wah-locale-select" data-s="locale" class="wah-pop-select" title="${dict.selectLanguage}">
-                ${localeOptions}
-            </select>
-        </div>
     `;
 }
 
@@ -68,7 +70,7 @@ export function renderPage2(totalPages: number): string {
     return `
         ${renderSettingsHeader(dict.settingsTitle, 3, totalPages)}
 
-        <div class="wah-pop-section wah-pop-section-centered">${dict.hideOverlay}</div>
+        <div class="wah-pop-section">${dict.hideOverlay}</div>
         <div class="wah-pop-settings">
             <button class="wah-pop-btn wah-pop-btn-full" data-s="hideRefresh" title="${dict.hideUntilRefreshTitle}">${dict.hideUntilRefresh}</button>
         </div>
@@ -83,7 +85,7 @@ export function renderPage2(totalPages: number): string {
         </div>
         <div class="wah-hide-info" data-s="hideUntilInfo"></div>
 
-        <div class="wah-pop-section wah-pop-section-centered">${dict.otherOptions}</div>
+        <div class="wah-pop-section">${dict.otherOptions}</div>
         <div class="wah-pop-settings">
             <button class="wah-pop-btn wah-reset-btn wah-pop-btn-full" data-s="reset" title="${dict.resetAllSettingsTitle}">${dict.resetAllSettings}</button>
         </div>

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WAH — Rule Overrides Test</title>
+
+    <!--
+        SEO-02: Short meta description (intentional — needed for severity override test in Section 2).
+        Rule override: 'SEO-02': 'recommendation'  → appears as recommendation, NOT warning.
+    -->
+    <meta name="description" content="" />
+    <link rel="canonical" href="https://example.com" />
+    <meta property="og:title" content="WAH Rule Overrides Test" />
+    <meta property="og:description" content="Fixture to validate disabled rules, severity overrides, and thresholds." />
+    <meta property="og:image" content="https://example.com/cover.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="WAH Rule Overrides Test" />
+    <meta name="twitter:description"
+        content="Fixture to validate disabled rules, severity overrides, and thresholds." />
+
+    <!--
+        PERF-04: Scripts in <head> without defer (intentional — needed to confirm the disabled rule test).
+        Rule override: 'PERF-04': 'off'  → these exist in the DOM but should NOT appear in the report.
+    -->
+    <script src="../public/js/analytics.js"></script>
+    <script src="../public/js/tracking.js"></script>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <main id="main-content">
+        <h1>WAH — Rule Overrides Test</h1>
+
+        <p>
+            This page intentionally introduces accessibility, SEO, security, and quality violations
+            to verify that <strong>rule overrides</strong> work correctly: disabling rules, changing
+            severity, and applying custom numeric thresholds.
+        </p>
+
+        <p>Open the browser console (use <code>consoleOutput: 'detailed'</code>) to inspect reported issues.
+            Compare what appears against the expected results listed in each section.</p>
+
+        <!-- ================================================================
+            SECTION 1 — DISABLED RULES
+            Violations ARE present, but WAH should not report any of them.
+            Configured via:  rules: { 'RULE-ID': 'off' }
+        ================================================================ -->
+        <section class="test-section">
+            <h2>Section 1 — Disabled Rules</h2>
+            <p>
+                All three rule violations below exist in the DOM.
+                None should appear in the WAH overlay or console output.
+            </p>
+
+            <table>
+                <caption>Disabled rule expectations</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Rule</th>
+                        <th scope="col">Violation present</th>
+                        <th scope="col">Expected in report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ACC-02</td>
+                        <td>img without alt</td>
+                        <td>❌ ABSENT (rule off)</td>
+                    </tr>
+                    <tr>
+                        <td>SEM-01</td>
+                        <td>b/i instead of strong/em</td>
+                        <td>❌ ABSENT (rule off)</td>
+                    </tr>
+                    <tr>
+                        <td>PERF-04</td>
+                        <td>scripts without defer in head</td>
+                        <td>❌ ABSENT (rule off)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ACC-02 disabled — images without alt (would be 'warning' by default) -->
+            <img src="../public/images/hero.svg" width="200" height="100" loading="lazy" decoding="async"
+                srcset="../public/images/hero.svg 200w">
+            <img src="../public/images/hero.svg" width="64" height="64" loading="lazy" decoding="async"
+                srcset="../public/images/hero.svg 64w">
+
+            <!-- SEM-01 disabled — b/i instead of strong/em (would be 'recommendation' by default) -->
+            <p>Text using <b>bold</b> and <i>italic</i> tags instead of semantic equivalents.</p>
+
+            <!-- PERF-04 disabled — already in <head> (would be 'warning' by default) -->
+        </section>
+
+        <!-- ================================================================
+            SECTION 2 — SEVERITY OVERRIDES
+            Violations ARE present and WILL be reported, but with a
+            different severity than the WAH default.
+        ================================================================ -->
+        <section class="test-section">
+            <h2>Section 2 — Severity Overrides</h2>
+            <p>
+                Each violation below should appear in the report, but check that the
+                <strong>severity in the overlay matches the expected overridden value</strong>,
+                not the WAH default.
+            </p>
+
+            <table>
+                <caption>Severity override expectations</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Rule</th>
+                        <th scope="col">Default severity</th>
+                        <th scope="col">Expected severity</th>
+                        <th scope="col">Override</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SEC-01</td>
+                        <td>warning</td>
+                        <td>🔴 critical</td>
+                        <td><code>'critical'</code></td>
+                    </tr>
+                    <tr>
+                        <td>SEO-02</td>
+                        <td>warning</td>
+                        <td>💡 recommendation</td>
+                        <td><code>'recommendation'</code></td>
+                    </tr>
+                    <tr>
+                        <td>ACC-13</td>
+                        <td>recommendation</td>
+                        <td>⚠️ warning</td>
+                        <td><code>'warning'</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- SEC-01 upgraded: warning → critical -->
+            <p>
+                <a href="https://external-site.com" target="_blank" class="large-touch-link">External link without
+                    noopener</a>
+                — SEC-01: default <em>warning</em>, should appear as <strong>critical</strong>.
+            </p>
+
+            <!-- SEO-02 downgraded: warning → recommendation (violation is the short meta description in <head>) -->
+            <p>
+                The page uses <code>&lt;meta name="description" content="" /&gt;</code>.
+                SEO-02: default <em>warning</em>, should appear as <strong>recommendation</strong>.
+            </p>
+
+            <!-- ACC-13 upgraded: recommendation → warning -->
+            <div tabindex="3">Element with positive tabindex (tabindex="3")</div>
+            <p>
+                ACC-13: default <em>recommendation</em>, should appear as <strong>warning</strong>.
+            </p>
+        </section>
+
+        <!-- ================================================================
+            SECTION 3 — THRESHOLD OVERRIDES
+            Stricter custom thresholds are applied for these three rules.
+            Each element passes the WAH DEFAULT threshold but fails the
+            CUSTOM threshold — so it should be flagged only with overrides active.
+        ================================================================ -->
+        <section class="test-section">
+            <h2>Section 3 — Threshold Overrides</h2>
+            <p>
+                The elements in this section <strong>would NOT be flagged with default thresholds</strong>.
+                They are flagged only because stricter custom thresholds are configured.
+            </p>
+
+            <table>
+                <caption>Threshold override expectations</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Rule</th>
+                        <th scope="col">Default threshold</th>
+                        <th scope="col">Custom threshold</th>
+                        <th scope="col">Element value</th>
+                        <th scope="col">Expected result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ACC-22</td>
+                        <td>12px</td>
+                        <td>18px</td>
+                        <td>font-size: 14px</td>
+                        <td>⚠️ Flagged (14 &lt; 18)</td>
+                    </tr>
+                    <tr>
+                        <td>ACC-26</td>
+                        <td>1.4</td>
+                        <td>1.8</td>
+                        <td>line-height: 1.5</td>
+                        <td>⚠️ Flagged (1.5 &lt; 1.8)</td>
+                    </tr>
+                    <tr>
+                        <td>UX-01</td>
+                        <td>44px</td>
+                        <td>60px</td>
+                        <td>50×50px button</td>
+                        <td>⚠️ Flagged (50 &lt; 60)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ACC-22: font-size 14px — above default 12px, below custom 18px → SHOULD be flagged -->
+            <p class="test-font-size">
+                Font size: 14px. Passes default minimum (12px) but fails custom threshold (18px).
+                ACC-22 should flag this element.
+            </p>
+
+            <!-- ACC-26: line-height 1.5 — above default 1.4, below custom 1.8 → SHOULD be flagged -->
+            <p class="test-line-height">
+                Line-height: 1.5. Passes default minimum (1.4) but fails custom threshold (1.8).
+                ACC-26 should flag this element. Multiple lines of text help demonstrate the problem
+                clearly and how it affects readability when line-height is too small.
+            </p>
+
+            <!-- UX-01: 50×50px button — above default 44px, below custom 60px → SHOULD be flagged -->
+            <p>Button at 50×50px — above default touch target (44px), below custom threshold (60px):</p>
+            <button class="test-touch-target">OK</button>
+        </section>
+
+        <!-- ================================================================
+            SECTION 4 — COMBINED OVERRIDE: threshold + severity
+            ACC-25: contrast ratio threshold raised from 4.5 to 6.0
+                AND severity upgraded to 'critical'.
+            #6f6f6f on #ffffff ≈ 5.0:1
+            → Passes default AA threshold ( 4.5 × 0.9 = 4.05 effective )
+            → Fails custom threshold      ( 6.0 × 0.9 = 5.4  effective )
+            → Should appear as 'critical' (not 'warning')
+        ================================================================ -->
+        <section class="test-section">
+            <h2>Section 4 — Combined Override (threshold + severity)</h2>
+            <p>
+                ACC-25 is configured with both a stricter threshold (<code>6.0</code>) and
+                an upgraded severity (<code>'critical'</code>).
+            </p>
+
+            <table>
+                <caption>Combined threshold and severity override expectations</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Rule</th>
+                        <th scope="col">Default</th>
+                        <th scope="col">Custom threshold</th>
+                        <th scope="col">Custom severity</th>
+                        <th scope="col">Test contrast ratio</th>
+                        <th scope="col">Expected result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ACC-25</td>
+                        <td>4.5 / warning</td>
+                        <td>6.0</td>
+                        <td>critical</td>
+                        <td>#6f6f6f on white ≈ 5.0:1</td>
+                        <td>🔴 Flagged as critical</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- #6f6f6f on #ffffff ≈ 5.0:1 ratio
+                WAH applies 90% tolerance: default 4.5×0.9=4.05 (not flagged), custom 6.0×0.9=5.4 (flagged) -->
+            <p class="test-contrast">
+                This text uses <code>#6f6f6f</code> on white — contrast ratio ≈ 5.0:1.
+                Passes default AA threshold (4.5:1) but fails the custom threshold of 6.0:1.
+                ACC-25 should appear as <strong>critical</strong>.
+            </p>
+        </section>
+
+    </main>
+
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            font-size: 18px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+            background: #fff;
+            color: #222;
+        }
+
+        code {
+            font-size: 1em;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            background: #000;
+            color: #fff;
+            padding: 8px 12px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            left: 8px;
+            top: 8px;
+        }
+
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .test-section>table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0 20px;
+            font-size: 18px;
+        }
+
+        .test-section>table th,
+        .test-section>table td {
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        .test-section>table th {
+            background: #f4f4f4;
+        }
+
+        /* ── Section 3: Threshold tests ───────────────────────────── */
+
+        /* ACC-22: font-size 14px (above default 12, below custom 20) */
+        .test-font-size {
+            font-size: 14px;
+            color: #333;
+            background: #fff;
+            padding: 8px;
+            border-left: 3px solid #f09;
+        }
+
+        /* ACC-26: line-height 1.5 (above default 1.4, below custom 1.8) */
+        .test-line-height {
+            line-height: 1.5;
+            padding: 8px;
+            border-left: 3px solid #f90;
+        }
+
+        /* UX-01: 50×50px button (above default 44px, below custom 60px) */
+        .test-touch-target {
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Keep SEC-01 target link from triggering UX-01 noise under strict touch thresholds. */
+        .large-touch-link {
+            display: inline-flex;
+            align-items: center;
+            min-width: 160px;
+            min-height: 64px;
+            padding: 6px 10px;
+        }
+
+        /* ── Section 4: Combined contrast + severity ──────────────── */
+
+        /* #6f6f6f on #ffffff ≈ 5.0:1 contrast ratio */
+        .test-contrast {
+            color: #6f6f6f;
+            background: #ffffff;
+            padding: 10px;
+            border-left: 3px solid #c00;
+        }
+    </style>
+
+    <script type="module">
+        import { runWAH } from "../dist/index.mjs";
+
+        runWAH({
+            overlay: { enabled: true, position: "bottom-right", theme: "dark" },
+            consoleOutput: "standard",
+
+            rules: {
+                // ── Section 1: Disabled rules ─────────────────────────────────────
+                // These violations exist in the DOM but must NOT appear in the report.
+
+                "ACC-02": "off",    // img without alt         | default: warning
+                "SEM-01": "off",    // b/i instead of strong/em | default: recommendation
+                "PERF-04": "off",   // scripts without defer   | default: warning
+
+                // ── Section 2: Severity overrides ─────────────────────────────────
+                // Violations exist and WILL appear — check the severity is overridden.
+
+                "SEC-01": "critical",         // target=_blank  | default: warning        → critical
+                "SEO-02": "recommendation",   // weak desc      | default: warning        → recommendation
+                "ACC-13": "warning",          // positive tabindex | default: recommendation → warning
+
+                // ── Section 3: Threshold overrides ────────────────────────────────
+                // Elements pass default thresholds but fail the custom ones below.
+
+                "ACC-22": { threshold: 18 },  // min font size  | default: 12px  → 18px (catches 14px text)
+                "ACC-26": { threshold: 1.8 }, // min line-height | default: 1.4  → 1.8  (catches 1.5)
+                "UX-01": { threshold: 60 },  // touch target   | default: 44px  → 60px (catches 50px button)
+
+                // ── Section 4: Combined (threshold + severity) ────────────────────
+
+                "ACC-25": { severity: "critical", threshold: 6.0 }
+                //   contrast ratio: default ~4.5 → custom 6.0 (catches #6f6f6f on white ≈ 5.0:1)
+                //   severity:       default warning → critical
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -11,7 +11,7 @@ export type WAHSettings = {
     logLevel: LogLevel;
     highlightMs: number;
     scoringMode: ScoringMode;
-    consoleOutput?: ConsoleOutputLevel;
+    consoleOutput: ConsoleOutputLevel;
 };
 
 const KEY_LOG_LEVEL = "wah:settings:loglvl";
@@ -27,6 +27,7 @@ export const DEFAULT_SETTINGS: WAHSettings = {
     logLevel: "full",
     highlightMs: 750,
     scoringMode: "normal",
+    consoleOutput: "standard",
 };
 
 function loadLogLevel(): LogLevel {
@@ -47,10 +48,10 @@ function loadScoringMode(): ScoringMode {
     return DEFAULT_SETTINGS.scoringMode;
 }
 
-function loadConsoleOutput(): ConsoleOutputLevel | undefined {
+function loadConsoleOutput(): ConsoleOutputLevel {
     const v = localStorage.getItem(KEY_CONSOLE_OUTPUT) as ConsoleOutputLevel | null;
-    if (v === "minimal" || v === "standard" || v === "detailed" || v === "debug") return v;
-    return undefined;
+    if (v === "none" || v === "minimal" || v === "standard" || v === "detailed" || v === "debug") return v;
+    return DEFAULT_SETTINGS.consoleOutput;
 }
 
 export function getSettings(): WAHSettings {
@@ -144,4 +145,5 @@ export function resetSettings() {
     localStorage.removeItem(KEY_SETTINGS_PAGE);
     localStorage.removeItem(KEY_ACTIVE_FILTERS);
     localStorage.removeItem(KEY_ACTIVE_CATEGORIES);
+    localStorage.removeItem(KEY_CONSOLE_OUTPUT);
 }

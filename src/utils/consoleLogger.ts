@@ -170,9 +170,7 @@ export function logWAHResults(
     console.groupEnd();
 }
 
-export function logHideMessage(hideReason: string, logLevel: "full" | "summary" | "none"): void {
-    if (logLevel === "none") return;
-
+export function logHideMessage(hideReason: string, _logLevel: "full" | "summary" | "none"): void {
     const dict = t();
 
     console.log(`[WAH] ${dict.overlayHidden(hideReason)}`);

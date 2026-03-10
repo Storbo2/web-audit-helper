@@ -7,7 +7,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-03-09
+## [1.2.0] - 2026-03-10
+
+### Added
+
+- **Rule Intelligence** — full rule-level configuration system:
+  - Disable any rule by ID: `rules: { 'ACC-02': 'off' }` — skipped at runtime, counted in `AuditMetrics.skippedRules`
+  - Severity overrides: string shorthand (`'critical'`, `'warning'`, `'recommendation'`) or object form (`{ severity: 'warning' }`)
+  - Per-rule numeric thresholds for supported rules: `ACC-22` (min font size px), `ACC-25` (min contrast ratio), `ACC-26` (min line-height), `UX-01` (min touch target px)
+  - Threshold and severity combinable: `{ severity: 'critical', threshold: 16 }`
+  - `RULE_IDS` constant exported from package for typed rule ID access
+- **Audit Performance Metrics** (`auditMetrics` option):
+  - Total and per-rule execution time collection
+  - Optional inclusion in JSON/TXT/HTML exported reports (`includeInReports`)
+  - Console timing table with configurable top-N and minimum-ms filters
+  - `AuditResult.metrics` object always populated when `enabled: true`
+- **Score Debugging** (`scoreDebug` option): per-category score breakdown with multipliers, rule counts, and weighted contributions printed to console
+- **Console Output Presets** (`consoleOutput` option):
+  - Five levels: `none`, `minimal`, `standard`, `detailed`, `debug`
+  - Each preset configures `logLevel`, `logging`, `scoreDebug`, and `auditMetrics` as a unit
+  - `none`: silences audit output while keeping essential WAH hide/reset notices
+  - `standard`: single flat issue table sorted by severity
+  - `detailed`: issues grouped by category with statistics summary
+  - `debug`: detailed + score breakdown + timestamps + per-rule metrics
+  - Selectable from Settings overlay and persisted to `localStorage`
+- **Enhanced Logging Options** (`logging` object): `timestamps`, `groupByCategory`, `showStatsSummary`, `useIcons`
+- **Overlay UX Improvements**:
+  - Keyboard shortcuts: Escape (toggle), Ctrl/Cmd+E (rerun), Alt+W (focus overlay)
+  - Loading states and transition animations
+  - Improved focus trap and accessibility on overlay and popovers
+- **Settings UX Refinements**:
+  - Page 0 reordered: Highlight duration → Console logs level → live description box
+  - Page 1 reordered: Language → Scoring mode
+  - Page 2 section headers aligned to same visual style as pages 0/1
+  - Dynamic info box updates instantly when selecting a Console logs level
+- **Score Messages with Emoji**: score result messages now include contextual emoji (🚀 ✅ ⚠️ ⛔) in both EN and ES
+- **Bilingual documentation updates**: `docs/configuration.md` and `docs/es/configuration.md` updated with full Rule Intelligence and Console Output Preset reference
+
+### Changed
+
+- `consoleOutput` is now the recommended way to control console verbosity — it replaces direct use of `logLevel` + `logging` for typical usage
+- `consoleOutput` default is `'standard'` (persisted in `localStorage`, adjustable from Settings)
+- Preset overrides are fully authoritative in `loadConfig` — if `consoleOutput` is set, the corresponding `logLevel`/`logging`/`scoreDebug`/`auditMetrics` values are applied unconditionally after any user config merge
+- `logHideMessage` (WAH hide/reset notices) now always prints regardless of `consoleOutput` level
+
+### Fixed
+
+- `logHideMessage` was silenced when `logLevel` was `'none'`; essential hide/reset notices now always appear
 
 ### Added
 

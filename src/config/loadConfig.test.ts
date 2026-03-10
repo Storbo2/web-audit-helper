@@ -3,6 +3,17 @@ import { loadConfig } from "./loadConfig";
 import type { WAHConfig } from "../core/types";
 
 describe("loadConfig with consoleOutput", () => {
+    it("should apply none preset when consoleOutput is 'none'", () => {
+        const userConfig: Partial<WAHConfig> = {
+            consoleOutput: "none"
+        };
+        const config = loadConfig(userConfig as any);
+
+        expect(config.logLevel).toBe("none");
+        expect(config.logging?.useIcons).toBe(false);
+        expect(config.auditMetrics?.enabled).toBe(false);
+    });
+
     beforeEach(() => {
         localStorage.clear();
     });
@@ -52,14 +63,14 @@ describe("loadConfig with consoleOutput", () => {
         expect(config.auditMetrics?.enabled).toBe(true);
     });
 
-    it("should allow user config to override preset values", () => {
+    it("should keep preset values authoritative when consoleOutput is selected", () => {
         const userConfig: Partial<WAHConfig> = {
             consoleOutput: "minimal",
             logging: { useIcons: true }
         };
         const config = loadConfig(userConfig as any);
 
-        expect(config.logging?.useIcons).toBe(true);
+        expect(config.logging?.useIcons).toBe(false);
     });
 
     it("should work without consoleOutput specified (use default)", () => {
@@ -87,7 +98,7 @@ describe("loadConfig edge cases", () => {
     });
 
     it("should not crash with valid consoleOutput values", () => {
-        const validLevels = ['minimal', 'standard', 'detailed', 'debug'] as const;
+        const validLevels = ['none', 'minimal', 'standard', 'detailed', 'debug'] as const;
         for (const level of validLevels) {
             const userConfig: any = { consoleOutput: level };
             expect(() => loadConfig(userConfig)).not.toThrow();
