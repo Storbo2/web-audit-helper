@@ -598,20 +598,23 @@ Objective: turn WAH into an educational tool.
 - Rule Fix Guides for each rule: Problem, Why it matters, How to fix, Bad/Good examples
 - "Learn more" links in overlay and reports to rule-specific docs
 - Stronger docs set: architecture guide, rules guide, and contribution guide
+- Consistency pass across rule metadata, overlay copy, exported reports, and docs
 
-### v1.4 - External Auditing (Planned)
+### v1.4 - Core Consistency & Registry Hardening (Planned)
+
+Objective: strengthen internal architecture before major surface expansion.
+
+- Harden internal rule registry as single source of truth for overlay/report/docs
+- Standardize per-rule metadata contracts (ID, category, severity, fix, references)
+- Overlay isolation hardening to avoid self-auditing false positives
+- Keep advanced heuristics bounded (sampling caps, thresholds, explicit opt-out)
+
+### v1.5 - External Auditing (Planned)
 
 Objective: audit websites without installing WAH in the target project.
 
 - Official bookmarklet for one-click audits on any site
 - Export report improvements: run comparison, richer metadata, improved HTML visuals, fix code suggestions
-
-### v1.5 - Ecosystem Preparation (Planned)
-
-Objective: prepare WAH for long-term ecosystem growth.
-
-- Experimental Plugin API for external/custom rules
-- Strong internal rule registry to support plugins, advanced configuration, and auto-generated docs
 
 ### v2.0 - Automation & Ecosystem (Future)
 

@@ -94,11 +94,112 @@ export const RULE_TOKENS_COMPACT: Record<string, string> = {
 };
 
 export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
+    "ACC-01": "Ensures the HTML element includes a valid lang attribute for language identification",
+    "ACC-02": "Ensures all meaningful images have non-empty alt text for screen readers",
+    "ACC-07": "Ensures every form control has an accessible label",
+    "ACC-09": "Detects pages missing an H1 heading as the primary page title",
+    "ACC-10": "Ensures heading levels follow a consistent hierarchical order without skipping levels",
+    "ACC-11": "Ensures aria-labelledby references existing element IDs with meaningful text",
+    "ACC-12": "Ensures aria-describedby references existing element IDs",
+    "ACC-15": "Ensures every iframe has a descriptive title attribute",
     "ACC-21": "Ensures interactive elements have visible focus indicators",
-    "ACC-25": "Ensures text has sufficient contrast with its background",
+    "ACC-23": "Ensures all DOM element IDs are unique across the document",
+    "ACC-25": "Detects text with insufficient contrast ratio against its background",
+    "SEC-01": "Detects links with target=_blank missing rel=\"noopener noreferrer\"",
+    "SEO-01": "Detects missing or empty page title element",
+    "SEM-04": "Detects pages missing a main landmark element to identify primary content",
+    "SEM-05": "Detects pages with more than one main landmark element",
+    "RWD-02": "Detects missing viewport meta tag required for responsive display on mobile",
     "RWD-05": "Warns about 100vh usage which can cause issues on mobile",
+    "FORM-01": "Detects submit buttons placed outside their associated form element",
+    "FORM-04": "Detects common form fields missing autocomplete attributes",
+    "IMG-01": "Detects images missing width and height attributes that prevent layout shifts",
+    "IMG-02": "Detects images below the fold not using lazy loading",
     "PERF-05": "Detects render-blocking CSS in head without preload",
     "PERF-06": "Warns when Cache-Control headers may not be configured"
+};
+
+export const RULE_WHY: Partial<Record<string, string>> = {
+    "ACC-01": "Screen readers, translation tools, and search engines use the lang attribute to process page content correctly",
+    "ACC-02": "Screen reader users cannot understand the purpose of images without alternative text",
+    "ACC-07": "Screen reader and keyboard users rely on labels to understand the purpose of form inputs",
+    "ACC-09": "The H1 establishes the primary topic of the page for screen readers, search engines, and document outline tools",
+    "ACC-10": "Screen reader users navigate pages by heading structure; skipping levels breaks the logical document outline",
+    "ACC-11": "Screen readers announce the accessible name using aria-labelledby; a broken reference leaves the element unnamed",
+    "ACC-12": "Screen readers read the referenced description when a user focuses an element; broken references silently remove that context",
+    "ACC-15": "Screen readers announce the iframe title when users navigate into it; without one, the embedded content has no accessible name",
+    "ACC-21": "Keyboard and switch users need visible focus indicators to navigate and understand their current position on the page",
+    "ACC-23": "Duplicate IDs break label associations, ARIA references, and scripted behavior that depend on unique element identifiers",
+    "ACC-25": "Users with low vision or color blindness may be unable to read text that lacks sufficient contrast",
+    "SEC-01": "A page opened via target=_blank can access the opener window object, enabling tabnabbing and phishing attacks",
+    "SEO-01": "Search engines use the page title as the primary result label; browsers display it in the tab and in bookmarks",
+    "SEM-04": "Assistive technologies and search engines use the main landmark to locate and describe the primary content of a page",
+    "SEM-05": "Multiple main elements create an ambiguous document structure that confuses assistive technologies and search engines",
+    "RWD-02": "Without a viewport meta tag, mobile browsers render pages at desktop width, making content visually unusable on small screens",
+    "FORM-01": "A submit button outside its form does not trigger submission by default, breaking the form for keyboard and assistive technology users",
+    "FORM-04": "Autocomplete reduces input errors and speeds up form completion, which is especially critical for users with motor difficulties or dyslexia",
+    "IMG-01": "Browsers need image dimensions to reserve layout space during load; missing dimensions cause Cumulative Layout Shift (CLS)",
+    "IMG-02": "Loading all images on page load increases initial bytes transferred, delays Time to Interactive, and wastes bandwidth on unseen content"
+};
+
+export const RULE_STANDARD_TYPE: Partial<Record<string, "wcag" | "html-spec" | "owasp" | "web-dev" | "heuristic">> = {
+    "ACC-01": "wcag",
+    "ACC-02": "wcag",
+    "ACC-07": "wcag",
+    "ACC-09": "heuristic",
+    "ACC-10": "wcag",
+    "ACC-11": "wcag",
+    "ACC-12": "wcag",
+    "ACC-15": "wcag",
+    "ACC-21": "wcag",
+    "ACC-23": "html-spec",
+    "ACC-25": "wcag",
+    "SEC-01": "owasp",
+    "SEO-01": "html-spec",
+    "SEM-04": "heuristic",
+    "SEM-05": "heuristic",
+    "RWD-02": "html-spec",
+    "FORM-01": "html-spec",
+    "FORM-04": "wcag",
+    "IMG-01": "web-dev",
+    "IMG-02": "web-dev"
+};
+
+export const RULE_STANDARD_LABEL: Partial<Record<string, string>> = {
+    "ACC-01": "WCAG 2.1 — 3.1.1 Language of Page",
+    "ACC-02": "WCAG 2.1 — 1.1.1 Non-text Content",
+    "ACC-07": "WCAG 2.1 — 1.3.1 Info and Relationships",
+    "ACC-09": "Best practice — page heading structure",
+    "ACC-10": "WCAG 2.1 — 1.3.1 Info and Relationships",
+    "ACC-11": "WCAG 2.1 — 1.3.1 Info and Relationships",
+    "ACC-12": "WCAG 2.1 — 1.3.1 Info and Relationships",
+    "ACC-15": "WCAG 2.1 — 2.4.1 Bypass Blocks",
+    "ACC-21": "WCAG 2.1 — 2.4.7 Focus Visible",
+    "ACC-23": "HTML spec — id attribute uniqueness",
+    "ACC-25": "WCAG 2.1 — 1.4.3 Contrast (Minimum)",
+    "SEC-01": "OWASP — Reverse Tabnapping",
+    "SEO-01": "HTML spec — title element",
+    "SEM-04": "HTML5 best practice — main landmark",
+    "SEM-05": "HTML5 best practice — main landmark",
+    "RWD-02": "HTML spec — viewport meta tag",
+    "FORM-01": "HTML spec — form submission",
+    "FORM-04": "WCAG 2.1 — 1.3.5 Identify Input Purpose",
+    "IMG-01": "Core Web Vitals — Cumulative Layout Shift (CLS)",
+    "IMG-02": "web.dev — loading performance"
+};
+
+export const RULE_DOCS_SLUG: Partial<Record<string, string>> = {
+    "ACC-01": "ACC-01",
+    "ACC-02": "ACC-02",
+    "ACC-07": "ACC-07",
+    "ACC-09": "ACC-09",
+    "ACC-10": "ACC-10",
+    "ACC-11": "ACC-11",
+    "ACC-12": "ACC-12",
+    "ACC-15": "ACC-15",
+    "ACC-21": "ACC-21",
+    "ACC-23": "ACC-23",
+    "ACC-25": "ACC-25"
 };
 
 export const RULE_FIXES: Record<string, string> = {

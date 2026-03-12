@@ -42,6 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 # extra
-planes.txt
+/dev
 .vscode/
 /results

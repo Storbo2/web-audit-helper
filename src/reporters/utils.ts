@@ -3,6 +3,10 @@ import {
     RULE_TOKENS_COMPACT,
     RULE_DESCRIPTIONS,
     RULE_FIXES,
+    RULE_WHY,
+    RULE_STANDARD_TYPE,
+    RULE_STANDARD_LABEL,
+    RULE_DOCS_SLUG,
     CATEGORY_PREFIXES,
     SEVERITY_RANK,
     WAH_MODE
@@ -75,6 +79,26 @@ export function getRuleDescription(ruleId: string, title: string): string {
 
 export function getRuleFix(ruleId: string): string | undefined {
     return translateRuleFix(ruleId, generateRuleFix(ruleId));
+}
+
+export function getRuleWhy(ruleId: string): string | undefined {
+    return RULE_WHY[ruleId];
+}
+
+export function getRuleStandardType(ruleId: string): string | undefined {
+    return RULE_STANDARD_TYPE[ruleId];
+}
+
+export function getRuleStandardLabel(ruleId: string): string | undefined {
+    return RULE_STANDARD_LABEL[ruleId];
+}
+
+export function getRuleDocsSlug(ruleId: string): string | undefined {
+    return RULE_DOCS_SLUG[ruleId];
+}
+
+export function hasRuleDocs(ruleId: string): boolean {
+    return ruleId in RULE_DOCS_SLUG;
 }
 
 export function getRulePrefix(ruleId: string): string {

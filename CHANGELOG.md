@@ -388,28 +388,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Planned Changes
 
-### [1.2] - Rule Intelligence (Planned)
-
-- Rule-level customization by rule ID (on/off, severity override, thresholds)
-- Stable rule IDs + centralized registry + override pipeline
-- Audit performance metrics (global timing + per-rule timings)
-- Minor UX/logging/score-debugging improvements
-
 ### [1.3] - Documentation & Developer Guidance (Planned)
 
 - Rule Fix Guides for each rule (Problem, Why, Fix, Bad/Good examples)
 - "Learn more" links from overlay and reports to rule docs
 - Expanded architecture/rules/contribution guides
+- Consistency pass across rule metadata, overlay copy, report output, and docs
 
-### [1.4] - External Auditing (Planned)
+### [1.4] - Core Consistency & Registry Hardening (Planned)
+
+- Internal registry hardening as single source of truth for rules
+- Standardized per-rule metadata contracts for overlay/report/docs
+- Overlay isolation hardening to avoid self-auditing false positives
+- Keep expensive heuristics bounded via sampling caps, thresholds, and opt-out
+
+### [1.5] - External Auditing (Planned)
 
 - Official bookmarklet for auditing any site
 - Export enhancements (run comparison, richer metadata, better HTML report, code suggestions)
-
-### [1.5] - Ecosystem Preparation (Planned)
-
-- Experimental Plugin API
-- Internal registry hardening for plugins, advanced configuration, and auto-doc generation
 
 ### [2.0] - Automation & Ecosystem (Future)
 
