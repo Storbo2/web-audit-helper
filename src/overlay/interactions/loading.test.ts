@@ -88,34 +88,31 @@ describe("Rerun Animation", () => {
             <div id="test-overlay"></div>
         `;
         overlay = document.getElementById("test-overlay")!;
-        vi.useFakeTimers();
     });
 
     afterEach(() => {
         document.body.innerHTML = "";
-        vi.clearAllTimers();
-        vi.useRealTimers();
     });
 
-    it("should add and remove rerun animation class", () => {
+    it("should add and remove rerun animation class", async () => {
         addRerunAnimation(overlay);
 
         expect(overlay.classList.contains("wah-rerun-animation")).toBe(true);
 
-        vi.advanceTimersByTime(600);
+        await new Promise((resolve) => setTimeout(resolve, 650));
 
         expect(overlay.classList.contains("wah-rerun-animation")).toBe(false);
     });
 
-    it("should remove animation after 600ms", () => {
+    it("should remove animation after 600ms", async () => {
         addRerunAnimation(overlay);
 
         expect(overlay.classList.contains("wah-rerun-animation")).toBe(true);
 
-        vi.advanceTimersByTime(300);
+        await new Promise((resolve) => setTimeout(resolve, 300));
         expect(overlay.classList.contains("wah-rerun-animation")).toBe(true);
 
-        vi.advanceTimersByTime(300);
+        await new Promise((resolve) => setTimeout(resolve, 350));
         expect(overlay.classList.contains("wah-rerun-animation")).toBe(false);
     });
 });
