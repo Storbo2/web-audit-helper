@@ -13,6 +13,8 @@ import {
 } from "./constants";
 import { translateRuleFix, translateRuleLabel } from "../utils/i18n";
 
+const RULE_DOCS_BASE_URL = "https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules";
+
 export function scoreToGrade(score: number): Grade {
     if (score >= 90) return "A";
     if (score >= 80) return "B";
@@ -95,6 +97,11 @@ export function getRuleStandardLabel(ruleId: string): string | undefined {
 
 export function getRuleDocsSlug(ruleId: string): string | undefined {
     return RULE_DOCS_SLUG[ruleId];
+}
+
+export function getRuleDocsUrl(ruleId: string): string | undefined {
+    const slug = getRuleDocsSlug(ruleId) || ruleId;
+    return `${RULE_DOCS_BASE_URL}/${encodeURIComponent(slug)}.md`;
 }
 
 export function hasRuleDocs(ruleId: string): boolean {

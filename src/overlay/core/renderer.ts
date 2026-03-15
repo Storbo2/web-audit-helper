@@ -75,7 +75,8 @@ export function renderList(list: AuditIssue[]) {
 export function attachIssueItemListeners(
     panel: HTMLElement,
     list: AuditIssue[],
-    onIssueClick: (issue: AuditIssue) => void
+    onIssueClick: (issue: AuditIssue) => void,
+    onIssueContextMenu?: (issue: AuditIssue, event: MouseEvent) => boolean
 ) {
     panel.querySelectorAll(".wah-issue-item").forEach((li) => {
         li.addEventListener("click", () => {
@@ -83,6 +84,15 @@ export function attachIssueItemListeners(
             const issue = list[idx];
             if (!issue) return;
             onIssueClick(issue);
+        });
+
+        li.addEventListener("contextmenu", (event) => {
+            if (!onIssueContextMenu) return;
+            const idx = Number((li as HTMLElement).dataset.idx);
+            const issue = list[idx];
+            if (!issue) return;
+            const handled = onIssueContextMenu(issue, event as MouseEvent);
+            if (handled) event.preventDefault();
         });
     });
 }

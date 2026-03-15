@@ -59,6 +59,18 @@ export function serializeReportToHTML(report: AuditReport): string {
                 ? `<p class="fix"><strong>${dict.reportFix}:</strong> ${escapeHtml(rule.fix)}</p>`
                 : "";
 
+            const whyHtml = rule.whyItMatters
+                ? `<p class="help"><strong>${dict.whyItMattersLabel}:</strong> ${escapeHtml(rule.whyItMatters)}</p>`
+                : "";
+
+            const standardHtml = rule.standardLabel
+                ? `<p class="help"><strong>${dict.standardLabel}:</strong> ${escapeHtml(rule.standardLabel)}</p>`
+                : "";
+
+            const learnMoreHtml = rule.docsUrl
+                ? `<p class="help"><strong>${dict.learnMoreLabel}:</strong> <a href="${escapeHtml(rule.docsUrl)}">${escapeHtml(rule.docsUrl)}</a></p>`
+                : "";
+
             return `
                 <article class="rule ${statusClass}">
                     <div class="rule-header">
@@ -69,6 +81,9 @@ export function serializeReportToHTML(report: AuditReport): string {
                     </div>
                     <p class="message">${escapeHtml(rule.message)}</p>
                     ${fixHtml}
+                    ${whyHtml}
+                    ${standardHtml}
+                    ${learnMoreHtml}
                     ${elementsHtml}
                 </article>
             `;

@@ -16,6 +16,7 @@ import { renderOverlayHtml } from "./core/template";
 import { t } from "../utils/i18n";
 import { setupKeyboardShortcuts, setupFocusManagement } from "./interactions/keyboard";
 import { showLoadingState, addRerunAnimation } from "./interactions/loading";
+import { getRuleDocsUrl } from "../reporters/utils";
 
 type OverlayAuditResult = AuditResult & { criticalIssues: AuditIssue[] };
 
@@ -52,6 +53,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     setupDrag(overlay, header);
 
     const catActive = getActiveCategories();
+    let issueMenuEl: HTMLElement | null = null;
 
     const panel = overlay.querySelector("#wah-panel") as HTMLElement | null;
     const countsEl = overlay.querySelector(".wah-counts") as HTMLElement | null;
@@ -79,10 +81,64 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
         countsEl.innerHTML = renderCounts(results.issues);
         panel.innerHTML = renderList(list);
+
+        closeIssueMenu();
         attachIssueItemListeners(panel, list, (issue) => {
             logIssueDetail(issue);
             focusIssueElement(issue);
+        }, (issue, event) => {
+            const docsUrl = getRuleDocsUrl(issue.rule);
+            openIssueMenu(event, docsUrl);
+            return true;
         });
+    }
+
+    function closeIssueMenu() {
+        if (!issueMenuEl) return;
+        issueMenuEl.remove();
+        issueMenuEl = null;
+    }
+
+    function openIssueMenu(event: MouseEvent, docsUrl?: string) {
+        if (!docsUrl) return;
+        closeIssueMenu();
+
+        const menu = document.createElement("div");
+        menu.className = "wah-issue-menu";
+        menu.setAttribute("role", "menu");
+        menu.innerHTML = `
+            <button type="button" class="wah-issue-menu-item" role="menuitem">${t().learnMoreLabel}</button>
+        `;
+
+        const btn = menu.querySelector(".wah-issue-menu-item") as HTMLButtonElement | null;
+        btn?.addEventListener("click", () => {
+            window.open(docsUrl, "_blank", "noopener,noreferrer");
+            closeIssueMenu();
+        });
+
+        document.body.appendChild(menu);
+        issueMenuEl = menu;
+
+        const overlayStyles = getComputedStyle(overlay);
+        menu.style.setProperty("--wah-bg", overlayStyles.getPropertyValue("--wah-bg").trim());
+        menu.style.setProperty("--wah-text", overlayStyles.getPropertyValue("--wah-text").trim());
+        menu.style.setProperty("--wah-border", overlayStyles.getPropertyValue("--wah-border").trim());
+        menu.style.setProperty("--wah-dark-border", overlayStyles.getPropertyValue("--wah-dark-border").trim());
+
+        const rect = menu.getBoundingClientRect();
+        const padding = 8;
+        let left = event.clientX;
+        let top = event.clientY;
+
+        if (left + rect.width + padding > window.innerWidth) {
+            left = window.innerWidth - rect.width - padding;
+        }
+        if (top + rect.height + padding > window.innerHeight) {
+            top = window.innerHeight - rect.height - padding;
+        }
+
+        menu.style.left = `${Math.max(padding, left)}px`;
+        menu.style.top = `${Math.max(padding, top)}px`;
     }
 
     const toggleBtn = overlay.querySelector(".wah-toggle") as HTMLButtonElement | null;
@@ -157,6 +213,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
     chips.forEach((btn) => {
         btn.addEventListener("click", () => {
+            closeIssueMenu();
             const f = btn.dataset.filter as UIFilter;
 
             if (active.has(f)) {
@@ -188,4 +245,17 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     setupKeyboardShortcuts(overlay, rerunAudit, toggleOverlay);
 
     setupFocusManagement(overlay);
+
+    document.addEventListener("click", closeIssueMenu, true);
+    document.addEventListener("scroll", closeIssueMenu, true);
+    document.addEventListener("contextmenu", (e: MouseEvent) => {
+        const target = e.target as Node | null;
+        if (!target || !issueMenuEl || !issueMenuEl.contains(target)) {
+            closeIssueMenu();
+        }
+    }, true);
+
+    overlay.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.key === "Escape") closeIssueMenu();
+    });
 }

@@ -24,6 +24,11 @@ import {
     getRuleTitle,
     getRuleDescription,
     getRuleFix,
+    getRuleWhy,
+    getRuleStandardType,
+    getRuleStandardLabel,
+    getRuleDocsSlug,
+    getRuleDocsUrl,
     validateRuleCategoryPrefix
 } from "./utils";
 import { getSettings, getActiveFilters, getActiveCategories } from "../overlay/config/settings";
@@ -178,6 +183,11 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
                 status,
                 message: toSentenceCase(translateIssueMessage(ruleId, firstIssue.message)),
                 ...(getRuleFix(ruleId) ? { fix: getRuleFix(ruleId) } : {}),
+                ...(getRuleWhy(ruleId) ? { whyItMatters: getRuleWhy(ruleId) } : {}),
+                ...(getRuleStandardType(ruleId) ? { standardType: getRuleStandardType(ruleId) } : {}),
+                ...(getRuleStandardLabel(ruleId) ? { standardLabel: getRuleStandardLabel(ruleId) } : {}),
+                ...(getRuleDocsSlug(ruleId) ? { docsSlug: getRuleDocsSlug(ruleId) } : {}),
+                ...(getRuleDocsUrl(ruleId) ? { docsUrl: getRuleDocsUrl(ruleId) } : {}),
                 ...(elements.length ? { elements } : {}),
                 ...(elementsOmitted > 0 ? { elementsOmitted } : {})
             };

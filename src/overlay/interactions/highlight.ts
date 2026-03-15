@@ -1,6 +1,6 @@
 import type { AuditIssue } from "../../core/types";
 import { loadSettings } from "../config/settings";
-import { getRuleFix } from "../../reporters/utils";
+import { getRuleDescription, getRuleDocsUrl, getRuleFix, getRuleStandardLabel, getRuleWhy, toSentenceCase } from "../../reporters/utils";
 import { t, translateCategory, translateIssueMessage, translateRuleFix, translateSeverity } from "../../utils/i18n";
 
 const TRANSITION_MS = 250;
@@ -46,6 +46,9 @@ export function logIssueDetail(issue: AuditIssue) {
 
     const style = `color: ${colorValue}; font-weight: bold;`;
     const fix = translateRuleFix(issue.rule, getRuleFix(issue.rule));
+    const why = getRuleWhy(issue.rule) ?? getRuleDescription(issue.rule, toSentenceCase(issue.message));
+    const standard = getRuleStandardLabel(issue.rule) ?? "Heuristic / best practice";
+    const learnMore = getRuleDocsUrl(issue.rule);
 
     console.groupCollapsed(`%c[WAH] ${dict.issueDetails(issue.rule)}`, style);
     console.log(`${dict.messageLabel}:`, translateIssueMessage(issue.rule, issue.message));
@@ -54,6 +57,9 @@ export function logIssueDetail(issue: AuditIssue) {
     console.log(`${dict.selectorLabel}:`, issue.selector ?? "-");
     console.log(`${dict.elementLabel}:`, issue.element ?? null);
     console.log(`${dict.fixLabel}:`, fix ?? dict.notAvailable);
+    console.log(`${dict.whyItMattersLabel}:`, why ?? dict.notAvailable);
+    console.log(`${dict.standardLabel}:`, standard ?? dict.notAvailable);
+    console.log(`${dict.learnMoreLabel}: ${learnMore ?? dict.notAvailable}`);
     console.groupEnd();
 }
 

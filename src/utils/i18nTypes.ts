@@ -143,6 +143,9 @@ export interface Dictionary {
     selectorLabel: string;
     elementLabel: string;
     fixLabel: string;
+    whyItMattersLabel: string;
+    standardLabel: string;
+    learnMoreLabel: string;
     notAvailable: string;
     tableRule: string;
     tableSeverity: string;

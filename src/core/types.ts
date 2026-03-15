@@ -119,6 +119,11 @@ export interface RuleResult {
     message: string;
     help?: string;
     fix?: string;
+    whyItMatters?: string;
+    standardType?: string;
+    standardLabel?: string;
+    docsSlug?: string;
+    docsUrl?: string;
     elements?: AffectedElement[];
     elementsOmitted?: number;
 }
