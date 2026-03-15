@@ -2,6 +2,8 @@
 
 Complete reference for all 61 audit rules implemented in WAH.
 
+Quick index by rule ID: [Rules Guide](rules-guide.md).
+
 ## Accessibility Rules (26)
 
 ### ACC-01: Missing HTML Lang Attribute

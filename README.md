@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-    import { runWAH } from 'https://unpkg.com/web-audit-helper@1.2.0/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.3.0/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -262,6 +262,8 @@ await runWAH({
 
 **For complete configuration documentation**, see [Configuration Guide](docs/configuration.md).
 Spanish version: [Guia de Configuracion](docs/es/configuration.md).
+Contribution guide: [Contributing](docs/contributing.md).
+Guia de contribucion: [Contribuir](docs/es/contributing.md).
 
 ---
 
@@ -330,7 +332,9 @@ Image optimization, lazy loading, async decode, script placement, fonts, caching
 Submit buttons, required indicators, input types, autocomplete
 
 **For complete rules reference**, see [Rules Documentation](docs/rules.md).
+Quick index by rule ID: [Rules Guide](docs/rules-guide.md).
 Spanish version: [Documentacion de Reglas](docs/es/rules.md).
+Indice rapido en espanol: [Guia de Reglas](docs/es/rules-guide.md).
 
 ---
 
@@ -563,7 +567,7 @@ npm run test:ui     # Interactive UI
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+We welcome contributions! Please read [Contributing Guide](docs/contributing.md) and [Guia de Contribucion](docs/es/contributing.md) for guidelines on:
 
 - Reporting issues
 - Submitting pull requests
@@ -574,7 +578,14 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📋 Roadmap
 
-### v1.2.0 (Current)
+### v1.3.0 (Current)
+
+- Full educational documentation for all implemented rules (61/61)
+- Learn more integrated in report HTML, console issue details, and overlay context menu
+- Rule indexes published in EN/ES (`rules-guide`)
+- Contributor guides published in EN/ES for rule lifecycle and consistency
+
+### v1.2.0 (Previous)
 
 - Rule-level customization by stable ID (`off`, severity overrides, per-rule thresholds)
 - Rule thresholds enabled for `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`
@@ -590,15 +601,6 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 - Complete internationalization (English + Spanish)
 - End-to-end testing with Playwright
 - Bilingual documentation
-
-### v1.3 - Documentation & Developer Guidance (Planned)
-
-Objective: turn WAH into an educational tool.
-
-- Rule Fix Guides for each rule: Problem, Why it matters, How to fix, Bad/Good examples
-- "Learn more" links in overlay and reports to rule-specific docs
-- Stronger docs set: architecture guide, rules guide, and contribution guide
-- Consistency pass across rule metadata, overlay copy, exported reports, and docs
 
 ### v1.4 - Core Consistency & Registry Hardening (Planned)
 

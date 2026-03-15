@@ -2,6 +2,8 @@
 
 Referencia completa de las 61 reglas de auditoría implementadas en WAH.
 
+Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
+
 ## Reglas de Accesibilidad (26)
 
 ### ACC-01: Falta atributo `lang` en HTML

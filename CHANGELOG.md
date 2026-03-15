@@ -7,53 +7,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-15
+
+### Added
+
+- **Educational rule documentation completed**:
+  - Added per-rule documentation pages for all current implemented rules in `docs/rules/*.md` (61/61 coverage)
+  - Added rule index pages:
+    - `docs/rules-guide.md`
+    - `docs/es/rules-guide.md`
+- **Rule-level educational metadata integration**:
+  - Added/expanded rule metadata fields used in reports and overlay:
+    - `whyItMatters`
+    - `standardType`
+    - `standardLabel`
+    - `docsSlug`
+    - `docsUrl`
+- **Learn more integration across outputs**:
+  - HTML report now renders `Why it matters`, `Standard`, and `Learn more`
+  - Console issue detail now renders full absolute `Learn more` URL
+  - Overlay issue list now supports right-click context menu with `Learn more` action opening docs in a new tab
+- **Contributor guidance for rule ecosystem**:
+  - Added `docs/contributing.md`
+  - Added `docs/es/contributing.md`
+
+### Changed
+
+- `Learn more` URLs now resolve to canonical GitHub docs paths:
+  - `https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/{RULE-ID}.md`
+- Overlay context menu styling now follows active theme tokens for better light/dark consistency
+
+### Fixed
+
+- Improved console output formatting for `Learn more` URL rendering consistency across DevTools
+
 ## [1.2.0] - 2026-03-10
 
 ### Added
 
-- **Rule Intelligence** — full rule-level configuration system:
-  - Disable any rule by ID: `rules: { 'ACC-02': 'off' }` — skipped at runtime, counted in `AuditMetrics.skippedRules`
-  - Severity overrides: string shorthand (`'critical'`, `'warning'`, `'recommendation'`) or object form (`{ severity: 'warning' }`)
-  - Per-rule numeric thresholds for supported rules: `ACC-22` (min font size px), `ACC-25` (min contrast ratio), `ACC-26` (min line-height), `UX-01` (min touch target px)
-  - Threshold and severity combinable: `{ severity: 'critical', threshold: 16 }`
-  - `RULE_IDS` constant exported from package for typed rule ID access
-- **Audit Performance Metrics** (`auditMetrics` option):
-  - Total and per-rule execution time collection
-  - Optional inclusion in JSON/TXT/HTML exported reports (`includeInReports`)
-  - Console timing table with configurable top-N and minimum-ms filters
-  - `AuditResult.metrics` object always populated when `enabled: true`
-- **Score Debugging** (`scoreDebug` option): per-category score breakdown with multipliers, rule counts, and weighted contributions printed to console
-- **Console Output Presets** (`consoleOutput` option):
-  - Five levels: `none`, `minimal`, `standard`, `detailed`, `debug`
-  - Each preset configures `logLevel`, `logging`, `scoreDebug`, and `auditMetrics` as a unit
-  - `none`: silences audit output while keeping essential WAH hide/reset notices
-  - `standard`: single flat issue table sorted by severity
-  - `detailed`: issues grouped by category with statistics summary
-  - `debug`: detailed + score breakdown + timestamps + per-rule metrics
-  - Selectable from Settings overlay and persisted to `localStorage`
-- **Enhanced Logging Options** (`logging` object): `timestamps`, `groupByCategory`, `showStatsSummary`, `useIcons`
-- **Overlay UX Improvements**:
-  - Keyboard shortcuts: Escape (toggle), Ctrl/Cmd+E (rerun), Alt+W (focus overlay)
-  - Loading states and transition animations
-  - Improved focus trap and accessibility on overlay and popovers
-- **Settings UX Refinements**:
-  - Page 0 reordered: Highlight duration → Console logs level → live description box
-  - Page 1 reordered: Language → Scoring mode
-  - Page 2 section headers aligned to same visual style as pages 0/1
-  - Dynamic info box updates instantly when selecting a Console logs level
-- **Score Messages with Emoji**: score result messages now include contextual emoji (🚀 ✅ ⚠️ ⛔) in both EN and ES
-- **Bilingual documentation updates**: `docs/configuration.md` and `docs/es/configuration.md` updated with full Rule Intelligence and Console Output Preset reference
+- **Rule Intelligence** release:
+  - Rule-level configuration by ID (`off`, severity override, per-rule threshold)
+  - Threshold controls for `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`
+  - `RULE_IDS` exported for typed rule usage
+- **Audit performance metrics** (`auditMetrics`) with optional report export
+- **Console presets** (`none`, `minimal`, `standard`, `detailed`, `debug`)
+- **Overlay and settings UX improvements** including keyboard shortcuts and loading states
+- **Bilingual docs updates** for config/reference pages
 
 ### Changed
 
-- `consoleOutput` is now the recommended way to control console verbosity — it replaces direct use of `logLevel` + `logging` for typical usage
-- `consoleOutput` default is `'standard'` (persisted in `localStorage`, adjustable from Settings)
-- Preset overrides are fully authoritative in `loadConfig` — if `consoleOutput` is set, the corresponding `logLevel`/`logging`/`scoreDebug`/`auditMetrics` values are applied unconditionally after any user config merge
-- `logHideMessage` (WAH hide/reset notices) now always prints regardless of `consoleOutput` level
+- `consoleOutput` became the preferred high-level logging configuration
+- Preset behavior in `loadConfig` became authoritative when selected
 
 ### Fixed
 
-- `logHideMessage` was silenced when `logLevel` was `'none'`; essential hide/reset notices now always appear
+- `logHideMessage` now always prints even when output level is `none`
 
 ## [1.1.0] - 2026-03-09
 
