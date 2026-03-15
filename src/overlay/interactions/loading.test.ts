@@ -93,6 +93,8 @@ describe("Rerun Animation", () => {
 
     afterEach(() => {
         document.body.innerHTML = "";
+        vi.runOnlyPendingTimers();
+        vi.clearAllTimers();
         vi.useRealTimers();
     });
 
