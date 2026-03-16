@@ -1,0 +1,40 @@
+.score-excellent,
+.wah-score-excellent {
+    color: var(--wah-score-excellent);
+}
+
+.score-good,
+.wah-score-good {
+    color: var(--wah-score-good);
+}
+
+.score-warning,
+.wah-score-warning {
+    color: var(--wah-score-warning);
+}
+
+.score-bad,
+.wah-score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-critical {
+    text-align: left;
+}
+
+.wah-recommendation {
+    color: var(--wah-text);
+    opacity: .85;
+}
+
+.wah-msg.score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-msg.score-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-msg.text {
+    color: var(--wah-text);
+}

@@ -1,0 +1,14 @@
+.wah-pop-info {
+    padding: 0.5rem 0.6rem;
+    background: rgba(56, 189, 248, 0.08);
+    border-left: 2px solid var(--wah-border);
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    color: var(--wah-text);
+    opacity: 0.75;
+    line-height: 1.4;
+}
+
+.wah-pop[data-theme="light"] .wah-pop-info {
+    opacity: 0.9;
+}

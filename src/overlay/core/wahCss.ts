@@ -1,6 +1,6 @@
 // AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → reset.css → base.css → popover-base.css → popover-settings.css → popover-ui.css → popover-export.css → items.css → utilities.css → enhancements.css
+// Order: variables.css → reset.css → base fragments → popover base fragments → popover-settings.css → popover-ui.css → popover-export.css → items.css → utility fragments → enhancements.css
 
 export const wahCss = `
 :root {
@@ -257,6 +257,7 @@ export const wahCss = `
     transform: rotate(20deg) scale(0.95);
 }
 
+
 .wah-highlight {
     border-radius: 0.1875rem;
     box-shadow: 0 0 0 0 var(--wah-shadow);
@@ -312,6 +313,7 @@ export const wahCss = `
         opacity: 0;
     }
 }
+
 
 .wah-top {
     display: flex;
@@ -406,6 +408,7 @@ export const wahCss = `
     margin-left: auto;
 }
 
+
 #wah-overlay-root[data-pos="top-left"] {
     top: 16px;
     left: 16px;
@@ -450,6 +453,7 @@ export const wahCss = `
     transform: translateX(-50%);
 }
 
+
 #wah-overlay-root.wah-dragging {
     transition: none !important;
 }
@@ -470,6 +474,7 @@ export const wahCss = `
         transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
+
 @media (max-width: 480px) {
     #wah-overlay-root {
         width: min(92vw, 18rem);
@@ -484,6 +489,7 @@ export const wahCss = `
         padding: 0.5rem;
     }
 }
+
 
 .wah-pop {
     position: fixed;
@@ -509,6 +515,77 @@ export const wahCss = `
     transition: opacity var(--wah-trans-fast) ease, transform var(--wah-trans-medium) ease;
     pointer-events: none;
     overflow-y: auto;
+}
+
+.wah-pop.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.wah-pop-titleline {
+    font-size: 1.1em;
+    margin: 0 0 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.0125rem;
+    text-align: center;
+    font-family: inherit;
+}
+
+.wah-pop-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 0 0 0.75rem;
+    letter-spacing: 0.0125rem;
+    font-family: inherit;
+}
+
+.wah-pop-section {
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.wah-pop-body {
+    min-height: min(35vh, 11.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.wah-pop-spacer {
+    height: 0.75rem;
+}
+
+.wah-pop-section-spaced {
+    margin-top: 0.375rem;
+}
+
+.wah-pop-row-space-between {
+    justify-content: space-between;
+}
+
+.wah-pop-section-centered {
+    text-align: center;
+    margin-bottom: 0.625rem;
+    font-size: 0.75rem;
+}
+
+.wah-pop-btn-full {
+    width: fit-content;
+}
+
+.wah-pop-btn-full+div {
+    margin-bottom: 0.75rem;
+}
+
+.wah-pop-settings {
+    display: flex;
+    justify-content: center;
 }
 
 #wah-pop,
@@ -614,46 +691,6 @@ export const wahCss = `
     cursor: pointer !important;
 }
 
-.wah-pop.is-open {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-}
-
-.wah-pop-titleline {
-    font-size: 1.1em;
-    margin: 0 0 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.0125rem;
-    text-align: center;
-    font-family: inherit;
-}
-
-.wah-pop-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    font-weight: bold;
-    font-size: 1.1em;
-    margin: 0 0 0.75rem;
-    letter-spacing: 0.0125rem;
-    font-family: inherit;
-}
-
-.wah-pop-section {
-    font-size: 0.85em;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.wah-pop-body {
-    min-height: min(35vh, 11.25rem);
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
 #wah-pop[data-mode="export"] {
     width: min(85vw, 18rem);
     overflow-x: hidden;
@@ -672,41 +709,35 @@ export const wahCss = `
     padding-inline: 0.35rem;
 }
 
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="2"] .wah-pop-select {
+    min-height: 2rem;
+    padding: 0.55rem 0.75rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] {
+    padding-inline: 0.4rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-select {
+    min-height: 2.5rem;
+    padding-top: 0.58rem;
+    padding-bottom: 0.58rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info {
+    margin-bottom: 0.35rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info:empty {
+    margin: 0;
+    display: none;
+}
+
+
 .wah-pop-body input[type="checkbox"] {
     width: 0.875rem;
     height: 0.875rem;
     accent-color: var(--wah-border);
-}
-
-.wah-pop-spacer {
-    height: 0.75rem;
-}
-
-.wah-pop-section-spaced {
-    margin-top: 0.375rem;
-}
-
-.wah-pop-row-space-between {
-    justify-content: space-between;
-}
-
-.wah-pop-section-centered {
-    text-align: center;
-    margin-bottom: 0.625rem;
-    font-size: 0.75rem;
-}
-
-.wah-pop-btn-full {
-    width: fit-content;
-}
-
-.wah-pop-btn-full+div {
-    margin-bottom: 0.75rem;
-}
-
-.wah-pop-settings {
-    display: flex;
-    justify-content: center;
 }
 
 .wah-pop-row {
@@ -774,30 +805,6 @@ export const wahCss = `
     cursor: pointer;
 }
 
-#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="2"] .wah-pop-select {
-    min-height: 2rem;
-    padding: 0.55rem 0.75rem;
-}
-
-#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] {
-    padding-inline: 0.4rem;
-}
-
-#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-select {
-    min-height: 2.5rem;
-    padding-top: 0.58rem;
-    padding-bottom: 0.58rem;
-}
-
-#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info {
-    margin-bottom: 0.35rem;
-}
-
-#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info:empty {
-    margin: 0;
-    display: none;
-}
-
 .wah-pop-info {
     padding: 0.5rem 0.6rem;
     background: rgba(56, 189, 248, 0.08);
@@ -812,6 +819,7 @@ export const wahCss = `
 .wah-pop[data-theme="light"] .wah-pop-info {
     opacity: 0.9;
 }
+
 
 @media (max-width: 32.5rem) {
     .wah-pop {
@@ -1306,6 +1314,18 @@ export const wahCss = `
     opacity: .85;
 }
 
+.wah-msg.score-bad {
+    color: var(--wah-score-bad);
+}
+
+.wah-msg.score-warning {
+    color: var(--wah-score-warning);
+}
+
+.wah-msg.text {
+    color: var(--wah-text);
+}
+
 .wah-chip,
 .wah-tool,
 .wah-all-toggle,
@@ -1323,18 +1343,6 @@ export const wahCss = `
     display: flex;
     gap: 0.375rem;
     margin: 0.5rem 0;
-}
-
-.wah-msg.score-bad {
-    color: var(--wah-score-bad);
-}
-
-.wah-msg.score-warning {
-    color: var(--wah-score-warning);
-}
-
-.wah-msg.text {
-    color: var(--wah-text);
 }
 
 #wah-overlay-root .wah-chip {

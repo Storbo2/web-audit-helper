@@ -1,0 +1,35 @@
+.wah-all-toggle {
+    width: 100%;
+    margin-top: 0.625rem;
+    padding: 0.375rem 0.5rem;
+    border: 0.0625rem solid var(--wah-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.wah-all-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wah-issues {
+    margin: 0.375rem 0 0;
+    padding-left: 1rem;
+}
+
+.wah-issues li {
+    cursor: pointer;
+    margin-bottom: 0.375rem;
+    color: var(--wah-score-bad);
+    transition: opacity .15s ease;
+}
+
+.wah-issues li:hover {
+    text-decoration: underline;
+}
+
+.wah-ok {
+    margin: 0.375rem 0 0;
+    color: var(--wah-score-good);
+}

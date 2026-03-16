@@ -1,0 +1,41 @@
+#wah-pop[data-mode="export"] {
+    width: min(85vw, 18rem);
+    overflow-x: hidden;
+}
+
+#wah-pop[data-mode="filters"] {
+    width: min(88vw, 17rem);
+}
+
+#wah-pop[data-mode="filters"] .wah-pop-body {
+    padding-inline: 0.3rem;
+}
+
+#wah-pop[data-mode="ui"] .wah-pop-body,
+#wah-pop[data-mode="settings"] .wah-pop-body {
+    padding-inline: 0.35rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="2"] .wah-pop-select {
+    min-height: 2rem;
+    padding: 0.55rem 0.75rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] {
+    padding-inline: 0.4rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-select {
+    min-height: 2.5rem;
+    padding-top: 0.58rem;
+    padding-bottom: 0.58rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info {
+    margin-bottom: 0.35rem;
+}
+
+#wah-pop[data-mode="settings"] .wah-pop-body[data-settings-page="3"] .wah-hide-info:empty {
+    margin: 0;
+    display: none;
+}

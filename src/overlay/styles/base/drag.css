@@ -1,0 +1,19 @@
+#wah-overlay-root.wah-dragging {
+    transition: none !important;
+}
+
+#wah-overlay-root .wah-header {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#wah-overlay-root.wah-dragging .wah-header {
+    cursor: grabbing;
+}
+
+#wah-overlay-root.wah-snapping {
+    transition: left var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        top var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1),
+        transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
+}

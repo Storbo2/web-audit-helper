@@ -1,0 +1,14 @@
+@media (max-width: 480px) {
+    #wah-overlay-root {
+        width: min(92vw, 18rem);
+        font-size: clamp(0.75rem, 0.7rem + 0.6vw, 0.95rem);
+    }
+
+    #wah-overlay-root .wah-content {
+        max-height: min(50vh, 16rem);
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
+}

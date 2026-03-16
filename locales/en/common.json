@@ -4,6 +4,7 @@
         "score": "Score",
         "reRunAudit": "Re-run audit",
         "minimize": "Minimize",
+        "maximize": "Expand",
         "clickToViewScore": "Click to view score breakdown",
         "clickToFocus": "Click to focus",
         "toolbar": "WAH toolbar",

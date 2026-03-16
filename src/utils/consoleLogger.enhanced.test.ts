@@ -3,6 +3,13 @@ import "./consoleLogger.mockSetup";
 import { setLocale } from "./i18n";
 import * as settingsModule from "../overlay/config/settings";
 import { createConsoleSpies, makeIssue, resetConsoleSpies, runLogger } from "./consoleLogger.testUtils";
+import {
+    ACTIVE_ALL_FILTERS,
+    ACTIVE_DEFAULT_CATEGORIES,
+    filterGroupCallsContainingAny,
+    findGroupCallContaining,
+    runEnhancedLogger
+} from "./consoleLogger.enhanced.testUtils";
 
 describe("console logger enhanced features", () => {
     const spies = createConsoleSpies();
@@ -17,8 +24,8 @@ describe("console logger enhanced features", () => {
             highlightMs: 750,
             consoleOutput: "standard"
         });
-        vi.mocked(settingsModule.getActiveFilters).mockReturnValue(new Set(["critical", "warning", "recommendation"]));
-        vi.mocked(settingsModule.getActiveCategories).mockReturnValue(new Set(["accessibility", "seo"]));
+        vi.mocked(settingsModule.getActiveFilters).mockReturnValue(ACTIVE_ALL_FILTERS);
+        vi.mocked(settingsModule.getActiveCategories).mockReturnValue(ACTIVE_DEFAULT_CATEGORIES);
     });
 
     afterEach(() => {
@@ -26,7 +33,7 @@ describe("console logger enhanced features", () => {
     });
 
     it("shows statistics summary when enabled", () => {
-        runLogger({
+        runEnhancedLogger({
             issues: [
                 makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
                 makeIssue({ rule: "ACC-02", severity: "warning", category: "accessibility" }),
@@ -43,16 +50,13 @@ describe("console logger enhanced features", () => {
             activeCategories: new Set(["accessibility", "seo"])
         });
 
-        const statsGroup = spies.group.mock.calls.find((call: unknown[]) => {
-            const first = call[0];
-            return typeof first === "string" && first.includes("Issue Statistics");
-        });
+        const statsGroup = findGroupCallContaining(spies.group.mock.calls, "Issue Statistics");
         expect(statsGroup).toBeDefined();
         expect(spies.table).toHaveBeenCalled();
     });
 
     it("groups issues by category when enabled", () => {
-        runLogger({
+        runEnhancedLogger({
             issues: [
                 makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
                 makeIssue({ rule: "SEO-01", severity: "warning", category: "seo" })
@@ -68,10 +72,7 @@ describe("console logger enhanced features", () => {
             activeCategories: new Set(["accessibility", "seo"])
         });
 
-        const categoryGroups = spies.group.mock.calls.filter((call: unknown[]) => {
-            const first = call[0];
-            return typeof first === "string" && (first.includes("Accessibility") || first.includes("SEO"));
-        });
+        const categoryGroups = filterGroupCallsContainingAny(spies.group.mock.calls, ["Accessibility", "SEO"]);
         expect(categoryGroups.length).toBeGreaterThan(0);
     });
 
@@ -87,16 +88,13 @@ describe("console logger enhanced features", () => {
             score: 90
         });
 
-        const headerCall = spies.group.mock.calls.find((call: unknown[]) => {
-            const first = call[0];
-            return typeof first === "string" && first.includes("[WAH]");
-        });
+        const headerCall = findGroupCallContaining(spies.group.mock.calls, "[WAH]");
         expect(headerCall).toBeDefined();
         expect(headerCall![0]).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
     });
 
     it("uses icons when enabled", () => {
-        runLogger({
+        runEnhancedLogger({
             issues: [makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" })],
             loggingConfig: {
                 timestamps: false,
@@ -118,7 +116,7 @@ describe("console logger enhanced features", () => {
     });
 
     it("respects all logging config options together", () => {
-        runLogger({
+        runEnhancedLogger({
             issues: [
                 makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" }),
                 makeIssue({ rule: "SEO-01", severity: "warning", category: "seo" })
@@ -140,23 +138,17 @@ describe("console logger enhanced features", () => {
         });
         expect(headerCall).toBeDefined();
 
-        const statsGroup = spies.group.mock.calls.find((call: unknown[]) => {
-            const first = call[0];
-            return typeof first === "string" && first.includes("Issue Statistics");
-        });
+        const statsGroup = findGroupCallContaining(spies.group.mock.calls, "Issue Statistics");
         expect(statsGroup).toBeDefined();
 
-        const categoryGroups = spies.group.mock.calls.filter((call: unknown[]) => {
-            const first = call[0];
-            return typeof first === "string" && (first.includes("♿") || first.includes("🔍"));
-        });
+        const categoryGroups = filterGroupCallsContainingAny(spies.group.mock.calls, ["♿", "🔍"]);
         expect(categoryGroups.length).toBeGreaterThan(0);
     });
 
     it("warns when __WAH_FOCUS_ISSUE__ receives an invalid index", () => {
         const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => { });
 
-        runLogger({
+        runEnhancedLogger({
             issues: [makeIssue({ rule: "ACC-01", severity: "critical", category: "accessibility" })],
             loggingConfig: {
                 timestamps: false,

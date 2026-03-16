@@ -1,0 +1,43 @@
+#wah-overlay-root[data-pos="top-left"] {
+    top: 16px;
+    left: 16px;
+    right: auto;
+    bottom: auto;
+}
+
+#wah-overlay-root[data-pos="top-right"] {
+    top: 16px;
+    right: 16px;
+    left: auto;
+    bottom: auto;
+}
+
+#wah-overlay-root[data-pos="bottom-left"] {
+    bottom: 16px;
+    left: 16px;
+    right: auto;
+    top: auto;
+}
+
+#wah-overlay-root[data-pos="bottom-right"] {
+    bottom: 16px;
+    right: 16px;
+    left: auto;
+    top: auto;
+}
+
+#wah-overlay-root[data-pos="top-center"] {
+    top: 16px;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%);
+}
+
+#wah-overlay-root[data-pos="bottom-center"] {
+    bottom: 16px;
+    left: 50%;
+    right: auto;
+    top: auto;
+    transform: translateX(-50%);
+}
