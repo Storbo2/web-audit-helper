@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.3.0/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.0/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -200,7 +200,7 @@ WAH supports extensive configuration options for customization:
 
 - `'off'` disables a rule entirely by ID — it is skipped at runtime.
 - Severity override — string: `'critical'`, `'warning'`, `'recommendation'` — or object: `{ severity: 'warning' }`.
-- `threshold` is supported for: `ACC-22` (min font size px), `ACC-25` (min contrast ratio), `ACC-26` (min line-height), `UX-01` (min touch target px).
+- `threshold` is supported for: `ACC-21` (focus sample size), `ACC-22` (min font size px), `ACC-25` (min contrast ratio), `ACC-26` (min line-height), `UX-01` (min touch target px), `RWD-01` (min width risk px), `RWD-04` (min fixed/sticky overlap ratio), `PERF-02` (max font resources), `PERF-03` (max external scripts), `PERF-06` (min static resources for cache reminder), `PERF-08` (image sample size).
 - Threshold and severity can be combined: `{ severity: 'critical', threshold: 16 }`.
 
 Audit metrics options (`auditMetrics` field):
@@ -578,7 +578,15 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.3.0 (Current)
+### v1.4.0 (Current)
+
+- Registry hardening completed as single source of truth for rule metadata
+- Contract validation enabled for startup/CI (duplicate IDs, invalid category/severity, missing docsSlug)
+- Strong anti self-audit coverage for overlay/popover/context-menu/loading surfaces
+- Costly heuristic controls expanded with thresholds/sampling in accessibility, responsive, and performance rules
+- Configuration docs expanded in EN/ES with costly-rules tuning guidance
+
+### v1.3.0 (Previous)
 
 - Full educational documentation for all implemented rules (61/61)
 - Learn more integrated in report HTML, console issue details, and overlay context menu
@@ -601,15 +609,6 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 - Complete internationalization (English + Spanish)
 - End-to-end testing with Playwright
 - Bilingual documentation
-
-### v1.4 - Core Consistency & Registry Hardening (Planned)
-
-Objective: strengthen internal architecture before major surface expansion.
-
-- Harden internal rule registry as single source of truth for overlay/report/docs
-- Standardize per-rule metadata contracts (ID, category, severity, fix, references)
-- Overlay isolation hardening to avoid self-auditing false positives
-- Keep advanced heuristics bounded (sampling caps, thresholds, explicit opt-out)
 
 ### v1.5 - External Auditing (Planned)
 

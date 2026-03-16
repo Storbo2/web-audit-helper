@@ -1,92 +1,101 @@
-# WAH v1.3.0 Release Notes
+# WAH v1.4.0 Release Notes
 
-**Release Date**: March 15, 2026  
-**Type**: Minor (Documentation + Developer Guidance)
+**Release Date**: March 16, 2026  
+**Type**: Minor (Core Consistency + Registry Hardening)
 
 ---
 
 ## Overview
 
-Version 1.3.0 completes the educational documentation layer of WAH and standardizes how users discover and consume rule guidance across report HTML, console diagnostics, and overlay interactions.
+Version 1.4.0 consolidates WAH internal architecture so future feature growth can rely on stronger consistency guarantees.
 
-This release focuses on turning WAH into a practical educational auditing tool without changing core API ergonomics.
+This release focuses on registry hardening, uniform contracts, anti self-audit protections, and bounded costly heuristics.
 
 ---
 
 ## Highlights
 
-- Full rule documentation coverage: **61/61 rules** in `docs/rules/*.md`
-- Learn more links available in:
-  - HTML report
-  - Console issue detail
-  - Overlay issue context menu (right-click)
-- Rule index guides added:
-  - `docs/rules-guide.md`
-  - `docs/es/rules-guide.md`
-- Contributor guides added:
-  - `docs/contributing.md`
-  - `docs/es/contributing.md`
+- Registry is now the primary source of rule metadata for reporting and docs fields
+- Contract validation runs on startup and fails fast on malformed registry entries
+- Anti self-audit protections are now covered by dedicated tests across overlay surfaces
+- Costly heuristic controls expanded via rule-level thresholds and sampling bounds
+- EN/ES configuration docs now include costly-rule tuning guidance
 
 ---
 
 ## Added
 
-### Educational Rule Pages
+### Registry Hardening
 
-Every currently implemented rule now has a dedicated documentation page with:
+- Enriched registry metadata model:
+  - `category`
+  - `defaultSeverity`
+  - `title`
+  - `fix`
+  - `docsSlug`
+  - `standardType`
+  - `standardLabel`
+- Centralized metadata overrides for all registered rules
+- Metadata coverage tests to enforce full registry completeness
 
-- Problem
-- Why it matters
-- How to fix
-- Bad example
-- Good example
-- References
+### Registry Contract Validation
 
-### Rule Indexes (EN/ES)
+- Startup assertion for rule contract integrity
+- Detailed validation diagnostics for CI:
+  - duplicate IDs
+  - invalid category
+  - invalid default severity
+  - missing docs slug
+- Unit tests for validation logic and error formatting
 
-Added fast navigation guides by rule ID:
+### Anti Self-Audit Test Coverage
 
-- `docs/rules-guide.md`
-- `docs/es/rules-guide.md`
-
-### Contributor Workflow Guides
-
-Added rule contribution guidance in both languages:
-
-- `docs/contributing.md`
-- `docs/es/contributing.md`
+- Core audit test coverage for ignored WAH surfaces:
+  - overlay root
+  - popover
+  - context menu
+  - dynamic loading state nodes
+- Overlay behavior test ensuring context menu carries `data-wah-ignore`
 
 ---
 
 ## Changed
 
-### Learn More URL Strategy
+### Metadata Resolution Path
 
-Learn more links now resolve to canonical GitHub docs URLs:
+- Reporter utilities and category builder now resolve core metadata from registry first, then fallback constants for compatibility.
 
-`https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/{RULE-ID}.md`
+### Costly Heuristic Controls
 
-### Overlay Context Menu Theming
+- Threshold/sampling support added to selected heavy rules:
+  - `ACC-21`
+  - `RWD-01`
+  - `RWD-04`
+  - `PERF-02`
+  - `PERF-03`
+  - `PERF-06`
+  - `PERF-08`
+- Rule registry wiring now forwards per-rule threshold overrides to these heuristics.
 
-The right-click issue menu now follows active overlay theme tokens for improved visual consistency in light/dark/auto modes.
+### Documentation
 
-### README and Docs Navigation
-
-Updated docs navigation references to include rules index and contribution guides.
+- Updated `docs/configuration.md` and `docs/es/configuration.md` with:
+  - expanded threshold-capable rules table
+  - practical costly-rule tuning guidance
 
 ---
 
 ## Fixed
 
-- Improved console Learn more output formatting for more reliable URL handling across browser DevTools variants.
+- Stabilized phase 4 threshold tests using deterministic geometry-based overlap assertions in jsdom.
 
 ---
 
 ## Validation Status
 
+- Typecheck: passing (`npm run typecheck`)
+- Test suite: passing (`npm test`)
 - Build: passing (`npm run build`)
-- Rule docs coverage check: `61/61`
-- Overlay/report/console Learn more integration: verified
 
 ---
 
@@ -95,8 +104,9 @@ Updated docs navigation references to include rules index and contribution guide
 No breaking changes introduced.
 
 - Existing integrations continue to work unchanged.
-- Users can immediately consume richer educational links in current overlay/report/console flows.
+- Existing `rules[ruleId]` override style remains backward compatible.
+- New threshold-capable rules are opt-in and only apply when configured.
 
 ---
 
-*Previous release: [v1.2.0 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.2.0)*
+*Previous release: [v1.3.0 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.3.0)*

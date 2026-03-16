@@ -7,6 +7,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-03-16
+
+### Added
+
+- **Registry metadata hardening**:
+  - Added enriched registry metadata contract (`category`, `defaultSeverity`, `title`, `fix`, `docsSlug`, `standardType`, `standardLabel`)
+  - Added centralized metadata override map for all registered rules
+  - Added metadata coverage tests to guarantee complete registry metadata population
+- **Registry contract validation**:
+  - Added startup/runtime contract assertion for the enriched registry
+  - Added detailed validation errors for CI diagnostics (duplicate IDs, invalid category/severity, missing docsSlug)
+  - Added dedicated unit test suite for registry contract validation and formatting
+- **Self-audit protection coverage**:
+  - Added tests to verify WAH ignores overlay/popover/context-menu/loading nodes marked with `data-wah-ignore`
+  - Added overlay test ensuring context menu is marked as ignored for subsequent runs
+
+### Changed
+
+- **Rule metadata sourcing**:
+  - Report builder and reporter utilities now resolve metadata from registry first, with constants fallback for compatibility
+- **Costly heuristic controls (phase 4)**:
+  - Added threshold/sampling parameters to selected heavy heuristics:
+    - `ACC-21` (focus visibility sample size)
+    - `RWD-01` (large fixed width threshold)
+    - `RWD-04` (fixed/sticky overlap ratio threshold)
+    - `PERF-02` (font resources threshold)
+    - `PERF-03` (external script threshold)
+    - `PERF-06` (cache reminder resource threshold)
+    - `PERF-08` (image sample size)
+  - Registry rule wiring now supports these thresholds via `rules[ruleId].threshold`
+- **Documentation updates**:
+  - Expanded EN/ES configuration docs with the new threshold-capable rules
+  - Added explicit costly-rule tuning guidance for predictable audit runtime
+
+### Fixed
+
+- Stabilized phase 4 threshold tests by using deterministic geometry-based overlap assertions in jsdom.
+
 ## [1.3.0] - 2026-03-15
 
 ### Added

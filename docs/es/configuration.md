@@ -308,7 +308,7 @@ Valores válidos de severidad: `'critical'` | `'warning'` | `'recommendation'` |
 
 ### Thresholds por regla
 
-Cuatro reglas exponen un threshold numérico configurable que reemplaza la opción global correspondiente:
+Las siguientes reglas exponen un threshold numérico configurable:
 
 | ID Regla | Controla | Unidad | Reemplaza |
 | ---------- | ---------- | -------- | ----------- |
@@ -316,6 +316,13 @@ Cuatro reglas exponen un threshold numérico configurable que reemplaza la opci�
 | `ACC-25` | Ratio mínimo de contraste | ratio | derivado de `contrastLevel` (4.5 / 7) |
 | `ACC-26` | Line-height mínimo | valor sin unidad | `accessibility.minLineHeight` |
 | `UX-01` | Tamaño mínimo de touch target | píxeles | `quality.minTouchSize` |
+| `ACC-21` | Elementos interactivos muestreados para focus-visibility | cantidad de elementos | - |
+| `RWD-01` | Ancho mínimo marcado como riesgo de fixed-width | píxeles | - |
+| `RWD-04` | Ratio mínimo de alto de viewport para fixed/sticky overlap | ratio (0-1) | - |
+| `PERF-02` | Máximo de recursos de fuentes antes de warning | cantidad de recursos | - |
+| `PERF-03` | Máximo de scripts externos antes de warning | cantidad de scripts | - |
+| `PERF-06` | Mínimo de recursos estáticos que dispara recordatorio de caché | cantidad de recursos | - |
+| `PERF-08` | Imágenes muestreadas para analizar formato moderno | cantidad de imágenes | - |
 
 ```javascript
 await runWAH({
@@ -323,7 +330,42 @@ await runWAH({
     'ACC-22': { threshold: 16 },    // Exige fuente >= 16px
     'ACC-25': { threshold: 5.0 },   // Exige ratio de contraste >= 5.0
     'ACC-26': { threshold: 1.5 },   // Exige line-height >= 1.5
-    'UX-01':  { threshold: 48 }     // Exige touch targets >= 48px
+    'UX-01':  { threshold: 48 },    // Exige touch targets >= 48px
+    'RWD-01': { threshold: 1024 },  // Reporta solo anchos > 1024px
+    'RWD-04': { threshold: 0.25 },  // Reporta overlap fixed/sticky a partir de 25% del viewport
+    'PERF-02': { threshold: 2 },    // Permite como maximo 2 recursos de fuentes
+    'PERF-03': { threshold: 8 },    // Permite como maximo 8 scripts externos
+    'PERF-06': { threshold: 10 },   // Solo dispara si hay >10 recursos estaticos
+    'PERF-08': { threshold: 150 },  // Inspecciona las primeras 150 imagenes
+    'ACC-21': { threshold: 60 }     // Inspecciona los primeros 60 elementos interactivos
+  }
+});
+```
+
+### Reglas costosas y ajuste de performance
+
+Algunas heurísticas pesan mas en paginas grandes (escaneos de layout/computed-style o recorridos amplios del DOM). Usa thresholds por regla y overrides con `off` para mantener tiempos de auditoría predecibles.
+
+Controles mas relevantes:
+
+| ID Regla | Por qué puede ser costosa | Ajuste recomendado |
+| ---------- | --------------------------- | -------------------- |
+| `ACC-21` | Checks de computed-style sobre elementos interactivos | Baja el threshold para reducir muestra (por ejemplo `40-80`) |
+| `ACC-25` | Calculo de contraste en nodos de texto visibles | Mantener por defecto salvo necesidad; ya muestrea hasta 100 elementos |
+| `ACC-26` | Check de line-height computado en contenedores de texto | Mantener por defecto salvo necesidad; ya muestrea hasta 100 elementos |
+| `RWD-01` | Recorrido amplio de elementos con parseo de width | Sube el threshold para reducir ruido en layouts pesados |
+| `RWD-04` | Escaneo de elementos fixed/sticky + chequeos de geometría | Sube el ratio (por ejemplo `0.22-0.3`) para enfocarte en solapamientos de alto impacto |
+| `PERF-08` | Recorrido de imagenes en paginas con mucho contenido multimedia | Baja el threshold (por ejemplo `100-200`) |
+
+Si necesitas limites estrictos de tiempo para CI o demos, combina ajuste y desactivación selectiva:
+
+```javascript
+await runWAH({
+  rules: {
+    'ACC-21': { threshold: 50 },
+    'RWD-04': { threshold: 0.25 },
+    'PERF-08': { threshold: 120 },
+    'PERF-06': 'off'
   }
 });
 ```

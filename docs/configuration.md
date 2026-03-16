@@ -302,7 +302,7 @@ Valid severity values: `'critical'` | `'warning'` | `'recommendation'` | `'off'`
 
 ### Per-Rule Thresholds
 
-Four rules expose a configurable numeric threshold that overrides the corresponding global setting:
+The following rules expose a configurable numeric threshold:
 
 | Rule ID | Controls | Unit | Replaces |
 | --------- | ---------- | ------ | --------- |
@@ -310,6 +310,13 @@ Four rules expose a configurable numeric threshold that overrides the correspond
 | `ACC-25` | Minimum contrast ratio | ratio | derived from `contrastLevel` (4.5 / 7) |
 | `ACC-26` | Minimum line-height | unitless value | `accessibility.minLineHeight` |
 | `UX-01` | Minimum touch target size | pixels | `quality.minTouchSize` |
+| `ACC-21` | Interactive elements sampled for focus-visibility check | element count | - |
+| `RWD-01` | Minimum width flagged as fixed-width risk | pixels | - |
+| `RWD-04` | Minimum viewport-height ratio flagged for fixed/sticky overlap | ratio (0-1) | - |
+| `PERF-02` | Maximum font resources before warning | resource count | - |
+| `PERF-03` | Maximum external scripts before warning | script count | - |
+| `PERF-06` | Minimum static resources that trigger cache-header reminder | resource count | - |
+| `PERF-08` | Images sampled for modern-format analysis | image count | - |
 
 ```javascript
 await runWAH({
@@ -317,7 +324,42 @@ await runWAH({
         'ACC-22': { threshold: 16 },    // Require font size >= 16px
         'ACC-25': { threshold: 5.0 },   // Require contrast ratio >= 5.0
         'ACC-26': { threshold: 1.5 },   // Require line-height >= 1.5
-        'UX-01':  { threshold: 48 }     // Require touch targets >= 48px
+        'UX-01':  { threshold: 48 },    // Require touch targets >= 48px
+        'RWD-01': { threshold: 1024 },  // Flag only widths > 1024px
+        'RWD-04': { threshold: 0.25 },  // Flag fixed/sticky overlap at >= 25% viewport height
+        'PERF-02': { threshold: 2 },    // Allow at most 2 font resources
+        'PERF-03': { threshold: 8 },    // Allow at most 8 external scripts
+        'PERF-06': { threshold: 10 },   // Trigger only when page has >10 static resources
+        'PERF-08': { threshold: 150 },  // Inspect first 150 images for modern formats
+        'ACC-21': { threshold: 60 }     // Inspect first 60 interactive elements for focus visibility
+    }
+});
+```
+
+### Costly Rules and Performance Tuning
+
+Some heuristics are heavier on large pages (layout/computed-style scans or wide DOM traversals). Use rule-level thresholds and `off` overrides to keep audit time predictable.
+
+Most relevant controls:
+
+| Rule ID | Why It Can Be Costly | Recommended Tuning |
+| --------- | ---------------------- | -------------------- |
+| `ACC-21` | Computed-style checks over interactive elements | Lower threshold to reduce sampled elements (for example `40-80`) |
+| `ACC-25` | Contrast calculations on sampled visible text nodes | Keep default unless needed; this rule already samples up to 100 elements |
+| `ACC-26` | Computed line-height checks on sampled text containers | Keep default unless needed; this rule already samples up to 100 elements |
+| `RWD-01` | Broad element traversal with width parsing | Raise threshold to reduce findings noise on layout-heavy pages |
+| `RWD-04` | Fixed/sticky element scan + geometry checks | Raise ratio threshold (for example `0.22-0.3`) to focus on high-impact overlaps |
+| `PERF-08` | Image traversal on media-heavy pages | Lower threshold (for example `100-200`) |
+
+If you need strict run-time bounds for CI or demo environments, combine tuning with selective disabling:
+
+```javascript
+await runWAH({
+    rules: {
+        'ACC-21': { threshold: 50 },
+        'RWD-04': { threshold: 0.25 },
+        'PERF-08': { threshold: 120 },
+        'PERF-06': 'off'
     }
 });
 ```
