@@ -25,12 +25,12 @@ export function checkNestedInteractiveElements(): AuditIssue[] {
     return issues;
 }
 
-export function checkFocusNotVisible(): AuditIssue[] {
+export function checkFocusNotVisible(sampleLimit: number = 100): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     const selectors = "button, a[href], input, select, textarea";
     const sample = Array.from(document.querySelectorAll(selectors))
-        .slice(0, 100);
+        .slice(0, Math.max(1, sampleLimit));
 
     sample.forEach((el) => {
         if (shouldIgnore(el)) return;

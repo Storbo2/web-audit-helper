@@ -92,14 +92,14 @@ export function checkMissingViewportMeta(): AuditIssue[] {
     return issues;
 }
 
-export function checkLargeFixedWidths(): AuditIssue[] {
+export function checkLargeFixedWidths(minWidthPx: number = 900, sampleLimit: number = 300): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     const excludedTags = new Set(['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'SPAN', 'LABEL', 'LI', 'UL', 'OL', 'STRONG', 'EM', 'B', 'I', 'IMG', 'VIDEO', 'CANVAS', 'SVG']);
 
     const elements = Array.from(document.querySelectorAll("*"))
         .filter(el => !excludedTags.has(el.tagName) && el !== document.body && el !== document.documentElement)
-        .slice(0, 300);
+        .slice(0, Math.max(1, sampleLimit));
 
     elements.forEach((el) => {
         if (shouldIgnore(el)) return;
@@ -109,7 +109,7 @@ export function checkLargeFixedWidths(): AuditIssue[] {
         const w = style.width;
         const px = parseFloat(w);
 
-        if (!isNaN(px) && px > 900) {
+        if (!isNaN(px) && px > minWidthPx) {
             const inlineWidth = htmlEl.style.width;
             const hasExplicitWidth = inlineWidth && inlineWidth !== "auto";
 
@@ -152,18 +152,21 @@ export function checkHorizontalOverflow(): AuditIssue[] {
     return issues;
 }
 
-export function checkFixedElementOverlap(includeHiddenElements: boolean = false): AuditIssue[] {
+export function checkFixedElementOverlap(
+    includeHiddenElements: boolean = false,
+    minViewportRatio: number = 0.18,
+    sampleLimit: number = 300
+): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     const viewportHeight = window.innerHeight;
-    const minViewportRatio = 0.18;
 
     const elements = Array.from(document.querySelectorAll("*"))
         .filter((el) => {
             const style = getComputedStyle(el);
             return style.position === "fixed" || style.position === "sticky";
         })
-        .slice(0, 300);
+        .slice(0, Math.max(1, sampleLimit));
 
     elements.forEach((el) => {
         if (shouldIgnore(el)) return;

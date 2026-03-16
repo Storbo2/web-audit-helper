@@ -184,7 +184,6 @@ describe("core metrics", () => {
     it("collects metrics using Date.now fallback when performance is unavailable", () => {
         const originalPerformance = (globalThis as { performance?: Performance }).performance;
 
-        // Force nowMs() to use Date.now branch.
         delete (globalThis as { performance?: Performance }).performance;
 
         try {

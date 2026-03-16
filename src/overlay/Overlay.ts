@@ -105,6 +105,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
 
         const menu = document.createElement("div");
         menu.className = "wah-issue-menu";
+        menu.setAttribute("data-wah-ignore", "");
         menu.setAttribute("role", "menu");
         menu.innerHTML = `
             <button type="button" class="wah-issue-menu-item" role="menuitem">${t().learnMoreLabel}</button>

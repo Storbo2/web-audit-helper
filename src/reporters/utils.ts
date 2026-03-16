@@ -11,6 +11,7 @@ import {
     SEVERITY_RANK,
     WAH_MODE
 } from "./constants";
+import { getRegisteredRuleById } from "../core/config/registry";
 import { translateRuleFix, translateRuleLabel } from "../utils/i18n";
 
 const RULE_DOCS_BASE_URL = "https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules";
@@ -59,7 +60,7 @@ export function generateRuleDescription(ruleId: string, ruleTitle: string): stri
 }
 
 export function generateRuleFix(ruleId: string): string | undefined {
-    const stored = RULE_FIXES[ruleId];
+    const stored = getRegisteredRuleById(ruleId)?.fix || RULE_FIXES[ruleId];
     if (stored) return stored;
 
     const tokenTitle = RULE_TOKENS_COMPACT[ruleId];
@@ -88,15 +89,15 @@ export function getRuleWhy(ruleId: string): string | undefined {
 }
 
 export function getRuleStandardType(ruleId: string): string | undefined {
-    return RULE_STANDARD_TYPE[ruleId];
+    return getRegisteredRuleById(ruleId)?.standardType || RULE_STANDARD_TYPE[ruleId];
 }
 
 export function getRuleStandardLabel(ruleId: string): string | undefined {
-    return RULE_STANDARD_LABEL[ruleId];
+    return getRegisteredRuleById(ruleId)?.standardLabel || RULE_STANDARD_LABEL[ruleId];
 }
 
 export function getRuleDocsSlug(ruleId: string): string | undefined {
-    return RULE_DOCS_SLUG[ruleId];
+    return getRegisteredRuleById(ruleId)?.docsSlug || RULE_DOCS_SLUG[ruleId];
 }
 
 export function getRuleDocsUrl(ruleId: string): string | undefined {
@@ -105,7 +106,7 @@ export function getRuleDocsUrl(ruleId: string): string | undefined {
 }
 
 export function hasRuleDocs(ruleId: string): boolean {
-    return ruleId in RULE_DOCS_SLUG;
+    return !!getRuleDocsSlug(ruleId);
 }
 
 export function getRulePrefix(ruleId: string): string {

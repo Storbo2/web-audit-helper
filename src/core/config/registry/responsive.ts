@@ -1,4 +1,4 @@
-import type { RegisteredRule } from "./types";
+import { getRuleThreshold, type RegisteredRule } from "./types";
 import { RULE_IDS } from "../ruleIds";
 import { checkLargeFixedWidths, checkMissingViewportMeta, checkHorizontalOverflow, checkFixedElementOverlap, checkProblematic100vh } from "../../rules/responsive";
 
@@ -9,7 +9,9 @@ export const responsiveRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.responsive.largeFixedWidth,
-        run: () => checkLargeFixedWidths()
+        run: (config) => checkLargeFixedWidths(
+            getRuleThreshold(config, RULE_IDS.responsive.largeFixedWidth) ?? 900
+        )
     },
     {
         id: RULE_IDS.responsive.overflowHorizontal,
@@ -17,7 +19,10 @@ export const responsiveRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.responsive.fixedElementOverlap,
-        run: (config) => checkFixedElementOverlap(config.scoringMode === "strict")
+        run: (config) => checkFixedElementOverlap(
+            config.scoringMode === "strict",
+            getRuleThreshold(config, RULE_IDS.responsive.fixedElementOverlap) ?? 0.18
+        )
     },
     {
         id: RULE_IDS.responsive.problematic100vh,

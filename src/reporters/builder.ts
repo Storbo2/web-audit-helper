@@ -10,6 +10,7 @@ import type {
     IssueCategory
 } from "../core/types";
 import { CORE_RULES_REGISTRY } from "../core/config/registry";
+import { getRegisteredRuleById } from "../core/config/registry";
 import {
     CATEGORY_ORDER,
     ELEMENTS_EXPORT_LIMIT,
@@ -157,7 +158,8 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
             const ws = worstSeverity(ruleIssues.map(i => i.severity));
             const status = severityToStatus(ws);
             const firstIssue = ruleIssues[0];
-            const title = getRuleTitle(ruleId, firstIssue.message);
+            const registryRule = getRegisteredRuleById(ruleId);
+            const title = getRuleTitle(ruleId, registryRule?.title || firstIssue.message);
 
             const elementMap = new Map<string, AffectedElement>();
             for (const issue of ruleIssues) {
@@ -182,12 +184,12 @@ export function buildCategories(result: AuditResult, byCategoryScores?: Partial<
                 description: getRuleDescription(ruleId, title),
                 status,
                 message: toSentenceCase(translateIssueMessage(ruleId, firstIssue.message)),
-                ...(getRuleFix(ruleId) ? { fix: getRuleFix(ruleId) } : {}),
+                ...((getRuleFix(ruleId) || registryRule?.fix) ? { fix: getRuleFix(ruleId) || registryRule?.fix } : {}),
                 ...(getRuleWhy(ruleId) ? { whyItMatters: getRuleWhy(ruleId) } : {}),
-                ...(getRuleStandardType(ruleId) ? { standardType: getRuleStandardType(ruleId) } : {}),
-                ...(getRuleStandardLabel(ruleId) ? { standardLabel: getRuleStandardLabel(ruleId) } : {}),
-                ...(getRuleDocsSlug(ruleId) ? { docsSlug: getRuleDocsSlug(ruleId) } : {}),
-                ...(getRuleDocsUrl(ruleId) ? { docsUrl: getRuleDocsUrl(ruleId) } : {}),
+                ...((getRuleStandardType(ruleId) || registryRule?.standardType) ? { standardType: getRuleStandardType(ruleId) || registryRule?.standardType } : {}),
+                ...((getRuleStandardLabel(ruleId) || registryRule?.standardLabel) ? { standardLabel: getRuleStandardLabel(ruleId) || registryRule?.standardLabel } : {}),
+                ...((getRuleDocsSlug(ruleId) || registryRule?.docsSlug) ? { docsSlug: getRuleDocsSlug(ruleId) || registryRule?.docsSlug } : {}),
+                ...((getRuleDocsUrl(ruleId) || registryRule?.docsSlug) ? { docsUrl: getRuleDocsUrl(ruleId) || `https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/${encodeURIComponent(registryRule!.docsSlug)}.md` } : {}),
                 ...(elements.length ? { elements } : {}),
                 ...(elementsOmitted > 0 ? { elementsOmitted } : {})
             };

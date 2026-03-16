@@ -4,8 +4,11 @@ import {
     decodeRuleTitle,
     generateRuleDescription,
     generateRuleFix,
+    getRuleStandardLabel,
+    getRuleStandardType,
     getRulePrefix,
     getRuleTitle,
+    hasRuleDocs,
     scoreToGrade,
     sortRulesById,
     toSentenceCase,
@@ -50,6 +53,16 @@ describe("reporters utils", () => {
 
         expect(known.toLowerCase()).toContain("html");
         expect(unknown).toContain("Fallback message");
+    });
+
+    it("resolves standard metadata from registry for non-curated constants", () => {
+        expect(getRuleStandardType("SEM-01")).toBe("heuristic");
+        expect(getRuleStandardLabel("SEM-01")).toContain("Semantic HTML");
+    });
+
+    it("reports docs availability using registry-backed slug", () => {
+        expect(hasRuleDocs("SEM-01")).toBe(true);
+        expect(hasRuleDocs("UNKNOWN-999")).toBe(false);
     });
 
     it("extracts rule prefix and sorts rules by id", () => {

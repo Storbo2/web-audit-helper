@@ -136,6 +136,34 @@ describe("ACC-25: contrast detection", () => {
         const issues = checkContrastRatio(4.5);
         expect(issues.some(issue => issue.element === span)).toBe(false);
     });
+
+    it("ignores low-contrast elements under data-wah-ignore", () => {
+        const overlay = document.createElement("div");
+        overlay.setAttribute("data-wah-ignore", "");
+        const p = document.createElement("p");
+        p.textContent = "Low contrast in overlay";
+        overlay.appendChild(p);
+        document.body.appendChild(overlay);
+
+        const originalGetComputedStyle = window.getComputedStyle.bind(window);
+        vi.spyOn(window, "getComputedStyle").mockImplementation((elt: Element) => {
+            const style = originalGetComputedStyle(elt) as CSSStyleDeclaration;
+            if (elt !== p) return style;
+
+            return new Proxy(style, {
+                get(target, prop, receiver) {
+                    if (prop === "color") return "rgb(204, 204, 204)";
+                    if (prop === "backgroundColor") return "rgb(255, 255, 255)";
+                    if (prop === "animationDuration") return "0s";
+                    if (prop === "transitionDuration") return "0s";
+                    return Reflect.get(target, prop, receiver);
+                }
+            }) as CSSStyleDeclaration;
+        });
+
+        const issues = checkContrastRatio(4.5);
+        expect(issues.some(issue => issue.element === p)).toBe(false);
+    });
 });
 
 describe("RWD-04: fixed element overlap", () => {
@@ -369,6 +397,48 @@ describe("RWD-04: fixed element overlap", () => {
         const issues = checkFixedElementOverlap();
 
         expect(issues.some(issue => issue.rule === RULE_IDS.responsive.fixedElementOverlap && issue.element === overlay)).toBe(true);
+    });
+
+    it("ignores fixed elements under data-wah-ignore", () => {
+        const overlayRoot = document.createElement("div");
+        overlayRoot.setAttribute("data-wah-ignore", "");
+        const fixed = document.createElement("div");
+        fixed.textContent = "WAH fixed panel";
+        overlayRoot.appendChild(fixed);
+        document.body.appendChild(overlayRoot);
+
+        const originalGetComputedStyle = window.getComputedStyle.bind(window);
+        vi.spyOn(window, "getComputedStyle").mockImplementation((elt: Element) => {
+            const style = originalGetComputedStyle(elt) as CSSStyleDeclaration;
+            if (elt !== fixed) return style;
+
+            return new Proxy(style, {
+                get(target, prop, receiver) {
+                    if (prop === "position") return "fixed";
+                    if (prop === "backgroundImage") return "none";
+                    if (prop === "zIndex") return "10";
+                    return Reflect.get(target, prop, receiver);
+                }
+            }) as CSSStyleDeclaration;
+        });
+
+        Object.defineProperty(fixed, "getBoundingClientRect", {
+            configurable: true,
+            value: () => ({
+                x: 0,
+                y: 0,
+                top: 0,
+                left: 0,
+                right: 1200,
+                bottom: 320,
+                width: 1200,
+                height: 320,
+                toJSON: () => ({})
+            })
+        });
+
+        const issues = checkFixedElementOverlap();
+        expect(issues.some(issue => issue.element === fixed)).toBe(false);
     });
 });
 

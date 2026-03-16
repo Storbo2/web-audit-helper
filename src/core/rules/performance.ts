@@ -129,11 +129,10 @@ export function checkImageMissingSrcset(): AuditIssue[] {
     return issues;
 }
 
-export function checkTooManyFonts(): AuditIssue[] {
+export function checkTooManyFonts(threshold: number = 3): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const fontLinks = document.querySelectorAll<HTMLLinkElement>('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[href*="font"]');
 
-    const threshold = 3;
     if (fontLinks.length > threshold) {
         const firstLink = fontLinks[0];
         issues.push({
@@ -149,11 +148,10 @@ export function checkTooManyFonts(): AuditIssue[] {
     return issues;
 }
 
-export function checkTooManyScripts(): AuditIssue[] {
+export function checkTooManyScripts(threshold: number = 10): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const scripts = document.querySelectorAll("script[src]");
 
-    const threshold = 10;
     if (scripts.length > threshold) {
         const firstScript = scripts[0];
         issues.push({
@@ -222,14 +220,14 @@ export function checkRenderBlockingCSS(): AuditIssue[] {
     return issues;
 }
 
-export function checkMissingCacheHeaders(): AuditIssue[] {
+export function checkMissingCacheHeaders(minResources: number = 5): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
     const staticResources = document.querySelectorAll<HTMLElement>(
         'script[src], link[rel="stylesheet"], img[src], video[src], audio[src]'
     );
 
-    if (staticResources.length > 5) {
+    if (staticResources.length > minResources) {
         const firstResource = staticResources[0];
         issues.push({
             rule: RULE_IDS.performance.missingCacheHeaders,
@@ -284,10 +282,10 @@ export function checkCSSImportUsage(): AuditIssue[] {
     return issues;
 }
 
-export function checkImageMissingModernFormat(): AuditIssue[] {
+export function checkImageMissingModernFormat(sampleLimit: number = 300): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
-    document.querySelectorAll("img").forEach((img) => {
+    Array.from(document.querySelectorAll("img")).slice(0, Math.max(1, sampleLimit)).forEach((img) => {
         if (shouldIgnore(img)) return;
 
         if (img.closest("picture")) return;

@@ -1,4 +1,4 @@
-import type { RegisteredRule } from "./types";
+import { getRuleThreshold, type RegisteredRule } from "./types";
 import { RULE_IDS } from "../ruleIds";
 import {
     checkImageMissingAsyncDecode,
@@ -38,11 +38,15 @@ export const performanceRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.performance.tooManyFonts,
-        run: () => checkTooManyFonts()
+        run: (config) => checkTooManyFonts(
+            getRuleThreshold(config, RULE_IDS.performance.tooManyFonts) ?? 3
+        )
     },
     {
         id: RULE_IDS.performance.tooManyScripts,
-        run: () => checkTooManyScripts()
+        run: (config) => checkTooManyScripts(
+            getRuleThreshold(config, RULE_IDS.performance.tooManyScripts) ?? 10
+        )
     },
     {
         id: RULE_IDS.performance.scriptWithoutDefer,
@@ -54,7 +58,9 @@ export const performanceRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.performance.missingCacheHeaders,
-        run: () => checkMissingCacheHeaders()
+        run: (config) => checkMissingCacheHeaders(
+            getRuleThreshold(config, RULE_IDS.performance.missingCacheHeaders) ?? 5
+        )
     },
     {
         id: RULE_IDS.performance.cssImportUsage,
@@ -62,6 +68,8 @@ export const performanceRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.performance.imageMissingModernFormat,
-        run: () => checkImageMissingModernFormat()
+        run: (config) => checkImageMissingModernFormat(
+            getRuleThreshold(config, RULE_IDS.performance.imageMissingModernFormat) ?? 300
+        )
     }
 ];

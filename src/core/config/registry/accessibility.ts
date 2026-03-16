@@ -131,7 +131,9 @@ export const accessibilityRules: RegisteredRule[] = [
     },
     {
         id: RULE_IDS.accessibility.focusNotVisible,
-        run: () => checkFocusNotVisible()
+        run: (config) => checkFocusNotVisible(
+            getRuleThreshold(config, RULE_IDS.accessibility.focusNotVisible) ?? 100
+        )
     },
     {
         id: RULE_IDS.accessibility.lineHeightTooLow,
