@@ -239,7 +239,9 @@
         "PERF-05": "Render-blocking CSS",
         "PERF-06": "Missing cache headers",
         "PERF-07": "CSS @import usage",
-        "PERF-08": "Image missing modern format"
+        "PERF-08": "Image missing modern format",
+        "PERF-09": "Above-the-fold image without fetch priority",
+        "PERF-10": "Excess third-party scripts from same domain"
     },
     "ruleFixes": {},
     "issueMessages": {

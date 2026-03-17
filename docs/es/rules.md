@@ -380,7 +380,7 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 ---
 
-## Reglas de rendimiento (10)
+## Reglas de rendimiento (12)
 
 ### IMG-01: Imágenes sin dimensiones
 
@@ -432,6 +432,18 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 - **Descripción**: Recursos estáticos sin estrategia de cache headers.
 - **Fix**: Configura `Cache-Control` o usa caché en CDN.
 
+### PERF-09: Imagen above-the-fold sin prioridad de carga
+
+- **Severidad**: Recommendation
+- **Descripción**: Imagen visible en la primera vista sin `fetchpriority`.
+- **Fix**: Agrega `fetchpriority="high"` para mejorar LCP.
+
+### PERF-10: Exceso de scripts third-party del mismo dominio
+
+- **Severidad**: Recommendation
+- **Descripción**: Múltiples scripts desde el mismo dominio third-party.
+- **Fix**: Consolida scripts del mismo dominio para reducir solicitudes.
+
 ---
 
 ## Reglas de formularios (4)
@@ -464,9 +476,9 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 ## Resumen
 
-- **Total de reglas**: 61
+- **Total de reglas**: 73
 - **Severidad Critical**: 14
 - **Severidad Warning**: 23
-- **Severidad Recommendation**: 24
+- **Severidad Recommendation**: 36
 
 Para ejemplos e implementación detallada, revisa el código fuente en `src/core/rules/`.

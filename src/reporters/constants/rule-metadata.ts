@@ -21,7 +21,9 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "IMG-01": "Detects images missing width and height attributes that prevent layout shifts",
     "IMG-02": "Detects images below the fold not using lazy loading",
     "PERF-05": "Detects render-blocking CSS in head without preload",
-    "PERF-06": "Warns when Cache-Control headers may not be configured"
+    "PERF-06": "Warns when Cache-Control headers may not be configured",
+    "PERF-09": "Detects above-the-fold images missing fetchpriority attribute",
+    "PERF-10": "Detects excess third-party scripts from the same external domain"
 };
 
 export const RULE_WHY: Partial<Record<string, string>> = {
@@ -44,7 +46,9 @@ export const RULE_WHY: Partial<Record<string, string>> = {
     "FORM-01": "A submit button outside its form does not trigger submission by default, breaking the form for keyboard and assistive technology users",
     "FORM-04": "Autocomplete reduces input errors and speeds up form completion, which is especially critical for users with motor difficulties or dyslexia",
     "IMG-01": "Browsers need image dimensions to reserve layout space during load; missing dimensions cause Cumulative Layout Shift (CLS)",
-    "IMG-02": "Loading all images on page load increases initial bytes transferred, delays Time to Interactive, and wastes bandwidth on unseen content"
+    "IMG-02": "Loading all images on page load increases initial bytes transferred, delays Time to Interactive, and wastes bandwidth on unseen content",
+    "PERF-09": "Setting fetchpriority on above-the-fold images signals to the browser to prioritize their loading, improving Largest Contentful Paint (LCP)",
+    "PERF-10": "Multiple scripts from the same external domain increase request overhead; consolidation reduces network round-trips and improves page load time"
 };
 
 export const RULE_STANDARD_TYPE: Partial<Record<string, "wcag" | "html-spec" | "owasp" | "web-dev" | "heuristic">> = {
@@ -67,7 +71,9 @@ export const RULE_STANDARD_TYPE: Partial<Record<string, "wcag" | "html-spec" | "
     "FORM-01": "html-spec",
     "FORM-04": "wcag",
     "IMG-01": "web-dev",
-    "IMG-02": "web-dev"
+    "IMG-02": "web-dev",
+    "PERF-09": "web-dev",
+    "PERF-10": "web-dev"
 };
 
 export const RULE_STANDARD_LABEL: Partial<Record<string, string>> = {
@@ -90,7 +96,9 @@ export const RULE_STANDARD_LABEL: Partial<Record<string, string>> = {
     "FORM-01": "HTML spec — form submission",
     "FORM-04": "WCAG 2.1 — 1.3.5 Identify Input Purpose",
     "IMG-01": "Core Web Vitals — Cumulative Layout Shift (CLS)",
-    "IMG-02": "web.dev — loading performance"
+    "IMG-02": "web.dev — loading performance",
+    "PERF-09": "Core Web Vitals — Largest Contentful Paint (LCP)",
+    "PERF-10": "web.dev — third-party script performance"
 };
 
 export const RULE_DOCS_SLUG: Partial<Record<string, string>> = {
@@ -133,6 +141,8 @@ export const RULE_DOCS_SLUG: Partial<Record<string, string>> = {
     "PERF-04": "PERF-04",
     "PERF-05": "PERF-05",
     "PERF-06": "PERF-06",
+    "PERF-09": "PERF-09",
+    "PERF-10": "PERF-10",
     "QLT-01": "QLT-01",
     "QLT-02": "QLT-02",
     "RWD-01": "RWD-01",

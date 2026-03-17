@@ -45,6 +45,14 @@
     <script src="../public/js/lib7.js" defer></script>
     <script src="../public/js/lib8.js" defer></script>
     <script src="../public/js/lib9.js" defer></script>
+
+    <!-- PERF-10: Excess third-party scripts (threshold: 5) - exactly 6 from same domain for violation -->
+    <script src="https://cdn.analytics.example.com/v1/track.js" defer></script>
+    <script src="https://cdn.analytics.example.com/v2/events.js" defer></script>
+    <script src="https://cdn.analytics.example.com/v3/segments.js" defer></script>
+    <script src="https://cdn.analytics.example.com/v4/dashboard.js" defer></script>
+    <script src="https://cdn.analytics.example.com/v5/reports.js" defer></script>
+    <script src="https://cdn.analytics.example.com/v6/export.js" defer></script>
 </head>
 
 <body>
@@ -55,6 +63,9 @@
     <h1>Another Main</h1> <!-- ACC-08: multiple h1 -->
     <h2 id="dup-id">WAH Test</h2>
     <h4 id="dup-id">Second Title</h4> <!-- ACC-23: duplicated id + ACC-10: heading order jump -->
+
+    <!-- PERF-09: Above-the-fold image without fetchpriority -->
+    <img src="../public/images/hero.svg" alt="Hero Image" width="800" height="400" loading="eager" />
 
     <p style="font-size: 10px; color: #2c2c2c; background: #fff; margin: 0; padding: 5px;">
         Small text <!-- ACC-22: small text + QUAL-01: inline styles -->

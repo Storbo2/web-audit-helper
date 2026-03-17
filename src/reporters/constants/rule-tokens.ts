@@ -61,5 +61,7 @@ export const RULE_TOKENS_COMPACT: Record<string, string> = {
     "PERF-03": "many:scripts",
     "PERF-04": "missing:script defer in head",
     "PERF-05": "blocking:render css",
-    "PERF-06": "missing:cache headers"
+    "PERF-06": "missing:cache headers",
+    "PERF-09": "missing:fetchpriority",
+    "PERF-10": "excess:third-party scripts"
 };

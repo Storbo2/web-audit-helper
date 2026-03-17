@@ -239,7 +239,9 @@
         "PERF-05": "CSS que bloquea render",
         "PERF-06": "Faltan cabeceras de caché",
         "PERF-07": "Uso de @import en CSS",
-        "PERF-08": "Imagen sin formato moderno"
+        "PERF-08": "Imagen sin formato moderno",
+        "PERF-09": "Imagen above-the-fold sin prioridad de carga",
+        "PERF-10": "Exceso de scripts third-party del mismo dominio"
     },
     "ruleFixes": {
         "ACC-01": "Define un idioma válido del documento: agrega lang al elemento html, por ejemplo <html lang=\"es\">.",

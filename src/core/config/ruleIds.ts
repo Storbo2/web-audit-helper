@@ -80,7 +80,9 @@ export const RULE_IDS = {
         renderBlockingCSS: "PERF-05",
         missingCacheHeaders: "PERF-06",
         cssImportUsage: "PERF-07",
-        imageMissingModernFormat: "PERF-08"
+        imageMissingModernFormat: "PERF-08",
+        imageMissingFetchPriority: "PERF-09",
+        excessThirdPartyScripts: "PERF-10"
     },
     form: {
         submitButtonOutsideForm: "FORM-01",

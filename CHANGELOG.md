@@ -7,6 +7,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-03-16
+
+### Added
+
+- **Performance optimization rules (v1.4.4)**:
+  - `PERF-09`: Above-the-fold images missing `fetchpriority="high"` for LCP improvement
+  - `PERF-10`: Excess scripts from same third-party domain (threshold-based, default: 5)
+- New unit suite for performance rules with 14 tests covering both new checks and edge cases.
+- Example fixture violations in `examples/basic.html` for PERF-09/PERF-10 coverage.
+- Comprehensive documentation pages for both new rules with configuration examples.
+
+### Changed
+
+- Performance registry, metadata overrides, and rule exports updated for `PERF-09` and `PERF-10`.
+- Performance rule guides and catalogs updated to show 12 rules (was 10).
+- Configuration docs updated with new PERF rule ID ranges (`PERF-01 – PERF-10`).
+- README updated to show 73 total audit rules (was 71).
+- Package version advanced to 1.4.4.
+
+### Fixed
+
+- Added label and reporter fallback mappings for `PERF-09` and `PERF-10` in EN/ES locale files.
+
 ## [1.4.3] - 2026-03-16
 
 ### Added

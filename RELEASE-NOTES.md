@@ -1,3 +1,106 @@
+# WAH v1.4.4 Release Notes
+
+**Release Date**: March 16, 2026  
+**Type**: Patch (Performance & Optimization)
+
+---
+
+## Overview
+
+Version 1.4.4 adds two high-impact performance rules to complement the Core Web Vitals and script loading optimization strategies.
+
+This release introduces `PERF-09` (above-the-fold image prioritization) and `PERF-10` (third-party script consolidation), bringing the total rule count to **73**.
+
+---
+
+## Highlights
+
+- Added `PERF-09` (missing fetchpriority on above-the-fold images) for LCP optimization
+- Added `PERF-10` (excess scripts from same third-party domain) for network efficiency
+- Both rules include configurable thresholds and comprehensive documentation
+- Full end-to-end integration with tests, examples, and i18n labels
+
+---
+
+## Added
+
+### New Performance Rules
+
+- `PERF-09`: Detects above-the-fold images missing `fetchpriority="high"` attribute
+  - Heuristic: flags large images (>300x300px) in viewport or within `<header>` containers
+  - Impacts: Largest Contentful Paint (LCP) Core Web Vitals metric
+  
+- `PERF-10`: Detects excess scripts from same third-party domain
+  - Threshold-based: flags domains with >5 scripts (configurable)
+  - Impacts: Network request efficiency and page load performance
+
+### Supporting Coverage
+
+- Unit tests for both rules (14 tests covering edge cases and boundaries)
+- Example fixtures in `basic.html` demonstrating violations
+- Threshold configuration support in rule metadata
+
+---
+
+## Changed
+
+### Registry and Docs Integration
+
+- Rule IDs `PERF-09` and `PERF-10` added to `ruleIds.ts`
+- Registry entries and metadata overrides in performance module
+- Rules catalog (EN/ES) updated to show 12 performance rules (was 10)
+- Configuration docs updated with new rule ID ranges
+- README updated to show 73 total rules (was 71)
+- Package version advanced to `1.4.4`
+
+---
+
+## Fixed
+
+- Added mappings for `PERF-09` and `PERF-10` in:
+  - EN/ES `ruleLabels` in locale files
+  - Reporter fallback constants (`rule-metadata`, `rule-fixes`, `rule-tokens`)
+  - Configuration documentation
+
+---
+
+## Validation Status
+
+- i18n tests: passing
+- new rules tests: passing (14 performance-advanced tests)
+- examples coverage tests: passing (all 73 rules triggered)
+- Typecheck: passing (`npm run typecheck`)
+- Test suite: passing (260 tests)
+- Build: passing (`npm run build`)
+
+---
+
+## Configuration Example
+
+```javascript
+await runWAH({
+    rules: {
+        'PERF-09': { threshold: 400 },    // Flag images larger than 400x400px
+        'PERF-10': { threshold: 8 }       // Flag domains with >8 scripts
+    }
+});
+```
+
+---
+
+## Upgrade Notes
+
+No breaking changes introduced.
+
+- Existing configurations and integrations remain unchanged.
+- New performance rules are additive and can be customized/disabled via `rules[ruleId]`.
+
+---
+
+*Previous release: [v1.4.3 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.3)*
+
+---
+
 # WAH v1.4.3 Release Notes
 
 **Release Date**: March 16, 2026  

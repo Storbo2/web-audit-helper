@@ -61,5 +61,7 @@ export const RULE_FIXES: Record<string, string> = {
     "PERF-03": "Bundle scripts or remove unused dependencies to reduce HTTP requests.",
     "PERF-04": "Add defer or async attributes to scripts in <head> to avoid blocking page rendering.",
     "PERF-05": "Inline critical CSS or use preload for CSS; consider async loading non-critical styles.",
-    "PERF-06": "Configure server Cache-Control headers or use CDN edge caching for static assets."
+    "PERF-06": "Configure server Cache-Control headers or use CDN edge caching for static assets.",
+    "PERF-09": "Add fetchpriority=\"high\" to above-the-fold images to prioritize their loading.",
+    "PERF-10": "Consolidate multiple scripts from the same third-party domain to reduce network overhead."
 };

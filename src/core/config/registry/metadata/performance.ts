@@ -98,4 +98,20 @@ export const performanceMetadataOverrides: Record<string, RegisteredRuleMetadata
         standardType: "web-dev",
         standardLabel: "Image optimization best practice"
     },
+    [RULE_IDS.performance.imageMissingFetchPriority]: {
+        defaultSeverity: "recommendation",
+        title: "Above-the-fold image without fetch priority",
+        fix: "Add fetchpriority=\"high\" to above-the-fold images to improve Largest Contentful Paint (LCP).",
+        docsSlug: "PERF-09",
+        standardType: "web-dev",
+        standardLabel: "Core Web Vitals - LCP"
+    },
+    [RULE_IDS.performance.excessThirdPartyScripts]: {
+        defaultSeverity: "recommendation",
+        title: "Excess third-party scripts from same domain",
+        fix: "Consolidate scripts from the same third-party domain to reduce network requests.",
+        docsSlug: "PERF-10",
+        standardType: "web-dev",
+        standardLabel: "Third-party script best practice"
+    },
 };

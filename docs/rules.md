@@ -380,7 +380,7 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 ---
 
-## Performance Rules (10)
+## Performance Rules (12)
 
 ### IMG-01: Images Missing Dimensions
 
@@ -432,6 +432,18 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 - **Description**: Static resources without cache headers configuration
 - **Fix**: Configure server Cache-Control headers or use CDN edge caching for static assets
 
+### PERF-09: Above-the-fold Image Without Fetch Priority
+
+- **Severity**: Recommendation
+- **Description**: Above-the-fold images missing fetchpriority attribute
+- **Fix**: Add `fetchpriority="high"` to above-the-fold images to improve LCP (Largest Contentful Paint)
+
+### PERF-10: Excess Third-party Scripts
+
+- **Severity**: Recommendation
+- **Description**: Excess scripts from the same third-party domain
+- **Fix**: Consolidate scripts from the same domain to reduce network requests and overhead
+
 ---
 
 ## Form Rules (4)
@@ -464,9 +476,9 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 ## Summary
 
-- **Total Rules**: 61
+- **Total Rules**: 73
 - **Critical Severity**: 14
 - **Warning Severity**: 23
-- **Recommendation Severity**: 24
+- **Recommendation Severity**: 36
 
 For examples and implementation details, see the source code in `src/core/rules/`.

@@ -12,7 +12,9 @@ import {
     checkRenderBlockingCSS,
     checkMissingCacheHeaders,
     checkCSSImportUsage,
-    checkImageMissingModernFormat
+    checkImageMissingModernFormat,
+    checkImageMissingFetchPriority,
+    checkExcessThirdPartyScripts
 } from "../../rules/performance";
 
 export const performanceRules: RegisteredRule[] = [
@@ -70,6 +72,16 @@ export const performanceRules: RegisteredRule[] = [
         id: RULE_IDS.performance.imageMissingModernFormat,
         run: (config) => checkImageMissingModernFormat(
             getRuleThreshold(config, RULE_IDS.performance.imageMissingModernFormat) ?? 300
+        )
+    },
+    {
+        id: RULE_IDS.performance.imageMissingFetchPriority,
+        run: () => checkImageMissingFetchPriority()
+    },
+    {
+        id: RULE_IDS.performance.excessThirdPartyScripts,
+        run: (config) => checkExcessThirdPartyScripts(
+            getRuleThreshold(config, RULE_IDS.performance.excessThirdPartyScripts) ?? 5
         )
     }
 ];

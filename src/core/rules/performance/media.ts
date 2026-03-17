@@ -168,3 +168,40 @@ export function checkImageMissingModernFormat(sampleLimit: number = 300): AuditI
 
     return issues;
 }
+
+export function checkImageMissingFetchPriority(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const viewportHeight = window.innerHeight;
+
+    document.querySelectorAll("img").forEach((img) => {
+        if (shouldIgnore(img)) return;
+
+        const hasFetchPriority = img.hasAttribute("fetchpriority");
+        if (hasFetchPriority) return;
+
+        // Check if image is in header or near top (simple heuristic for above-the-fold)
+        const rect = img.getBoundingClientRect();
+        const isNearTop = rect.top < viewportHeight * 1.5; // Within 1.5x viewport height
+        
+        // Also flag large images (could be hero images)
+        const width = parseFloat(img.getAttribute("width") || "0") || img.naturalWidth || img.width;
+        const height = parseFloat(img.getAttribute("height") || "0") || img.naturalHeight || img.height;
+        const isLargeImage = width > 400 || height > 300;
+
+        // Flag if in header container or is a large image
+        const inHeaderContainer = img.closest("header, [role='banner'], .hero, .banner");
+        
+        if ((isNearTop && (isLargeImage || inHeaderContainer)) || inHeaderContainer) {
+            issues.push({
+                rule: RULE_IDS.performance.imageMissingFetchPriority,
+                message: "Above-the-fold image should have fetchpriority='high' for faster LCP (Largest Contentful Paint).",
+                severity: "recommendation",
+                category: "performance",
+                element: img as HTMLElement,
+                selector: getCssSelector(img)
+            });
+        }
+    });
+
+    return issues;
+}
