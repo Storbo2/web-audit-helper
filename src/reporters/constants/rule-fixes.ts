@@ -31,6 +31,8 @@ export const RULE_FIXES: Record<string, string> = {
     "SEO-06": "Remove or revise meta robots noindex directive to allow search engine indexing.",
     "SEO-07": "Add Open Graph meta tags (og:title, og:description, og:image) for better social sharing.",
     "SEO-08": "Add Twitter Card meta tags (twitter:card, twitter:title, twitter:description) for better Twitter sharing.",
+    "SEO-09": "Keep exactly one canonical link and ensure it has a non-empty preferred URL.",
+    "SEO-10": "Use valid hreflang values, ensure alternate links include href, and include an x-default entry.",
     "SEC-01": "For target=_blank links, include rel=\"noopener noreferrer\" to block tabnabbing.",
     "SEM-01": "Use semantic elements like <strong> instead of <b>, and <em> instead of <i> for better meaning.",
     "SEM-02": "Improve semantic structure by using appropriate HTML5 elements (header, nav, main, article, section, aside, footer).",

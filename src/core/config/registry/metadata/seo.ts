@@ -58,4 +58,20 @@ export const seoMetadataOverrides: Record<string, RegisteredRuleMetadataOverride
         standardType: "heuristic",
         standardLabel: "Social preview best practice"
     },
+    [RULE_IDS.seo.conflictingCanonical]: {
+        defaultSeverity: "warning",
+        title: "Canonical conflict or empty canonical",
+        fix: "Keep a single canonical tag and ensure its href points to the preferred absolute URL.",
+        docsSlug: "SEO-09",
+        standardType: "heuristic",
+        standardLabel: "Technical SEO consistency"
+    },
+    [RULE_IDS.seo.invalidHreflang]: {
+        defaultSeverity: "recommendation",
+        title: "Invalid or incomplete hreflang set",
+        fix: "Use valid hreflang codes, ensure each alternate has href, and include an x-default entry.",
+        docsSlug: "SEO-10",
+        standardType: "heuristic",
+        standardLabel: "International SEO best practice"
+    },
 };

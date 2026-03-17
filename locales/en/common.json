@@ -210,6 +210,8 @@
         "SEO-06": "Robots noindex",
         "SEO-07": "Missing Open Graph",
         "SEO-08": "Missing Twitter Card",
+        "SEO-09": "Canonical conflict or empty canonical",
+        "SEO-10": "Invalid or incomplete hreflang",
         "SEC-01": "Unsafe target=_blank",
         "SEM-01": "Use strong/em",
         "SEM-02": "Low semantic structure",

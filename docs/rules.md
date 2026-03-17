@@ -1,6 +1,6 @@
 # Rules Documentation
 
-Complete reference for all 69 audit rules implemented in WAH.
+Complete reference for all 71 audit rules implemented in WAH.
 
 Quick index by rule ID: [Rules Guide](rules-guide.md).
 
@@ -240,7 +240,7 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 ---
 
-## SEO Rules (8)
+## SEO Rules (10)
 
 ### SEO-01: Missing Title
 
@@ -276,6 +276,16 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 - **Description**: Missing Twitter Card meta tags
 - **Fix**: Add Twitter Card meta tags (twitter:card, twitter:title, twitter:description) for better Twitter sharing
+
+### SEO-09: Canonical Conflict or Empty Canonical
+
+- **Description**: Multiple canonical tags detected, or canonical href is empty
+- **Fix**: Keep a single canonical tag and set a non-empty preferred absolute URL
+
+### SEO-10: Invalid or Incomplete Hreflang
+
+- **Description**: Hreflang alternates contain invalid language code, missing href, or missing x-default
+- **Fix**: Use valid hreflang codes, ensure each alternate has href, and include x-default
 
 ---
 

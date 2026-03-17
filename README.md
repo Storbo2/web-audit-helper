@@ -12,7 +12,7 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 
 ## ✨ Features
 
-- ♿ **69+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
+- ♿ **71+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
@@ -295,7 +295,7 @@ Multipliers automatically calibrate based on active categories:
 
 ---
 
-## 🎯 Audit Rules (69+ Total)
+## 🎯 Audit Rules (71+ Total)
 
 WAH implements comprehensive audit rules across **8 categories**:
 
@@ -578,7 +578,15 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.4.2 (Current)
+### v1.4.3 (Current)
+
+- Added technical SEO checks:
+  - `SEO-09` Canonical conflict or empty canonical
+  - `SEO-10` Invalid or incomplete hreflang set
+- Added dedicated SEO technical tests and fixture head-level violations in examples
+- Expanded registry metadata, reporter mappings, labels, and docs for full 1.4.3 coverage
+
+### v1.4.2 (Previous)
 
 - Added accessibility control/error checks:
   - `ACC-30` Icon-only button missing robust accessible name

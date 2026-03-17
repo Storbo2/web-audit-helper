@@ -394,7 +394,7 @@ Or use string literals directly — IDs are stable across minor versions:
 
 ```text
 Accessibility: ACC-01 – ACC-31
-SEO:           SEO-01 – SEO-08
+SEO:           SEO-01 – SEO-10
 Semantics:     SEM-01 – SEM-07
 Responsive:    RWD-01 – RWD-05
 Security:      SEC-01

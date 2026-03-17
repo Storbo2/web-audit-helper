@@ -77,7 +77,7 @@ export function registerScoringVisibilitySuite(): void {
             expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.missingTitle)).toBe(true);
             expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.weakOrMissingDescription)).toBe(true);
             expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.metaRobotsNoindex)).toBe(true);
-            expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.missingCanonical)).toBe(true);
+            expect(result.issues.some(issue => issue.rule === RULE_IDS.seo.conflictingCanonical)).toBe(true);
         });
 
         it("normal mode keeps head performance issues", () => {

@@ -7,7 +7,9 @@ import {
     checkMissingOpenGraph,
     checkMissingTitle,
     checkMissingTwitterCard,
-    checkMetaRobotsNoindex
+    checkMetaRobotsNoindex,
+    checkConflictingCanonical,
+    checkInvalidHreflang
 } from "../../rules/seo";
 
 export const seoRules: RegisteredRule[] = [
@@ -38,5 +40,13 @@ export const seoRules: RegisteredRule[] = [
     {
         id: RULE_IDS.seo.missingTwitterCard,
         run: () => checkMissingTwitterCard()
+    },
+    {
+        id: RULE_IDS.seo.conflictingCanonical,
+        run: () => checkConflictingCanonical()
+    },
+    {
+        id: RULE_IDS.seo.invalidHreflang,
+        run: () => checkInvalidHreflang()
     }
 ];

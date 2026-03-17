@@ -7,6 +7,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-03-16
+
+### Added
+
+- **Technical SEO incremental rules (v1.4.3)**:
+  - `SEO-09`: Canonical conflict or empty canonical
+  - `SEO-10`: Invalid or incomplete hreflang set
+- New unit suite for advanced SEO head checks.
+- Intentional head fixture violations in `examples/basic.html` for SEO-09/SEO-10 coverage.
+
+### Changed
+
+- SEO registry, metadata overrides, and rule exports updated for `SEO-09` and `SEO-10`.
+- Rule guides and rules catalog docs updated to include new rule pages.
+- SEO ID ranges in EN/ES configuration docs updated to `SEO-01 – SEO-10`.
+
+### Fixed
+
+- Added label and reporter fallback mappings for `SEO-09` and `SEO-10` so console/report output remains readable.
+- Removed canonical rule overlap: `SEO-05` now covers missing canonical only, while `SEO-09` covers empty/conflicting canonical definitions.
+
 ## [1.4.2] - 2026-03-16
 
 ### Added

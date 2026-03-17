@@ -31,6 +31,8 @@ export const RULE_TOKENS_COMPACT: Record<string, string> = {
     "SEO-06": "noindex:robots",
     "SEO-07": "missing:open graph",
     "SEO-08": "missing:twitter card",
+    "SEO-09": "conflict:canonical",
+    "SEO-10": "invalid:hreflang",
     "SEC-01": "unsafe:target=_blank",
     "SEM-01": "use:strong/em",
     "SEM-02": "low:semantic structure",

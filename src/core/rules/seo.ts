@@ -3,7 +3,9 @@ export {
     checkMissingMetaDescription,
     checkMissingMetaCharset,
     checkMissingCanonical,
-    checkMetaRobotsNoindex
+    checkMetaRobotsNoindex,
+    checkConflictingCanonical,
+    checkInvalidHreflang
 } from "./seo/meta";
 
 export {

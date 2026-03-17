@@ -1,6 +1,6 @@
 # Documentación de Reglas
 
-Referencia completa de las 69 reglas de auditoria implementadas en WAH.
+Referencia completa de las 71 reglas de auditoria implementadas en WAH.
 
 Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
@@ -240,7 +240,7 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 ---
 
-## Reglas SEO (8)
+## Reglas SEO (10)
 
 ### SEO-01: Falta título
 
@@ -276,6 +276,16 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 - **Descripción**: Faltan meta tags de Twitter Card.
 - **Fix**: Agrega tags (`twitter:card`, `twitter:title`, `twitter:description`).
+
+### SEO-09: Canonical conflictivo o vacio
+
+- **Descripción**: Se detectan múltiples canonical o un canonical con href vacío.
+- **Fix**: Conserva un único canonical y define un href absoluto no vacío.
+
+### SEO-10: Hreflang inválido o incompleto
+
+- **Descripción**: Alternates hreflang con código inválido, href faltante o sin entrada x-default.
+- **Fix**: Usa códigos hreflang válidos, agrega href a cada alternate e incluye x-default.
 
 ---
 

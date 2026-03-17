@@ -1,36 +1,36 @@
-# WAH v1.4.2 Release Notes
+# WAH v1.4.3 Release Notes
 
 **Release Date**: March 16, 2026  
-**Type**: Patch (Accessibility Controls + Validation Feedback)
+**Type**: Patch (Technical SEO Consistency)
 
 ---
 
 ## Overview
 
-Version 1.4.2 continues the pre-v1.5 incremental roadmap by expanding accessibility coverage for common UI controls and validation feedback patterns.
+Version 1.4.3 continues the pre-v1.5 incremental roadmap by expanding technical SEO coverage in head-level checks.
 
-This release adds two accessibility rules (`ACC-30`, `ACC-31`) focused on icon-only button naming and invalid control error association.
+This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consistency and hreflang integrity.
 
 ---
 
 ## Highlights
 
-- Added `ACC-30` (icon-only button naming) and `ACC-31` (invalid control error message association) end-to-end
+- Added `SEO-09` (canonical conflict/empty canonical) and `SEO-10` (invalid or incomplete hreflang) end-to-end
 - Included intentional fixture violations in `examples/basic.html` for manual and automated verification
-- Added i18n labels so console tables display readable names for newly introduced rules
+- Added labels and reporter mappings so console/report output remains readable for new IDs
 
 ---
 
 ## Added
 
-### New Accessibility Rules
+### New SEO Rules
 
-- `ACC-30`: Icon-only button missing robust accessible name (`aria-label`/valid `aria-labelledby`)
-- `ACC-31`: Invalid control (`aria-invalid="true"`) missing associated error message (`aria-describedby` or live region)
+- `SEO-09`: Canonical conflict (multiple canonical tags) or empty canonical href
+- `SEO-10`: Hreflang alternates with missing href, invalid locale code, or missing `x-default`
 
 ### Supporting Coverage
 
-- New dedicated unit tests for control/error rule behavior
+- New dedicated unit tests for canonical and hreflang rule behavior
 - Example fixture updates to trigger both rules in coverage flows
 
 ---
@@ -39,26 +39,29 @@ This release adds two accessibility rules (`ACC-30`, `ACC-31`) focused on icon-o
 
 ### Registry and Docs Integration
 
-- Rule IDs, registry wiring, and metadata overrides updated for `ACC-30` and `ACC-31`
+- Rule IDs, registry wiring, and metadata overrides updated for `SEO-09` and `SEO-10`
 - Rules catalog and rules guide (EN/ES) expanded with new entries and pages
-- Rule range references in EN/ES configuration docs updated to `ACC-01 – ACC-31`
-- Package version advanced to `1.4.2`
+- Rule range references in EN/ES configuration docs updated to `SEO-01 – SEO-10`
+- Package version advanced to `1.4.3`
 
 ---
 
 ## Fixed
 
-- Added missing `ruleLabels` mappings in EN/ES locales for:
-  - `ACC-30`
-  - `ACC-31`
+- Added missing mappings for:
+  - `SEO-09` and `SEO-10` in EN/ES `ruleLabels`
+  - reporter fallback constants (`rule-metadata`, `rule-fixes`, `rule-tokens`)
+- Removed overlap between canonical rules:
+  - `SEO-05` now reports only when canonical is missing
+  - `SEO-09` handles empty canonical href and multiple canonical conflicts
 
 ---
 
 ## Validation Status
 
 - i18n tests: passing (`npm run test -- src/utils/i18n.test.ts`)
-- new rules tests: passing (`npm run test -- src/core/rules/__tests__/accessibility-controls.test.ts`)
-- examples coverage tests: pending re-validation in this cycle
+- new rules tests: passing (`npm run test -- src/core/rules/__tests__/seo-technical.test.ts`)
+- examples coverage tests: passing (`npm run test -- src/core/rules/__tests__/examples-coverage.test.ts`)
 - Typecheck: passing (`npm run typecheck`)
 - Test suite: passing (`npm test`)
 - Build: passing (`npm run build`)
@@ -70,8 +73,8 @@ This release adds two accessibility rules (`ACC-30`, `ACC-31`) focused on icon-o
 No breaking changes introduced.
 
 - Existing integrations continue to work unchanged.
-- New accessibility rules are additive and can be customized/disabled via `rules[ruleId]`.
+- New SEO rules are additive and can be customized/disabled via `rules[ruleId]`.
 
 ---
 
-*Previous release: [v1.4.1 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.1)*
+*Previous release: [v1.4.2 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.2)*

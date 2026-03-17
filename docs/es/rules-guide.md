@@ -43,6 +43,8 @@ Esta guia indexa toda la documentacion por regla y la agrupa por categoria.
 - [SEO-06](../rules/SEO-06.md) - Robots noindex
 - [SEO-07](../rules/SEO-07.md) - Missing Open Graph
 - [SEO-08](../rules/SEO-08.md) - Missing Twitter Card
+- [SEO-09](../rules/SEO-09.md) - Canonical conflict or empty canonical
+- [SEO-10](../rules/SEO-10.md) - Invalid or incomplete hreflang
 
 ## Semantic
 

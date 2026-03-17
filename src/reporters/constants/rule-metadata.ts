@@ -154,5 +154,7 @@ export const RULE_DOCS_SLUG: Partial<Record<string, string>> = {
     "SEO-05": "SEO-05",
     "SEO-06": "SEO-06",
     "SEO-07": "SEO-07",
-    "SEO-08": "SEO-08"
+    "SEO-08": "SEO-08",
+    "SEO-09": "SEO-09",
+    "SEO-10": "SEO-10"
 };

@@ -400,7 +400,7 @@ O usa los string literals directamente — los IDs son estables entre versiones 
 
 ```text
 Accesibilidad: ACC-01 – ACC-31
-SEO:           SEO-01 – SEO-08
+SEO:           SEO-01 – SEO-10
 Semántica:     SEM-01 – SEM-07
 Responsive:    RWD-01 – RWD-05
 Seguridad:     SEC-01

@@ -57,16 +57,13 @@ export function checkMissingMetaCharset(): AuditIssue[] {
 export function checkMissingCanonical(): AuditIssue[] {
     const issues: AuditIssue[] = [];
     const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    const rawHref = (canonical?.getAttribute("href") || "").trim();
 
-    if (!canonical || !rawHref) {
+    if (!canonical) {
         issues.push({
             rule: RULE_IDS.seo.missingCanonical,
             message: "Missing canonical link",
             severity: "recommendation",
-            category: "seo",
-            element: canonical as HTMLElement | undefined,
-            selector: canonical ? getCssSelector(canonical) : undefined
+            category: "seo"
         });
     }
 
@@ -89,6 +86,96 @@ export function checkMetaRobotsNoindex(): AuditIssue[] {
                 selector: getCssSelector(metaRobots)
             });
         }
+    }
+
+    return issues;
+}
+
+export function checkConflictingCanonical(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const canonicals = Array.from(document.querySelectorAll('link[rel="canonical"]')) as HTMLLinkElement[];
+
+    if (canonicals.length > 1) {
+        issues.push({
+            rule: RULE_IDS.seo.conflictingCanonical,
+            message: "Multiple canonical link tags detected",
+            severity: "warning",
+            category: "seo",
+            element: canonicals[0] as HTMLElement,
+            selector: getCssSelector(canonicals[0])
+        });
+        return issues;
+    }
+
+    const canonical = canonicals[0];
+    if (!canonical) return issues;
+
+    const href = (canonical.getAttribute("href") || "").trim();
+    if (href.length === 0) {
+        issues.push({
+            rule: RULE_IDS.seo.conflictingCanonical,
+            message: "Canonical link is empty",
+            severity: "warning",
+            category: "seo",
+            element: canonical as HTMLElement,
+            selector: getCssSelector(canonical)
+        });
+    }
+
+    return issues;
+}
+
+function isValidHreflangToken(value: string): boolean {
+    if (value === "x-default") return true;
+    return /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(value);
+}
+
+export function checkInvalidHreflang(): AuditIssue[] {
+    const issues: AuditIssue[] = [];
+    const alternates = Array.from(document.querySelectorAll('link[rel="alternate"][hreflang]')) as HTMLLinkElement[];
+    if (alternates.length === 0) return issues;
+
+    let hasXDefault = false;
+
+    for (const link of alternates) {
+        const rawLang = (link.getAttribute("hreflang") || "").trim().toLowerCase();
+        const href = (link.getAttribute("href") || "").trim();
+
+        if (rawLang === "x-default") {
+            hasXDefault = true;
+        }
+
+        if (!href) {
+            issues.push({
+                rule: RULE_IDS.seo.invalidHreflang,
+                message: "hreflang alternate link is missing href",
+                severity: "recommendation",
+                category: "seo",
+                element: link as HTMLElement,
+                selector: getCssSelector(link)
+            });
+            continue;
+        }
+
+        if (!isValidHreflangToken(rawLang)) {
+            issues.push({
+                rule: RULE_IDS.seo.invalidHreflang,
+                message: `hreflang value \"${rawLang}\" is invalid`,
+                severity: "recommendation",
+                category: "seo",
+                element: link as HTMLElement,
+                selector: getCssSelector(link)
+            });
+        }
+    }
+
+    if (!hasXDefault) {
+        issues.push({
+            rule: RULE_IDS.seo.invalidHreflang,
+            message: "hreflang set is missing x-default alternate",
+            severity: "recommendation",
+            category: "seo"
+        });
     }
 
     return issues;

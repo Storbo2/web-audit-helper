@@ -38,7 +38,9 @@ export const RULE_IDS = {
         missingCanonical: "SEO-05",
         metaRobotsNoindex: "SEO-06",
         missingOpenGraph: "SEO-07",
-        missingTwitterCard: "SEO-08"
+        missingTwitterCard: "SEO-08",
+        conflictingCanonical: "SEO-09",
+        invalidHreflang: "SEO-10"
     },
     security: {
         targetBlankWithoutNoopener: "SEC-01"
