@@ -79,7 +79,6 @@ export function checkExcessThirdPartyScripts(threshold: number = 5): AuditIssue[
             return;
         }
 
-        // Only track third-party domains
         if (domain === currentOrigin) return;
 
         const existing = domainScriptCount.get(domain);
@@ -90,7 +89,6 @@ export function checkExcessThirdPartyScripts(threshold: number = 5): AuditIssue[
         }
     });
 
-    // Check each third-party domain
     domainScriptCount.forEach(({ count, firstElement }, domain) => {
         if (count > threshold) {
             issues.push({

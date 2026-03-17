@@ -43,7 +43,8 @@ export const RULE_IDS = {
         invalidHreflang: "SEO-10"
     },
     security: {
-        targetBlankWithoutNoopener: "SEC-01"
+        targetBlankWithoutNoopener: "SEC-01",
+        mixedContent: "SEC-03"
     },
     semantic: {
         bItagUsage: "SEM-01",
@@ -57,6 +58,7 @@ export const RULE_IDS = {
     quality: {
         excessiveInlineStyles: "QLT-01",
         dummyLink: "QLT-02",
+        duplicateConsecutiveControls: "QLT-03",
         obsoleteElements: "HTML-01",
         obsoleteAttributes: "HTML-02",
         smallTouchTargets: "UX-01"

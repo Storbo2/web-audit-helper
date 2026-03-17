@@ -3,6 +3,18 @@ import { RULE_IDS } from "../../config/ruleIds";
 import { getCssSelector } from "../../../utils/dom";
 import { shouldIgnore } from "../helpers";
 
+function isLikelyAboveFoldPriorityImage(img: HTMLImageElement): boolean {
+    const viewportHeight = window.innerHeight || 0;
+    const rect = img.getBoundingClientRect();
+    const isNearTop = rect.top < viewportHeight * 1.5;
+    const width = parseFloat(img.getAttribute("width") || "0") || img.naturalWidth || img.width;
+    const height = parseFloat(img.getAttribute("height") || "0") || img.naturalHeight || img.height;
+    const isLargeImage = width > 400 || height > 300;
+    const inHeaderContainer = Boolean(img.closest("header, [role='banner'], .hero, .banner"));
+
+    return Boolean((isNearTop && (isLargeImage || inHeaderContainer)) || inHeaderContainer);
+}
+
 export function checkImageMissingDimensions(): AuditIssue[] {
     const issues: AuditIssue[] = [];
 
@@ -35,6 +47,10 @@ export function checkImageMissingLazyLoad(): AuditIssue[] {
 
     document.querySelectorAll("img").forEach((img) => {
         if (shouldIgnore(img)) return;
+
+        // Likely hero or above-the-fold images should not be lazy-loaded.
+        if (isLikelyAboveFoldPriorityImage(img)) return;
+
         const loading = (img.getAttribute("loading") || "").toLowerCase();
         if (loading === "lazy") return;
 
@@ -171,7 +187,6 @@ export function checkImageMissingModernFormat(sampleLimit: number = 300): AuditI
 
 export function checkImageMissingFetchPriority(): AuditIssue[] {
     const issues: AuditIssue[] = [];
-    const viewportHeight = window.innerHeight;
 
     document.querySelectorAll("img").forEach((img) => {
         if (shouldIgnore(img)) return;
@@ -179,19 +194,7 @@ export function checkImageMissingFetchPriority(): AuditIssue[] {
         const hasFetchPriority = img.hasAttribute("fetchpriority");
         if (hasFetchPriority) return;
 
-        // Check if image is in header or near top (simple heuristic for above-the-fold)
-        const rect = img.getBoundingClientRect();
-        const isNearTop = rect.top < viewportHeight * 1.5; // Within 1.5x viewport height
-        
-        // Also flag large images (could be hero images)
-        const width = parseFloat(img.getAttribute("width") || "0") || img.naturalWidth || img.width;
-        const height = parseFloat(img.getAttribute("height") || "0") || img.naturalHeight || img.height;
-        const isLargeImage = width > 400 || height > 300;
-
-        // Flag if in header container or is a large image
-        const inHeaderContainer = img.closest("header, [role='banner'], .hero, .banner");
-        
-        if ((isNearTop && (isLargeImage || inHeaderContainer)) || inHeaderContainer) {
+        if (isLikelyAboveFoldPriorityImage(img)) {
             issues.push({
                 rule: RULE_IDS.performance.imageMissingFetchPriority,
                 message: "Above-the-fold image should have fetchpriority='high' for faster LCP (Largest Contentful Paint).",

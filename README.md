@@ -12,11 +12,11 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 
 ## ✨ Features
 
-- ♿ **73 Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
+- ♿ **75 Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
-- 🔒 **Security checks** (target=_blank, tabnabbing, unsafe patterns)
+- 🔒 **Security checks** (target=_blank, tabnabbing, mixed content, unsafe patterns)
 - ⚡ **Performance optimization** (image optimization, lazy loading, async decode, script placement, caching, render-blocking resources)
 - 📋 **Form validation** (proper types, autocomplete, required indicators, label association)
 - 🎨 **Interactive overlay** with drag, hide, category filters, and issue focus
@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.4/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.5/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -295,7 +295,7 @@ Multipliers automatically calibrate based on active categories:
 
 ---
 
-## 🎯 Audit Rules (71+ Total)
+## 🎯 Audit Rules (75 Total)
 
 WAH implements comprehensive audit rules across **8 categories**:
 
@@ -317,11 +317,11 @@ Viewport meta, fixed widths, overflow, fixed elements, 100vh issues
 
 ### Security
 
-Target=_blank security (tabnabbing prevention)
+Target=_blank security, mixed-content detection, transport safety
 
 ### Quality
 
-Inline styles, dummy links, semantic naming
+Inline styles, dummy links, duplicate controls, semantic naming
 
 ### Performance
 
@@ -578,7 +578,23 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.4.3 (Current)
+### v1.4.5 (Current)
+
+- Added security and quality final pre-v1.5 checks:
+  - `SEC-03` Mixed content over HTTP in secure contexts
+  - `QLT-03` Consecutive duplicate controls with same label/action
+- Added dedicated security/quality boundary tests and fixture violations in examples
+- Refined `IMG-02` vs `PERF-09` so hero images no longer trigger conflicting lazy-load guidance
+
+### v1.4.4 (Previous)
+
+- Added performance checks:
+  - `PERF-09` Above-the-fold image without fetch priority
+  - `PERF-10` Excess third-party scripts from same domain
+- Added dedicated performance tests and fixture violations in examples
+- Expanded registry metadata, reporter mappings, labels, and docs for full 1.4.4 coverage
+
+### v1.4.3 (Previous)
 
 - Added technical SEO checks:
   - `SEO-09` Canonical conflict or empty canonical

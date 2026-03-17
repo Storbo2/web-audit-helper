@@ -11,6 +11,7 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "ACC-23": "Ensures all DOM element IDs are unique across the document",
     "ACC-25": "Detects text with insufficient contrast ratio against its background",
     "SEC-01": "Detects links with target=_blank missing rel=\"noopener noreferrer\"",
+    "SEC-03": "Detects insecure HTTP subresources embedded into secure page contexts",
     "SEO-01": "Detects missing or empty page title element",
     "SEM-04": "Detects pages missing a main landmark element to identify primary content",
     "SEM-05": "Detects pages with more than one main landmark element",
@@ -22,6 +23,7 @@ export const RULE_DESCRIPTIONS: Partial<Record<string, string>> = {
     "IMG-02": "Detects images below the fold not using lazy loading",
     "PERF-05": "Detects render-blocking CSS in head without preload",
     "PERF-06": "Warns when Cache-Control headers may not be configured",
+    "QLT-03": "Detects adjacent controls that repeat the same label and action",
     "PERF-09": "Detects above-the-fold images missing fetchpriority attribute",
     "PERF-10": "Detects excess third-party scripts from the same external domain"
 };
@@ -39,6 +41,7 @@ export const RULE_WHY: Partial<Record<string, string>> = {
     "ACC-23": "Duplicate IDs break label associations, ARIA references, and scripted behavior that depend on unique element identifiers",
     "ACC-25": "Users with low vision or color blindness may be unable to read text that lacks sufficient contrast",
     "SEC-01": "A page opened via target=_blank can access the opener window object, enabling tabnabbing and phishing attacks",
+    "SEC-03": "Browsers may block or downgrade insecure HTTP subresources on HTTPS pages, weakening transport guarantees and causing broken content",
     "SEO-01": "Search engines use the page title as the primary result label; browsers display it in the tab and in bookmarks",
     "SEM-04": "Assistive technologies and search engines use the main landmark to locate and describe the primary content of a page",
     "SEM-05": "Multiple main elements create an ambiguous document structure that confuses assistive technologies and search engines",
@@ -47,6 +50,7 @@ export const RULE_WHY: Partial<Record<string, string>> = {
     "FORM-04": "Autocomplete reduces input errors and speeds up form completion, which is especially critical for users with motor difficulties or dyslexia",
     "IMG-01": "Browsers need image dimensions to reserve layout space during load; missing dimensions cause Cumulative Layout Shift (CLS)",
     "IMG-02": "Loading all images on page load increases initial bytes transferred, delays Time to Interactive, and wastes bandwidth on unseen content",
+    "QLT-03": "Repeated adjacent controls with the same label and action add visual noise, increase scanning cost, and can confuse users about whether actions differ",
     "PERF-09": "Setting fetchpriority on above-the-fold images signals to the browser to prioritize their loading, improving Largest Contentful Paint (LCP)",
     "PERF-10": "Multiple scripts from the same external domain increase request overhead; consolidation reduces network round-trips and improves page load time"
 };
@@ -64,6 +68,7 @@ export const RULE_STANDARD_TYPE: Partial<Record<string, "wcag" | "html-spec" | "
     "ACC-23": "html-spec",
     "ACC-25": "wcag",
     "SEC-01": "owasp",
+    "SEC-03": "owasp",
     "SEO-01": "html-spec",
     "SEM-04": "heuristic",
     "SEM-05": "heuristic",
@@ -72,6 +77,7 @@ export const RULE_STANDARD_TYPE: Partial<Record<string, "wcag" | "html-spec" | "
     "FORM-04": "wcag",
     "IMG-01": "web-dev",
     "IMG-02": "web-dev",
+    "QLT-03": "heuristic",
     "PERF-09": "web-dev",
     "PERF-10": "web-dev"
 };
@@ -89,6 +95,7 @@ export const RULE_STANDARD_LABEL: Partial<Record<string, string>> = {
     "ACC-23": "HTML spec — id attribute uniqueness",
     "ACC-25": "WCAG 2.1 — 1.4.3 Contrast (Minimum)",
     "SEC-01": "OWASP — Reverse Tabnapping",
+    "SEC-03": "OWASP — Transport layer protection",
     "SEO-01": "HTML spec — title element",
     "SEM-04": "HTML5 best practice — main landmark",
     "SEM-05": "HTML5 best practice — main landmark",
@@ -97,6 +104,7 @@ export const RULE_STANDARD_LABEL: Partial<Record<string, string>> = {
     "FORM-04": "WCAG 2.1 — 1.3.5 Identify Input Purpose",
     "IMG-01": "Core Web Vitals — Cumulative Layout Shift (CLS)",
     "IMG-02": "web.dev — loading performance",
+    "QLT-03": "Best practice — reduce duplicate UI actions",
     "PERF-09": "Core Web Vitals — Largest Contentful Paint (LCP)",
     "PERF-10": "web.dev — third-party script performance"
 };
@@ -145,12 +153,14 @@ export const RULE_DOCS_SLUG: Partial<Record<string, string>> = {
     "PERF-10": "PERF-10",
     "QLT-01": "QLT-01",
     "QLT-02": "QLT-02",
+    "QLT-03": "QLT-03",
     "RWD-01": "RWD-01",
     "RWD-02": "RWD-02",
     "RWD-03": "RWD-03",
     "RWD-04": "RWD-04",
     "RWD-05": "RWD-05",
     "SEC-01": "SEC-01",
+    "SEC-03": "SEC-03",
     "SEM-01": "SEM-01",
     "SEM-02": "SEM-02",
     "SEM-03": "SEM-03",

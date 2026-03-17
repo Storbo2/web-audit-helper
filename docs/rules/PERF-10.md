@@ -32,6 +32,7 @@ The audit will report the external domain and the count of scripts from that dom
 **Consolidation strategies:**
 
 1. **Combine related scripts** from the same vendor into a single file:
+
    ```html
    <!-- Bad: Multiple requests to same CDN -->
    <script src="https://cdn.example.com/lib1.js" defer></script>
@@ -43,12 +44,14 @@ The audit will report the external domain and the count of scripts from that dom
    ```
 
 2. **Use bundled/minified versions** from the CDN if available:
+
    ```html
    <!-- Request individual library bundles rather than multiple fragments -->
    <script src="https://cdn.example.com/analytics-bundle.min.js" defer></script>
    ```
 
 3. **Lazy-load non-critical scripts:**
+
    ```html
    <script src="https://cdn.example.com/tracking.js" defer></script>
    <!-- Other critical scripts loaded immediately -->

@@ -10,4 +10,12 @@ export const securityMetadataOverrides: Record<string, RegisteredRuleMetadataOve
         standardType: "owasp",
         standardLabel: "OWASP - Reverse tabnabbing"
     },
+    [RULE_IDS.security.mixedContent]: {
+        defaultSeverity: "warning",
+        title: "Mixed content over HTTP in HTTPS page",
+        fix: "Load embedded resources over HTTPS to avoid browser blocking and security downgrade.",
+        docsSlug: "SEC-03",
+        standardType: "owasp",
+        standardLabel: "OWASP - Transport layer protection"
+    },
 };

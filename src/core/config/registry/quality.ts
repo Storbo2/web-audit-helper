@@ -1,6 +1,7 @@
 import { getRuleThreshold, type RegisteredRule } from "./types";
 import { RULE_IDS } from "../ruleIds";
 import {
+    checkDuplicateConsecutiveControls,
     checkExcessiveInlineStyles,
     checkObsoleteElements,
     checkObsoleteAttributes,
@@ -11,6 +12,10 @@ export const qualityRules: RegisteredRule[] = [
     {
         id: RULE_IDS.quality.excessiveInlineStyles,
         run: (config) => checkExcessiveInlineStyles(config.quality?.inlineStylesThreshold)
+    },
+    {
+        id: RULE_IDS.quality.duplicateConsecutiveControls,
+        run: () => checkDuplicateConsecutiveControls()
     },
     {
         id: RULE_IDS.quality.obsoleteElements,

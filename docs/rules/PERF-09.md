@@ -22,6 +22,7 @@ Without explicit priority hints, the browser uses heuristics that may not optima
 ## How to fix
 
 Add `fetchpriority="high"` to images that are:
+
 1. Visible in the initial viewport (above-the-fold)
 2. Large (typically hero or banner images > 300x300px)
 3. Critical to the user's understanding of the page

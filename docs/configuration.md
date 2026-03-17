@@ -397,9 +397,9 @@ Accessibility: ACC-01 – ACC-31
 SEO:           SEO-01 – SEO-10
 Semantics:     SEM-01 – SEM-07
 Responsive:    RWD-01 – RWD-05
-Security:      SEC-01
-Quality:       HTML-01, HTML-02, QLT-01, QLT-02, UX-01
-Performance:   IMG-01 – IMG-03, MEDIA-01, PERF-01 – PERF-08
+Security:      SEC-01, SEC-03
+Quality:       HTML-01, HTML-02, QLT-01, QLT-02, QLT-03, UX-01
+Performance:   IMG-01 – IMG-03, MEDIA-01, PERF-01 – PERF-10
 Forms:         FORM-01 – FORM-04
 ```
 

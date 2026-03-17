@@ -7,6 +7,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2026-03-16
+
+### Added
+
+- **Security and quality final pre-v1.5 rules (v1.4.5)**:
+  - `SEC-03`: Mixed content over HTTP in secure page contexts
+  - `QLT-03`: Consecutive duplicate controls with same visible label/action
+- New focused unit suite for security/quality boundaries and non-overlap checks.
+- Intentional example fixture violations in `examples/basic.html` for SEC-03/QLT-03 coverage.
+- Rule documentation pages for `SEC-03` and `QLT-03`.
+
+### Changed
+
+- Security and quality registry wiring, metadata overrides, labels, and reporter fallbacks updated for `SEC-03` and `QLT-03`.
+- Rules catalogs and guides updated to reflect 75 total rules.
+- Configuration docs updated for `SEC-03`, `QLT-03`, and `PERF-01 – PERF-10` ranges.
+- Package version advanced to `1.4.5`.
+
+### Fixed
+
+- Removed overlap between `IMG-02` and `PERF-09`: likely hero/above-the-fold images are now excluded from lazy-load warnings and covered only by fetch-priority guidance.
+
 ## [1.4.4] - 2026-03-16
 
 ### Added

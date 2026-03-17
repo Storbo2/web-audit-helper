@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="https://example.com/" /> <!-- SEC-03: secure fixture context for mixed-content detection -->
     <meta name="robots" content="noindex" /> <!-- SEO-06: robots noindex -->
     <title></title> <!-- SEO-01: empty title -->
     <meta name="description" content="" /> <!-- SEO-02: empty description -->
@@ -72,7 +73,7 @@
     </p>
 
     <!-- RWD-01: Large fixed width (kept near top so sampling rules catch it consistently) -->
-    <div style="width: 1200px; background: #eee; padding: 10px;">
+    <div style="width: 1200px; min-height: 100vh; background: #eee; padding: 10px;">
         This div has a fixed width of 1200px (too large for mobile)
     </div>
 
@@ -80,6 +81,7 @@
     <a>Link without href</a> <!-- ACC-20: link without href -->
     <a href="/destination"></a> <!-- ACC-03: link without accessible name -->
     <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: without noopener -->
+    <a href="/pricing">View pricing</a><a href="/pricing">View pricing</a> <!-- QLT-03: duplicate consecutive controls -->
 
     <button></button> <!-- ACC-04: button without accessible name -->
     <button type="button" class="icon-only-btn"><svg aria-hidden="true" width="16" height="16"></svg></button>
@@ -157,6 +159,10 @@
     <!-- IMG-02: Image missing lazy loading - kept 1 error -->
     <img src="../public/images/banner.svg" alt="Banner" width="1200" height="400" loading="eager"
         srcset="../public/images/banner.svg 1200w" />
+
+    <img src="http://cdn.example.com/mixed-hero.svg" alt="Mixed content demo" width="320" height="180"
+        loading="lazy" decoding="async" srcset="http://cdn.example.com/mixed-hero.svg 320w" />
+    <!-- SEC-03: mixed content resource inside secure example context -->
 
     <!-- IMG-03: Image missing async decode - using well-formed image -->
     <img src="../public/favicon-32x32.png" alt="Badge" width="150" height="150" loading="lazy" decoding="async"

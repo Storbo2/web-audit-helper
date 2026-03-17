@@ -1,6 +1,6 @@
 # Rules Documentation
 
-Complete reference for all 71 audit rules implemented in WAH.
+Complete reference for all 75 audit rules implemented in WAH.
 
 Quick index by rule ID: [Rules Guide](rules-guide.md).
 
@@ -357,16 +357,21 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 ---
 
-## Security Rules (1)
+## Security Rules (2)
 
 ### SEC-01: Unsafe target=_blank
 
 - **Description**: Link with target="_blank" missing rel="noopener noreferrer"
 - **Fix**: For target=_blank links, include rel="noopener noreferrer" to block tabnabbing
 
+### SEC-03: Mixed Content Over HTTP
+
+- **Description**: Secure page embeds subresources over insecure HTTP
+- **Fix**: Replace embedded `http://` resource URLs with `https://` equivalents
+
 ---
 
-## Quality Rules (2)
+## Quality Rules (3)
 
 ### QLT-01: Excessive Inline Styles
 
@@ -377,6 +382,11 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 - **Description**: Link with dummy href like "#"
 - **Fix**: Replace dummy href="#" with proper URLs or convert to buttons for actions
+
+### QLT-03: Consecutive Duplicate Controls
+
+- **Description**: Adjacent controls repeat the same visible label and action
+- **Fix**: Remove or merge duplicate adjacent controls unless they intentionally represent different UI contexts
 
 ---
 
@@ -432,6 +442,16 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 - **Description**: Static resources without cache headers configuration
 - **Fix**: Configure server Cache-Control headers or use CDN edge caching for static assets
 
+### PERF-07: CSS @import Usage
+
+- **Description**: Runtime CSS uses `@import` and may delay stylesheet discovery
+- **Fix**: Prefer direct `<link>` tags or build-time bundling instead of runtime `@import`
+
+### PERF-08: Image Without Modern Format Alternative
+
+- **Description**: Large image uses a legacy format without WebP/AVIF alternative
+- **Fix**: Provide modern image alternatives with `<picture>` and next-gen sources
+
 ### PERF-09: Above-the-fold Image Without Fetch Priority
 
 - **Severity**: Recommendation
@@ -476,9 +496,9 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 
 ## Summary
 
-- **Total Rules**: 73
+- **Total Rules**: 75
 - **Critical Severity**: 14
-- **Warning Severity**: 23
-- **Recommendation Severity**: 36
+- **Warning Severity**: 24
+- **Recommendation Severity**: 37
 
 For examples and implementation details, see the source code in `src/core/rules/`.

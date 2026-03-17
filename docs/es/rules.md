@@ -1,6 +1,6 @@
 # Documentación de Reglas
 
-Referencia completa de las 71 reglas de auditoria implementadas en WAH.
+Referencia completa de las 75 reglas de auditoria implementadas en WAH.
 
 Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
@@ -357,16 +357,21 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 ---
 
-## Reglas de seguridad (1)
+## Reglas de seguridad (2)
 
 ### SEC-01: `target=_blank` inseguro
 
 - **Descripción**: Enlace con `target="_blank"` sin `rel="noopener noreferrer"`.
 - **Fix**: Añade `rel="noopener noreferrer"` para evitar tabnabbing.
 
+### SEC-03: Mixed content por HTTP
+
+- **Descripción**: Una página segura embebe subrecursos inseguros mediante `http://`.
+- **Fix**: Reemplaza URLs `http://` embebidas por equivalentes `https://`.
+
 ---
 
-## Reglas de calidad (2)
+## Reglas de calidad (3)
 
 ### QLT-01: Exceso de estilos inline
 
@@ -377,6 +382,11 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 - **Descripción**: Enlaces con `href="#"` u otros placeholders.
 - **Fix**: Reemplaza por URL real o usa botón para acciones.
+
+### QLT-03: Controles consecutivos duplicados
+
+- **Descripción**: Controles adyacentes repiten la misma etiqueta visible y la misma acción.
+- **Fix**: Elimina o fusiona controles duplicados salvo que representen contextos de UI distintos.
 
 ---
 
@@ -432,6 +442,16 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 - **Descripción**: Recursos estáticos sin estrategia de cache headers.
 - **Fix**: Configura `Cache-Control` o usa caché en CDN.
 
+### PERF-07: Uso de @import en CSS
+
+- **Descripción**: CSS en runtime usa `@import` y puede retrasar el descubrimiento de estilos.
+- **Fix**: Prefiere etiquetas `<link>` directas o bundling en build frente a `@import` en runtime.
+
+### PERF-08: Imagen sin formato moderno alternativo
+
+- **Descripción**: Una imagen grande usa formato legado sin alternativa WebP/AVIF.
+- **Fix**: Ofrece alternativas modernas mediante `<picture>` y formatos next-gen.
+
 ### PERF-09: Imagen above-the-fold sin prioridad de carga
 
 - **Severidad**: Recommendation
@@ -476,9 +496,9 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
 ## Resumen
 
-- **Total de reglas**: 73
+- **Total de reglas**: 75
 - **Severidad Critical**: 14
-- **Severidad Warning**: 23
-- **Severidad Recommendation**: 36
+- **Severidad Warning**: 24
+- **Severidad Recommendation**: 37
 
 Para ejemplos e implementación detallada, revisa el código fuente en `src/core/rules/`.

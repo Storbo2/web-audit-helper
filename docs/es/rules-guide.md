@@ -67,11 +67,13 @@ Esta guia indexa toda la documentacion por regla y la agrupa por categoria.
 ## Security
 
 - [SEC-01](../rules/SEC-01.md) - Unsafe target=_blank
+- [SEC-03](../rules/SEC-03.md) - Mixed content over HTTP
 
 ## Quality
 
 - [QLT-01](../rules/QLT-01.md) - Too many inline styles
 - [QLT-02](../rules/QLT-02.md) - Dummy link
+- [QLT-03](../rules/QLT-03.md) - Consecutive duplicate controls
 
 ## Performance
 
@@ -85,6 +87,10 @@ Esta guia indexa toda la documentacion por regla y la agrupa por categoria.
 - [PERF-04](../rules/PERF-04.md) - Script without defer
 - [PERF-05](../rules/PERF-05.md) - Render-blocking CSS
 - [PERF-06](../rules/PERF-06.md) - Missing cache headers
+- [PERF-07](../rules/PERF-07.md) - CSS @import usage
+- [PERF-08](../rules/PERF-08.md) - Image missing modern format
+- [PERF-09](../rules/PERF-09.md) - Above-the-fold image without fetch priority
+- [PERF-10](../rules/PERF-10.md) - Excess third-party scripts
 
 ## Forms
 

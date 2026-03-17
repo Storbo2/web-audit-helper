@@ -1,11 +1,96 @@
-# WAH v1.4.4 Release Notes
+# WAH v1.4.5 Release Notes
+
+**Release Date**: March 16, 2026  
+**Type**: Patch (Security & Quality Finalization)
+
+---
+
+## Overview
+
+Version 1.4.5 closes the incremental pre-v1.5 roadmap with two final rules focused on secure transport and UX noise reduction.
+
+This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive duplicate controls), bringing the total rule count to **75**.
+
+---
+
+## Highlights
+
+- Added `SEC-03` to detect insecure `http://` subresources in secure page contexts
+- Added `QLT-03` to detect adjacent duplicate controls with the same label and action
+- Added explicit non-overlap coverage for `SEC-03` vs `SEC-01`, `QLT-03` vs `QLT-02`, and `IMG-02` vs `PERF-09`
+- Completed the 10-rule incremental roadmap planned for pre-v1.5
+
+---
+
+## Added
+
+### New Security and Quality Rules
+
+- `SEC-03`: Mixed content in secure context
+  - Flags embedded subresources loaded over `http://` when the page context is secure
+  - Covers scripts, images, iframes, media, stylesheets, and similar subresources
+
+- `QLT-03`: Consecutive duplicate controls
+  - Flags adjacent controls that expose the same visible label and action
+  - Excludes common grouped UI patterns such as pagination, tablists, and dummy-link cases already covered elsewhere
+
+### Supporting Coverage
+
+- Dedicated test suite for security/quality boundaries
+- Example fixture updates in `basic.html` for SEC-03 and QLT-03 coverage
+- Docs pages for both rules plus updated rule guides and catalogs
+
+---
+
+## Changed
+
+- Security and quality registry, metadata, locale labels, and reporter fallbacks updated for `SEC-03` and `QLT-03`
+- README updated to reflect 75 total rules and the new current release
+- Rule guides brought in sync with PERF-07 through PERF-10 documentation coverage
+- Package version advanced to `1.4.5`
+
+---
+
+## Fixed
+
+- Removed overlap between `IMG-02` and `PERF-09`
+  - likely hero/above-the-fold images no longer receive lazy-load recommendations
+  - those images are now covered by fetch-priority guidance only
+
+---
+
+## Validation Status
+
+- security/quality tests: passing
+- performance boundary tests: passing
+- examples coverage tests: passing (all 75 rules triggered)
+- Typecheck: passing (`npm run typecheck`)
+- Test suite: passing (`npm test`)
+- Build: passing (`npm run build`)
+
+---
+
+## Upgrade Notes
+
+No breaking changes introduced.
+
+- Existing integrations remain unchanged.
+- New rules are additive and can be customized or disabled via `rules[ruleId]`.
+
+---
+
+*Previous release: [v1.4.4 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.4)*
+
+---
+
+## WAH v1.4.4 Release Notes
 
 **Release Date**: March 16, 2026  
 **Type**: Patch (Performance & Optimization)
 
 ---
 
-## Overview
+### Overview (v1.4.4)
 
 Version 1.4.4 adds two high-impact performance rules to complement the Core Web Vitals and script loading optimization strategies.
 
@@ -13,7 +98,7 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Highlights
+### Highlights (v1.4.4)
 
 - Added `PERF-09` (missing fetchpriority on above-the-fold images) for LCP optimization
 - Added `PERF-10` (excess scripts from same third-party domain) for network efficiency
@@ -22,9 +107,9 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Added
+### Added (v1.4.4)
 
-### New Performance Rules
+#### New Performance Rules (v1.4.4)
 
 - `PERF-09`: Detects above-the-fold images missing `fetchpriority="high"` attribute
   - Heuristic: flags large images (>300x300px) in viewport or within `<header>` containers
@@ -34,7 +119,7 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
   - Threshold-based: flags domains with >5 scripts (configurable)
   - Impacts: Network request efficiency and page load performance
 
-### Supporting Coverage
+#### Supporting Coverage (v1.4.4)
 
 - Unit tests for both rules (14 tests covering edge cases and boundaries)
 - Example fixtures in `basic.html` demonstrating violations
@@ -42,9 +127,9 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Changed
+### Changed (v1.4.4)
 
-### Registry and Docs Integration
+#### Registry and Docs Integration (v1.4.4)
 
 - Rule IDs `PERF-09` and `PERF-10` added to `ruleIds.ts`
 - Registry entries and metadata overrides in performance module
@@ -55,7 +140,7 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Fixed
+### Fixed (v1.4.4)
 
 - Added mappings for `PERF-09` and `PERF-10` in:
   - EN/ES `ruleLabels` in locale files
@@ -64,7 +149,7 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Validation Status
+### Validation Status (v1.4.4)
 
 - i18n tests: passing
 - new rules tests: passing (14 performance-advanced tests)
@@ -75,7 +160,7 @@ This release introduces `PERF-09` (above-the-fold image prioritization) and `PER
 
 ---
 
-## Configuration Example
+### Configuration Example (v1.4.4)
 
 ```javascript
 await runWAH({
@@ -88,7 +173,7 @@ await runWAH({
 
 ---
 
-## Upgrade Notes
+### Upgrade Notes (v1.4.4)
 
 No breaking changes introduced.
 
@@ -101,14 +186,14 @@ No breaking changes introduced.
 
 ---
 
-# WAH v1.4.3 Release Notes
+## WAH v1.4.3 Release Notes
 
 **Release Date**: March 16, 2026  
 **Type**: Patch (Technical SEO Consistency)
 
 ---
 
-## Overview
+### Overview (v1.4.3)
 
 Version 1.4.3 continues the pre-v1.5 incremental roadmap by expanding technical SEO coverage in head-level checks.
 
@@ -116,7 +201,7 @@ This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consis
 
 ---
 
-## Highlights
+### Highlights (v1.4.3)
 
 - Added `SEO-09` (canonical conflict/empty canonical) and `SEO-10` (invalid or incomplete hreflang) end-to-end
 - Included intentional fixture violations in `examples/basic.html` for manual and automated verification
@@ -124,23 +209,23 @@ This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consis
 
 ---
 
-## Added
+### Added (v1.4.3)
 
-### New SEO Rules
+#### New SEO Rules (v1.4.3)
 
 - `SEO-09`: Canonical conflict (multiple canonical tags) or empty canonical href
 - `SEO-10`: Hreflang alternates with missing href, invalid locale code, or missing `x-default`
 
-### Supporting Coverage
+#### Supporting Coverage (v1.4.3)
 
 - New dedicated unit tests for canonical and hreflang rule behavior
 - Example fixture updates to trigger both rules in coverage flows
 
 ---
 
-## Changed
+### Changed (v1.4.3)
 
-### Registry and Docs Integration
+#### Registry and Docs Integration (v1.4.3)
 
 - Rule IDs, registry wiring, and metadata overrides updated for `SEO-09` and `SEO-10`
 - Rules catalog and rules guide (EN/ES) expanded with new entries and pages
@@ -149,7 +234,7 @@ This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consis
 
 ---
 
-## Fixed
+### Fixed (v1.4.3)
 
 - Added missing mappings for:
   - `SEO-09` and `SEO-10` in EN/ES `ruleLabels`
@@ -160,7 +245,7 @@ This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consis
 
 ---
 
-## Validation Status
+### Validation Status (v1.4.3)
 
 - i18n tests: passing (`npm run test -- src/utils/i18n.test.ts`)
 - new rules tests: passing (`npm run test -- src/core/rules/__tests__/seo-technical.test.ts`)
@@ -171,7 +256,7 @@ This release adds two SEO rules (`SEO-09`, `SEO-10`) focused on canonical consis
 
 ---
 
-## Upgrade Notes
+### Upgrade Notes (v1.4.3)
 
 No breaking changes introduced.
 

@@ -18,6 +18,14 @@ export const qualityMetadataOverrides: Record<string, RegisteredRuleMetadataOver
         standardType: "heuristic",
         standardLabel: "Interaction semantics best practice"
     },
+    [RULE_IDS.quality.duplicateConsecutiveControls]: {
+        defaultSeverity: "recommendation",
+        title: "Consecutive duplicate controls",
+        fix: "Remove repeated adjacent controls with the same visible label and action unless they serve distinct UI contexts.",
+        docsSlug: "QLT-03",
+        standardType: "heuristic",
+        standardLabel: "UX noise reduction best practice"
+    },
     [RULE_IDS.quality.obsoleteElements]: {
         defaultSeverity: "warning",
         title: "Obsolete HTML elements used",

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { checkImageMissingFetchPriority, checkExcessThirdPartyScripts } from "../performance";
+import { checkImageMissingFetchPriority, checkExcessThirdPartyScripts, checkImageMissingLazyLoad } from "../performance";
 import { RULE_IDS } from "../../config/ruleIds";
 
 describe("PERF-09: Image missing fetch priority", () => {
@@ -16,7 +16,6 @@ describe("PERF-09: Image missing fetch priority", () => {
         img.setAttribute("height", "400");
         document.body.appendChild(img);
 
-        // Mock getBoundingClientRect to simulate above-the-fold position
         Object.defineProperty(img, "getBoundingClientRect", {
             configurable: true,
             writable: true,
@@ -33,7 +32,6 @@ describe("PERF-09: Image missing fetch priority", () => {
             })
         });
 
-        // Mock window.innerHeight
         Object.defineProperty(window, "innerHeight", {
             configurable: true,
             writable: true,
@@ -139,6 +137,38 @@ describe("PERF-09: Image missing fetch priority", () => {
         expect(issues.length).toBeGreaterThan(0);
         expect(issues[0].rule).toBe(RULE_IDS.performance.imageMissingFetchPriority);
     });
+
+    it("should not overlap with IMG-02 for a likely hero image", () => {
+        const img = document.createElement("img");
+        img.src = "hero.jpg";
+        img.setAttribute("width", "900");
+        img.setAttribute("height", "500");
+        document.body.appendChild(img);
+
+        Object.defineProperty(img, "getBoundingClientRect", {
+            configurable: true,
+            value: () => ({
+                top: 40,
+                left: 0,
+                right: 900,
+                bottom: 540,
+                width: 900,
+                height: 500,
+                x: 0,
+                y: 40,
+                toJSON: () => ({})
+            })
+        });
+
+        Object.defineProperty(window, "innerHeight", {
+            configurable: true,
+            writable: true,
+            value: 900
+        });
+
+        expect(checkImageMissingFetchPriority()).toHaveLength(1);
+        expect(checkImageMissingLazyLoad()).toHaveLength(0);
+    });
 });
 
 describe("PERF-10: Excess third-party scripts", () => {
@@ -240,7 +270,6 @@ describe("PERF-10: Excess third-party scripts", () => {
     it("should flag different protocol but same domain", () => {
         for (let i = 0; i < 6; i++) {
             const script = document.createElement("script");
-            // Simulating different protocol same host
             script.src = `https://api.thirdparty.com/script-${i}.js`;
             document.head.appendChild(script);
         }
