@@ -8,4 +8,5 @@ export { checkAriaLabelledbyTargets, checkAriaDescribedbyTargets, checkPositiveT
 export { checkMissingAlt, checkIframesWithoutTitle, checkVideosWithoutControls, checkTablesWithoutCaption, checkTableHeadersWithoutScope } from "./media";
 export { checkNestedInteractiveElements, checkFocusNotVisible, checkClickWithoutKeyboard } from "./interactive";
 export { checkDialogMissingAccessibleName, checkModalMissingFocusableElement } from "./dialogs";
+export { checkIconOnlyButtonMissingAccessibleName, checkInvalidControlMissingErrorMessage } from "./controls";
 export { hasAccessibleName, shouldIgnore } from "./helpers";

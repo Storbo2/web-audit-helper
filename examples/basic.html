@@ -70,6 +70,8 @@
     <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: without noopener -->
 
     <button></button> <!-- ACC-04: button without accessible name -->
+    <button type="button" class="icon-only-btn"><svg aria-hidden="true" width="16" height="16"></svg></button>
+    <!-- ACC-30: icon-only button without robust accessible name -->
     <a href="#"><button>Click</button></a> <!-- ACC-14: nested interactive -->
 
     <label>Orphaned label</label> <!-- ACC-06: label without for or control -->
@@ -193,6 +195,8 @@
         <!-- FORM-03: should be type=email + FORM-04: without autocomplete -->
         <input type="email" name="contactEmail" placeholder="Contact email" />
         <!-- FORM-04: missing autocomplete -->
+        <input type="text" id="nickname" name="nickname" aria-invalid="true" placeholder="Nickname" />
+        <!-- ACC-31: aria-invalid without associated error message -->
         <button type="submit">Submit</button>
     </form>
 

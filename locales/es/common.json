@@ -196,6 +196,8 @@
         "ACC-27": "Click sin soporte de teclado",
         "ACC-28": "Dialog sin nombre accesible",
         "ACC-29": "Modal sin elemento enfocable",
+        "ACC-30": "Boton de solo icono sin nombre",
+        "ACC-31": "Control invalido sin mensaje de error",
         "RWD-01": "Ancho fijo grande",
         "RWD-02": "Falta viewport",
         "RWD-03": "Desbordamiento horizontal",

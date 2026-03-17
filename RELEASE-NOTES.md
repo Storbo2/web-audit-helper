@@ -1,23 +1,23 @@
-# WAH v1.4.1 Release Notes
+# WAH v1.4.2 Release Notes
 
 **Release Date**: March 16, 2026  
-**Type**: Patch (Accessibility Expansion + Console Label Consistency)
+**Type**: Patch (Accessibility Controls + Validation Feedback)
 
 ---
 
 ## Overview
 
-Version 1.4.1 builds on 1.4.0 by delivering the first incremental rule package before v1.5, focused on accessibility components and output consistency.
+Version 1.4.2 continues the pre-v1.5 incremental roadmap by expanding accessibility coverage for common UI controls and validation feedback patterns.
 
-This release adds two accessibility rules (`ACC-28`, `ACC-29`) and ensures readable console labels for newly added and previously unmapped rule IDs.
+This release adds two accessibility rules (`ACC-30`, `ACC-31`) focused on icon-only button naming and invalid control error association.
 
 ---
 
 ## Highlights
 
-- Added `ACC-28` (dialog name) and `ACC-29` (modal focusability) end-to-end
+- Added `ACC-30` (icon-only button naming) and `ACC-31` (invalid control error message association) end-to-end
 - Included intentional fixture violations in `examples/basic.html` for manual and automated verification
-- Completed missing i18n rule labels so console tables display readable rule names instead of raw IDs
+- Added i18n labels so console tables display readable names for newly introduced rules
 
 ---
 
@@ -25,12 +25,12 @@ This release adds two accessibility rules (`ACC-28`, `ACC-29`) and ensures reada
 
 ### New Accessibility Rules
 
-- `ACC-28`: Dialog missing accessible name (`aria-label`/valid `aria-labelledby`)
-- `ACC-29`: Modal (`aria-modal="true"`) missing focusable element
+- `ACC-30`: Icon-only button missing robust accessible name (`aria-label`/valid `aria-labelledby`)
+- `ACC-31`: Invalid control (`aria-invalid="true"`) missing associated error message (`aria-describedby` or live region)
 
 ### Supporting Coverage
 
-- New dedicated unit tests for dialog and modal rule behavior
+- New dedicated unit tests for control/error rule behavior
 - Example fixture updates to trigger both rules in coverage flows
 
 ---
@@ -39,26 +39,26 @@ This release adds two accessibility rules (`ACC-28`, `ACC-29`) and ensures reada
 
 ### Registry and Docs Integration
 
-- Rule IDs, registry wiring, and metadata overrides updated for `ACC-28` and `ACC-29`
+- Rule IDs, registry wiring, and metadata overrides updated for `ACC-30` and `ACC-31`
 - Rules catalog and rules guide (EN/ES) expanded with new entries and pages
-- Package version advanced to `1.4.1`
+- Rule range references in EN/ES configuration docs updated to `ACC-01 – ACC-31`
+- Package version advanced to `1.4.2`
 
 ---
 
 ## Fixed
 
-- Fixed missing `ruleLabels` mappings in EN/ES locales so console output no longer falls back to raw IDs for:
-  - `ACC-27`, `ACC-28`, `ACC-29`
-  - `UX-01`
-  - `HTML-01`, `HTML-02`
-  - `PERF-07`, `PERF-08`
+- Added missing `ruleLabels` mappings in EN/ES locales for:
+  - `ACC-30`
+  - `ACC-31`
 
 ---
 
 ## Validation Status
 
 - i18n tests: passing (`npm run test -- src/utils/i18n.test.ts`)
-- examples coverage tests: passing (`npm run test -- src/core/rules/__tests__/examples-coverage.test.ts`)
+- new rules tests: passing (`npm run test -- src/core/rules/__tests__/accessibility-controls.test.ts`)
+- examples coverage tests: pending re-validation in this cycle
 - Typecheck: passing (`npm run typecheck`)
 - Test suite: passing (`npm test`)
 - Build: passing (`npm run build`)
@@ -74,4 +74,4 @@ No breaking changes introduced.
 
 ---
 
-*Previous release: [v1.4.0 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.0)*
+*Previous release: [v1.4.1 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.1)*

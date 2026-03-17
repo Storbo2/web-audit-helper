@@ -196,6 +196,8 @@
         "ACC-27": "Click without keyboard support",
         "ACC-28": "Dialog missing accessible name",
         "ACC-29": "Modal missing focusable element",
+        "ACC-30": "Icon-only button missing name",
+        "ACC-31": "Invalid control missing error message",
         "RWD-01": "Large fixed width",
         "RWD-02": "Missing viewport",
         "RWD-03": "Horizontal overflow",

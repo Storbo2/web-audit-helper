@@ -226,4 +226,20 @@ export const accessibilityMetadataOverrides: Record<string, RegisteredRuleMetada
         standardType: "wcag",
         standardLabel: "WCAG 2.1 - 2.1.1 Keyboard"
     },
+    [RULE_IDS.accessibility.iconOnlyButtonMissingAccessibleName]: {
+        defaultSeverity: "critical",
+        title: "Icon-only button missing accessible name",
+        fix: "Provide aria-label or valid aria-labelledby so icon-only buttons expose a robust accessible name.",
+        docsSlug: "ACC-30",
+        standardType: "wcag",
+        standardLabel: "WCAG 2.1 - 4.1.2 Name, Role, Value"
+    },
+    [RULE_IDS.accessibility.invalidControlMissingErrorMessage]: {
+        defaultSeverity: "warning",
+        title: "Invalid control missing error message",
+        fix: "Associate aria-invalid controls with descriptive error text using aria-describedby or a nearby live error region.",
+        docsSlug: "ACC-31",
+        standardType: "wcag",
+        standardLabel: "WCAG 2.1 - 3.3.1 Error Identification"
+    },
 };

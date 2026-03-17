@@ -31,6 +31,8 @@ Esta guia indexa toda la documentacion por regla y la agrupa por categoria.
 - [ACC-26](../rules/ACC-26.md) - Line-height too low
 - [ACC-28](../rules/ACC-28.md) - Dialog missing accessible name
 - [ACC-29](../rules/ACC-29.md) - Modal missing focusable element
+- [ACC-30](../rules/ACC-30.md) - Icon-only button missing accessible name
+- [ACC-31](../rules/ACC-31.md) - Invalid control missing error message
 
 ## SEO
 

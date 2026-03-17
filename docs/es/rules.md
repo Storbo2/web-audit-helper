@@ -1,10 +1,10 @@
 # Documentación de Reglas
 
-Referencia completa de las 67 reglas de auditoría implementadas en WAH.
+Referencia completa de las 69 reglas de auditoria implementadas en WAH.
 
 Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
-## Reglas de Accesibilidad (28)
+## Reglas de Accesibilidad (30)
 
 ### ACC-01: Falta atributo `lang` en HTML
 
@@ -221,6 +221,22 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 - **Descripción**: Detecta modales `aria-modal` sin controles enfocables.
 - **Fix**: Incluye al menos una acción enfocable (por ejemplo botón de cerrar o confirmar).
 - **WCAG**: 2.1.1 (Nivel A)
+
+### ACC-30: Botón de solo icono sin nombre accesible
+
+- **Severidad**: Critical
+- **Categoría**: Accessibility
+- **Descripción**: Detecta botones de solo icono sin nombre programático robusto.
+- **Fix**: Agrega `aria-label` o una referencia `aria-labelledby` válida con texto significativo.
+- **WCAG**: 4.1.2 (Nivel A)
+
+### ACC-31: Control inválido sin mensaje de error
+
+- **Severidad**: Warning
+- **Categoría**: Accessibility
+- **Descripción**: Detecta controles con `aria-invalid="true"` sin texto de error asociado.
+- **Fix**: Asocia el mensaje de validación mediante `aria-describedby` o una región de error en vivo cercana.
+- **WCAG**: 3.3.1 (Nivel A)
 
 ---
 

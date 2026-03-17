@@ -1,10 +1,10 @@
 # Rules Documentation
 
-Complete reference for all 67 audit rules implemented in WAH.
+Complete reference for all 69 audit rules implemented in WAH.
 
 Quick index by rule ID: [Rules Guide](rules-guide.md).
 
-## Accessibility Rules (28)
+## Accessibility Rules (30)
 
 ### ACC-01: Missing HTML Lang Attribute
 
@@ -221,6 +221,22 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 - **Description**: Detects aria-modal dialogs that have no focusable control
 - **Fix**: Ensure modal contains at least one focusable action (for example close or confirm button)
 - **WCAG**: 2.1.1 (Level A)
+
+### ACC-30: Icon-Only Button Missing Accessible Name
+
+- **Severity**: Critical
+- **Category**: Accessibility
+- **Description**: Detects icon-only buttons without robust programmatic naming
+- **Fix**: Add `aria-label` or a valid `aria-labelledby` reference with meaningful text
+- **WCAG**: 4.1.2 (Level A)
+
+### ACC-31: Invalid Control Missing Error Message
+
+- **Severity**: Warning
+- **Category**: Accessibility
+- **Description**: Detects controls marked `aria-invalid="true"` that have no associated error text
+- **Fix**: Associate validation error text through `aria-describedby` or an adjacent live error region
+- **WCAG**: 3.3.1 (Level A)
 
 ---
 

@@ -7,6 +7,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-03-16
+
+### Added
+
+- **Accessibility controls and error feedback rules (v1.4.2)**:
+  - `ACC-30`: Icon-only button missing robust accessible name
+  - `ACC-31`: Invalid control (`aria-invalid="true"`) missing associated error message
+- New unit suite for accessibility control/error checks.
+- Intentional example fixture violations in `examples/basic.html` to validate both new rules in manual runs and coverage tests.
+
+### Changed
+
+- Accessibility registry, metadata overrides, and rule exports updated for `ACC-30` and `ACC-31`.
+- Rule guides and rules catalog docs updated to include new rule pages.
+- Rule ID ranges in EN/ES configuration docs updated to `ACC-01 – ACC-31`.
+
+### Fixed
+
+- Added locale label mappings for `ACC-30` and `ACC-31` to keep readable console rule names in EN/ES.
+
 ## [1.4.1] - 2026-03-16
 
 ### Added

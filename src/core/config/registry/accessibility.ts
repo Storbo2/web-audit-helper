@@ -28,7 +28,9 @@ import {
     checkLineHeightTooLow,
     checkClickWithoutKeyboard,
     checkDialogMissingAccessibleName,
-    checkModalMissingFocusableElement
+    checkModalMissingFocusableElement,
+    checkIconOnlyButtonMissingAccessibleName,
+    checkInvalidControlMissingErrorMessage
 } from "../../rules/accessibility";
 
 export const accessibilityRules: RegisteredRule[] = [
@@ -156,5 +158,13 @@ export const accessibilityRules: RegisteredRule[] = [
     {
         id: RULE_IDS.accessibility.modalMissingFocusableElement,
         run: () => checkModalMissingFocusableElement()
+    },
+    {
+        id: RULE_IDS.accessibility.iconOnlyButtonMissingAccessibleName,
+        run: () => checkIconOnlyButtonMissingAccessibleName()
+    },
+    {
+        id: RULE_IDS.accessibility.invalidControlMissingErrorMessage,
+        run: () => checkInvalidControlMissingErrorMessage()
     }
 ];
