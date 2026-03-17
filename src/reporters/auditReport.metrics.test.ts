@@ -36,4 +36,16 @@ describe("audit report metrics inclusion", () => {
 
         expect(report.metrics).toBeUndefined();
     });
+
+    it("sets runtimeMode=external when provided by config", () => {
+        const report = buildAuditReport(RESULT_WITH_METRICS, {
+            runtimeMode: "external",
+            auditMetrics: { includeInReports: true }
+        } as WAHConfig);
+
+        expect(report.meta.runtimeMode).toBe("external");
+        expect(report.meta.wahVersion).toBeTruthy();
+        expect(report.meta.runId).toBeTruthy();
+        expect(report.meta.targetUrl.length).toBeGreaterThan(0);
+    });
 });

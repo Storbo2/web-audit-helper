@@ -60,6 +60,7 @@
         "typecheck": "tsc --noEmit",
         "prebuild": "node scripts/gen-wah-css.mjs",
         "build": "tsup --config tsup.config.ts",
+        "postbuild": "node scripts/gen-bookmarklet.mjs",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:ui": "vitest --ui",

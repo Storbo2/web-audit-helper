@@ -13,8 +13,11 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push("=".repeat(60));
     lines.push("");
 
-    lines.push(`${dict.reportUrl}: ${report.meta.url || dict.notAvailable}`);
-    lines.push(`${dict.reportDate}: ${formatDateISOToDDMMYYYY(report.meta.date)}`);
+    lines.push(`${dict.reportUrl}: ${report.meta.targetUrl || report.meta.url || dict.notAvailable}`);
+    lines.push(`${dict.reportDate}: ${formatDateISOToDDMMYYYY(report.meta.executedAt || report.meta.date)}`);
+    lines.push(`Run ID: ${report.meta.runId}`);
+    lines.push(`Runtime Mode: ${report.meta.runtimeMode}`);
+    lines.push(`WAH Version: ${report.meta.wahVersion || report.meta.version}`);
     lines.push(`${dict.reportViewport}: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
     if (report.meta.breakpoint) {
         lines.push(`${dict.reportBreakpoint}: ${report.meta.breakpoint.name} (${report.meta.breakpoint.devices})`);
@@ -44,6 +47,8 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push(`  ⚠️ ${dict.warning}: ${report.stats.warnings}`);
     lines.push(`  ⛔ ${dict.critical}: ${report.stats.failed}`);
     lines.push(`  ${dict.reportTriggeredRules}: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
+    lines.push(`  Rules executed/skipped: ${report.meta.rulesExecuted}/${report.meta.rulesSkipped}`);
+    lines.push(`  Total audit ms: ${report.meta.totalAuditMs}`);
     lines.push("");
 
     if (report.metrics) {

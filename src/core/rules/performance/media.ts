@@ -48,7 +48,6 @@ export function checkImageMissingLazyLoad(): AuditIssue[] {
     document.querySelectorAll("img").forEach((img) => {
         if (shouldIgnore(img)) return;
 
-        // Likely hero or above-the-fold images should not be lazy-loaded.
         if (isLikelyAboveFoldPriorityImage(img)) return;
 
         const loading = (img.getAttribute("loading") || "").toLowerCase();

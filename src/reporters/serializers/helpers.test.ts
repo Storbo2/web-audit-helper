@@ -10,11 +10,25 @@ import {
 describe("report serializer helpers", () => {
     const baseReport: AuditReport = {
         meta: {
+            runId: "run-test-1",
+            targetUrl: "https://example.com",
+            executedAt: "2026-03-10T22:00:00.000Z",
+            runtimeMode: "embedded",
+            wahVersion: "1.2.0",
             date: "2026-03-10T22:00:00.000Z",
             viewport: { width: 1280, height: 720 },
             userAgent: "vitest",
             version: "1.2.0",
-            mode: "dev"
+            mode: "dev",
+            issueCountBySeverity: {
+                critical: 0,
+                warning: 0,
+                recommendation: 0
+            },
+            categoryScores: {},
+            rulesExecuted: 0,
+            rulesSkipped: 0,
+            totalAuditMs: 0
         },
         score: {
             overall: 100,

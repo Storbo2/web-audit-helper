@@ -91,6 +91,32 @@ await runWAH({
 });
 ```
 
+### External Auditing (Bookmarklet)
+
+WAH now includes a generated bookmarklet for external audits against already-open pages.
+
+1. Run build:
+
+```bash
+npm run build
+```
+
+1. Copy the single line from `dist/bookmarklet.txt`.
+2. Create a browser bookmark and paste that line as URL.
+3. Open any target page and click the bookmark.
+
+Runtime loading strategy:
+
+- Primary: IIFE runtime from jsDelivr (`external-runtime.iife.js`)
+- Fallback: ESM runtime from jsDelivr (`external-runtime.mjs`)
+
+If CSP blocks both loads, WAH shows a clear error and aborts external execution.
+
+QA checklist for CSP permissive/blocking validation:
+
+- English: [External Auditing QA](docs/external-auditing-qa.md)
+- Espanol: [QA de Auditoria Externa](docs/es/external-auditing-qa.md)
+
 ### Next.js / SSR Frameworks
 
 **WAH runs in the browser only (requires DOM).**

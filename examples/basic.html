@@ -5,6 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="https://example.com/" /> <!-- SEC-03: secure fixture context for mixed-content detection -->
+    <script>
+        // Keep fixture behavior for tests, but avoid local preview breakage with Live Server.
+        const isJsDom = navigator.userAgent.toLowerCase().includes("jsdom");
+        if (!isJsDom && (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost")) {
+            document.querySelector("base")?.remove();
+        }
+    </script>
     <meta name="robots" content="noindex" /> <!-- SEO-06: robots noindex -->
     <title></title> <!-- SEO-01: empty title -->
     <meta name="description" content="" /> <!-- SEO-02: empty description -->
@@ -48,12 +55,12 @@
     <script src="../public/js/lib9.js" defer></script>
 
     <!-- PERF-10: Excess third-party scripts (threshold: 5) - exactly 6 from same domain for violation -->
-    <script src="https://cdn.analytics.example.com/v1/track.js" defer></script>
-    <script src="https://cdn.analytics.example.com/v2/events.js" defer></script>
-    <script src="https://cdn.analytics.example.com/v3/segments.js" defer></script>
-    <script src="https://cdn.analytics.example.com/v4/dashboard.js" defer></script>
-    <script src="https://cdn.analytics.example.com/v5/reports.js" defer></script>
-    <script src="https://cdn.analytics.example.com/v6/export.js" defer></script>
+    <script src="https://example.com/v1/track.js" defer type="application/json"></script>
+    <script src="https://example.com/v2/events.js" defer type="application/json"></script>
+    <script src="https://example.com/v3/segments.js" defer type="application/json"></script>
+    <script src="https://example.com/v4/dashboard.js" defer type="application/json"></script>
+    <script src="https://example.com/v5/reports.js" defer type="application/json"></script>
+    <script src="https://example.com/v6/export.js" defer type="application/json"></script>
 </head>
 
 <body>
@@ -81,7 +88,8 @@
     <a>Link without href</a> <!-- ACC-20: link without href -->
     <a href="/destination"></a> <!-- ACC-03: link without accessible name -->
     <a href="https://example.com" target="_blank">External</a> <!-- SEC-01: without noopener -->
-    <a href="/pricing">View pricing</a><a href="/pricing">View pricing</a> <!-- QLT-03: duplicate consecutive controls -->
+    <a href="/pricing">View pricing</a><a href="/pricing">View pricing</a>
+    <!-- QLT-03: duplicate consecutive controls -->
 
     <button></button> <!-- ACC-04: button without accessible name -->
     <button type="button" class="icon-only-btn"><svg aria-hidden="true" width="16" height="16"></svg></button>
@@ -160,8 +168,8 @@
     <img src="../public/images/banner.svg" alt="Banner" width="1200" height="400" loading="eager"
         srcset="../public/images/banner.svg 1200w" />
 
-    <img src="http://cdn.example.com/mixed-hero.svg" alt="Mixed content demo" width="320" height="180"
-        loading="lazy" decoding="async" srcset="http://cdn.example.com/mixed-hero.svg 320w" />
+    <img src="http://example.com/mixed-hero.svg" alt="Mixed content demo" width="320" height="180" loading="lazy"
+        decoding="async" srcset="http://example.com/mixed-hero.svg 320w" />
     <!-- SEC-03: mixed content resource inside secure example context -->
 
     <!-- IMG-03: Image missing async decode - using well-formed image -->
@@ -261,7 +269,12 @@
         }
     </style>
     <script type="module">
-        import { runWAH } from "../dist/index.mjs";
+        const moduleUrl =
+            window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+                ? `${window.location.origin}/dist/index.mjs`
+                : "../dist/index.mjs";
+
+        const { runWAH } = await import(moduleUrl);
         runWAH({
             overlay: { enabled: true, position: "bottom-right", theme: "dark" },
             reporters: ["console"],
