@@ -25,7 +25,9 @@ export const RULE_IDS = {
         focusNotVisible: "ACC-21",
         contrastInsufficient: "ACC-25",
         lineHeightTooLow: "ACC-26",
-        clickWithoutKeyboard: "ACC-27"
+        clickWithoutKeyboard: "ACC-27",
+        dialogMissingAccessibleName: "ACC-28",
+        modalMissingFocusableElement: "ACC-29"
     },
     seo: {
         missingTitle: "SEO-01",

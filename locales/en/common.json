@@ -193,6 +193,9 @@
         "ACC-24": "Missing skip link",
         "ACC-25": "Insufficient contrast",
         "ACC-26": "Line-height too low",
+        "ACC-27": "Click without keyboard support",
+        "ACC-28": "Dialog missing accessible name",
+        "ACC-29": "Modal missing focusable element",
         "RWD-01": "Large fixed width",
         "RWD-02": "Missing viewport",
         "RWD-03": "Horizontal overflow",
@@ -212,8 +215,11 @@
         "SEM-05": "Multiple main elements",
         "SEM-06": "Nav missing list",
         "SEM-07": "False list structure",
+        "HTML-01": "Obsolete HTML elements",
+        "HTML-02": "Obsolete HTML attributes",
         "QLT-01": "Too many inline styles",
         "QLT-02": "Dummy link",
+        "UX-01": "Touch targets too small",
         "IMG-01": "Image missing dimensions",
         "IMG-02": "Image missing lazy loading",
         "IMG-03": "Image missing async decode",
@@ -227,7 +233,9 @@
         "PERF-03": "Too many scripts",
         "PERF-04": "Script without defer",
         "PERF-05": "Render-blocking CSS",
-        "PERF-06": "Missing cache headers"
+        "PERF-06": "Missing cache headers",
+        "PERF-07": "CSS @import usage",
+        "PERF-08": "Image missing modern format"
     },
     "ruleFixes": {},
     "issueMessages": {

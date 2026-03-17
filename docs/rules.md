@@ -1,10 +1,10 @@
 # Rules Documentation
 
-Complete reference for all 61 audit rules implemented in WAH.
+Complete reference for all 67 audit rules implemented in WAH.
 
 Quick index by rule ID: [Rules Guide](rules-guide.md).
 
-## Accessibility Rules (26)
+## Accessibility Rules (28)
 
 ### ACC-01: Missing HTML Lang Attribute
 
@@ -205,6 +205,22 @@ Quick index by rule ID: [Rules Guide](rules-guide.md).
 - **Description**: Detects line-height below readability threshold
 - **Fix**: Increase line-height to at least 1.4 (or 1.5x font size) to improve text readability and spacing
 - **WCAG**: 1.4.12 (Level AA)
+
+### ACC-28: Dialog Missing Accessible Name
+
+- **Severity**: Critical
+- **Category**: Accessibility
+- **Description**: Detects dialogs or alertdialogs without accessible naming
+- **Fix**: Add `aria-label` or a valid `aria-labelledby` target with visible title text
+- **WCAG**: 4.1.2 (Level A)
+
+### ACC-29: Modal Missing Focusable Element
+
+- **Severity**: Warning
+- **Category**: Accessibility
+- **Description**: Detects aria-modal dialogs that have no focusable control
+- **Fix**: Ensure modal contains at least one focusable action (for example close or confirm button)
+- **WCAG**: 2.1.1 (Level A)
 
 ---
 

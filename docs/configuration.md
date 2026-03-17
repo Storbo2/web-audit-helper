@@ -393,7 +393,7 @@ await runWAH({
 Or use string literals directly — IDs are stable across minor versions:
 
 ```text
-Accessibility: ACC-01 – ACC-27
+Accessibility: ACC-01 – ACC-29
 SEO:           SEO-01 – SEO-08
 Semantics:     SEM-01 – SEM-07
 Responsive:    RWD-01 – RWD-05

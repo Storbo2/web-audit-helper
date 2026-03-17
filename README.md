@@ -12,7 +12,7 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 
 ## ✨ Features
 
-- ♿ **65+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
+- ♿ **67+ Audit rules** across 8 categories (Accessibility, SEO, Semantics, Responsive, Security, Quality, Performance, Forms)
 - 🧱 **Semantic HTML analysis** (proper elements, H1 hierarchy, main/nav/section structure)
 - 🔍 **SEO best practices** (title, meta description, viewport, canonical, Open Graph, Twitter Cards)
 - 📱 **Responsive design heuristics** (viewport meta, fixed-width, 100vh issues, overflow)
@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.0/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.1/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -295,7 +295,7 @@ Multipliers automatically calibrate based on active categories:
 
 ---
 
-## 🎯 Audit Rules (65+ Total)
+## 🎯 Audit Rules (67+ Total)
 
 WAH implements comprehensive audit rules across **8 categories**:
 
@@ -578,7 +578,15 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.4.0 (Current)
+### v1.4.1 (Current)
+
+- Added accessibility component checks:
+  - `ACC-28` Dialog missing accessible name
+  - `ACC-29` Modal missing focusable element
+- Added dedicated unit tests for dialog/modal behavior and fixture coverage using intentional example violations
+- Completed i18n rule label coverage for console output so new and legacy IDs render readable names
+
+### v1.4.0 (Previous)
 
 - Registry hardening completed as single source of truth for rule metadata
 - Contract validation enabled for startup/CI (duplicate IDs, invalid category/severity, missing docsSlug)

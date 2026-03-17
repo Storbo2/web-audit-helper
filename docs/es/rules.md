@@ -1,10 +1,10 @@
 # Documentación de Reglas
 
-Referencia completa de las 61 reglas de auditoría implementadas en WAH.
+Referencia completa de las 67 reglas de auditoría implementadas en WAH.
 
 Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 
-## Reglas de Accesibilidad (26)
+## Reglas de Accesibilidad (28)
 
 ### ACC-01: Falta atributo `lang` en HTML
 
@@ -205,6 +205,22 @@ Indice rapido por ID de regla: [Guia de Reglas](rules-guide.md).
 - **Descripción**: Detecta `line-height` bajo umbral de legibilidad.
 - **Fix**: Aumenta `line-height` al menos a 1.4 (o 1.5x del tamaño de fuente).
 - **WCAG**: 1.4.12 (Nivel AA)
+
+### ACC-28: Dialog sin nombre accesible
+
+- **Severidad**: Critical
+- **Categoría**: Accessibility
+- **Descripción**: Detecta dialogs o alertdialogs sin nombre accesible.
+- **Fix**: Agrega `aria-label` o `aria-labelledby` válido apuntando a título visible.
+- **WCAG**: 4.1.2 (Nivel A)
+
+### ACC-29: Modal sin elemento enfocable
+
+- **Severidad**: Warning
+- **Categoría**: Accessibility
+- **Descripción**: Detecta modales `aria-modal` sin controles enfocables.
+- **Fix**: Incluye al menos una acción enfocable (por ejemplo botón de cerrar o confirmar).
+- **WCAG**: 2.1.1 (Nivel A)
 
 ---
 

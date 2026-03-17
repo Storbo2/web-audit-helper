@@ -29,6 +29,8 @@ This guide indexes all rule documentation pages and groups them by category.
 - [ACC-24](rules/ACC-24.md) - Missing skip link
 - [ACC-25](rules/ACC-25.md) - Insufficient contrast
 - [ACC-26](rules/ACC-26.md) - Line-height too low
+- [ACC-28](rules/ACC-28.md) - Dialog missing accessible name
+- [ACC-29](rules/ACC-29.md) - Modal missing focusable element
 
 ## SEO
 

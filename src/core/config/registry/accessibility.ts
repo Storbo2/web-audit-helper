@@ -26,7 +26,9 @@ import {
     checkContrastRatio,
     checkFocusNotVisible,
     checkLineHeightTooLow,
-    checkClickWithoutKeyboard
+    checkClickWithoutKeyboard,
+    checkDialogMissingAccessibleName,
+    checkModalMissingFocusableElement
 } from "../../rules/accessibility";
 
 export const accessibilityRules: RegisteredRule[] = [
@@ -146,5 +148,13 @@ export const accessibilityRules: RegisteredRule[] = [
     {
         id: RULE_IDS.accessibility.clickWithoutKeyboard,
         run: () => checkClickWithoutKeyboard()
+    },
+    {
+        id: RULE_IDS.accessibility.dialogMissingAccessibleName,
+        run: () => checkDialogMissingAccessibleName()
+    },
+    {
+        id: RULE_IDS.accessibility.modalMissingFocusableElement,
+        run: () => checkModalMissingFocusableElement()
     }
 ];

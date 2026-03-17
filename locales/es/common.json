@@ -193,6 +193,9 @@
         "ACC-24": "Falta enlace de salto",
         "ACC-25": "Contraste insuficiente",
         "ACC-26": "Interlineado bajo",
+        "ACC-27": "Click sin soporte de teclado",
+        "ACC-28": "Dialog sin nombre accesible",
+        "ACC-29": "Modal sin elemento enfocable",
         "RWD-01": "Ancho fijo grande",
         "RWD-02": "Falta viewport",
         "RWD-03": "Desbordamiento horizontal",
@@ -212,8 +215,11 @@
         "SEM-05": "Múltiples elementos main",
         "SEM-06": "Nav sin lista",
         "SEM-07": "Estructura de lista falsa",
+        "HTML-01": "Elementos HTML obsoletos",
+        "HTML-02": "Atributos HTML obsoletos",
         "QLT-01": "Demasiados estilos inline",
         "QLT-02": "Enlace dummy",
+        "UX-01": "Targets táctiles pequeños",
         "IMG-01": "Imagen sin dimensiones",
         "IMG-02": "Imagen sin lazy loading",
         "IMG-03": "Imagen sin async decode",
@@ -227,7 +233,9 @@
         "PERF-03": "Demasiados scripts",
         "PERF-04": "Script sin defer",
         "PERF-05": "CSS que bloquea render",
-        "PERF-06": "Faltan cabeceras de caché"
+        "PERF-06": "Faltan cabeceras de caché",
+        "PERF-07": "Uso de @import en CSS",
+        "PERF-08": "Imagen sin formato moderno"
     },
     "ruleFixes": {
         "ACC-01": "Define un idioma válido del documento: agrega lang al elemento html, por ejemplo <html lang=\"es\">.",

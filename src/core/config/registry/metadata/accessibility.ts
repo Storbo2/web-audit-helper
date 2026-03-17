@@ -210,4 +210,20 @@ export const accessibilityMetadataOverrides: Record<string, RegisteredRuleMetada
         standardType: "wcag",
         standardLabel: "WCAG 2.1 - 2.1.1 Keyboard"
     },
+    [RULE_IDS.accessibility.dialogMissingAccessibleName]: {
+        defaultSeverity: "critical",
+        title: "Dialog missing accessible name",
+        fix: "Provide dialog name with aria-label or aria-labelledby pointing to visible title text.",
+        docsSlug: "ACC-28",
+        standardType: "wcag",
+        standardLabel: "WCAG 2.1 - 4.1.2 Name, Role, Value"
+    },
+    [RULE_IDS.accessibility.modalMissingFocusableElement]: {
+        defaultSeverity: "warning",
+        title: "Modal missing focusable element",
+        fix: "Ensure modal dialog contains at least one focusable control for initial keyboard focus.",
+        docsSlug: "ACC-29",
+        standardType: "wcag",
+        standardLabel: "WCAG 2.1 - 2.1.1 Keyboard"
+    },
 };

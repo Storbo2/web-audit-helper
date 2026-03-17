@@ -1,98 +1,64 @@
-# WAH v1.4.0 Release Notes
+# WAH v1.4.1 Release Notes
 
 **Release Date**: March 16, 2026  
-**Type**: Minor (Core Consistency + Registry Hardening)
+**Type**: Patch (Accessibility Expansion + Console Label Consistency)
 
 ---
 
 ## Overview
 
-Version 1.4.0 consolidates WAH internal architecture so future feature growth can rely on stronger consistency guarantees.
+Version 1.4.1 builds on 1.4.0 by delivering the first incremental rule package before v1.5, focused on accessibility components and output consistency.
 
-This release focuses on registry hardening, uniform contracts, anti self-audit protections, and bounded costly heuristics.
+This release adds two accessibility rules (`ACC-28`, `ACC-29`) and ensures readable console labels for newly added and previously unmapped rule IDs.
 
 ---
 
 ## Highlights
 
-- Registry is now the primary source of rule metadata for reporting and docs fields
-- Contract validation runs on startup and fails fast on malformed registry entries
-- Anti self-audit protections are now covered by dedicated tests across overlay surfaces
-- Costly heuristic controls expanded via rule-level thresholds and sampling bounds
-- EN/ES configuration docs now include costly-rule tuning guidance
+- Added `ACC-28` (dialog name) and `ACC-29` (modal focusability) end-to-end
+- Included intentional fixture violations in `examples/basic.html` for manual and automated verification
+- Completed missing i18n rule labels so console tables display readable rule names instead of raw IDs
 
 ---
 
 ## Added
 
-### Registry Hardening
+### New Accessibility Rules
 
-- Enriched registry metadata model:
-  - `category`
-  - `defaultSeverity`
-  - `title`
-  - `fix`
-  - `docsSlug`
-  - `standardType`
-  - `standardLabel`
-- Centralized metadata overrides for all registered rules
-- Metadata coverage tests to enforce full registry completeness
+- `ACC-28`: Dialog missing accessible name (`aria-label`/valid `aria-labelledby`)
+- `ACC-29`: Modal (`aria-modal="true"`) missing focusable element
 
-### Registry Contract Validation
+### Supporting Coverage
 
-- Startup assertion for rule contract integrity
-- Detailed validation diagnostics for CI:
-  - duplicate IDs
-  - invalid category
-  - invalid default severity
-  - missing docs slug
-- Unit tests for validation logic and error formatting
-
-### Anti Self-Audit Test Coverage
-
-- Core audit test coverage for ignored WAH surfaces:
-  - overlay root
-  - popover
-  - context menu
-  - dynamic loading state nodes
-- Overlay behavior test ensuring context menu carries `data-wah-ignore`
+- New dedicated unit tests for dialog and modal rule behavior
+- Example fixture updates to trigger both rules in coverage flows
 
 ---
 
 ## Changed
 
-### Metadata Resolution Path
+### Registry and Docs Integration
 
-- Reporter utilities and category builder now resolve core metadata from registry first, then fallback constants for compatibility.
-
-### Costly Heuristic Controls
-
-- Threshold/sampling support added to selected heavy rules:
-  - `ACC-21`
-  - `RWD-01`
-  - `RWD-04`
-  - `PERF-02`
-  - `PERF-03`
-  - `PERF-06`
-  - `PERF-08`
-- Rule registry wiring now forwards per-rule threshold overrides to these heuristics.
-
-### Documentation
-
-- Updated `docs/configuration.md` and `docs/es/configuration.md` with:
-  - expanded threshold-capable rules table
-  - practical costly-rule tuning guidance
+- Rule IDs, registry wiring, and metadata overrides updated for `ACC-28` and `ACC-29`
+- Rules catalog and rules guide (EN/ES) expanded with new entries and pages
+- Package version advanced to `1.4.1`
 
 ---
 
 ## Fixed
 
-- Stabilized phase 4 threshold tests using deterministic geometry-based overlap assertions in jsdom.
+- Fixed missing `ruleLabels` mappings in EN/ES locales so console output no longer falls back to raw IDs for:
+  - `ACC-27`, `ACC-28`, `ACC-29`
+  - `UX-01`
+  - `HTML-01`, `HTML-02`
+  - `PERF-07`, `PERF-08`
 
 ---
 
 ## Validation Status
 
+- i18n tests: passing (`npm run test -- src/utils/i18n.test.ts`)
+- examples coverage tests: passing (`npm run test -- src/core/rules/__tests__/examples-coverage.test.ts`)
 - Typecheck: passing (`npm run typecheck`)
 - Test suite: passing (`npm test`)
 - Build: passing (`npm run build`)
@@ -104,9 +70,8 @@ This release focuses on registry hardening, uniform contracts, anti self-audit p
 No breaking changes introduced.
 
 - Existing integrations continue to work unchanged.
-- Existing `rules[ruleId]` override style remains backward compatible.
-- New threshold-capable rules are opt-in and only apply when configured.
+- New accessibility rules are additive and can be customized/disabled via `rules[ruleId]`.
 
 ---
 
-*Previous release: [v1.3.0 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.3.0)*
+*Previous release: [v1.4.0 Release Notes](https://github.com/Storbo2/web-audit-helper/releases/tag/v1.4.0)*

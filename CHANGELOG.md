@@ -7,6 +7,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-03-16
+
+### Added
+
+- **Accessibility component rules (v1.4.1)**:
+  - `ACC-28`: Dialog missing accessible name (`aria-label` / valid `aria-labelledby`)
+  - `ACC-29`: Modal (`aria-modal="true"`) missing focusable element
+- New unit suite for dialog/modal accessibility checks.
+- Intentional example fixture violations in `examples/basic.html` to validate both new rules in manual runs and coverage tests.
+
+### Changed
+
+- Accessibility registry, metadata overrides, and rule exports updated for `ACC-28` and `ACC-29`.
+- Rule guides and rules catalog docs updated to include new rule pages.
+
+### Fixed
+
+- Maintained full registry metadata contract coverage after adding new accessibility rules.
+
 ## [1.4.0] - 2026-03-16
 
 ### Added

@@ -257,7 +257,6 @@ export const wahCss = `
     transform: rotate(20deg) scale(0.95);
 }
 
-
 .wah-highlight {
     border-radius: 0.1875rem;
     box-shadow: 0 0 0 0 var(--wah-shadow);
@@ -313,7 +312,6 @@ export const wahCss = `
         opacity: 0;
     }
 }
-
 
 .wah-top {
     display: flex;
@@ -408,7 +406,6 @@ export const wahCss = `
     margin-left: auto;
 }
 
-
 #wah-overlay-root[data-pos="top-left"] {
     top: 16px;
     left: 16px;
@@ -453,7 +450,6 @@ export const wahCss = `
     transform: translateX(-50%);
 }
 
-
 #wah-overlay-root.wah-dragging {
     transition: none !important;
 }
@@ -474,7 +470,6 @@ export const wahCss = `
         transform var(--wah-trans-long) cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
-
 @media (max-width: 480px) {
     #wah-overlay-root {
         width: min(92vw, 18rem);
@@ -489,7 +484,6 @@ export const wahCss = `
         padding: 0.5rem;
     }
 }
-
 
 .wah-pop {
     position: fixed;

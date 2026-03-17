@@ -196,6 +196,17 @@
         <button type="submit">Submit</button>
     </form>
 
+    <!-- ACC-28: Dialog missing accessible name -->
+    <div role="dialog" class="demo-dialog" style="padding:10px; border:1px solid #999; margin-top:12px;">
+        <p>Dialog content without aria-label/labelledby</p>
+    </div>
+
+    <!-- ACC-29: Modal without focusable element -->
+    <div role="dialog" aria-modal="true" aria-label="Read only modal" class="demo-modal"
+        style="padding:10px; border:1px dashed #666; margin-top:12px;">
+        <p>Modal content has no buttons or links.</p>
+    </div>
+
     <style>
         /* ACC-25: Insufficient contrast - test cases */
         .low-contrast-light {
