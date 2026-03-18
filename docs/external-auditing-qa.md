@@ -27,6 +27,21 @@ npx http-server . -p 4173 --cors
 
 1. Open browser DevTools (Console + Network).
 
+## Local Bookmarklet for Pre-Release Validation
+
+If npm `1.5.0` is not published yet, use a local bookmarklet:
+
+1. Start local server from repository root:
+
+```bash
+npx http-server . -p 4173 --cors
+```
+
+1. Ensure these files are reachable in browser:
+   - `http://127.0.0.1:4173/dist/external-runtime.iife.js`
+   - `http://127.0.0.1:4173/dist/external-runtime.mjs`
+2. Create a bookmarklet where `runtimeBaseUrl` points to `http://127.0.0.1:4173/dist`.
+
 ## Test Fixtures
 
 - Permissive CSP: `http://127.0.0.1:4173/examples/csp-permissive.html`
@@ -121,3 +136,14 @@ Suggested locations:
 - If permissive fixture fails, verify bookmarklet URL references current package version.
 - If both cases fail identically, confirm bookmarklet points to `dist/external-runtime.iife.js` and fallback `dist/external-runtime.mjs`.
 - If metadata is missing, ensure export is generated from external run (not embedded run).
+
+Common error diagnosis:
+
+- `ERR_CONNECTION_REFUSED`:
+  - Local host runtime is unreachable. Confirm static server is running on `127.0.0.1:4173`.
+- `Failed to load external-runtime.iife.js`:
+  - IIFE was blocked (often CSP) or URL is wrong.
+- `Failed to fetch dynamically imported module`:
+  - ESM fallback blocked by CSP/CORS/network policy.
+- Overlay works on fixtures but not on enterprise domains:
+  - Expected when strict CSP blocks script injection. Record as controlled failure.

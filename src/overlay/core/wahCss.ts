@@ -170,7 +170,7 @@ export const wahCss = `
     position: fixed;
     bottom: 16px;
     right: 16px;
-    width: min(90vw, 20rem);
+    width: clamp(16rem, 90vw, 22rem);
     max-width: 90vw;
     background: var(--wah-bg);
     color: var(--wah-text);
@@ -1335,12 +1335,12 @@ export const wahCss = `
 
 .wah-filter {
     display: flex;
-    gap: 0.375rem;
-    margin: 0.5rem 0;
+    gap: 10px;
+    margin: 0.4rem;
 }
 
 #wah-overlay-root .wah-chip {
-    flex: 1;
+    flex: auto;
     padding: 0.35rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
     border-radius: 0.8rem;

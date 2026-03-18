@@ -13,12 +13,12 @@
 
 .wah-filter {
     display: flex;
-    gap: 0.375rem;
-    margin: 0.5rem 0;
+    gap: 10px;
+    margin: 0.4rem;
 }
 
 #wah-overlay-root .wah-chip {
-    flex: 1;
+    flex: auto;
     padding: 0.35rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
     border-radius: 0.8rem;

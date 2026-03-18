@@ -1,11 +1,71 @@
-# WAH v1.4.5 Release Notes
+<!-- markdownlint-disable MD025 MD024 -->
+
+# WAH v1.5.0 Release Notes
+
+**Release Date**: March 18, 2026  
+**Type**: Minor (External Auditing)
+
+---
+
+## Overview
+
+Version 1.5.0 delivers external auditing as an official workflow.
+
+You can now audit already-open pages using a bookmarklet runtime, export richer execution metadata, and compare consecutive runs directly in JSON/HTML reports.
+
+---
+
+## Highlights
+
+- Official external runtime bootstrap with IIFE primary + ESM fallback
+- Version-pinned bookmarklet flow for jsDelivr runtime loading
+- Extended execution metadata in report exports (`runtimeMode`, run identity, timing and counters)
+- Run comparison support in JSON and HTML exports
+- CSP validation assets and bilingual QA checklists for permissive/blocking scenarios
+
+---
+
+## Added
+
+- `src/external/runtime.ts` for external-mode execution (`runtimeMode = external`)
+- Runtime bundles for external delivery:
+  - `dist/external-runtime.iife.js`
+  - `dist/external-runtime.mjs`
+- Bookmarklet generator script and postbuild integration
+- Comparison engine for report-to-report diffs
+- QA fixtures and checklists for CSP and real-page validation
+
+---
+
+## Fixed
+
+- Development prefix validation now accepts legacy `HTML-*` IDs in quality category, preventing false warnings (e.g., `HTML-01` under `quality`).
+
+---
+
+## Validation Status
+
+- Typecheck: passing (`npm run typecheck`)
+- Test suite: passing (`npm test`)
+- Build: passing (`npm run build`)
+
+---
+
+## Upgrade Notes
+
+- Existing embedded usage remains compatible.
+- External auditing can fail on strict CSP domains by design; this is expected and should be treated as controlled failure when error handling is explicit.
+
+---
+
+## WAH v1.4.5 Release Notes
 
 **Release Date**: March 16, 2026  
 **Type**: Patch (Security & Quality Finalization)
 
 ---
 
-## Overview
+### Overview (v1.4.5)
 
 Version 1.4.5 closes the incremental pre-v1.5 roadmap with two final rules focused on secure transport and UX noise reduction.
 
@@ -13,7 +73,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Highlights
+### Highlights (v1.4.5)
 
 - Added `SEC-03` to detect insecure `http://` subresources in secure page contexts
 - Added `QLT-03` to detect adjacent duplicate controls with the same label and action
@@ -22,9 +82,9 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Added
+### Added (v1.4.5)
 
-### New Security and Quality Rules
+#### New Security and Quality Rules (v1.4.5)
 
 - `SEC-03`: Mixed content in secure context
   - Flags embedded subresources loaded over `http://` when the page context is secure
@@ -34,7 +94,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
   - Flags adjacent controls that expose the same visible label and action
   - Excludes common grouped UI patterns such as pagination, tablists, and dummy-link cases already covered elsewhere
 
-### Supporting Coverage
+#### Supporting Coverage (v1.4.5)
 
 - Dedicated test suite for security/quality boundaries
 - Example fixture updates in `basic.html` for SEC-03 and QLT-03 coverage
@@ -42,7 +102,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Changed
+### Changed (v1.4.5)
 
 - Security and quality registry, metadata, locale labels, and reporter fallbacks updated for `SEC-03` and `QLT-03`
 - README updated to reflect 75 total rules and the new current release
@@ -51,7 +111,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Fixed
+### Fixed (v1.4.5)
 
 - Removed overlap between `IMG-02` and `PERF-09`
   - likely hero/above-the-fold images no longer receive lazy-load recommendations
@@ -59,7 +119,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Validation Status
+### Validation Status (v1.4.5)
 
 - security/quality tests: passing
 - performance boundary tests: passing
@@ -70,7 +130,7 @@ This release introduces `SEC-03` (mixed content) and `QLT-03` (consecutive dupli
 
 ---
 
-## Upgrade Notes
+### Upgrade Notes (v1.4.5)
 
 No breaking changes introduced.
 

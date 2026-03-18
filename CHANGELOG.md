@@ -7,6 +7,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-03-18
+
+### Added
+
+- **External Auditing release (v1.5.0)**:
+  - External runtime bootstrap with dual loading strategy:
+    - `external-runtime.iife.js` (primary)
+    - `external-runtime.mjs` (fallback)
+  - Bookmarklet generation flow for version-pinned jsDelivr runtime loading.
+  - Extended execution metadata in exported reports:
+    - `runId`, `targetUrl`, `executedAt`, `runtimeMode`, `wahVersion`
+    - `issueCountBySeverity`, `categoryScores`, `rulesExecuted`, `rulesSkipped`, `totalAuditMs`
+  - Run comparison support in JSON and HTML exports:
+    - overall score delta, severity deltas, added/removed rule IDs, category deltas
+    - optional timing deltas when metrics are available
+- CSP QA fixtures and bilingual checklists for permissive/blocking validation:
+  - `examples/csp-permissive.html`
+  - `examples/csp-blocking.html`
+  - `docs/external-auditing-qa.md`
+  - `docs/es/external-auditing-qa.md`
+
+### Changed
+
+- README external auditing documentation expanded with detailed pre-release and post-publish validation guidance.
+- Package version advanced to `1.5.0`.
+
+### Fixed
+
+- Dev validation for rule/category prefixes now accepts legacy `HTML-*` IDs under `quality`, removing false mismatch warnings such as `category="quality" id="HTML-01"`.
+
 ## [1.4.5] - 2026-03-16
 
 ### Added

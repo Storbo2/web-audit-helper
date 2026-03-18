@@ -44,7 +44,7 @@ npm install web-audit-helper
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.4.5/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.5.0/dist/index.js';
 
     // Run with default configuration
     await runWAH();
@@ -112,6 +112,15 @@ Runtime loading strategy:
 
 If CSP blocks both loads, WAH shows a clear error and aborts external execution.
 
+Detailed external auditing flow:
+
+1. Build local artifacts (`npm run build`).
+2. Install bookmarklet from `dist/bookmarklet.txt`.
+3. Open a target page already loaded in your browser.
+4. Trigger the bookmarklet.
+5. Export JSON/HTML from the overlay.
+6. Run a second audit and export again to validate run comparison.
+
 v1.5 capabilities now available in external mode:
 
 - `runtimeMode = external` in exported metadata
@@ -144,6 +153,14 @@ Post-publish real-page flow (release validation):
 3. Validate in at least one static target and one SPA target.
 4. Export JSON/HTML and verify `meta.runtimeMode = external` and run comparison block.
 
+Release-gate checklist for real pages:
+
+1. Validate at least one static website and one SPA website.
+2. Confirm no fatal bootstrap error on successful targets.
+3. Confirm JSON export includes `meta.runtimeMode = external`.
+4. Confirm second-run export includes comparison diff in JSON/HTML.
+5. Record evidence (screenshots + console/network excerpts).
+
 Quick FAQ (v1.5 external audits):
 
 - Why does external auditing fail on some pages?
@@ -154,6 +171,17 @@ Quick FAQ (v1.5 external audits):
   - No. v1.5 audits only the currently open page.
 - Can I run it in CI headless mode?
   - Not in v1.5. That is planned for future CLI/headless milestones.
+
+Troubleshooting matrix:
+
+- `ERR_CONNECTION_REFUSED` for `127.0.0.1:4173`:
+  - Local static server is not running. Start `npx http-server . -p 4173 --cors`.
+- `Failed to load external-runtime.iife.js` on real pages:
+  - Usually strict CSP or blocked third-party script injection.
+- `Failed to fetch dynamically imported module`:
+  - ESM fallback blocked by CSP/CORS/network policy.
+- Overlay appears on fixture but not on enterprise sites:
+  - Expected for strict CSP sites. Use that as controlled failure evidence.
 
 QA checklist for CSP permissive/blocking validation:
 
@@ -647,7 +675,17 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.4.5 (Current)
+### v1.5.0 (Current)
+
+- External auditing release finalized:
+  - Official bookmarklet flow with fixed-version jsDelivr runtime
+  - Dual runtime bootstrap (`external-runtime.iife.js` -> `external-runtime.mjs` fallback)
+  - Rich execution metadata in exports (`runtimeMode`, `runId`, `targetUrl`, timings and counters)
+  - Run comparison in JSON/HTML exports (score, severity, rule IDs, categories, timing deltas)
+  - CSP permissive/blocking QA fixtures and bilingual checklists
+- Dev validation updated for quality legacy IDs so `HTML-*` rules in `quality` no longer trigger mismatch warnings
+
+### v1.4.5 (Previous)
 
 - Added security and quality final pre-v1.5 checks:
   - `SEC-03` Mixed content over HTTP in secure contexts
@@ -718,13 +756,6 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 - Complete internationalization (English + Spanish)
 - End-to-end testing with Playwright
 - Bilingual documentation
-
-### v1.5 - External Auditing (Planned)
-
-Objective: audit websites without installing WAH in the target project.
-
-- Official bookmarklet for one-click audits on any site
-- Export report improvements: run comparison, richer metadata, improved HTML visuals, fix code suggestions
 
 ### v2.0 - Automation & Ecosystem (Future)
 

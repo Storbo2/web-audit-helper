@@ -2,7 +2,7 @@
     position: fixed;
     bottom: 16px;
     right: 16px;
-    width: min(90vw, 20rem);
+    width: clamp(16rem, 90vw, 22rem);
     max-width: 90vw;
     background: var(--wah-bg);
     color: var(--wah-text);

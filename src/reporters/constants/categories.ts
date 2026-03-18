@@ -32,7 +32,8 @@ export const CATEGORY_PREFIXES: Partial<Record<IssueCategory, string[]>> = {
     seo: ["SEO"],
     responsive: ["RWD"],
     security: ["SEC"],
-    quality: ["QLT", "UX"],
+    // Quality includes legacy rule families kept for backwards compatibility.
+    quality: ["QLT", "UX", "HTML"],
     performance: ["PERF", "IMG", "MEDIA"],
     form: ["FORM"]
 };

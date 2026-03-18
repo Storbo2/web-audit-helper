@@ -27,6 +27,21 @@ npx http-server . -p 4173 --cors
 
 1. Abrir DevTools del navegador (Console + Network).
 
+## Bookmarklet Local para Validacion Pre-Release
+
+Si npm `1.5.0` aun no esta publicado, usa bookmarklet local:
+
+1. Levantar servidor local desde la raiz del repositorio:
+
+```bash
+npx http-server . -p 4173 --cors
+```
+
+1. Verificar en navegador que estos archivos respondan:
+   - `http://127.0.0.1:4173/dist/external-runtime.iife.js`
+   - `http://127.0.0.1:4173/dist/external-runtime.mjs`
+2. Crear un bookmarklet cuyo `runtimeBaseUrl` apunte a `http://127.0.0.1:4173/dist`.
+
 ## Fixtures de prueba
 
 - CSP permisiva: `http://127.0.0.1:4173/examples/csp-permissive.html`
@@ -121,3 +136,14 @@ Ubicaciones sugeridas:
 - Si falla la fixture permisiva, validar que el bookmarklet apunta a la version actual del paquete.
 - Si ambos casos fallan igual, revisar que el bookmarklet apunte a `dist/external-runtime.iife.js` y fallback `dist/external-runtime.mjs`.
 - Si falta metadata, verificar que el export corresponde a run externo (no embebido).
+
+Diagnostico de errores comunes:
+
+- `ERR_CONNECTION_REFUSED`:
+  - Runtime local inaccesible. Confirmar que el servidor este activo en `127.0.0.1:4173`.
+- `Failed to load external-runtime.iife.js`:
+  - IIFE bloqueado (usualmente CSP) o URL incorrecta.
+- `Failed to fetch dynamically imported module`:
+  - Fallback ESM bloqueado por CSP/CORS/politicas de red.
+- Funciona en fixtures pero no en dominios enterprise:
+  - Esperado cuando CSP estricta bloquea inyeccion de scripts. Registrar como fallo controlado.
