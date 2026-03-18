@@ -3,6 +3,8 @@ import { buildAuditReport, serializeReportToJSON, serializeReportToTXT, serializ
 import { closePop } from "../utils";
 import { t } from "../../../utils/i18n";
 
+let previousExportedReport: ReturnType<typeof buildAuditReport> | null = null;
+
 export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, results: AuditResult) {
     const dict = t();
     popBody.innerHTML = `
@@ -42,17 +44,18 @@ export function renderExportPopover(popBody: HTMLElement, overlay: HTMLElement, 
 
 function exportReport(results: AuditResult, format: "json" | "txt" | "html") {
     const report = buildAuditReport(results);
+    const previousReport = previousExportedReport;
 
     let content: string;
     let filename: string;
     let mimeType: string;
 
     if (format === "json") {
-        content = serializeReportToJSON(report);
+        content = serializeReportToJSON(report, previousReport ?? undefined);
         filename = buildReportFileName(report, "json");
         mimeType = "application/json";
     } else if (format === "html") {
-        content = serializeReportToHTML(report);
+        content = serializeReportToHTML(report, previousReport ?? undefined);
         filename = buildReportFileName(report, "html");
         mimeType = "text/html";
     } else {
@@ -70,6 +73,8 @@ function exportReport(results: AuditResult, format: "json" | "txt" | "html") {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+
+    previousExportedReport = report;
 
     closePop();
 }

@@ -2,6 +2,9 @@ export const HTML_REPORT_STYLES = `
                 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 24px; color: #111827; }
                 h1 { margin: 0 0 8px; }
                 .meta, .summary { margin-bottom: 16px; }
+                .comparison { margin: 16px 0 20px; border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; background: #f9fafb; }
+                .comparison h2 { margin: 0 0 8px; font-size: 18px; }
+                .comparison p { margin: 6px 0; }
                 .meta p, .summary p { margin: 4px 0; }
                 .legend { margin: 8px 0 0; color: #374151; font-size: 14px; }
                 .legend .legend-fail { color: #dc2626; font-weight: 600; }

@@ -91,6 +91,75 @@ await runWAH({
 });
 ```
 
+### External Auditing (Bookmarklet)
+
+WAH now includes a generated bookmarklet for external audits against already-open pages.
+
+1. Run build:
+
+```bash
+npm run build
+```
+
+1. Copy the single line from `dist/bookmarklet.txt`.
+2. Create a browser bookmark and paste that line as URL.
+3. Open any target page and click the bookmark.
+
+Runtime loading strategy:
+
+- Primary: IIFE runtime from jsDelivr (`external-runtime.iife.js`)
+- Fallback: ESM runtime from jsDelivr (`external-runtime.mjs`)
+
+If CSP blocks both loads, WAH shows a clear error and aborts external execution.
+
+v1.5 capabilities now available in external mode:
+
+- `runtimeMode = external` in exported metadata
+- Extended metadata (`runId`, `targetUrl`, `executedAt`, `wahVersion`, `issueCountBySeverity`, `categoryScores`, `rulesExecuted`, `rulesSkipped`, `totalAuditMs`)
+- Optional run comparison in JSON and HTML exports (overall score delta, severity delta, added/removed rule IDs, category deltas, timing delta when metrics exist)
+
+Pre1.5 local validation flow (before npm publish):
+
+1. Build artifacts locally:
+
+```bash
+npm run build
+```
+
+1. Start a local static server from repository root:
+
+```bash
+npx http-server . -p 4173 --cors
+```
+
+1. Use a local bookmarklet URL that targets `http://127.0.0.1:4173/dist`.
+2. Validate permissive and blocking fixtures:
+   - `http://127.0.0.1:4173/examples/csp-permissive.html`
+   - `http://127.0.0.1:4173/examples/csp-blocking.html`
+
+Post-publish real-page flow (release validation):
+
+1. Publish `web-audit-helper@1.5.0` to npm.
+2. Rebuild bookmarklet so it points to fixed jsDelivr `@1.5.0` assets.
+3. Validate in at least one static target and one SPA target.
+4. Export JSON/HTML and verify `meta.runtimeMode = external` and run comparison block.
+
+Quick FAQ (v1.5 external audits):
+
+- Why does external auditing fail on some pages?
+  - Strict CSP can block script injection and dynamic imports. WAH aborts with a clear error in this case.
+- Does it work behind login?
+  - Yes, if the page is already open and authenticated in the current tab/session.
+- Does it crawl multiple pages?
+  - No. v1.5 audits only the currently open page.
+- Can I run it in CI headless mode?
+  - Not in v1.5. That is planned for future CLI/headless milestones.
+
+QA checklist for CSP permissive/blocking validation:
+
+- English: [External Auditing QA](docs/external-auditing-qa.md)
+- Espanol: [QA de Auditoria Externa](docs/es/external-auditing-qa.md)
+
 ### Next.js / SSR Frameworks
 
 **WAH runs in the browser only (requires DOM).**

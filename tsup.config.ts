@@ -7,29 +7,59 @@ const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as { versi
 const wahVersion = packageJson.version ?? "0.1.0-dev";
 const wahMode = process.env.WAH_MODE === "ci" || process.env.CI === "true" ? "ci" : "dev";
 
-export default defineConfig({
-    entry: ["src/index.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: true,
-    sourcemap: false,
-    clean: true,
-    treeshake: true,
-    splitting: false,
-    outExtension({ format }) {
-        return {
-            js: format === "cjs" ? ".cjs" : ".mjs"
-        };
+const sharedDefine = {
+    __WAH_VERSION__: JSON.stringify(wahVersion),
+    __WAH_MODE__: JSON.stringify(wahMode)
+};
+
+export default defineConfig([
+    {
+        entry: ["src/index.ts"],
+        format: ["esm", "cjs"],
+        dts: true,
+        minify: true,
+        sourcemap: false,
+        clean: true,
+        treeshake: true,
+        splitting: false,
+        outExtension({ format }) {
+            return {
+                js: format === "cjs" ? ".cjs" : ".mjs"
+            };
+        },
+        define: sharedDefine,
+        esbuildOptions(options) {
+            options.loader = {
+                ...options.loader,
+                ".css": "text"
+            };
+            options.minifyWhitespace = true;
+        }
     },
-    define: {
-        __WAH_VERSION__: JSON.stringify(wahVersion),
-        __WAH_MODE__: JSON.stringify(wahMode)
-    },
-    esbuildOptions(options) {
-        options.loader = {
-            ...options.loader,
-            ".css": "text"
-        };
-        options.minifyWhitespace = true;
+    {
+        entry: {
+            "external-runtime": "src/external/runtime.ts"
+        },
+        format: ["iife", "esm"],
+        dts: false,
+        minify: true,
+        sourcemap: false,
+        clean: false,
+        treeshake: true,
+        splitting: false,
+        globalName: "WAHExternalRuntime",
+        outExtension({ format }) {
+            return {
+                js: format === "iife" ? ".iife.js" : ".mjs"
+            };
+        },
+        define: sharedDefine,
+        esbuildOptions(options) {
+            options.loader = {
+                ...options.loader,
+                ".css": "text"
+            };
+            options.minifyWhitespace = true;
+        }
     }
-});
+]);

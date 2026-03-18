@@ -11,9 +11,23 @@ export function buildAuditReport(result: AuditResult, config?: WAHConfig): Audit
     const categories = buildCategories({ ...result, issues: filteredIssues }, byCategoryScores);
     const stats = buildReportStatsFromCategories(categories);
     const score = buildReportScore(categories, computeScore(result.issues));
+    const meta = buildReportMeta({ runtimeMode: config?.runtimeMode });
+    const rulesExecuted = result.metrics?.executedRules ?? stats.totalRulesAvailable;
+    const rulesSkipped = result.metrics?.skippedRules ?? Math.max(stats.totalRulesAvailable - rulesExecuted, 0);
+    const totalAuditMs = result.metrics?.totalMs ?? 0;
+
+    meta.issueCountBySeverity = {
+        critical: stats.failed,
+        warning: stats.warnings,
+        recommendation: stats.recommendations
+    };
+    meta.categoryScores = score.byCategory;
+    meta.rulesExecuted = rulesExecuted;
+    meta.rulesSkipped = rulesSkipped;
+    meta.totalAuditMs = totalAuditMs;
 
     return {
-        meta: buildReportMeta(),
+        meta,
         score,
         categories,
         stats,
