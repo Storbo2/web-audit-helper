@@ -40,6 +40,28 @@ npm install web-audit-helper
 
 ## 📖 Quick Start
 
+### Documentation Map
+
+- Quick Start (this file)
+- External Auditing: [External Auditing Guide](docs/external-auditing.md)
+- SSR/Next usage: [Next.js / SSR Frameworks](#nextjs--ssr-frameworks)
+- Advanced config: [Configuration](docs/configuration.md)
+- Exports and metadata: [Exports and Metadata](docs/exports-metadata.md)
+- Roadmap: [Product Roadmap](docs/roadmap.md)
+
+### Which Mode Should I Use?
+
+| Mode | Best for |
+| --- | --- |
+| embedded | local development and direct app integration |
+| external | bookmarklet-driven audits on already-open pages |
+
+Common use cases:
+
+- I am building a site/app and want continuous feedback: use embedded mode.
+- I want to audit any page from the browser quickly: use external mode.
+- I want CI/headless automation: planned for v2.0 CLI, not part of v1.5.0.
+
 ### Browser (via CDN)
 
 ```html
@@ -111,6 +133,14 @@ Runtime loading strategy:
 - Fallback: ESM runtime from jsDelivr (`external-runtime.mjs`)
 
 If CSP blocks both loads, WAH shows a clear error and aborts external execution.
+
+Where is `dist/bookmarklet.txt`?
+
+- It is generated when building this repository (`npm run build`), because `postbuild` runs `scripts/gen-bookmarklet.mjs`.
+- If you are inside another app repo (for example React/PHP) and only installed WAH as dependency, you will not automatically get this repository build pipeline output.
+- For external auditing, use either:
+  - bookmarklet from this repository build output, or
+  - bookmarklet generated from the published version (`web-audit-helper@1.5.0`).
 
 Detailed external auditing flow:
 
@@ -675,100 +705,14 @@ We welcome contributions! Please read [Contributing Guide](docs/contributing.md)
 
 ## 📋 Roadmap
 
-### v1.5.0 (Current)
+Current and future roadmap is maintained in:
 
-- External auditing release finalized:
-  - Official bookmarklet flow with fixed-version jsDelivr runtime
-  - Dual runtime bootstrap (`external-runtime.iife.js` -> `external-runtime.mjs` fallback)
-  - Rich execution metadata in exports (`runtimeMode`, `runId`, `targetUrl`, timings and counters)
-  - Run comparison in JSON/HTML exports (score, severity, rule IDs, categories, timing deltas)
-  - CSP permissive/blocking QA fixtures and bilingual checklists
-- Dev validation updated for quality legacy IDs so `HTML-*` rules in `quality` no longer trigger mismatch warnings
+- [Product Roadmap](docs/roadmap.md)
 
-### v1.4.5 (Previous)
+Release-by-release historical details are maintained in:
 
-- Added security and quality final pre-v1.5 checks:
-  - `SEC-03` Mixed content over HTTP in secure contexts
-  - `QLT-03` Consecutive duplicate controls with same label/action
-- Added dedicated security/quality boundary tests and fixture violations in examples
-- Refined `IMG-02` vs `PERF-09` so hero images no longer trigger conflicting lazy-load guidance
-
-### v1.4.4 (Previous)
-
-- Added performance checks:
-  - `PERF-09` Above-the-fold image without fetch priority
-  - `PERF-10` Excess third-party scripts from same domain
-- Added dedicated performance tests and fixture violations in examples
-- Expanded registry metadata, reporter mappings, labels, and docs for full 1.4.4 coverage
-
-### v1.4.3 (Previous)
-
-- Added technical SEO checks:
-  - `SEO-09` Canonical conflict or empty canonical
-  - `SEO-10` Invalid or incomplete hreflang set
-- Added dedicated SEO technical tests and fixture head-level violations in examples
-- Expanded registry metadata, reporter mappings, labels, and docs for full 1.4.3 coverage
-
-### v1.4.2 (Previous)
-
-- Added accessibility control/error checks:
-  - `ACC-30` Icon-only button missing robust accessible name
-  - `ACC-31` Invalid control missing associated error message
-- Added dedicated unit tests for icon-only buttons and invalid control error association
-- Expanded fixtures, docs, and locale labels for full 1.4.2 coverage
-
-### v1.4.1 (Previous)
-
-- Added accessibility component checks:
-  - `ACC-28` Dialog missing accessible name
-  - `ACC-29` Modal missing focusable element
-- Added dedicated unit tests for dialog/modal behavior and fixture coverage using intentional example violations
-- Completed i18n rule label coverage for console output so new and legacy IDs render readable names
-
-### v1.4.0 (Previous)
-
-- Registry hardening completed as single source of truth for rule metadata
-- Contract validation enabled for startup/CI (duplicate IDs, invalid category/severity, missing docsSlug)
-- Strong anti self-audit coverage for overlay/popover/context-menu/loading surfaces
-- Costly heuristic controls expanded with thresholds/sampling in accessibility, responsive, and performance rules
-- Configuration docs expanded in EN/ES with costly-rules tuning guidance
-
-### v1.3.0 (Previous)
-
-- Full educational documentation for all implemented rules (61/61)
-- Learn more integrated in report HTML, console issue details, and overlay context menu
-- Rule indexes published in EN/ES (`rules-guide`)
-- Contributor guides published in EN/ES for rule lifecycle and consistency
-
-### v1.2.0 (Previous)
-
-- Rule-level customization by stable ID (`off`, severity overrides, per-rule thresholds)
-- Rule thresholds enabled for `ACC-22`, `ACC-25`, `ACC-26`, `UX-01`
-- Audit performance metrics (total + per-rule timings) with optional report export
-- Console output presets (`none`, `minimal`, `standard`, `detailed`, `debug`)
-- Score debugging + improved logging controls
-- Overlay/settings UX refinements and keyboard shortcuts
-- Docs updated in EN/ES (README, configuration, changelog, release notes)
-
-### v1.1.0 (Previous)
-
-- +65 audit rules implemented (6 new rules in v1.1.0)
-- Complete internationalization (English + Spanish)
-- End-to-end testing with Playwright
-- Bilingual documentation
-
-### v2.0 - Automation & Ecosystem (Future)
-
-Objective: make WAH a professional auditing platform.
-
-- CLI tool for URL/file auditing with headless browser automation
-- CI/CD integration with score-based fail conditions
-- Official plugin system (React, Next.js, ecommerce, advanced a11y use cases)
-
-### v2.x - Ecosystem Growth (Future)
-
-- DevTools browser extension for auditing any page from the browser
-- Team/company standards with custom rule policies and severity profiles
+- [CHANGELOG](CHANGELOG.md)
+- [Release Notes](RELEASE-NOTES.md)
 
 ---
 

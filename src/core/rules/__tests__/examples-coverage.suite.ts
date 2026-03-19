@@ -14,7 +14,7 @@ export function registerExamplesCoverageSuite(): void {
     ensureCssEscapePolyfill();
 
     describe("Examples coverage for all rule IDs", () => {
-        it("basic.html + basic2.html should trigger every registered rule at least once", () => {
+        it("legacy example fixtures (or aliases) should trigger every registered rule at least once", () => {
             loadExample("basic.html");
 
             setupViewportAndDocumentMetrics();

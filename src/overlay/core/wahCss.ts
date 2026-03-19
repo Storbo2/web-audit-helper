@@ -170,17 +170,22 @@ export const wahCss = `
     position: fixed;
     bottom: 16px;
     right: 16px;
-    width: clamp(16rem, 90vw, 22rem);
-    max-width: 90vw;
+    width: clamp(17rem, 92vw, 24rem);
+    max-width: 92vw;
     background: var(--wah-bg);
     color: var(--wah-text);
     border: 0.0625rem solid var(--wah-border);
     border-radius: 0.625rem;
-    font-family: var(--wah-font);
+    font-family: var(--wah-font) !important;
     font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
     overflow: hidden;
     z-index: 9999;
     transition: height var(--wah-trans-medium) ease, left var(--wah-trans-long) ease, top var(--wah-trans-long) ease;
+}
+
+#wah-overlay-root,
+#wah-overlay-root * {
+    font-family: var(--wah-font) !important;
 }
 
 #wah-overlay-root .wah-content {
@@ -491,14 +496,14 @@ export const wahCss = `
     max-height: min(80vh, 30rem);
     width: min(90vw, 18.75rem);
     background: var(--wah-bg);
-    border: 0.0625rem solid var(--wah-accent-default);
+    border: 0.0625rem solid var(--wah-border);
     border-radius: 0.75rem;
     padding: 0.875rem 0.75rem 0.75rem;
     z-index: 999999;
     box-shadow: 0 0.875rem 1.875rem rgba(0, 0, 0, .40);
     color: var(--wah-text);
     backdrop-filter: blur(0.375rem);
-    font-family: var(--wah-font);
+    font-family: var(--wah-font) !important;
     font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
     line-height: 1.35;
     text-align: left;
@@ -580,6 +585,11 @@ export const wahCss = `
 .wah-pop-settings {
     display: flex;
     justify-content: center;
+}
+
+#wah-pop,
+#wah-pop * {
+    font-family: var(--wah-font) !important;
 }
 
 #wah-pop,
@@ -1020,7 +1030,7 @@ export const wahCss = `
 .wah-hide-select:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.07);
-    border-color: var(--wah-accent-default);
+    border-color: var(--wah-border);
 }
 
 .wah-hide-select option {
@@ -1335,19 +1345,27 @@ export const wahCss = `
 
 .wah-filter {
     display: flex;
-    gap: 10px;
-    margin: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0.4rem 0;
 }
 
 #wah-overlay-root .wah-chip {
-    flex: auto;
-    padding: 0.35rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0.35rem 0.6rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
     border-radius: 0.8rem;
     opacity: 0.9;
     font-size: 0.9rem !important;
     line-height: 1.2 !important;
     text-align: center;
+    white-space: nowrap;
 }
 
 #wah-overlay-root .wah-chip:hover {

@@ -4,14 +4,14 @@
     max-height: min(80vh, 30rem);
     width: min(90vw, 18.75rem);
     background: var(--wah-bg);
-    border: 0.0625rem solid var(--wah-accent-default);
+    border: 0.0625rem solid var(--wah-border);
     border-radius: 0.75rem;
     padding: 0.875rem 0.75rem 0.75rem;
     z-index: 999999;
     box-shadow: 0 0.875rem 1.875rem rgba(0, 0, 0, .40);
     color: var(--wah-text);
     backdrop-filter: blur(0.375rem);
-    font-family: var(--wah-font);
+    font-family: var(--wah-font) !important;
     font-size: clamp(0.8125rem, 0.75rem + 0.5vw, 1rem);
     line-height: 1.35;
     text-align: left;
@@ -93,4 +93,9 @@
 .wah-pop-settings {
     display: flex;
     justify-content: center;
+}
+
+#wah-pop,
+#wah-pop * {
+    font-family: var(--wah-font) !important;
 }

@@ -13,19 +13,27 @@
 
 .wah-filter {
     display: flex;
-    gap: 10px;
-    margin: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0.4rem 0;
 }
 
 #wah-overlay-root .wah-chip {
-    flex: auto;
-    padding: 0.35rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0.35rem 0.6rem !important;
     border: 0.0625rem solid rgba(56, 189, 248, 0.6);
     border-radius: 0.8rem;
     opacity: 0.9;
     font-size: 0.9rem !important;
     line-height: 1.2 !important;
     text-align: center;
+    white-space: nowrap;
 }
 
 #wah-overlay-root .wah-chip:hover {

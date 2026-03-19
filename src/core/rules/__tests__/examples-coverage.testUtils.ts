@@ -1,7 +1,13 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { vi } from "vitest";
 import type { WAHConfig } from "../../types";
+
+const EXAMPLE_ALIASES: Record<string, string> = {
+    "basic.html": "issues-detection-test.html",
+    "basic2.html": "issues-detection-test2.html",
+    "basic3.html": "disabled-rules-test.html"
+};
 
 export const EXAMPLES_BASE_CONFIG: WAHConfig = {
     logs: false,
@@ -23,7 +29,15 @@ export const EXAMPLES_BASE_CONFIG: WAHConfig = {
 };
 
 export function loadExample(fileName: string): void {
-    const fullPath = join(process.cwd(), "examples", fileName);
+    const primaryPath = join(process.cwd(), "examples", fileName);
+    const aliasName = EXAMPLE_ALIASES[fileName];
+    const aliasPath = aliasName ? join(process.cwd(), "examples", aliasName) : "";
+    const fullPath = existsSync(primaryPath) ? primaryPath : aliasPath;
+
+    if (!fullPath || !existsSync(fullPath)) {
+        throw new Error(`Example fixture not found: ${fileName}${aliasName ? ` (alias: ${aliasName})` : ""}`);
+    }
+
     const html = readFileSync(fullPath, "utf-8")
         .replace(/<script[^>]*type=["']module["'][^>]*>[\s\S]*?<\/script>/gi, "");
 

@@ -27,6 +27,17 @@ npx http-server . -p 4173 --cors
 
 1. Abrir DevTools del navegador (Console + Network).
 
+## Si falta bookmarklet.txt
+
+`dist/bookmarklet.txt` se genera en el pipeline de build de este repositorio (`npm run build` + script postbuild).
+
+Si pruebas desde otro repositorio (por ejemplo React/PHP) que no ejecuta los scripts de build de WAH, ese archivo puede no existir ahi.
+
+Opciones recomendadas:
+
+1. Generar el bookmarklet desde la raiz de este repositorio.
+2. Usar un bookmarklet generado desde la version publicada del paquete.
+
 ## Bookmarklet Local para Validacion Pre-Release
 
 Si npm `1.5.0` aun no esta publicado, usa bookmarklet local:
