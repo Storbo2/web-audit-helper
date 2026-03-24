@@ -54,6 +54,16 @@ For each target:
 - export JSON and verify `meta.runtimeMode = external`
 - run a second audit and verify comparison output in JSON/HTML
 
+## Evidence Examples
+
+![External overlay success](media/images/external-overlay-success.png)
+
+![External CSP blocked error](media/images/external-csp-blocked-error.png)
+
+![HTML report comparison](media/images/external-report-comparison.png)
+
+![JSON metadata with runtimeMode external](media/images/external-report-json-meta.png)
+
 ## Related Docs
 
 - QA checklist EN: [External Auditing QA](external-auditing-qa.md)

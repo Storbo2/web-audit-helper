@@ -218,6 +218,16 @@ QA checklist for CSP permissive/blocking validation:
 - English: [External Auditing QA](docs/external-auditing-qa.md)
 - Espanol: [QA de Auditoria Externa](docs/es/external-auditing-qa.md)
 
+Evidence examples:
+
+![External overlay success](docs/media/images/external-overlay-success.png)
+
+![External CSP blocked error](docs/media/images/external-csp-blocked-error.png)
+
+![HTML report comparison](docs/media/images/external-report-comparison.png)
+
+![JSON metadata with runtimeMode external](docs/media/images/external-report-json-meta.png)
+
 ### Next.js / SSR Frameworks
 
 **WAH runs in the browser only (requires DOM).**

@@ -142,6 +142,16 @@ Ubicaciones sugeridas:
 - `docs/media/images/external-auditing/`
 - `docs/media/gifs/external-auditing/`
 
+Capturas actuales:
+
+![Overlay externo exitoso](../media/images/external-overlay-success.png)
+
+![Error controlado por CSP bloqueante](../media/images/external-csp-blocked-error.png)
+
+![Comparacion en reporte HTML](../media/images/external-report-comparison.png)
+
+![Metadata JSON con runtimeMode external](../media/images/external-report-json-meta.png)
+
 ## Troubleshooting rapido
 
 - Si falla la fixture permisiva, validar que el bookmarklet apunta a la version actual del paquete.
