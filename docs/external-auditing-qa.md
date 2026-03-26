@@ -101,7 +101,8 @@ Pass criteria:
 3. Confirm failed script load in Network/Console for jsDelivr runtime.
 4. Confirm fallback to ESM also fails.
 5. Confirm explicit user-facing error message appears:
-   - `[WAH:E-EXT-BOOTSTRAP] External audit could not start. This page likely blocks script injection (CSP).`
+   - `[WAH:E-EXT-CSP-OR-NETWORK] External audit could not start.` (common for strict CSP/network blocks)
+   - or another explicit code such as `WAH:E-EXT-IIFE-API`, `WAH:E-EXT-ESM-API`, `WAH:E-EXT-BOOTSTRAP`
 6. Confirm overlay is not rendered.
 
 Pass criteria:
@@ -160,6 +161,14 @@ Current screenshots:
 
 Common error diagnosis:
 
+- `WAH:E-EXT-CSP-OR-NETWORK`:
+  - IIFE and ESM runtime paths both failed (frequently CSP, CORS, or network policy).
+- `WAH:E-EXT-IIFE-API`:
+  - IIFE loaded but global API `window.WAHExternalRuntime.runExternalWAH` is unavailable.
+- `WAH:E-EXT-ESM-API`:
+  - ESM loaded but `runExternalWAH` export is unavailable.
+- `WAH:E-EXT-BOOTSTRAP`:
+  - Generic fallback code when failure does not match known patterns.
 - `ERR_CONNECTION_REFUSED`:
   - Local host runtime is unreachable. Confirm static server is running on `127.0.0.1:4173`.
 - `Failed to load external-runtime.iife.js`:

@@ -202,6 +202,19 @@ Quick FAQ (v1.5 external audits):
 - Can I run it in CI headless mode?
   - Not in v1.5. That is planned for future CLI/headless milestones.
 
+Bootstrap Error Code Reference:
+
+When the bookmarklet cannot start, WAH displays one of these error codes in an alert and in the browser console:
+
+| Error Code | Meaning | Action |
+| --- | --- | --- |
+| `WAH:E-EXT-CSP-OR-NETWORK` | Both runtimes (IIFE + ESM) failed to load — CSP or network block | Try the page without a strict CSP, or use embedded mode |
+| `WAH:E-EXT-IIFE-API` | IIFE script loaded but `window.WAHExternalRuntime` global was missing | Check if another script clobbered the global |
+| `WAH:E-EXT-ESM-API` | ESM module loaded but `runExternalWAH` export was absent | Version skew between bookmarklet and CDN asset |
+| `WAH:E-EXT-BOOTSTRAP` | Unexpected or unclassified bootstrap failure | Open DevTools console for the raw error |
+
+Full error code documentation: [External Auditing QA](docs/external-auditing-qa.md)
+
 Troubleshooting matrix:
 
 - `ERR_CONNECTION_REFUSED` for `127.0.0.1:4173`:

@@ -13,14 +13,55 @@ function buildBookmarkletSource(baseUrl) {
     const iifeUrl = runtimeBaseUrl + "/external-runtime.iife.js";
     const esmUrl = runtimeBaseUrl + "/external-runtime.mjs";
 
+    // NOTE: keep this block in sync with src/external/errorClassifier.ts
+    const ERROR_CODES = {
+        bootstrap: "WAH:E-EXT-BOOTSTRAP",
+        cspOrNetwork: "WAH:E-EXT-CSP-OR-NETWORK",
+        iifeApiMissing: "WAH:E-EXT-IIFE-API",
+        esmApiMissing: "WAH:E-EXT-ESM-API"
+    };
+
+    const toErrorMessage = (error) => {
+        if (!error) return "unknown error";
+        if (typeof error === "string") return error;
+        if (error && typeof error.message === "string") return error.message;
+        try {
+        return JSON.stringify(error);
+        } catch {
+        return String(error);
+        }
+    };
+
+    const classifyFatalCode = (iifeError, esmError) => {
+        const iifeMessage = toErrorMessage(iifeError);
+        const esmMessage = toErrorMessage(esmError);
+
+        if (iifeMessage.includes("global API is unavailable")) {
+        return ERROR_CODES.iifeApiMissing;
+        }
+        if (esmMessage.includes("runExternalWAH export is unavailable")) {
+        return ERROR_CODES.esmApiMissing;
+        }
+
+        const iifeLoadFailed = iifeMessage.includes("external-runtime.iife.js");
+        const esmLoadFailed = esmMessage.includes("dynamically imported module") || esmMessage.includes("Failed to fetch") || esmMessage.includes("Importing a module script failed");
+
+        if (iifeLoadFailed && esmLoadFailed) {
+        return ERROR_CODES.cspOrNetwork;
+        }
+
+        return ERROR_CODES.bootstrap;
+    };
+
     const showFatalError = (iifeError, esmError) => {
-        const message = "[WAH:E-EXT-BOOTSTRAP] External audit could not start. This page likely blocks script injection (CSP).";
+        const code = classifyFatalCode(iifeError, esmError);
+        const message = "[" + code + "] External audit could not start.";
         const hints = [
             "Try a different page or domain with permissive CSP.",
             "Open DevTools > Console for technical details.",
             "If this is your own app, run embedded mode during development."
         ];
-        console.error(message, { iifeError, esmError, runtimeBaseUrl, iifeUrl, esmUrl, hints });
+        console.error(message, { code, iifeError, esmError, runtimeBaseUrl, iifeUrl, esmUrl, hints });
         alert([message, "", ...hints].join("\\n"));
     };
 

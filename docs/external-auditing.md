@@ -21,6 +21,13 @@ Use cases:
 
 If runtime injection is blocked (typically by strict CSP), WAH shows a clear error and aborts.
 
+Current external bootstrap error codes:
+
+- `WAH:E-EXT-CSP-OR-NETWORK`: both runtime paths failed (common CSP/network issue)
+- `WAH:E-EXT-IIFE-API`: IIFE loaded but global API is unavailable
+- `WAH:E-EXT-ESM-API`: ESM loaded but `runExternalWAH` export is unavailable
+- `WAH:E-EXT-BOOTSTRAP`: generic fallback code for unknown bootstrap failures
+
 ## Installation Flow
 
 1. Build repository artifacts:
