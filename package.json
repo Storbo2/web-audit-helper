@@ -57,6 +57,9 @@
         "vitest": "4.0.18"
     },
     "scripts": {
+        "backup": "node scripts/git-backup.mjs",
+        "backup:skip-ci": "node scripts/git-backup.mjs --skip-ci",
+        "release:tag": "node scripts/git-release-tag.mjs",
         "typecheck": "tsc --noEmit",
         "prebuild": "node scripts/gen-wah-css.mjs",
         "build": "tsup --config tsup.config.ts",
