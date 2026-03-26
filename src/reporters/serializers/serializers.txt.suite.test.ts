@@ -16,6 +16,7 @@ describe("serializeReportToTXT", () => {
         expect(txt).toContain("Applied Filters");
         expect(txt).toContain("Runtime Mode:");
         expect(txt).toContain("Run ID:");
+        expect(txt).toContain("Report Contract:");
     });
 
     it("omits optional sections when no metrics and no highlights", () => {
@@ -24,5 +25,18 @@ describe("serializeReportToTXT", () => {
         const txt = serializeReportToTXT(report);
         expect(txt).not.toContain("Audit Metrics:");
         expect(txt).not.toContain("Key Suggestions");
+    });
+
+    it("throws a contract error when required metadata is missing", () => {
+        const report = createTxtRichReport();
+        const malformed = {
+            ...report,
+            meta: {
+                ...report.meta,
+                runId: ""
+            }
+        };
+
+        expect(() => serializeReportToTXT(malformed)).toThrowError(/WAH:REPORT_CONTRACT/);
     });
 });

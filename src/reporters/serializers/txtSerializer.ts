@@ -1,10 +1,12 @@
 import type { AuditReport } from "../../core/types";
 import { CATEGORY_ORDER, CATEGORY_SHORT_LABELS, ELEMENTS_TXT_PREVIEW_LIMIT } from "../constants";
 import { sortRulesById, toSentenceCase } from "../utils";
+import { normalizeAndAssertAuditReport } from "../contract";
 import { t } from "../../utils/i18n";
 import { formatDateISOToDDMMYYYY, formatScoringModeLabel, formatAppliedFiltersText } from "./helpers";
 
 export function serializeReportToTXT(report: AuditReport): string {
+    const reportWithContract = normalizeAndAssertAuditReport(report);
     const dict = t();
     const lines: string[] = [];
 
@@ -13,25 +15,26 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push("=".repeat(60));
     lines.push("");
 
-    lines.push(`${dict.reportUrl}: ${report.meta.targetUrl || report.meta.url || dict.notAvailable}`);
-    lines.push(`${dict.reportDate}: ${formatDateISOToDDMMYYYY(report.meta.executedAt || report.meta.date)}`);
-    lines.push(`Run ID: ${report.meta.runId}`);
-    lines.push(`Runtime Mode: ${report.meta.runtimeMode}`);
-    lines.push(`WAH Version: ${report.meta.wahVersion || report.meta.version}`);
-    lines.push(`${dict.reportViewport}: ${report.meta.viewport.width}×${report.meta.viewport.height}`);
-    if (report.meta.breakpoint) {
-        lines.push(`${dict.reportBreakpoint}: ${report.meta.breakpoint.name} (${report.meta.breakpoint.devices})`);
+    lines.push(`${dict.reportUrl}: ${reportWithContract.meta.targetUrl || reportWithContract.meta.url || dict.notAvailable}`);
+    lines.push(`${dict.reportDate}: ${formatDateISOToDDMMYYYY(reportWithContract.meta.executedAt || reportWithContract.meta.date)}`);
+    lines.push(`Run ID: ${reportWithContract.meta.runId}`);
+    lines.push(`Runtime Mode: ${reportWithContract.meta.runtimeMode}`);
+    lines.push(`WAH Version: ${reportWithContract.meta.wahVersion || reportWithContract.meta.version}`);
+    lines.push(`Report Contract: ${reportWithContract.meta.contractVersion || "unknown"}`);
+    lines.push(`${dict.reportViewport}: ${reportWithContract.meta.viewport.width}×${reportWithContract.meta.viewport.height}`);
+    if (reportWithContract.meta.breakpoint) {
+        lines.push(`${dict.reportBreakpoint}: ${reportWithContract.meta.breakpoint.name} (${reportWithContract.meta.breakpoint.devices})`);
     }
-    lines.push(`${dict.reportScoringMode}: ${formatScoringModeLabel(report.meta.scoringMode)}`);
-    if (report.meta.scoringMode === "custom") {
-        lines.push(`${dict.reportAppliedFilters}: ${formatAppliedFiltersText(report)}`);
+    lines.push(`${dict.reportScoringMode}: ${formatScoringModeLabel(reportWithContract.meta.scoringMode)}`);
+    if (reportWithContract.meta.scoringMode === "custom") {
+        lines.push(`${dict.reportAppliedFilters}: ${formatAppliedFiltersText(reportWithContract)}`);
     }
     lines.push("");
 
-    lines.push(`${dict.reportOverallScore}: ${report.score.overall} (Grade ${report.score.grade})`);
+    lines.push(`${dict.reportOverallScore}: ${reportWithContract.score.overall} (Grade ${reportWithContract.score.grade})`);
     const categorySummaryParts: string[] = [];
     for (const category of CATEGORY_ORDER) {
-        const score = report.score.byCategory[category];
+        const score = reportWithContract.score.byCategory[category];
         if (typeof score === "number") {
             categorySummaryParts.push(`${CATEGORY_SHORT_LABELS[category]} ${score}`);
         }
@@ -43,22 +46,22 @@ export function serializeReportToTXT(report: AuditReport): string {
     lines.push("");
 
     lines.push(`${dict.reportStats}:`);
-    lines.push(`  ! ${dict.recommendation}: ${report.stats.recommendations}`);
-    lines.push(`  ⚠️ ${dict.warning}: ${report.stats.warnings}`);
-    lines.push(`  ⛔ ${dict.critical}: ${report.stats.failed}`);
-    lines.push(`  ${dict.reportTriggeredRules}: ${report.stats.totalRulesTriggered}/${report.stats.totalRulesAvailable}`);
-    lines.push(`  Rules executed/skipped: ${report.meta.rulesExecuted}/${report.meta.rulesSkipped}`);
-    lines.push(`  Total audit ms: ${report.meta.totalAuditMs}`);
+    lines.push(`  ! ${dict.recommendation}: ${reportWithContract.stats.recommendations}`);
+    lines.push(`  ⚠️ ${dict.warning}: ${reportWithContract.stats.warnings}`);
+    lines.push(`  ⛔ ${dict.critical}: ${reportWithContract.stats.failed}`);
+    lines.push(`  ${dict.reportTriggeredRules}: ${reportWithContract.stats.totalRulesTriggered}/${reportWithContract.stats.totalRulesAvailable}`);
+    lines.push(`  Rules executed/skipped: ${reportWithContract.meta.rulesExecuted}/${reportWithContract.meta.rulesSkipped}`);
+    lines.push(`  Total audit ms: ${reportWithContract.meta.totalAuditMs}`);
     lines.push("");
 
-    if (report.metrics) {
+    if (reportWithContract.metrics) {
         lines.push("Audit Metrics:");
-        lines.push(`  Total: ${report.metrics.totalMs}ms`);
-        lines.push(`  Rules executed: ${report.metrics.executedRules}`);
-        lines.push(`  Rules skipped: ${report.metrics.skippedRules}`);
-        if (report.metrics.ruleTimings.length > 0) {
+        lines.push(`  Total: ${reportWithContract.metrics.totalMs}ms`);
+        lines.push(`  Rules executed: ${reportWithContract.metrics.executedRules}`);
+        lines.push(`  Rules skipped: ${reportWithContract.metrics.skippedRules}`);
+        if (reportWithContract.metrics.ruleTimings.length > 0) {
             lines.push("  Slowest rules:");
-            const topTimings = [...report.metrics.ruleTimings]
+            const topTimings = [...reportWithContract.metrics.ruleTimings]
                 .sort((a, b) => b.ms - a.ms)
                 .slice(0, 10);
             for (const timing of topTimings) {
@@ -68,7 +71,7 @@ export function serializeReportToTXT(report: AuditReport): string {
         lines.push("");
     }
 
-    for (const cat of report.categories) {
+    for (const cat of reportWithContract.categories) {
         const failRules = cat.rules.filter(r => r.status === "critical").length;
         const warnRules = cat.rules.filter(r => r.status === "warning").length;
         const recommendationRules = cat.rules.filter(r => r.status === "recommendation").length;
@@ -129,10 +132,10 @@ export function serializeReportToTXT(report: AuditReport): string {
         }
     }
 
-    if (report.highlights && report.highlights.length > 0) {
+    if (reportWithContract.highlights && reportWithContract.highlights.length > 0) {
         lines.push(`${dict.reportKeySuggestions}:`);
         lines.push("-".repeat(40));
-        for (const highlight of report.highlights) {
+        for (const highlight of reportWithContract.highlights) {
             lines.push(`• ${highlight}`);
         }
         lines.push("");

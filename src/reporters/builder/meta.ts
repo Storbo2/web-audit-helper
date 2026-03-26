@@ -1,7 +1,7 @@
 import type { AuditReportMeta, RuntimeMode } from "../../core/types";
 import { getSettings, getActiveFilters, getActiveCategories } from "../../overlay/config/settings";
 import { getBreakpointInfo } from "../../utils/breakpoints";
-import { WAH_MODE, WAH_VERSION } from "../constants";
+import { AUDIT_REPORT_CONTRACT_VERSION, WAH_MODE, WAH_VERSION } from "../constants";
 
 interface BuildReportMetaOptions {
     runtimeMode?: RuntimeMode;
@@ -60,6 +60,7 @@ export function buildReportMeta(options: BuildReportMetaOptions = {}): AuditRepo
     const executedAt = new Date().toISOString();
 
     const meta: AuditReportMeta = {
+        contractVersion: AUDIT_REPORT_CONTRACT_VERSION,
         runId: buildRunId(),
         targetUrl,
         executedAt,

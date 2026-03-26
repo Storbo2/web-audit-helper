@@ -2,6 +2,7 @@ import type { CategoryResult, AuditMetrics } from "./audit";
 import type { AuditMode, Grade, IssueCategory, RuntimeMode, ScoringMode } from "./primitives";
 
 export interface AuditReportMeta {
+    contractVersion?: string;
     runId: string;
     targetUrl: string;
     executedAt: string;

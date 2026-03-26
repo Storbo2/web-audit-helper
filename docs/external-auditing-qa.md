@@ -101,7 +101,7 @@ Pass criteria:
 3. Confirm failed script load in Network/Console for jsDelivr runtime.
 4. Confirm fallback to ESM also fails.
 5. Confirm explicit user-facing error message appears:
-   - `[WAH] External audit bootstrap failed. CSP may be blocking script injection. Review console for details.`
+   - `[WAH:E-EXT-BOOTSTRAP] External audit could not start. This page likely blocks script injection (CSP).`
 6. Confirm overlay is not rendered.
 
 Pass criteria:

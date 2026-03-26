@@ -101,7 +101,7 @@ Criterio de aprobado:
 3. Confirmar fallo de carga de runtime jsDelivr en Network/Console.
 4. Confirmar que el fallback ESM tambien falla.
 5. Confirmar mensaje de error explicito al usuario:
-   - `[WAH] External audit bootstrap failed. CSP may be blocking script injection. Review console for details.`
+   - `[WAH:E-EXT-BOOTSTRAP] External audit could not start. This page likely blocks script injection (CSP).`
 6. Confirmar que no aparece overlay.
 
 Criterio de aprobado:

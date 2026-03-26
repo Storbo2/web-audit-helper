@@ -21,6 +21,7 @@ describe("serializeReportToHTML", () => {
         expect(html).toContain("Applied Filters");
         expect(html).toContain("Runtime Mode:");
         expect(html).toContain("Run ID:");
+        expect(html).toContain("Report Contract:");
     });
 
     it("renders empty state when category has no findings and no metrics", () => {
@@ -39,5 +40,18 @@ describe("serializeReportToHTML", () => {
         expect(html).toContain("Score delta:");
         expect(html).toContain("Added rules:");
         expect(html).toContain("Removed rules:");
+    });
+
+    it("throws a contract error when required metadata is missing", () => {
+        const report = createHtmlMetricsReport();
+        const malformed = {
+            ...report,
+            meta: {
+                ...report.meta,
+                runId: ""
+            }
+        };
+
+        expect(() => serializeReportToHTML(malformed)).toThrowError(/WAH:REPORT_CONTRACT/);
     });
 });

@@ -26,6 +26,7 @@ export {
     ELEMENTS_EXPORT_LIMIT,
     ELEMENTS_TXT_PREVIEW_LIMIT,
     SEVERITY_RANK,
+    AUDIT_REPORT_CONTRACT_VERSION,
     WAH_VERSION,
     WAH_MODE
 } from "./constants/shared";

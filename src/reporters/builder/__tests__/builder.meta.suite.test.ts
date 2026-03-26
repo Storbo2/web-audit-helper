@@ -9,6 +9,7 @@ describe("meta", () => {
     it("builds report meta without applied filters in non-custom scoring mode", () => {
         const meta = buildReportMeta();
 
+        expect(meta.contractVersion).toBe("1.0.0");
         expect(meta.viewport.width).toBeGreaterThan(0);
         expect(meta.breakpoint?.name).toBe("xl");
         expect(meta.scoringMode).toBe("normal");

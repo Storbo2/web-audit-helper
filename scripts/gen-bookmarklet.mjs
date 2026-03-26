@@ -14,9 +14,14 @@ function buildBookmarkletSource(baseUrl) {
     const esmUrl = runtimeBaseUrl + "/external-runtime.mjs";
 
     const showFatalError = (iifeError, esmError) => {
-        const message = "[WAH] External audit bootstrap failed. CSP may be blocking script injection. Review console for details.";
-        console.error(message, { iifeError, esmError });
-        alert(message);
+        const message = "[WAH:E-EXT-BOOTSTRAP] External audit could not start. This page likely blocks script injection (CSP).";
+        const hints = [
+            "Try a different page or domain with permissive CSP.",
+            "Open DevTools > Console for technical details.",
+            "If this is your own app, run embedded mode during development."
+        ];
+        console.error(message, { iifeError, esmError, runtimeBaseUrl, iifeUrl, esmUrl, hints });
+        alert([message, "", ...hints].join("\\n"));
     };
 
     const runIifeRuntime = () => {

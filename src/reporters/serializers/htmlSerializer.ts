@@ -1,5 +1,6 @@
 import type { AuditReport } from "../../core/types";
 import { buildAuditReportComparison } from "../comparison";
+import { normalizeAndAssertAuditReport } from "../contract";
 import { t } from "../../utils/i18n";
 import { formatDateISOToDDMMYYYY, formatScoringModeLabel, formatAppliedFiltersText, escapeHtml } from "./helpers";
 import { buildCategoriesHtml, buildCategorySummaryParts, buildMetricsHtml } from "./htmlSections";
@@ -41,11 +42,14 @@ function buildComparisonHtml(report: AuditReport, previousReport?: AuditReport):
 }
 
 export function serializeReportToHTML(report: AuditReport, previousReport?: AuditReport): string {
+    const reportWithContract = normalizeAndAssertAuditReport(report);
+    const previousWithContract = previousReport ? normalizeAndAssertAuditReport(previousReport) : undefined;
+
     const dict = t();
-    const categorySummaryParts = buildCategorySummaryParts(report);
-    const categoriesHtml = buildCategoriesHtml(report, dict);
-    const metricsHtml = buildMetricsHtml(report);
-    const comparisonHtml = buildComparisonHtml(report, previousReport);
+    const categorySummaryParts = buildCategorySummaryParts(reportWithContract);
+    const categoriesHtml = buildCategoriesHtml(reportWithContract, dict);
+    const metricsHtml = buildMetricsHtml(reportWithContract);
+    const comparisonHtml = buildComparisonHtml(reportWithContract, previousWithContract);
 
     return `
     <!doctype html>
@@ -62,25 +66,26 @@ export function serializeReportToHTML(report: AuditReport, previousReport?: Audi
             <main>
                 <h1>${dict.reportTitle}</h1>
                 <section class="meta">
-                    <p><strong>${dict.reportUrl}:</strong> ${escapeHtml(report.meta.targetUrl || report.meta.url || dict.notAvailable)}</p>
-                    <p><strong>${dict.reportDate}:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(report.meta.executedAt || report.meta.date))}</p>
-                    <p><strong>Run ID:</strong> ${escapeHtml(report.meta.runId)}</p>
-                    <p><strong>Runtime Mode:</strong> ${escapeHtml(report.meta.runtimeMode)}</p>
-                    <p><strong>WAH Version:</strong> ${escapeHtml(report.meta.wahVersion || report.meta.version)}</p>
-                    <p><strong>${dict.reportViewport}:</strong> ${report.meta.viewport.width}×${report.meta.viewport.height}</p>
-                    ${report.meta.breakpoint ? `<p><strong>${dict.reportBreakpoint}:</strong> ${escapeHtml(report.meta.breakpoint.name)} (${escapeHtml(report.meta.breakpoint.devices)})</p>` : ""}
-                    <p><strong>${dict.reportScoringMode}:</strong> ${escapeHtml(formatScoringModeLabel(report.meta.scoringMode))}</p>
-                    ${report.meta.scoringMode === "custom"
-            ? `<p><strong>${dict.reportAppliedFilters}:</strong> ${escapeHtml(formatAppliedFiltersText(report))}</p>`
+                    <p><strong>${dict.reportUrl}:</strong> ${escapeHtml(reportWithContract.meta.targetUrl || reportWithContract.meta.url || dict.notAvailable)}</p>
+                    <p><strong>${dict.reportDate}:</strong> ${escapeHtml(formatDateISOToDDMMYYYY(reportWithContract.meta.executedAt || reportWithContract.meta.date))}</p>
+                    <p><strong>Run ID:</strong> ${escapeHtml(reportWithContract.meta.runId)}</p>
+                    <p><strong>Runtime Mode:</strong> ${escapeHtml(reportWithContract.meta.runtimeMode)}</p>
+                    <p><strong>WAH Version:</strong> ${escapeHtml(reportWithContract.meta.wahVersion || reportWithContract.meta.version)}</p>
+                    <p><strong>Report Contract:</strong> ${escapeHtml(reportWithContract.meta.contractVersion || "unknown")}</p>
+                    <p><strong>${dict.reportViewport}:</strong> ${reportWithContract.meta.viewport.width}×${reportWithContract.meta.viewport.height}</p>
+                    ${reportWithContract.meta.breakpoint ? `<p><strong>${dict.reportBreakpoint}:</strong> ${escapeHtml(reportWithContract.meta.breakpoint.name)} (${escapeHtml(reportWithContract.meta.breakpoint.devices)})</p>` : ""}
+                    <p><strong>${dict.reportScoringMode}:</strong> ${escapeHtml(formatScoringModeLabel(reportWithContract.meta.scoringMode))}</p>
+                    ${reportWithContract.meta.scoringMode === "custom"
+            ? `<p><strong>${dict.reportAppliedFilters}:</strong> ${escapeHtml(formatAppliedFiltersText(reportWithContract))}</p>`
             : ""}
                 </section>
 
                 <section class="summary">
-                    <p><strong>${dict.reportOverallScore}:</strong> ${report.score.overall} (Grade ${escapeHtml(report.score.grade)})</p>
+                    <p><strong>${dict.reportOverallScore}:</strong> ${reportWithContract.score.overall} (Grade ${escapeHtml(reportWithContract.score.grade)})</p>
                     ${categorySummaryParts.length > 0 ? `<p><strong>${dict.reportCategories}:</strong> ${escapeHtml(categorySummaryParts.join(" | "))}</p>` : ""}
-                    <p><strong>${dict.reportStats}:</strong> ${report.stats.failed} ${dict.reportStatsCritical}, ${report.stats.warnings} ${dict.reportStatsWarning}, ${report.stats.recommendations} ${dict.reportStatsRecommendation}</p>
-                    <p><strong>Rules executed/skipped:</strong> ${report.meta.rulesExecuted}/${report.meta.rulesSkipped}</p>
-                    <p><strong>Total audit ms:</strong> ${report.meta.totalAuditMs}</p>
+                    <p><strong>${dict.reportStats}:</strong> ${reportWithContract.stats.failed} ${dict.reportStatsCritical}, ${reportWithContract.stats.warnings} ${dict.reportStatsWarning}, ${reportWithContract.stats.recommendations} ${dict.reportStatsRecommendation}</p>
+                    <p><strong>Rules executed/skipped:</strong> ${reportWithContract.meta.rulesExecuted}/${reportWithContract.meta.rulesSkipped}</p>
+                    <p><strong>Total audit ms:</strong> ${reportWithContract.meta.totalAuditMs}</p>
                     <br>
                     <p class="legend"><span class="legend-fail">${dict.critical.toUpperCase()} = ${dict.reportLegendNeedsFix}</span> <span class="legend-warn">${dict.warning.toUpperCase()} = ${dict.reportLegendImprovement}</span> <strong>${dict.recommendation.toUpperCase()} = ${dict.reportLegendSuggested}</strong></p>
                 </section>
@@ -93,9 +98,9 @@ export function serializeReportToHTML(report: AuditReport, previousReport?: Audi
             </main>
 
             <footer>
-                <p>${dict.reportGeneratedBy} v${escapeHtml(report.meta.wahVersion || report.meta.version)} (${escapeHtml(report.meta.mode)})</p>
-                <p>${dict.reportTimestamp}: ${escapeHtml(report.meta.executedAt || report.meta.date)}</p>
-                <p>${dict.reportUserAgent}: ${escapeHtml(report.meta.userAgent)}</p>
+                <p>${dict.reportGeneratedBy} v${escapeHtml(reportWithContract.meta.wahVersion || reportWithContract.meta.version)} (${escapeHtml(reportWithContract.meta.mode)})</p>
+                <p>${dict.reportTimestamp}: ${escapeHtml(reportWithContract.meta.executedAt || reportWithContract.meta.date)}</p>
+                <p>${dict.reportUserAgent}: ${escapeHtml(reportWithContract.meta.userAgent)}</p>
             </footer>
         </body>
     </html>

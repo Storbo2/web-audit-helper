@@ -23,6 +23,7 @@ describe("serializeReportToJSON", () => {
     it("should preserve metadata", () => {
         const json = serializeReportToJSON(mockReport);
         const parsed = JSON.parse(json);
+        expect(parsed.meta.contractVersion).toBe("1.0.0");
         expect(parsed.meta.url).toBe("https://example.com");
         expect(parsed.meta.version).toBe("1.0.0");
     });
@@ -68,5 +69,17 @@ describe("serializeReportToJSON", () => {
         expect(parsed.comparison.overallScoreDelta).toBe(5);
         expect(parsed.comparison.addedRuleIds).toContain("ACC-13");
         expect(parsed.comparison.removedRuleIds).toContain("ACC-01");
+    });
+
+    it("should throw a contract error when required fields are missing", () => {
+        const malformed: AuditReport = {
+            ...mockReport,
+            meta: {
+                ...mockReport.meta,
+                runId: ""
+            }
+        };
+
+        expect(() => serializeReportToJSON(malformed)).toThrowError(/WAH:REPORT_CONTRACT/);
     });
 });
