@@ -3,8 +3,11 @@ name: CI/CD
 on:
   push:
     branches: [main, develop]
+    tags:
+      - "v*"
   pull_request:
     branches: [main, develop]
+  workflow_dispatch:
 
 jobs:
   test-and-build:
@@ -75,7 +78,9 @@ jobs:
   publish:
     needs: [test-and-build, lint-and-format]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip-publish]')
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && !contains(github.event.head_commit.message, '[skip-publish]')) ||
+      (github.event_name == 'workflow_dispatch')
 
     permissions:
       contents: read
