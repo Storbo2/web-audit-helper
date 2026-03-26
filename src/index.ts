@@ -7,7 +7,7 @@ import { resetPendingChangesState } from "./overlay/popover/utils";
 import { runReporters } from "./reporters";
 import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import { initI18n, t } from "./utils/i18n";
-import type { WAHConfig } from "./core/types";
+import type { WAHConfig, AuditResult } from "./core/types";
 import { loadConfig } from "./config/loadConfig";
 
 type WAHWindow = Window & {
@@ -95,7 +95,9 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
         .filter(i => i.severity === "critical")
         .slice(0, 3);
 
-    createOverlay({ ...results, criticalIssues }, config);
+    if (config.overlay.enabled) {
+        createOverlay({ ...results, criticalIssues }, config);
+    }
 
     const activeFilters = getActiveFilters();
     const activeCategories = getActiveCategories();
@@ -104,6 +106,34 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     setAppliedScoringMode(settings.scoringMode);
 
     resetPendingChangesState();
+
+    return results;
+}
+
+export async function runWAHHeadless(userConfig: Partial<WAHConfig> = {}): Promise<AuditResult | undefined> {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+        return undefined;
+    }
+
+    await waitForDocumentStable();
+
+    initI18n(userConfig.locale);
+
+    const config: WAHConfig = loadConfig({
+        ...userConfig,
+        overlay: {
+            position: "bottom-right",
+            theme: "dark",
+            ...userConfig.overlay,
+            enabled: false,
+        },
+        runtimeMode: "headless",
+    });
+
+    const results = runCoreAudit(config);
+    const effectiveLogLevel = config.logLevel ?? "full";
+    logWAHResults(results, effectiveLogLevel, undefined, undefined, config.auditMetrics, config.scoreDebug, config.logging);
+    runReporters(results, config);
 
     return results;
 }

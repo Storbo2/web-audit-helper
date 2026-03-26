@@ -26,7 +26,7 @@ export type Grade = "A" | "B" | "C" | "D" | "E" | "F";
 
 export type AuditMode = "dev" | "ci";
 
-export type RuntimeMode = "embedded" | "external";
+export type RuntimeMode = "embedded" | "external" | "headless";
 
 export type ContrastLevel = "AA" | "AAA";
 
