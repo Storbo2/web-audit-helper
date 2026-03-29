@@ -61,5 +61,26 @@ export default defineConfig([
             };
             options.minifyWhitespace = true;
         }
+    },
+    {
+        entry: { "wah-cli": "src/cli/index.ts" },
+        format: ["esm"],
+        dts: false,
+        minify: false,
+        sourcemap: false,
+        clean: false,
+        treeshake: true,
+        splitting: false,
+        platform: "node",
+        target: "node18",
+        external: ["jsdom"],
+        outExtension() { return { js: ".mjs" }; },
+        define: sharedDefine,
+        esbuildOptions(options) {
+            options.loader = {
+                ...options.loader,
+                ".css": "text"
+            };
+        }
     }
 ]);

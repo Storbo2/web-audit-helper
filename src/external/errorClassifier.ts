@@ -1,13 +1,3 @@
-/**
- * External runtime bootstrap error classifier.
- *
- * This module is the source-of-truth for the error classification logic that
- * also runs inline inside the generated bookmarklet (`scripts/gen-bookmarklet.mjs`).
- *
- * IMPORTANT: Keep the inline `classifyFatalCode` / `toErrorMessage` in
- * `scripts/gen-bookmarklet.mjs` in sync with this file whenever the logic changes.
- */
-
 export const ERROR_CODES = {
     bootstrap: "WAH:E-EXT-BOOTSTRAP",
     cspOrNetwork: "WAH:E-EXT-CSP-OR-NETWORK",
