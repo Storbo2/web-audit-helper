@@ -73,7 +73,7 @@ export default defineConfig([
         splitting: false,
         platform: "node",
         target: "node18",
-        external: ["jsdom"],
+        external: ["jsdom", "playwright", "@playwright/test"],
         outExtension() { return { js: ".mjs" }; },
         define: sharedDefine,
         esbuildOptions(options) {

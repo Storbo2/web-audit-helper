@@ -62,6 +62,17 @@ describe("parseCliArgs", () => {
         expect(parseCliArgs(["index.html", "--scoring-mode", "strict"])).toMatchObject({ scoringMode: "strict" });
     });
 
+    it("parses --browser chromium", () => {
+        expect(parseCliArgs(["https://example.com", "--browser", "chromium"])).toMatchObject({ browser: "chromium" });
+    });
+
+    it("parses --wait-for when browser mode is enabled", () => {
+        expect(parseCliArgs(["https://example.com", "--browser", "chromium", "--wait-for", "#app"])).toMatchObject({
+            browser: "chromium",
+            waitFor: "#app"
+        });
+    });
+
     it("parses a URL target", () => {
         expect(parseCliArgs(["https://example.com"])).toMatchObject({ target: "https://example.com" });
     });
@@ -94,6 +105,21 @@ describe("parseCliArgs", () => {
     it("returns error for invalid --scoring-mode", () => {
         const result = parseCliArgs(["index.html", "--scoring-mode", "ultra"]);
         expect(result).toMatchObject({ error: expect.stringContaining("Invalid --scoring-mode") });
+    });
+
+    it("returns error for invalid --browser", () => {
+        const result = parseCliArgs(["https://example.com", "--browser", "safari"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("Invalid --browser") });
+    });
+
+    it("returns error for --wait-for without --browser", () => {
+        const result = parseCliArgs(["https://example.com", "--wait-for", "#app"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("--wait-for requires --browser") });
+    });
+
+    it("returns error for file target in browser mode", () => {
+        const result = parseCliArgs(["index.html", "--browser", "chromium"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("--browser requires") });
     });
 
     it("returns error for unknown flags", () => {

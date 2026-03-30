@@ -10,13 +10,13 @@ WAH supports JSON, TXT, and HTML export formats.
 
 ## Metadata (v1.5.0)
 
-External and embedded runs can include:
+External, embedded, and headless runs can include:
 
 - `contractVersion` (report JSON contract version)
 - `runId`
 - `targetUrl` (with sensitive query redaction)
 - `executedAt`
-- `runtimeMode` (`embedded` or `external`)
+- `runtimeMode` (`embedded`, `external`, or `headless`)
 - `wahVersion`
 - `issueCountBySeverity`
 - `categoryScores`
@@ -108,6 +108,13 @@ For external runs, verify at minimum:
 2. run identity fields exist (`runId`, `executedAt`)
 3. `targetUrl` exists and is redacted when needed
 4. comparison block appears on second export
+
+For CLI headless runs, verify at minimum:
+
+1. `meta.runtimeMode = headless`
+2. `meta.contractVersion` is present
+3. output serialization is valid in requested format (`json` / `html` / `txt`)
+4. expected output file exists (recommended path during local validation: `dist/out/*`)
 
 ## Related Docs
 

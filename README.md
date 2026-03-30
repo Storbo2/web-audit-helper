@@ -60,13 +60,46 @@ Common use cases:
 
 - I am building a site/app and want continuous feedback: use embedded mode.
 - I want to audit any page from the browser quickly: use external mode.
-- I want CI/headless automation: planned for v2.0 CLI, not part of v1.5.0.
+- I want CI/headless automation: use CLI headless mode from this repository build (`dist/wah-cli.mjs`) while v2.0 is in progress.
+
+### CLI Headless (v2.0 Phase 2 in progress)
+
+You can run WAH from Node.js and generate reports directly to files.
+
+Build first:
+
+```bash
+npm install
+npm run build
+```
+
+Static/local HTML audit (jsdom engine):
+
+```bash
+node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/static-report.json
+node dist/wah-cli.mjs examples/issues-detection-test.html --format html --output dist/out/static-report.html
+node dist/wah-cli.mjs examples/issues-detection-test.html --format txt --output dist/out/static-report.txt
+```
+
+Playwright browser audit (real URL):
+
+```bash
+npx playwright install chromium
+npx http-server . -p 5510 -c-1
+node dist/wah-cli.mjs http://127.0.0.1:5510/examples/issues-detection-test.html --browser chromium --format json --output dist/out/pw-chromium.json
+```
+
+Notes:
+
+- Keep the `http-server` terminal open while running browser-mode audits.
+- A common infra error is `ERR_CONNECTION_REFUSED` when the local server is not running.
+- Test outputs used in validation are written under `dist/out`.
 
 ### Browser (via CDN)
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.5.0/dist/index.js';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.5.3/dist/index.mjs';
 
     // Run with default configuration
     await runWAH();
@@ -140,7 +173,7 @@ Where is `dist/bookmarklet.txt`?
 - If you are inside another app repo (for example React/PHP) and only installed WAH as dependency, you will not automatically get this repository build pipeline output.
 - For external auditing, use either:
   - bookmarklet from this repository build output, or
-  - bookmarklet generated from the published version (`web-audit-helper@1.5.0`).
+  - bookmarklet generated from the published version (`web-audit-helper@1.5.3`).
 
 Detailed external auditing flow:
 
@@ -178,8 +211,8 @@ npx http-server . -p 4173 --cors
 
 Post-publish real-page flow (release validation):
 
-1. Publish `web-audit-helper@1.5.0` to npm.
-2. Rebuild bookmarklet so it points to fixed jsDelivr `@1.5.0` assets.
+1. Publish `web-audit-helper@1.5.3` to npm.
+2. Rebuild bookmarklet so it points to fixed jsDelivr `@1.5.3` assets.
 3. Validate in at least one static target and one SPA target.
 4. Export JSON/HTML and verify `meta.runtimeMode = external` and run comparison block.
 
@@ -200,7 +233,7 @@ Quick FAQ (v1.5 external audits):
 - Does it crawl multiple pages?
   - No. v1.5 audits only the currently open page.
 - Can I run it in CI headless mode?
-  - Not in v1.5. That is planned for future CLI/headless milestones.
+  - Yes from repository build via `dist/wah-cli.mjs` (v2.0 Phase 2 work-in-progress). For npm release policy, check roadmap status.
 
 Bootstrap Error Code Reference:
 

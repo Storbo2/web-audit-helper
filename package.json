@@ -50,6 +50,14 @@
     "dependencies": {
         "jsdom": "^25.0.1"
     },
+    "peerDependencies": {
+        "playwright": "^1.58.2"
+    },
+    "peerDependenciesMeta": {
+        "playwright": {
+            "optional": true
+        }
+    },
     "devDependencies": {
         "@playwright/test": "^1.58.2",
         "@types/jsdom": "^28.0.1",

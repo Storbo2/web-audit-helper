@@ -1,6 +1,8 @@
 import { parseArgs } from "node:util";
 import type { ScoringMode } from "../core/types";
 
+export type CliBrowserName = "chromium" | "firefox" | "webkit";
+
 export interface CliArgs {
     target: string;
     format: "json" | "html" | "txt";
@@ -8,11 +10,23 @@ export interface CliArgs {
     failOn: number | undefined;
     locale: "en" | "es";
     scoringMode: ScoringMode;
+    browser: CliBrowserName | undefined;
+    waitFor: string | undefined;
 }
 
 const VALID_FORMATS = ["json", "html", "txt"] as const;
 const VALID_LOCALES = ["en", "es"] as const;
 const VALID_SCORING_MODES = ["strict", "normal", "moderate", "soft", "custom"] as const;
+const VALID_BROWSERS = ["chromium", "firefox", "webkit"] as const;
+
+function isHttpTarget(target: string): boolean {
+    try {
+        const url = new URL(target);
+        return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+        return false;
+    }
+}
 
 export const HELP_TEXT = `
 wah — Web Audit Helper CLI
@@ -26,12 +40,15 @@ Options:
     --fail-on         Exit code 1 when score is below N  (0-100)
     --locale          Report language: en | es                  (default: en)
     --scoring-mode    Scoring preset: strict|normal|moderate|soft|custom  (default: normal)
+    --browser         Use Playwright browser mode: chromium|firefox|webkit
+    --wait-for        Wait for this selector before auditing    (Playwright only)
     --help, -h        Show this help message
 
 Examples:
     wah index.html
     wah index.html --format html --output report.html --fail-on 80
     wah https://example.com --format json --output audit.json
+    wah https://example.com --browser chromium --wait-for #app
 `.trim();
 
 export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | "help" | { error: string } {
@@ -45,6 +62,8 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
                 "fail-on": { type: "string" },
                 locale: { type: "string", default: "en" },
                 "scoring-mode": { type: "string", default: "normal" },
+                browser: { type: "string" },
+                "wait-for": { type: "string" },
                 help: { type: "boolean", short: "h", default: false },
             },
             allowPositionals: true,
@@ -72,6 +91,21 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
         return { error: `Invalid --scoring-mode "${scoringMode}". Valid values: ${VALID_SCORING_MODES.join(", ")}` };
     }
 
+    const browser = values["browser"] as string | undefined;
+    if (browser !== undefined && !VALID_BROWSERS.includes(browser as typeof VALID_BROWSERS[number])) {
+        return { error: `Invalid --browser "${browser}". Valid values: ${VALID_BROWSERS.join(", ")}` };
+    }
+
+    const waitFor = values["wait-for"] as string | undefined;
+    if (waitFor !== undefined && browser === undefined) {
+        return { error: `--wait-for requires --browser.` };
+    }
+
+    const target = positionals[0]!;
+    if (browser !== undefined && !isHttpTarget(target)) {
+        return { error: `--browser requires an http:// or https:// target.` };
+    }
+
     const failOnStr = values["fail-on"] as string | undefined;
     let failOn: number | undefined;
     if (failOnStr !== undefined) {
@@ -82,11 +116,13 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
     }
 
     return {
-        target: positionals[0]!,
+        target,
         format: format as "json" | "html" | "txt",
         output: values["output"] as string | undefined,
         failOn,
         locale: locale as "en" | "es",
         scoringMode: scoringMode as ScoringMode,
+        browser: browser as CliBrowserName | undefined,
+        waitFor,
     };
 }

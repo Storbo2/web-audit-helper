@@ -34,6 +34,33 @@ Evolve from interactive browser helper into reusable audit platform.
 - reusable run comparison utilities for CI workflows
 - formalized rule registry/plugin extension surface
 
+### Delivery Status (March 2026)
+
+- Phase 1 (Foundation): completed
+- Phase 2.1 (headless API): completed
+- Phase 2.2 (CLI static via jsdom): completed
+- Phase 2.3 (CLI Playwright for real URLs): in progress (base implemented and validated with output files under `dist/out`)
+
+### Phase 3 Detail - Reusable Comparison Engine
+
+Goal: decouple run comparison from HTML/UI so it can be consumed by CI pipelines and custom tooling.
+
+Planned deliverables:
+
+- `compareReports(prev, next)` pure API with typed output
+- normalization of rule identity and severity deltas independent of renderer
+- stable comparison schema (`comparison.contractVersion`)
+- JSON-first diff payload suitable for GitHub Actions annotations/comments
+- threshold-based gates on deltas (example: critical +N, score delta <= -X)
+- helper adapters for HTML/TXT renderers (renderer reads comparison payload, does not compute it)
+- deterministic fixtures for regression tests (added/removed rules, category shifts, timing changes)
+
+Acceptance criteria:
+
+- comparison result can be generated without DOM or overlay code
+- CI can fail by score delta and/or severity delta using CLI flags
+- JSON comparison output is backward-compatible inside the same contract major version
+
 ## Longer-Term (v2.x)
 
 - DevTools extension

@@ -5,15 +5,87 @@ import { resolve, dirname } from "node:path";
 import { JSDOM } from "jsdom";
 
 import { parseCliArgs, HELP_TEXT } from "./args";
+import { runPlaywrightAudit } from "./playwright";
 import { runCoreAudit } from "../core/index";
 import { loadConfig } from "../config/loadConfig";
 import { initI18n } from "../utils/i18n";
+import { setScoringMode } from "../overlay/config/settings";
 import { buildAuditReport } from "../reporters/auditReport";
+import type { AuditResult, ScoringMode, WAHConfig } from "../core/types";
 import {
     serializeReportToJSON,
     serializeReportToHTML,
     serializeReportToTXT,
 } from "../reporters/serializers";
+
+function createMemoryStorage(): Storage {
+    const store = new Map<string, string>();
+    return {
+        get length() {
+            return store.size;
+        },
+        clear() {
+            store.clear();
+        },
+        getItem(key: string) {
+            return store.has(key) ? store.get(key)! : null;
+        },
+        key(index: number) {
+            return [...store.keys()][index] ?? null;
+        },
+        removeItem(key: string) {
+            store.delete(key);
+        },
+        setItem(key: string, value: string) {
+            store.set(key, String(value));
+        }
+    } as Storage;
+}
+
+function cssEscape(value: string): string {
+    return String(value).replace(/[^a-zA-Z0-9_\-]/g, "\\$&");
+}
+
+function readWindowProp(windowLike: Record<string, unknown>, prop: string): unknown {
+    try {
+        return windowLike[prop];
+    } catch {
+        return undefined;
+    }
+}
+
+function assignGlobal(g: Record<string, unknown>, prop: string, value: unknown): void {
+    if (value === undefined) return;
+
+    const descriptor = Object.getOwnPropertyDescriptor(g, prop);
+
+    if (!descriptor) {
+        Object.defineProperty(g, prop, {
+            value,
+            writable: true,
+            configurable: true,
+            enumerable: true,
+        });
+        return;
+    }
+
+    if (descriptor.writable || descriptor.set) {
+        try {
+            g[prop] = value;
+        } catch { }
+        return;
+    }
+
+    if (descriptor.configurable) {
+        try {
+            Object.defineProperty(g, prop, {
+                value,
+                configurable: true,
+                enumerable: descriptor.enumerable ?? true,
+            });
+        } catch { }
+    }
+}
 
 function installJsdomGlobals(dom: JSDOM): void {
     const g = globalThis as Record<string, unknown>;
@@ -42,18 +114,27 @@ function installJsdomGlobals(dom: JSDOM): void {
         "Event",
         "MutationObserver",
         "getComputedStyle",
-        "localStorage",
-        "performance",
-        "navigator",
         "requestAnimationFrame",
         "cancelAnimationFrame",
     ];
 
     for (const prop of props) {
-        if (w[prop] !== undefined) g[prop] = w[prop];
+        assignGlobal(g, prop, readWindowProp(w, prop));
     }
 
-    g.window = dom.window;
+    assignGlobal(g, "window", dom.window);
+
+    const localStorageValue = readWindowProp(w, "localStorage") ?? createMemoryStorage();
+    assignGlobal(g, "localStorage", localStorageValue);
+
+    const navigatorValue = readWindowProp(w, "navigator");
+    if (navigatorValue) {
+        assignGlobal(g, "navigator", navigatorValue);
+    }
+
+    if (!g.CSS || typeof (g.CSS as { escape?: unknown }).escape !== "function") {
+        assignGlobal(g, "CSS", { escape: cssEscape });
+    }
 
     if (!g.performance) {
         g.performance = { now: () => Date.now() } as Performance;
@@ -81,6 +162,33 @@ async function resolveHtmlSource(target: string): Promise<{ html: string; url: s
     return { html, url };
 }
 
+function initializeCliEnvironment(url: string, html = "<!doctype html><html><head></head><body></body></html>"): JSDOM {
+    const dom = new JSDOM(html, {
+        url,
+        pretendToBeVisual: true,
+        resources: "usable",
+    });
+
+    installJsdomGlobals(dom);
+
+    return dom;
+}
+
+function createCliConfig(locale: "en" | "es", scoringMode: ScoringMode): WAHConfig {
+    initI18n(locale);
+    setScoringMode(scoringMode);
+
+    return loadConfig({
+        logs: false,
+        logLevel: "none",
+        runtimeMode: "headless",
+        locale,
+        scoringMode,
+        overlay: { enabled: false, position: "bottom-right", theme: "dark" },
+        reporters: [],
+    });
+}
+
 async function main(): Promise<void> {
     const args = parseCliArgs();
 
@@ -95,37 +203,32 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const { target, format, output, failOn, locale, scoringMode } = args;
+    const { target, format, output, failOn, locale, scoringMode, browser, waitFor } = args;
 
-    let html: string;
-    let url: string;
+    let dom: JSDOM | undefined;
+    let result: AuditResult;
+    let config: WAHConfig;
     try {
-        ({ html, url } = await resolveHtmlSource(target));
+        if (browser) {
+            dom = initializeCliEnvironment(target);
+            config = createCliConfig(locale, scoringMode);
+            result = await runPlaywrightAudit({
+                target,
+                browser,
+                waitFor,
+                locale,
+                scoringMode,
+            });
+        } else {
+            const source = await resolveHtmlSource(target);
+            dom = initializeCliEnvironment(source.url, source.html);
+            config = createCliConfig(locale, scoringMode);
+            result = runCoreAudit(config);
+        }
     } catch (err) {
-        console.error(`[wah] Could not read target: ${err instanceof Error ? err.message : String(err)}`);
+        console.error(`[wah] Could not audit target: ${err instanceof Error ? err.message : String(err)}`);
         process.exit(1);
     }
-
-    const dom = new JSDOM(html, {
-        url,
-        pretendToBeVisual: true,
-        resources: "usable",
-    });
-    installJsdomGlobals(dom);
-
-    initI18n(locale);
-
-    const config = loadConfig({
-        logs: false,
-        logLevel: "none",
-        runtimeMode: "headless",
-        locale,
-        scoringMode,
-        overlay: { enabled: false, position: "bottom-right", theme: "dark" },
-        reporters: [],
-    });
-
-    const result = runCoreAudit(config);
 
     const report = buildAuditReport(result, config);
 
@@ -152,6 +255,8 @@ async function main(): Promise<void> {
         console.error(`[wah] FAILED: score ${report.score.overall} is below threshold ${failOn}`);
         process.exit(1);
     }
+
+    dom?.window.close();
 }
 
 main().catch((err) => {
