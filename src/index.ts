@@ -9,6 +9,13 @@ import { logWAHResults, logHideMessage } from "./utils/consoleLogger";
 import { initI18n, t } from "./utils/i18n";
 import type { WAHConfig, AuditResult } from "./core/types";
 import { loadConfig } from "./config/loadConfig";
+export {
+    COMPARISON_CONTRACT_VERSION,
+    compareReports,
+    evaluateComparisonGate,
+    type ComparisonGateOptions,
+    type ComparisonGateResult
+} from "./comparison";
 
 type WAHWindow = Window & {
     __WAH_RESET_HIDE__?: () => void;

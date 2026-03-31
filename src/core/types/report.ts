@@ -54,6 +54,7 @@ export interface AuditReportStats {
 }
 
 export interface AuditReportComparison {
+    contractVersion?: string;
     baseline: {
         runId: string;
         executedAt: string;

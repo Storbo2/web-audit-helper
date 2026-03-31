@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { resolve, dirname, isAbsolute, normalize, sep, basename } from "node:path";
 import { JSDOM } from "jsdom";
 
 import { parseCliArgs, HELP_TEXT } from "./args";
 import { runPlaywrightAudit } from "./playwright";
+import { compareReports, evaluateComparisonGate } from "../comparison";
 import { runCoreAudit } from "../core/index";
 import { loadConfig } from "../config/loadConfig";
 import { initI18n } from "../utils/i18n";
 import { setScoringMode } from "../overlay/config/settings";
 import { buildAuditReport } from "../reporters/auditReport";
 import type { AuditResult, ScoringMode, WAHConfig } from "../core/types";
+import type { AuditReport } from "../core/types";
+import { normalizeAndAssertAuditReport } from "../reporters/contract";
 import {
     serializeReportToJSON,
     serializeReportToHTML,
@@ -189,6 +192,35 @@ function createCliConfig(locale: "en" | "es", scoringMode: ScoringMode): WAHConf
     });
 }
 
+function resolveCliPath(inputPath: string): string {
+    if (isAbsolute(inputPath)) {
+        return inputPath;
+    }
+
+    const cwd = process.cwd();
+    const normalizedInput = normalize(inputPath);
+    const distPrefix = `dist${sep}`;
+
+    // Mini tip for Common UX case: running from ./dist and still passing dist/out/... paths.
+    if (basename(cwd).toLowerCase() === "dist" && normalizedInput.startsWith(distPrefix)) {
+        return resolve(cwd, "..", normalizedInput);
+    }
+
+    return resolve(cwd, normalizedInput);
+}
+
+function loadBaselineReport(compareWithPath: string): AuditReport {
+    const absPath = resolveCliPath(compareWithPath);
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(readFileSync(absPath, "utf-8"));
+    } catch (err) {
+        throw new Error(`Could not read --compare-with file ${absPath}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+
+    return normalizeAndAssertAuditReport(parsed as AuditReport);
+}
+
 async function main(): Promise<void> {
     const args = parseCliArgs();
 
@@ -203,7 +235,21 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const { target, format, output, failOn, locale, scoringMode, browser, waitFor } = args;
+    const {
+        target,
+        format,
+        output,
+        failOn,
+        locale,
+        scoringMode,
+        browser,
+        waitFor,
+        compareWith,
+        minScoreDelta,
+        maxCriticalIncrease,
+        maxWarningIncrease,
+        maxRecommendationIncrease,
+    } = args;
 
     let dom: JSDOM | undefined;
     let result: AuditResult;
@@ -232,17 +278,27 @@ async function main(): Promise<void> {
 
     const report = buildAuditReport(result, config);
 
+    let baselineReport: AuditReport | undefined;
+    if (compareWith) {
+        try {
+            baselineReport = loadBaselineReport(compareWith);
+        } catch (err) {
+            console.error(`[wah] Could not load baseline report: ${err instanceof Error ? err.message : String(err)}`);
+            process.exit(1);
+        }
+    }
+
     let serialized: string;
     if (format === "html") {
-        serialized = serializeReportToHTML(report);
+        serialized = serializeReportToHTML(report, baselineReport);
     } else if (format === "txt") {
         serialized = serializeReportToTXT(report);
     } else {
-        serialized = serializeReportToJSON(report);
+        serialized = serializeReportToJSON(report, baselineReport);
     }
 
     if (output) {
-        const out = resolve(process.cwd(), output);
+        const out = resolveCliPath(output);
         mkdirSync(dirname(out), { recursive: true });
         writeFileSync(out, serialized, "utf-8");
         console.error(`[wah] Score: ${report.score.overall} — report saved to ${out}`);
@@ -254,6 +310,27 @@ async function main(): Promise<void> {
     if (failOn !== undefined && report.score.overall < failOn) {
         console.error(`[wah] FAILED: score ${report.score.overall} is below threshold ${failOn}`);
         process.exit(1);
+    }
+
+    if (baselineReport) {
+        const comparison = compareReports(report, baselineReport);
+        const gate = evaluateComparisonGate(comparison, {
+            minScoreDelta,
+            maxCriticalIncrease,
+            maxWarningIncrease,
+            maxRecommendationIncrease,
+        });
+
+        if (!gate.passed) {
+            console.error(`[wah] FAILED: comparison gate did not pass.`);
+            for (const reason of gate.reasons) {
+                console.error(`[wah]   - ${reason}`);
+            }
+            process.exit(1);
+        }
+
+        console.error(`[wah] Comparison baseline: ${comparison.baseline.runId} (${comparison.baseline.executedAt})`);
+        console.error(`[wah] Comparison delta: score ${comparison.overallScoreDelta}, critical ${comparison.severityDelta.critical}, warning ${comparison.severityDelta.warning}, recommendation ${comparison.severityDelta.recommendation}`);
     }
 
     dom?.window.close();

@@ -39,7 +39,8 @@ Evolve from interactive browser helper into reusable audit platform.
 - Phase 1 (Foundation): completed
 - Phase 2.1 (headless API): completed
 - Phase 2.2 (CLI static via jsdom): completed
-- Phase 2.3 (CLI Playwright for real URLs): in progress (base implemented and validated with output files under `dist/out`)
+- Phase 2.3 (CLI Playwright for real URLs): completed
+- Phase 3 (Reusable comparison engine): in progress (`compareReports`, comparison contract versioning, CLI `--compare-with` and delta gates)
 
 ### Phase 3 Detail - Reusable Comparison Engine
 

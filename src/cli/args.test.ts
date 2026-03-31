@@ -73,6 +73,28 @@ describe("parseCliArgs", () => {
         });
     });
 
+    it("parses --compare-with", () => {
+        expect(parseCliArgs(["index.html", "--compare-with", "baseline.json"]))
+            .toMatchObject({ compareWith: "baseline.json" });
+    });
+
+    it("parses delta gate flags", () => {
+        expect(parseCliArgs([
+            "index.html",
+            "--compare-with", "baseline.json",
+            "--min-score-delta=-5",
+            "--max-critical-increase", "0",
+            "--max-warning-increase", "2",
+            "--max-recommendation-increase", "4"
+        ])).toMatchObject({
+            compareWith: "baseline.json",
+            minScoreDelta: -5,
+            maxCriticalIncrease: 0,
+            maxWarningIncrease: 2,
+            maxRecommendationIncrease: 4,
+        });
+    });
+
     it("parses a URL target", () => {
         expect(parseCliArgs(["https://example.com"])).toMatchObject({ target: "https://example.com" });
     });
@@ -125,5 +147,20 @@ describe("parseCliArgs", () => {
     it("returns error for unknown flags", () => {
         const result = parseCliArgs(["index.html", "--unknown-flag"]);
         expect(result).toMatchObject({ error: expect.any(String) });
+    });
+
+    it("returns error for delta gates without --compare-with", () => {
+        const result = parseCliArgs(["index.html", "--min-score-delta", "2"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("Delta gates require --compare-with") });
+    });
+
+    it("returns error for invalid --min-score-delta", () => {
+        const result = parseCliArgs(["index.html", "--compare-with", "baseline.json", "--min-score-delta", "x"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("Invalid --min-score-delta") });
+    });
+
+    it("returns error for invalid --max-critical-increase", () => {
+        const result = parseCliArgs(["index.html", "--compare-with", "baseline.json", "--max-critical-increase", "x"]);
+        expect(result).toMatchObject({ error: expect.stringContaining("Invalid --max-critical-increase") });
     });
 });

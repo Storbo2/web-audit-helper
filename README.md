@@ -91,6 +91,8 @@ node dist/wah-cli.mjs http://127.0.0.1:5510/examples/issues-detection-test.html 
 
 Notes:
 
+- Recommended execution directory: repository root.
+- From root use `node dist/wah-cli.mjs ...`; from `dist` use `node wah-cli.mjs ...` and `../examples/...` targets.
 - Keep the `http-server` terminal open while running browser-mode audits.
 - A common infra error is `ERR_CONNECTION_REFUSED` when the local server is not running.
 - Test outputs used in validation are written under `dist/out`.
