@@ -11,6 +11,10 @@ export {
 } from "./constants/rule-tokens";
 
 export {
+    RULE_DEFINITIONS
+} from "./constants/rule-definitions";
+
+export {
     RULE_DESCRIPTIONS,
     RULE_WHY,
     RULE_STANDARD_TYPE,

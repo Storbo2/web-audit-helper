@@ -1,10 +1,8 @@
 import {
-    RULE_DESCRIPTIONS,
+    RULE_DEFINITIONS,
     RULE_DOCS_SLUG,
-    RULE_FIXES,
     RULE_STANDARD_LABEL,
     RULE_STANDARD_TYPE,
-    RULE_TOKENS_COMPACT,
     RULE_WHY
 } from "../constants";
 import { getRegisteredRuleById } from "../../core/config/registry";
@@ -13,17 +11,21 @@ import { decodeRuleTitle, toSentenceCase } from "./text";
 
 const RULE_DOCS_BASE_URL = "https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules";
 
+function getDefinedRule(ruleId: string) {
+    return RULE_DEFINITIONS[ruleId];
+}
+
 export function generateRuleDescription(ruleId: string, ruleTitle: string): string {
-    const stored = RULE_DESCRIPTIONS[ruleId];
+    const stored = getDefinedRule(ruleId)?.description;
     if (stored) return stored;
     return `Checks ${ruleTitle.toLowerCase()}`;
 }
 
 export function generateRuleFix(ruleId: string): string | undefined {
-    const stored = getRegisteredRuleById(ruleId)?.fix || RULE_FIXES[ruleId];
+    const stored = getRegisteredRuleById(ruleId)?.fix || getDefinedRule(ruleId)?.fix;
     if (stored) return stored;
 
-    const tokenTitle = RULE_TOKENS_COMPACT[ruleId];
+    const tokenTitle = getDefinedRule(ruleId)?.token;
     if (!tokenTitle) return undefined;
 
     const decodedTitle = decodeRuleTitle(tokenTitle);
@@ -31,7 +33,7 @@ export function generateRuleFix(ruleId: string): string | undefined {
 }
 
 export function getRuleTitle(ruleId: string, fallbackMessage: string): string {
-    const token = RULE_TOKENS_COMPACT[ruleId];
+    const token = getDefinedRule(ruleId)?.token;
     if (token) return translateRuleLabel(ruleId, decodeRuleTitle(token));
     return translateRuleLabel(ruleId, toSentenceCase(fallbackMessage));
 }

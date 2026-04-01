@@ -2,6 +2,6 @@ import { registerBuilderSharedMocks } from "./builder/__tests__/builder.test.set
 
 registerBuilderSharedMocks();
 
-import "./builder/__tests__/builder.meta.suite.test";
-import "./builder/__tests__/builder.score.suite.test";
-import "./builder/__tests__/builder.categories.suite.test";
+import "./builder/__tests__/builder.meta.suite";
+import "./builder/__tests__/builder.score.suite";
+import "./builder/__tests__/builder.categories.suite";

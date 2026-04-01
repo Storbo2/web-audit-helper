@@ -1,3 +1,3 @@
-import "./serializers.json.suite.test";
-import "./serializers.html.suite.test";
-import "./serializers.txt.suite.test";
+import "./serializers.json.suite";
+import "./serializers.html.suite";
+import "./serializers.txt.suite";

@@ -1,79 +1,13 @@
 import { parseArgs } from "node:util";
 import type { ScoringMode } from "../core/types";
+import { VALID_BROWSERS, VALID_FORMATS, VALID_LOCALES, VALID_SCORING_MODES } from "./args/constants";
+import type { CliArgs, CliBrowserName, CliParseError } from "./args/types";
+import { isHttpTarget, parseOptionalNumber } from "./args/validation";
 
-export type CliBrowserName = "chromium" | "firefox" | "webkit";
+export type { CliArgs, CliBrowserName } from "./args/types";
+export { HELP_TEXT } from "./args/helpText";
 
-export interface CliArgs {
-    target: string;
-    format: "json" | "html" | "txt";
-    output: string | undefined;
-    failOn: number | undefined;
-    locale: "en" | "es";
-    scoringMode: ScoringMode;
-    browser: CliBrowserName | undefined;
-    waitFor: string | undefined;
-    compareWith: string | undefined;
-    minScoreDelta: number | undefined;
-    maxCriticalIncrease: number | undefined;
-    maxWarningIncrease: number | undefined;
-    maxRecommendationIncrease: number | undefined;
-}
-
-const VALID_FORMATS = ["json", "html", "txt"] as const;
-const VALID_LOCALES = ["en", "es"] as const;
-const VALID_SCORING_MODES = ["strict", "normal", "moderate", "soft", "custom"] as const;
-const VALID_BROWSERS = ["chromium", "firefox", "webkit"] as const;
-
-function isHttpTarget(target: string): boolean {
-    try {
-        const url = new URL(target);
-        return url.protocol === "http:" || url.protocol === "https:";
-    } catch {
-        return false;
-    }
-}
-
-export const HELP_TEXT = `
-wah — Web Audit Helper CLI
-
-Usage:
-    wah <file.html | http://...> [options]
-
-Options:
-    --format, -f      Output format: json | html | txt         (default: json)
-    --output, -o      Write report to this file path            (default: stdout)
-    --fail-on         Exit code 1 when score is below N  (0-100)
-    --locale          Report language: en | es                  (default: en)
-    --scoring-mode    Scoring preset: strict|normal|moderate|soft|custom  (default: normal)
-    --browser         Use Playwright browser mode: chromium|firefox|webkit
-    --wait-for        Wait for this selector before auditing    (Playwright only)
-    --compare-with    Baseline report JSON path for run comparison
-    --min-score-delta Minimum allowed score delta vs baseline (can be negative)
-    --max-critical-increase Maximum allowed critical increase vs baseline
-    --max-warning-increase Maximum allowed warning increase vs baseline
-    --max-recommendation-increase Maximum allowed recommendation increase vs baseline
-    --help, -h        Show this help message
-
-Examples:
-    wah index.html
-    wah index.html --format html --output report.html --fail-on 80
-    wah https://example.com --format json --output audit.json
-    wah https://example.com --browser chromium --wait-for #app
-    wah index.html --compare-with previous.json --min-score-delta -5 --max-critical-increase 0
-`.trim();
-
-function parseOptionalNumber(value: string | undefined, optionName: string): number | undefined | { error: string } {
-    if (value === undefined) return undefined;
-
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) {
-        return { error: `Invalid ${optionName} "${value}". Must be a finite number.` };
-    }
-
-    return parsed;
-}
-
-export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | "help" | { error: string } {
+export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | "help" | CliParseError {
     let parsed: ReturnType<typeof parseArgs>;
     try {
         parsed = parseArgs({
