@@ -12,6 +12,11 @@ export interface CliArgs {
     browser: CliBrowserName | undefined;
     waitFor: string | undefined;
     compareWith: string | undefined;
+    comparisonOutput: string | undefined;
+    comparisonSummaryOutput: string | undefined;
+    githubActionsSummaryOutput: string | undefined;
+    gitlabSummaryOutput: string | undefined;
+    comparisonCiJsonOutput: string | undefined;
     minScoreDelta: number | undefined;
     maxCriticalIncrease: number | undefined;
     maxWarningIncrease: number | undefined;

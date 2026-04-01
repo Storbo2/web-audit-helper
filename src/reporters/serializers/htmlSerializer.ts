@@ -1,4 +1,4 @@
-import type { AuditReport } from "../../core/types";
+import type { AuditReport, AuditReportComparison } from "../../core/types";
 import { buildAuditReportComparison } from "../comparison";
 import { normalizeAndAssertAuditReport } from "../contract";
 import { t } from "../../utils/i18n";
@@ -10,10 +10,9 @@ function formatDelta(value: number): string {
     return value > 0 ? `+${value}` : `${value}`;
 }
 
-function buildComparisonHtml(report: AuditReport, previousReport?: AuditReport): string {
-    if (!previousReport) return "";
+function buildComparisonHtml(comparison?: AuditReportComparison): string {
+    if (!comparison) return "";
 
-    const comparison = buildAuditReportComparison(report, previousReport);
     const categoryRows = Object.entries(comparison.categoryScoreDelta)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([category, delta]) => `<li><code>${escapeHtml(category)}</code>: ${formatDelta(delta)}</li>`)
@@ -41,15 +40,24 @@ function buildComparisonHtml(report: AuditReport, previousReport?: AuditReport):
             `;
 }
 
-export function serializeReportToHTML(report: AuditReport, previousReport?: AuditReport): string {
+export function serializeReportToHTML(
+    report: AuditReport,
+    previousReport?: AuditReport,
+    precomputedComparison?: AuditReportComparison
+): string {
     const reportWithContract = normalizeAndAssertAuditReport(report);
-    const previousWithContract = previousReport ? normalizeAndAssertAuditReport(previousReport) : undefined;
+
+    let comparison = precomputedComparison;
+    if (!comparison && previousReport) {
+        const previousWithContract = normalizeAndAssertAuditReport(previousReport);
+        comparison = buildAuditReportComparison(reportWithContract, previousWithContract);
+    }
 
     const dict = t();
     const categorySummaryParts = buildCategorySummaryParts(reportWithContract);
     const categoriesHtml = buildCategoriesHtml(reportWithContract, dict);
     const metricsHtml = buildMetricsHtml(reportWithContract);
-    const comparisonHtml = buildComparisonHtml(reportWithContract, previousWithContract);
+    const comparisonHtml = buildComparisonHtml(comparison);
 
     return `
     <!doctype html>

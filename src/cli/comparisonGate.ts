@@ -1,5 +1,5 @@
-import type { AuditReport } from "../core/types";
-import { compareReports, evaluateComparisonGate, type ComparisonGateOptions } from "../comparison";
+import type { AuditReportComparison } from "../core/types";
+import { evaluateComparisonGate, type ComparisonGateOptions } from "../comparison";
 
 export interface ComparisonGateEvaluation {
     passed: boolean;
@@ -9,11 +9,9 @@ export interface ComparisonGateEvaluation {
 }
 
 export function evaluateCliComparisonGate(
-    report: AuditReport,
-    baselineReport: AuditReport,
+    comparison: AuditReportComparison,
     options: ComparisonGateOptions
 ): ComparisonGateEvaluation {
-    const comparison = compareReports(report, baselineReport);
     const gate = evaluateComparisonGate(comparison, options);
 
     return {

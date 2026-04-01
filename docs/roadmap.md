@@ -2,17 +2,23 @@
 
 ## Current
 
-### v1.5.0 - External Auditing
+### v2.0.0 - Reusable Audit Platform
 
 Delivered:
 
 - bookmarklet-based external runtime flow
 - dual runtime load strategy (IIFE primary, ESM fallback)
 - enriched metadata in exports
-- run comparison in JSON/HTML
-- CSP permissive/blocking QA fixtures and checklists
+- stable JSON contract and report validation
+- headless API and CLI for static HTML + real URLs
+- reusable comparison engine with delta gates
+- CI/PR outputs:
+  - compact JSON summary
+  - generic Markdown summary
+  - GitHub Actions summary
+  - GitLab CI summary
 
-## Near-Term (Post 1.5.0)
+## Near-Term (Post 2.0.0)
 
 ### Adoption and Polish
 
@@ -20,7 +26,7 @@ Delivered:
 - clearer documentation map for faster onboarding
 - concise mode guidance (`embedded` vs `external`)
 
-## v2.0 Direction
+## v2.0 Delivered
 
 ### Goal
 
@@ -34,33 +40,17 @@ Evolve from interactive browser helper into reusable audit platform.
 - reusable run comparison utilities for CI workflows
 - formalized rule registry/plugin extension surface
 
-### Delivery Status (March 2026)
+### Delivery Status (April 2026)
 
 - Phase 1 (Foundation): completed
-- Phase 2.1 (headless API): completed
-- Phase 2.2 (CLI static via jsdom): completed
-- Phase 2.3 (CLI Playwright for real URLs): completed
-- Phase 3 (Reusable comparison engine): in progress (`compareReports`, comparison contract versioning, CLI `--compare-with` and delta gates)
+- Phase 2 (Headless + CLI MVP): completed
+- Phase 3 (Reusable comparison engine): completed
+- Phase 4 (Automation helpers & PR/CI reporting): completed
 
-### Phase 3 Detail - Reusable Comparison Engine
+### Post-2.0 Plan
 
-Goal: decouple run comparison from HTML/UI so it can be consumed by CI pipelines and custom tooling.
-
-Planned deliverables:
-
-- `compareReports(prev, next)` pure API with typed output
-- normalization of rule identity and severity deltas independent of renderer
-- stable comparison schema (`comparison.contractVersion`)
-- JSON-first diff payload suitable for GitHub Actions annotations/comments
-- threshold-based gates on deltas (example: critical +N, score delta <= -X)
-- helper adapters for HTML/TXT renderers (renderer reads comparison payload, does not compute it)
-- deterministic fixtures for regression tests (added/removed rules, category shifts, timing changes)
-
-Acceptance criteria:
-
-- comparison result can be generated without DOM or overlay code
-- CI can fail by score delta and/or severity delta using CLI flags
-- JSON comparison output is backward-compatible inside the same contract major version
+- v2.0.1: Fase 5 (extensibilidad base y posibles fixes menores de release)
+- v2.1+: ecosistema, DevTools extension, policy profiles e integraciones avanzadas
 
 ## Longer-Term (v2.x)
 

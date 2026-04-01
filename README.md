@@ -60,9 +60,9 @@ Common use cases:
 
 - I am building a site/app and want continuous feedback: use embedded mode.
 - I want to audit any page from the browser quickly: use external mode.
-- I want CI/headless automation: use CLI headless mode from this repository build (`dist/wah-cli.mjs`) while v2.0 is in progress.
+- I want CI/headless automation: use CLI headless mode from this repository build (`dist/wah-cli.mjs`).
 
-### CLI Headless (v2.0 Phase 2 in progress)
+### CLI Headless (v2.0)
 
 You can run WAH from Node.js and generate reports directly to files.
 
@@ -97,11 +97,61 @@ Notes:
 - A common infra error is `ERR_CONNECTION_REFUSED` when the local server is not running.
 - Test outputs used in validation are written under `dist/out`.
 
+### CI / PR Outputs (v2.0 Phase 4)
+
+When running with `--compare-with`, WAH can emit CI-oriented artifacts in addition to the normal report:
+
+- Compact JSON for machine parsing: `--comparison-ci-json-output`
+- Generic Markdown summary for PR/workflows: `--comparison-summary-output`
+- GitHub Actions summary: `--github-actions-summary-output`
+- GitLab CI summary: `--gitlab-summary-output`
+
+Example:
+
+```bash
+node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
+node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --comparison-ci-json-output dist/out/comparison-ci.json --github-actions-summary-output dist/out/gha-summary.md --gitlab-summary-output dist/out/gitlab-summary.md --output dist/out/compare.json
+```
+
+GitHub Actions snippet:
+
+```yaml
+- name: Build WAH
+  run: npm run build
+
+- name: Run comparison
+  run: |
+    node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
+    node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --comparison-ci-json-output dist/out/comparison-ci.json --github-actions-summary-output dist/out/gha-summary.md --output dist/out/compare.json
+
+- name: Publish summary
+  shell: bash
+  run: cat dist/out/gha-summary.md >> "$GITHUB_STEP_SUMMARY"
+```
+
+GitLab CI snippet:
+
+```yaml
+wah_audit:
+  script:
+    - npm run build
+    - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
+    - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --comparison-ci-json-output dist/out/comparison-ci.json --gitlab-summary-output dist/out/gitlab-summary.md --output dist/out/compare.json
+  artifacts:
+    when: always
+    paths:
+      - dist/out/compare.json
+      - dist/out/comparison-ci.json
+      - dist/out/gitlab-summary.md
+```
+
+For strict automation, prefer the compact JSON output. Use Markdown outputs for human-facing summaries.
+
 ### Browser (via CDN)
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@1.5.3/dist/index.mjs';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@2.0.0/dist/index.mjs';
 
     // Run with default configuration
     await runWAH();
@@ -175,7 +225,7 @@ Where is `dist/bookmarklet.txt`?
 - If you are inside another app repo (for example React/PHP) and only installed WAH as dependency, you will not automatically get this repository build pipeline output.
 - For external auditing, use either:
   - bookmarklet from this repository build output, or
-  - bookmarklet generated from the published version (`web-audit-helper@1.5.3`).
+  - bookmarklet generated from the published version (`web-audit-helper@2.0.0`).
 
 Detailed external auditing flow:
 
@@ -213,8 +263,8 @@ npx http-server . -p 4173 --cors
 
 Post-publish real-page flow (release validation):
 
-1. Publish `web-audit-helper@1.5.3` to npm.
-2. Rebuild bookmarklet so it points to fixed jsDelivr `@1.5.3` assets.
+1. Publish `web-audit-helper@2.0.0` to npm.
+2. Rebuild bookmarklet so it points to fixed jsDelivr `@2.0.0` assets.
 3. Validate in at least one static target and one SPA target.
 4. Export JSON/HTML and verify `meta.runtimeMode = external` and run comparison block.
 
@@ -235,7 +285,7 @@ Quick FAQ (v1.5 external audits):
 - Does it crawl multiple pages?
   - No. v1.5 audits only the currently open page.
 - Can I run it in CI headless mode?
-  - Yes from repository build via `dist/wah-cli.mjs` (v2.0 Phase 2 work-in-progress). For npm release policy, check roadmap status.
+  - Yes. Use `dist/wah-cli.mjs` from this repository build or the published CLI entry once `2.0.0` is installed.
 
 Bootstrap Error Code Reference:
 

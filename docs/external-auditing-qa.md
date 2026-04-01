@@ -40,7 +40,7 @@ Use one of these options:
 
 ## Local Bookmarklet for Pre-Release Validation
 
-If npm `1.5.0` is not published yet, use a local bookmarklet:
+If npm `2.0.0` is not published yet, use a local bookmarklet:
 
 1. Start local server from repository root:
 
@@ -60,7 +60,7 @@ npx http-server . -p 4173 --cors
 
 ## Real-Page Validation (Release Gate)
 
-After publishing npm `1.5.0` and regenerating bookmarklet with fixed version:
+After publishing npm `2.0.0` and regenerating bookmarklet with fixed version:
 
 1. Validate one static page (marketing/docs style).
 2. Validate one SPA page (React/Next/Vue style).

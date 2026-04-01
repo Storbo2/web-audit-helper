@@ -8,7 +8,7 @@ WAH supports JSON, TXT, and HTML export formats.
 - TXT: quick human-readable snapshot
 - HTML: visual report with grouped sections and run comparison summary
 
-## Metadata (v1.5.0)
+## Metadata (v2.0.0)
 
 External, embedded, and headless runs can include:
 
@@ -61,7 +61,7 @@ Example excerpt:
     "targetUrl": "https://example.com/page",
     "executedAt": "2026-03-26T04:16:27.916Z",
     "runtimeMode": "external",
-    "wahVersion": "1.5.3",
+    "wahVersion": "2.0.0",
     "issueCountBySeverity": {
       "critical": 11,
       "warning": 26,
@@ -99,6 +99,116 @@ When a previous run is provided, JSON/HTML comparison can include:
 - added/removed `ruleId`
 - category score deltas
 - optional timing delta (when metrics exist)
+
+## CI Output Contracts (v2.0 Phase 4)
+
+WAH now exposes dedicated CI-oriented outputs from the CLI when `--compare-with` is provided:
+
+- `--comparison-ci-json-output <file>`
+- `--comparison-summary-output <file>`
+- `--github-actions-summary-output <file>`
+- `--gitlab-summary-output <file>`
+
+Recommended consumer policy:
+
+- Prefer `--comparison-ci-json-output` for machine parsing in CI.
+- Treat Markdown outputs as human-readable summaries for job/step summaries and merge request comments.
+- Do not parse Markdown line-by-line as a strict API contract.
+
+### Compact CI JSON Schema
+
+Current schema version:
+
+- `schemaVersion = 1.0.0`
+
+Current top-level fields:
+
+- `schemaVersion`
+- `status`
+- `baseline`
+- `delta`
+- `rules`
+- `gate`
+
+Example:
+
+```json
+{
+  "schemaVersion": "1.0.0",
+  "status": "pass",
+  "baseline": {
+    "runId": "62b165d5-dffd-44dc-8e1a-c70b804a6b22",
+    "executedAt": "2026-04-01T04:22:02.493Z",
+    "targetUrl": "file:///C:/repo/examples/issues-detection-test.html"
+  },
+  "delta": {
+    "overallScore": 0,
+    "critical": 0,
+    "warning": 0,
+    "recommendation": 0
+  },
+  "rules": {
+    "added": [],
+    "removed": []
+  },
+  "gate": {
+    "passed": true,
+    "reasons": []
+  }
+}
+```
+
+Compatibility policy for CI outputs:
+
+- Patch (`x.y.z`): formatting fixes only, no breaking field removals or meaning changes.
+- Minor (`x.y.0`): additive fields allowed, existing fields keep same meaning/type.
+- Major (`x.0.0`): breaking CI contract changes allowed.
+
+Markdown output compatibility policy:
+
+- Flag names are stable within major versions.
+- Section headings and intent stay stable.
+- Exact line formatting may evolve between minor versions.
+
+Consumer guidance for CI:
+
+- Validate `schemaVersion` before parsing compact JSON.
+- Ignore unknown extra JSON fields.
+- Use Markdown outputs only for display, not strict automation logic.
+
+## CI Integration Snippets
+
+GitHub Actions pattern:
+
+```yaml
+- name: Build WAH
+  run: npm run build
+
+- name: Baseline + comparison
+  run: |
+    node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
+    node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --github-actions-summary-output dist/out/gha-summary.md --comparison-ci-json-output dist/out/comparison-ci.json --output dist/out/compare.json
+
+- name: Publish step summary
+  shell: bash
+  run: cat dist/out/gha-summary.md >> "$GITHUB_STEP_SUMMARY"
+```
+
+GitLab CI pattern:
+
+```yaml
+wah_audit:
+  script:
+    - npm run build
+    - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
+    - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --gitlab-summary-output dist/out/gitlab-summary.md --comparison-ci-json-output dist/out/comparison-ci.json --output dist/out/compare.json
+  artifacts:
+    when: always
+    paths:
+      - dist/out/compare.json
+      - dist/out/comparison-ci.json
+      - dist/out/gitlab-summary.md
+```
 
 ## Practical Validation
 

@@ -40,7 +40,7 @@ Opciones recomendadas:
 
 ## Bookmarklet Local para Validacion Pre-Release
 
-Si npm `1.5.0` aun no esta publicado, usa bookmarklet local:
+Si npm `2.0.0` aun no esta publicado, usa bookmarklet local:
 
 1. Levantar servidor local desde la raiz del repositorio:
 
@@ -60,7 +60,7 @@ npx http-server . -p 4173 --cors
 
 ## Validacion en Paginas Reales (Gate de Release)
 
-Despues de publicar npm `1.5.0` y regenerar bookmarklet con version fija:
+Despues de publicar npm `2.0.0` y regenerar bookmarklet con version fija:
 
 1. Validar una pagina estatica (tipo marketing/docs).
 2. Validar una pagina SPA (tipo React/Next/Vue).

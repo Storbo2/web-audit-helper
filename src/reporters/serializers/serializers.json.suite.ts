@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
-import type { AuditReport } from "../../core/types";
+import { describe, expect, it, vi } from "vitest";
+import type { AuditReport, AuditReportComparison } from "../../core/types";
 import { serializeReportToJSON } from "./index";
 import { createJsonComparisonReports, mockReport } from "./serializers.testUtils";
+import * as comparisonModule from "../comparison";
 
 describe("serializeReportToJSON", () => {
     it("should return valid JSON", () => {
@@ -69,6 +70,37 @@ describe("serializeReportToJSON", () => {
         expect(parsed.comparison.overallScoreDelta).toBe(5);
         expect(parsed.comparison.addedRuleIds).toContain("ACC-13");
         expect(parsed.comparison.removedRuleIds).toContain("ACC-01");
+    });
+
+    it("uses precomputed comparison payload when provided", () => {
+        const { previousReport, currentReport } = createJsonComparisonReports();
+        const precomputed: AuditReportComparison = {
+            contractVersion: "1.0.0",
+            baseline: {
+                runId: "precomputed-run",
+                executedAt: previousReport.meta.executedAt,
+                targetUrl: previousReport.meta.targetUrl
+            },
+            overallScoreDelta: 999,
+            severityDelta: {
+                critical: 2,
+                warning: -1,
+                recommendation: 0
+            },
+            addedRuleIds: ["CUSTOM-ADDED"],
+            removedRuleIds: ["CUSTOM-REMOVED"],
+            categoryScoreDelta: {
+                accessibility: 12
+            }
+        };
+        const compareSpy = vi.spyOn(comparisonModule, "buildAuditReportComparison");
+        compareSpy.mockClear();
+
+        const json = serializeReportToJSON(currentReport, undefined, precomputed);
+        const parsed = JSON.parse(json);
+
+        expect(parsed.comparison).toEqual(precomputed);
+        expect(compareSpy).not.toHaveBeenCalled();
     });
 
     it("should throw a contract error when required fields are missing", () => {

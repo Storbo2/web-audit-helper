@@ -1,10 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { serializeReportToHTML } from "./index";
 import {
     createHtmlComparisonReports,
     createHtmlEmptyReport,
     createHtmlMetricsReport
 } from "./serializers.testUtils";
+import * as comparisonModule from "../comparison";
 
 describe("serializeReportToHTML", () => {
     it("renders HTML report with metrics and grouped statuses", () => {
@@ -40,6 +41,37 @@ describe("serializeReportToHTML", () => {
         expect(html).toContain("Score delta:");
         expect(html).toContain("Added rules:");
         expect(html).toContain("Removed rules:");
+    });
+
+    it("uses precomputed comparison payload when provided", () => {
+        const { previousReport, currentReport } = createHtmlComparisonReports();
+        const precomputed = {
+            contractVersion: "1.0.0",
+            baseline: {
+                runId: "precomputed-run",
+                executedAt: previousReport.meta.executedAt,
+                targetUrl: previousReport.meta.targetUrl
+            },
+            overallScoreDelta: -4,
+            severityDelta: {
+                critical: 1,
+                warning: 0,
+                recommendation: -2
+            },
+            addedRuleIds: ["ACC-99"],
+            removedRuleIds: ["SEO-99"],
+            categoryScoreDelta: {
+                accessibility: -8
+            }
+        };
+        const compareSpy = vi.spyOn(comparisonModule, "buildAuditReportComparison");
+        compareSpy.mockClear();
+
+        const html = serializeReportToHTML(currentReport, undefined, precomputed);
+
+        expect(html).toContain("precomputed-run");
+        expect(html).toContain("ACC-99");
+        expect(compareSpy).not.toHaveBeenCalled();
     });
 
     it("throws a contract error when required metadata is missing", () => {

@@ -7,6 +7,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-04-01
+
+### Added
+
+- **v2.0 platform release**:
+  - stable JSON contract with validation and compatibility policy
+  - headless API for non-overlay execution
+  - Node.js CLI for static HTML audits via jsdom
+  - Playwright-powered CLI audits for real URLs and SPAs
+  - reusable comparison engine (`compareReports`, `evaluateComparisonGate`)
+  - baseline comparison support in CLI via `--compare-with`
+  - delta gates for CI (`--min-score-delta`, `--max-critical-increase`, `--max-warning-increase`, `--max-recommendation-increase`)
+  - standalone comparison payload export (`--comparison-output`)
+  - generic Markdown comparison summary (`--comparison-summary-output`)
+  - GitHub Actions summary output (`--github-actions-summary-output`)
+  - GitLab CI summary output (`--gitlab-summary-output`)
+  - compact CI JSON summary output (`--comparison-ci-json-output`)
+
+### Changed
+
+- README, roadmap, commands, and exports metadata docs aligned to v2.0 release status.
+- CI/report outputs documented with integration snippets for GitHub Actions and GitLab CI.
+- Package version advanced to `2.0.0`.
+
+### Fixed
+
+- CLI path normalization avoids `dist/dist/out` duplication when running from `dist`.
+- Comparison serializers now accept precomputed payloads to avoid redundant diff recomputation.
+
+### Validation
+
+- Typecheck: passing
+- Test suite: passing
+- Build: passing
+- CLI smoke validations: passing for static, comparison, GitHub Actions, GitLab, and compact CI JSON outputs
+
 ## [1.5.0] - 2026-03-18
 
 ### Added

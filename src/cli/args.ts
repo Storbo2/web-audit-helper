@@ -21,6 +21,11 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
                 browser: { type: "string" },
                 "wait-for": { type: "string" },
                 "compare-with": { type: "string" },
+                "comparison-output": { type: "string" },
+                "comparison-summary-output": { type: "string" },
+                "github-actions-summary-output": { type: "string" },
+                "gitlab-summary-output": { type: "string" },
+                "comparison-ci-json-output": { type: "string" },
                 "min-score-delta": { type: "string" },
                 "max-critical-increase": { type: "string" },
                 "max-warning-increase": { type: "string" },
@@ -77,6 +82,11 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
     }
 
     const compareWith = values["compare-with"] as string | undefined;
+    const comparisonOutput = values["comparison-output"] as string | undefined;
+    const comparisonSummaryOutput = values["comparison-summary-output"] as string | undefined;
+    const githubActionsSummaryOutput = values["github-actions-summary-output"] as string | undefined;
+    const gitlabSummaryOutput = values["gitlab-summary-output"] as string | undefined;
+    const comparisonCiJsonOutput = values["comparison-ci-json-output"] as string | undefined;
 
     const minScoreDelta = parseOptionalNumber(values["min-score-delta"] as string | undefined, "--min-score-delta");
     if (typeof minScoreDelta === "object") return minScoreDelta;
@@ -109,6 +119,26 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
         return { error: "Delta gates require --compare-with <baseline-report.json>." };
     }
 
+    if (comparisonOutput !== undefined && compareWith === undefined) {
+        return { error: "--comparison-output requires --compare-with <baseline-report.json>." };
+    }
+
+    if (comparisonSummaryOutput !== undefined && compareWith === undefined) {
+        return { error: "--comparison-summary-output requires --compare-with <baseline-report.json>." };
+    }
+
+    if (githubActionsSummaryOutput !== undefined && compareWith === undefined) {
+        return { error: "--github-actions-summary-output requires --compare-with <baseline-report.json>." };
+    }
+
+    if (gitlabSummaryOutput !== undefined && compareWith === undefined) {
+        return { error: "--gitlab-summary-output requires --compare-with <baseline-report.json>." };
+    }
+
+    if (comparisonCiJsonOutput !== undefined && compareWith === undefined) {
+        return { error: "--comparison-ci-json-output requires --compare-with <baseline-report.json>." };
+    }
+
     return {
         target,
         format: format as "json" | "html" | "txt",
@@ -119,6 +149,11 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
         browser: browser as CliBrowserName | undefined,
         waitFor,
         compareWith,
+        comparisonOutput,
+        comparisonSummaryOutput,
+        githubActionsSummaryOutput,
+        gitlabSummaryOutput,
+        comparisonCiJsonOutput,
         minScoreDelta,
         maxCriticalIncrease,
         maxWarningIncrease,

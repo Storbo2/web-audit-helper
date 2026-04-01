@@ -1,45 +1,50 @@
+# WAH v2.0.0 Release Notes
+
 <!-- markdownlint-disable MD025 MD024 -->
 
-# WAH v1.5.0 Release Notes
-
-**Release Date**: March 18, 2026  
-**Type**: Minor (External Auditing)
+**Release Date**: April 1, 2026  
+**Type**: Major (Reusable Audit Platform)
 
 ---
 
 ## Overview
 
-Version 1.5.0 delivers external auditing as an official workflow.
+Version 2.0.0 turns WAH into a reusable audit platform.
 
-You can now audit already-open pages using a bookmarklet runtime, export richer execution metadata, and compare consecutive runs directly in JSON/HTML reports.
+You can now run headless audits from Node.js, compare runs with stable contracts, enforce delta-based CI gates, and emit specialized outputs for GitHub Actions, GitLab CI, and generic machine-readable pipelines.
 
 ---
 
 ## Highlights
 
-- Official external runtime bootstrap with IIFE primary + ESM fallback
-- Version-pinned bookmarklet flow for jsDelivr runtime loading
-- Extended execution metadata in report exports (`runtimeMode`, run identity, timing and counters)
-- Run comparison support in JSON and HTML exports
-- CSP validation assets and bilingual QA checklists for permissive/blocking scenarios
+- Stable JSON report contract with validation and compatibility policy
+- Headless API + Node.js CLI for static HTML and real URL audits
+- Reusable comparison engine with delta gates for CI
+- Specialized CI outputs: generic Markdown, GitHub Actions, GitLab CI, compact JSON
+- External auditing workflow preserved and fully aligned with the new platform release
 
 ---
 
 ## Added
 
-- `src/external/runtime.ts` for external-mode execution (`runtimeMode = external`)
-- Runtime bundles for external delivery:
-  - `dist/external-runtime.iife.js`
-  - `dist/external-runtime.mjs`
-- Bookmarklet generator script and postbuild integration
-- Comparison engine for report-to-report diffs
-- QA fixtures and checklists for CSP and real-page validation
+- stable JSON contract validation and compatibility documentation
+- `runWAHHeadless()` official headless API
+- Node.js CLI for static and Playwright-backed audits
+- comparison engine and CLI delta gates
+- CI-oriented outputs:
+  - `--comparison-output`
+  - `--comparison-summary-output`
+  - `--github-actions-summary-output`
+  - `--gitlab-summary-output`
+  - `--comparison-ci-json-output`
+- QA snippets and workflow examples for GitHub Actions and GitLab CI
 
 ---
 
 ## Fixed
 
-- Development prefix validation now accepts legacy `HTML-*` IDs in quality category, preventing false warnings (e.g., `HTML-01` under `quality`).
+- CLI path normalization now avoids `dist/dist/out` duplication when running from the `dist` directory.
+- Comparison serialization reuses precomputed payloads instead of recomputing diffs unnecessarily.
 
 ---
 
@@ -48,13 +53,30 @@ You can now audit already-open pages using a bookmarklet runtime, export richer 
 - Typecheck: passing (`npm run typecheck`)
 - Test suite: passing (`npm test`)
 - Build: passing (`npm run build`)
+- Smoke validations: passing for comparison outputs, GitHub Actions, GitLab CI, and compact CI JSON summary
 
 ---
 
 ## Upgrade Notes
 
-- Existing embedded usage remains compatible.
-- External auditing can fail on strict CSP domains by design; this is expected and should be treated as controlled failure when error handling is explicit.
+- Existing embedded and external usage remain compatible.
+- CI consumers should prefer `--comparison-ci-json-output` for machine parsing.
+- Markdown outputs are intended for human-facing summaries and can evolve cosmetically within the same major version.
+
+---
+
+## WAH v1.5.0 Release Notes
+
+**Release Date**: March 18, 2026  
+**Type**: Minor (External Auditing)
+
+---
+
+## Overview (v1.5.0)
+
+Version 1.5.0 delivers external auditing as an official workflow.
+
+You can now audit already-open pages using a bookmarklet runtime, export richer execution metadata, and compare consecutive runs directly in JSON/HTML reports.
 
 ---
 

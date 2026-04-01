@@ -7,7 +7,16 @@ import { loadBaselineReport } from "./baseline";
 import { evaluateCliComparisonGate } from "./comparisonGate";
 import { createCliConfig } from "./config";
 import { initializeCliEnvironment } from "./jsdom";
-import { emitSerializedReport, serializeReport, type CliOutputFormat } from "./output";
+import {
+    emitComparisonCiJsonSummary,
+    emitComparisonPayload,
+    emitGitHubActionsComparisonSummaryMarkdown,
+    emitGitLabComparisonSummaryMarkdown,
+    emitComparisonSummaryMarkdown,
+    emitSerializedReport,
+    serializeReport,
+    type CliOutputFormat,
+} from "./output";
 import { resolveHtmlSource } from "./paths";
 import { runPlaywrightAudit } from "./playwright";
 import {
@@ -19,9 +28,10 @@ import {
     failWithUsage,
 } from "./termination";
 import { runCoreAudit } from "../core/index";
+import { compareReports } from "../comparison";
 import { buildAuditReport } from "../reporters/auditReport";
 import type { AuditResult, WAHConfig } from "../core/types";
-import type { AuditReport } from "../core/types";
+import type { AuditReport, AuditReportComparison } from "../core/types";
 
 async function main(): Promise<void> {
     const args = parseCliArgs();
@@ -45,6 +55,11 @@ async function main(): Promise<void> {
         browser,
         waitFor,
         compareWith,
+        comparisonOutput,
+        comparisonSummaryOutput,
+        githubActionsSummaryOutput,
+        gitlabSummaryOutput,
+        comparisonCiJsonOutput,
         minScoreDelta,
         maxCriticalIncrease,
         maxWarningIncrease,
@@ -86,18 +101,42 @@ async function main(): Promise<void> {
         }
     }
 
-    const serialized = serializeReport(report, format as CliOutputFormat, baselineReport);
+    const comparison: AuditReportComparison | undefined = baselineReport
+        ? compareReports(report, baselineReport)
+        : undefined;
+
+    const serialized = serializeReport(report, format as CliOutputFormat, baselineReport, comparison);
     emitSerializedReport(serialized, output, report.score.overall);
 
     failOnScoreThreshold(report.score.overall, failOn);
 
-    if (baselineReport) {
-        const gate = evaluateCliComparisonGate(report, baselineReport, {
+    if (comparison) {
+        if (comparisonOutput) {
+            emitComparisonPayload(comparison, comparisonOutput);
+        }
+
+        if (comparisonSummaryOutput) {
+            emitComparisonSummaryMarkdown(comparison, comparisonSummaryOutput);
+        }
+
+        const gate = evaluateCliComparisonGate(comparison, {
             minScoreDelta,
             maxCriticalIncrease,
             maxWarningIncrease,
             maxRecommendationIncrease,
         });
+
+        if (githubActionsSummaryOutput) {
+            emitGitHubActionsComparisonSummaryMarkdown(comparison, gate, githubActionsSummaryOutput);
+        }
+
+        if (gitlabSummaryOutput) {
+            emitGitLabComparisonSummaryMarkdown(comparison, gate, gitlabSummaryOutput);
+        }
+
+        if (comparisonCiJsonOutput) {
+            emitComparisonCiJsonSummary(comparison, gate, comparisonCiJsonOutput);
+        }
 
         if (!gate.passed) {
             failComparisonGate(gate.reasons);
