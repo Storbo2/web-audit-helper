@@ -2,19 +2,21 @@
 
 Complete reference for WAH's public API.
 
-## Main Entry Point
+## Main Entry Points
 
-### `runWAH(userConfig?: Partial<WAHConfig>): Promise<AuditResult>`
+### `runWAH(userConfig?: Partial<WAHConfig>, executionOptions?: AuditExecutionOptions): Promise<AuditResult | undefined>`
 
-Runs the complete audit and initializes the overlay.
+Runs the browser audit flow and initializes the overlay when the environment has `window` and `document`.
 
 **Parameters:**
 
-- `userConfig` (optional): Partial configuration to override defaults
+- `userConfig` (optional): Partial configuration to override defaults.
+- `executionOptions` (optional): Advanced execution options such as a custom rule registry.
 
 **Returns:**
 
-- `Promise<AuditResult>` containing issues array and overall score
+- `Promise<AuditResult | undefined>`.
+- Returns `undefined` when executed outside a browser-like DOM environment.
 
 **Example:**
 
@@ -27,9 +29,35 @@ const result = await runWAH({
     overlay: { enabled: true }
 });
 
-console.log(`Audit score: ${result.score}%`);
-console.log(`Found ${result.issues.length} issues`);
+if (result) {
+    console.log(`Audit score: ${result.score}%`);
+    console.log(`Found ${result.issues.length} issues`);
+}
 ```
+
+### `runWAHHeadless(userConfig?: Partial<WAHConfig>, executionOptions?: AuditExecutionOptions): Promise<AuditResult | undefined>`
+
+Runs the same audit engine without mounting the interactive overlay.
+
+Use this when you need a browser-side result object but do not want UI elements injected into the page.
+
+### `runCoreAudit(config: WAHConfig, executionOptions?: AuditExecutionOptions): AuditResult`
+
+Low-level audit engine entry point. This is the reusable core used by the interactive, headless and CLI flows.
+
+### `buildAuditReport(result: AuditResult, config?: WAHConfig, registry?: ReadonlyArray<EnrichedRegisteredRule>): AuditReport`
+
+Builds the structured report object used by JSON, TXT and HTML serializers.
+
+When you run WAH with a custom registry, pass the same registry into `buildAuditReport(...)` so custom rule metadata is preserved.
+
+### Additional Public Exports
+
+WAH also exposes the following reusable surfaces:
+
+- Registry/extensibility helpers: `createCoreRuleRegistry`, `createRuleRegistry`, `extendRuleRegistry`, `createRulePlugin`, `getRegisteredRuleById`, `assertRegistryContracts`, `validateRegistryContracts`
+- Comparison helpers: `compareReports`, `evaluateComparisonGate`
+- Report serializers: `serializeReportToJSON`, `serializeReportToTXT`, `serializeReportToHTML`
 
 ---
 
@@ -105,6 +133,16 @@ Complete audit result.
 interface AuditResult {
     issues: AuditIssue[];      // All issues found
     score: number;             // 0-100 overall score
+}
+```
+
+### `AuditExecutionOptions`
+
+Advanced execution hooks for injecting a custom registry.
+
+```typescript
+interface AuditExecutionOptions {
+    registry?: ReadonlyArray<RegisteredRule>;
 }
 ```
 
@@ -326,7 +364,6 @@ The following are internal implementation details and not part of the public API
 - Individual rule functions (`checkMissingAlt`, etc.)
 - Scoring calculation functions
 - Overlay component internals
-- Report serialization functions
 - Local storage/state management
 
 Use only the documented public API for stability across versions.

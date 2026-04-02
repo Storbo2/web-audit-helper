@@ -1,0 +1,40 @@
+[title] {
+    position: relative;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+:focus-visible {
+    outline: 0.125rem solid var(--wah-text);
+    outline-offset: 0.125rem;
+}
+
+@media (prefers-contrast: high) {
+    .wah-chip.is-active {
+        border-width: 0.125rem;
+    }
+
+    :focus-visible {
+        outline-width: 0.1875rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .wah-rerun-btn:hover,
+    .wah-chip:hover,
+    .wah-tool:hover {
+        transform: none;
+    }
+}

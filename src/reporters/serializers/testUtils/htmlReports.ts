@@ -70,15 +70,7 @@ export function createHtmlMetricsReport(): AuditReport {
 export function createHtmlEmptyReport(): AuditReport {
     return {
         ...mockReport,
-        categories: [
-            {
-                id: "seo",
-                title: "SEO",
-                score: 100,
-                rules: [],
-                summary: { critical: 0, warning: 0, recommendation: 0 }
-            }
-        ],
+        categories: [{ id: "seo", title: "SEO", score: 100, rules: [], summary: { critical: 0, warning: 0, recommendation: 0 } }],
         metrics: undefined
     };
 }

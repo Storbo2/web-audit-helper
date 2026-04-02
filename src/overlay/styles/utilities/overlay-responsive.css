@@ -1,0 +1,27 @@
+@media (max-width: 400px) {
+    #wah-overlay-root {
+        width: calc(100vw - 2rem);
+        font-size: 0.8125rem;
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
+
+    .wah-content {
+        padding: 0.5rem;
+    }
+
+    .wah-filter {
+        gap: 0.25rem;
+    }
+
+    .wah-chip {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .wah-toolbar {
+        gap: 0.25rem;
+    }
+}

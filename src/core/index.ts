@@ -1,8 +1,13 @@
 import type { AuditIssue, AuditResult, IssueLevel, RuleOverrideValue, RuleTiming, Severity, WAHConfig } from "./types";
 import { computeScore } from "./scoring";
+import type { RegisteredRule } from "./config/registry";
 import { CORE_RULES_REGISTRY } from "./config/registry";
 import { isWahIgnored } from "../utils/dom";
 import { setViewportMetaSnapshot } from "./rules/responsive";
+
+export interface AuditExecutionOptions {
+    registry?: ReadonlyArray<RegisteredRule>;
+}
 
 function isElementPerceivable(el: HTMLElement): boolean {
     if (el.closest("[hidden], [inert], [aria-hidden='true']")) return false;
@@ -64,12 +69,13 @@ function roundMs(value: number): number {
     return Math.round(value * 100) / 100;
 }
 
-export function runCoreAudit(config: WAHConfig): AuditResult {
+export function runCoreAudit(config: WAHConfig, options: AuditExecutionOptions = {}): AuditResult {
     const metricsEnabled = config.auditMetrics?.enabled !== false;
     const auditStart = metricsEnabled ? nowMs() : 0;
     const allowed = allowedSeverities(config.issueLevel);
     const analyzeFullDom = config.scoringMode === "strict";
     const ruleOverrides = config.rules;
+    const registry = options.registry ?? CORE_RULES_REGISTRY;
 
     const viewportMeta = document.querySelector('meta[name="viewport"]:not([data-wah-generated="viewport"])') as HTMLMetaElement | null;
     const snapshotContent = viewportMeta
@@ -83,7 +89,7 @@ export function runCoreAudit(config: WAHConfig): AuditResult {
     let skippedRules = 0;
     const ruleTimings: RuleTiming[] = [];
     try {
-        for (const rule of CORE_RULES_REGISTRY) {
+        for (const rule of registry) {
             if (isOffOverride(ruleOverrides?.[rule.id])) {
                 skippedRules += 1;
                 continue;

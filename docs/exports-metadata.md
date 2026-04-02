@@ -100,6 +100,68 @@ When a previous run is provided, JSON/HTML comparison can include:
 - category score deltas
 - optional timing delta (when metrics exist)
 
+## Custom Registry Example
+
+Phase 5 adds a base extensibility surface for custom rules and plugin bundles.
+
+Example:
+
+```ts
+import {
+  buildAuditReport,
+  createCoreRuleRegistry,
+  createRulePlugin,
+  createRuleRegistry,
+  extendRuleRegistry,
+  runWAHHeadless
+} from "web-audit-helper";
+
+document.body.innerHTML = `
+  <main>
+    <section data-legacy-widget="true">Legacy widget</section>
+  </main>
+`;
+
+const plugin = createRulePlugin({
+  name: "legacy-widget-plugin",
+  rules: createRuleRegistry([
+    {
+      id: "QLT-PLUGIN-01",
+      category: "quality",
+      defaultSeverity: "warning",
+      title: "Detect legacy widget markers",
+      fix: "Remove legacy widget markup or migrate it to the supported component.",
+      docsSlug: "plugin-legacy-widget-marker",
+      standardType: "heuristic",
+      standardLabel: "Project plugin rule",
+      run: () => {
+        return Array.from(document.querySelectorAll("[data-legacy-widget]")).map((element) => ({
+          rule: "QLT-PLUGIN-01",
+          message: "legacy widget marker found",
+          severity: "warning",
+          category: "quality",
+          element: element as HTMLElement,
+          selector: "[data-legacy-widget]"
+        }));
+      }
+    }
+  ])
+});
+
+const registry = extendRuleRegistry(createCoreRuleRegistry(), {
+  plugins: [plugin]
+});
+
+const result = await runWAHHeadless({}, { registry });
+const report = result ? buildAuditReport(result, undefined, registry) : undefined;
+```
+
+Operational guidance:
+
+- Keep rule IDs unique across core and custom registries.
+- Use `createRuleRegistry(...)` or `createRulePlugin(...)` so contract validation runs before execution.
+- Pass the same extended registry into `buildAuditReport(...)` to preserve custom metadata in report output.
+
 ## CI Output Contracts (v2.0 Phase 4)
 
 WAH now exposes dedicated CI-oriented outputs from the CLI when `--compare-with` is provided:

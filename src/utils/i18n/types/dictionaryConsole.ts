@@ -1,0 +1,31 @@
+export interface DictionaryConsole {
+    issuesFound: (count: number) => string;
+    webAuditReport: string;
+    reportPreparedWithScreen: (screenSize: string, breakpoint: string) => string;
+    scoreLine: (score: number) => string;
+    noIssuesFound: string;
+    useFocusIssueCommand: string;
+    noIssueAtIndex: (index: number) => string;
+    scoreExcellent: string;
+    scoreGood: string;
+    scoreWarning: string;
+    scoreBad: string;
+    overlayHidden: (reason: string) => string;
+    resetHideHint: string;
+    issueDetails: (ruleId: string) => string;
+    messageLabel: string;
+    severityLabel: string;
+    categoryLabel: string;
+    selectorLabel: string;
+    elementLabel: string;
+    fixLabel: string;
+    whyItMattersLabel: string;
+    standardLabel: string;
+    learnMoreLabel: string;
+    notAvailable: string;
+    tableRule: string;
+    tableSeverity: string;
+    tableCategory: string;
+    tableMessage: string;
+    ruleNotMapped: string;
+}

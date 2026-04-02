@@ -1,6 +1,8 @@
 import { parseArgs } from "node:util";
 import type { ScoringMode } from "../core/types";
+import { extractComparisonOutputs, validateComparisonRequirements } from "./args/comparison";
 import { VALID_BROWSERS, VALID_FORMATS, VALID_LOCALES, VALID_SCORING_MODES } from "./args/constants";
+import { CLI_PARSE_OPTIONS } from "./args/options";
 import type { CliArgs, CliBrowserName, CliParseError } from "./args/types";
 import { isHttpTarget, parseOptionalNumber } from "./args/validation";
 
@@ -12,26 +14,7 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
     try {
         parsed = parseArgs({
             args: argv,
-            options: {
-                format: { type: "string", short: "f", default: "json" },
-                output: { type: "string", short: "o" },
-                "fail-on": { type: "string" },
-                locale: { type: "string", default: "en" },
-                "scoring-mode": { type: "string", default: "normal" },
-                browser: { type: "string" },
-                "wait-for": { type: "string" },
-                "compare-with": { type: "string" },
-                "comparison-output": { type: "string" },
-                "comparison-summary-output": { type: "string" },
-                "github-actions-summary-output": { type: "string" },
-                "gitlab-summary-output": { type: "string" },
-                "comparison-ci-json-output": { type: "string" },
-                "min-score-delta": { type: "string" },
-                "max-critical-increase": { type: "string" },
-                "max-warning-increase": { type: "string" },
-                "max-recommendation-increase": { type: "string" },
-                help: { type: "boolean", short: "h", default: false },
-            },
+            options: CLI_PARSE_OPTIONS,
             allowPositionals: true,
         });
     } catch (err) {
@@ -82,11 +65,7 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
     }
 
     const compareWith = values["compare-with"] as string | undefined;
-    const comparisonOutput = values["comparison-output"] as string | undefined;
-    const comparisonSummaryOutput = values["comparison-summary-output"] as string | undefined;
-    const githubActionsSummaryOutput = values["github-actions-summary-output"] as string | undefined;
-    const gitlabSummaryOutput = values["gitlab-summary-output"] as string | undefined;
-    const comparisonCiJsonOutput = values["comparison-ci-json-output"] as string | undefined;
+    const comparisonOutputs = extractComparisonOutputs(values as Record<string, unknown>);
 
     const minScoreDelta = parseOptionalNumber(values["min-score-delta"] as string | undefined, "--min-score-delta");
     if (typeof minScoreDelta === "object") return minScoreDelta;
@@ -115,29 +94,8 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
         || maxWarningIncrease !== undefined
         || maxRecommendationIncrease !== undefined;
 
-    if (hasDeltaGates && compareWith === undefined) {
-        return { error: "Delta gates require --compare-with <baseline-report.json>." };
-    }
-
-    if (comparisonOutput !== undefined && compareWith === undefined) {
-        return { error: "--comparison-output requires --compare-with <baseline-report.json>." };
-    }
-
-    if (comparisonSummaryOutput !== undefined && compareWith === undefined) {
-        return { error: "--comparison-summary-output requires --compare-with <baseline-report.json>." };
-    }
-
-    if (githubActionsSummaryOutput !== undefined && compareWith === undefined) {
-        return { error: "--github-actions-summary-output requires --compare-with <baseline-report.json>." };
-    }
-
-    if (gitlabSummaryOutput !== undefined && compareWith === undefined) {
-        return { error: "--gitlab-summary-output requires --compare-with <baseline-report.json>." };
-    }
-
-    if (comparisonCiJsonOutput !== undefined && compareWith === undefined) {
-        return { error: "--comparison-ci-json-output requires --compare-with <baseline-report.json>." };
-    }
+    const comparisonRequirementError = validateComparisonRequirements(compareWith, comparisonOutputs, hasDeltaGates);
+    if (comparisonRequirementError) return comparisonRequirementError;
 
     return {
         target,
@@ -149,11 +107,7 @@ export function parseCliArgs(argv: string[] = process.argv.slice(2)): CliArgs | 
         browser: browser as CliBrowserName | undefined,
         waitFor,
         compareWith,
-        comparisonOutput,
-        comparisonSummaryOutput,
-        githubActionsSummaryOutput,
-        gitlabSummaryOutput,
-        comparisonCiJsonOutput,
+        ...comparisonOutputs,
         minScoreDelta,
         maxCriticalIncrease,
         maxWarningIncrease,

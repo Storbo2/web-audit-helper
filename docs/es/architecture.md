@@ -76,7 +76,7 @@ src/core/
 
 **Funciones clave**:
 
-- `runCoreAudit(config)`: ejecuta todas las reglas y retorna `AuditResult`.
+- `runCoreAudit(config, options?)`: ejecuta todas las reglas y puede usar un registro de reglas inyectado.
 - `computeScore(issues)`: calcula score global en base a severidad y multiplicadores.
 - `computeCategoryScores(issues)`: calcula score por categoría.
 
@@ -143,7 +143,7 @@ src/reporters/
 
 **Funciones clave**:
 
-- `buildAuditReport(result)`: crea objeto de reporte estructurado.
+- `buildAuditReport(result, config?, registry?)`: crea objeto de reporte estructurado y puede resolver metadata de reglas custom.
 - `serializeReportToJSON(report)`: exporta a JSON.
 - `serializeReportToTXT(report)`: exporta a texto.
 - `serializeReportToHTML(report)`: exporta a HTML.

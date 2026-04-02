@@ -1,0 +1,30 @@
+export interface DictionaryOverlay {
+    overlayTitle: string;
+    score: string;
+    reRunAudit: string;
+    minimize: string;
+    maximize: string;
+    clickToViewScore: string;
+    clickToFocus: string;
+    toolbar: string;
+    extraFilters: string;
+    advancedSettings: string;
+    uiSettings: string;
+    exportReport: string;
+    toggleCriticalFilter: string;
+    toggleWarningFilter: string;
+    toggleRecommendationFilter: string;
+    critical: string;
+    warning: string;
+    recommendation: string;
+    accessibility: string;
+    semantic: string;
+    seo: string;
+    responsive: string;
+    quality: string;
+    security: string;
+    performance: string;
+    form: string;
+    filtersByCategory: string;
+    filterByCategoryTooltip: (category: string) => string;
+}

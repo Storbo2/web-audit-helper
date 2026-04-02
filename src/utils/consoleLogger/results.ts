@@ -4,8 +4,9 @@ import type { AuditMetricsConfig, AuditResult, AuditIssue, LoggingConfig } from 
 import type { UIFilter } from "../../overlay/config/settings";
 import { getBreakpointInfo } from "../breakpoints";
 import { t, translateCategory, translateIssueMessage, translateSeverity } from "../i18n";
-import { computeScoreDebug } from "../../core/scoring";
 import { CONSOLE_COLORS, CATEGORY_ICONS, SEVERITY_ICONS, SEVERITY_SORT_ORDER } from "./constants";
+import { getFilteredIssues } from "./results.filter";
+import { logPerformanceMetrics, logScoreBreakdown } from "./results.metrics";
 import { formatIssueStats, logIssuesByCategory } from "./stats";
 import { formatRuleLabel, getScoreMessage, getTimestamp } from "./helpers";
 
@@ -38,32 +39,7 @@ export function logWAHResults(
     const scoreClass = getScoreClass(results.score);
     console.log(`%c${dict.scoreLine(results.score)}`, CONSOLE_COLORS[scoreClass]);
 
-    if (scoreDebug && results.issues.length > 0) {
-        const debugInfo = computeScoreDebug(results.issues);
-
-        console.group("%c[WAH] Score Breakdown", CONSOLE_COLORS.bold);
-        console.log(`Scoring Mode: ${debugInfo.scoringMode}`);
-        console.log(`Multipliers: Critical=${debugInfo.multipliers.critical}, Warning=${debugInfo.multipliers.warning}, Recommendation=${debugInfo.multipliers.recommendation}`);
-
-        if (debugInfo.categories.length > 0) {
-            const categoryTable = debugInfo.categories.map(cat => ({
-                Category: translateCategory(cat.category),
-                Critical: cat.criticalCount,
-                Warning: cat.warningCount,
-                Recommendation: cat.recommendationCount,
-                Score: cat.score,
-                Weight: `${(cat.weight * 100).toFixed(0)}%`,
-                "Weighted Score": cat.weightedScore.toFixed(2)
-            }));
-            console.table(categoryTable);
-
-            const totalWeighted = debugInfo.categories.reduce((sum, cat) => sum + cat.weightedScore, 0);
-            const totalWeight = debugInfo.categories.reduce((sum, cat) => sum + cat.weight, 0);
-            console.log(`Total Weighted: ${totalWeighted.toFixed(2)} / Total Weight: ${totalWeight.toFixed(2)} = Final Score: ${debugInfo.finalScore}`);
-        }
-
-        console.groupEnd();
-    }
+    logScoreBreakdown(results, scoreDebug);
 
     if (results.metrics) {
         console.log(
@@ -79,28 +55,7 @@ export function logWAHResults(
     }
 
     if (logLevel === "full" && results.issues.length > 0) {
-        let issuesToShow: AuditIssue[] = results.issues;
-
-        if (activeFilters && activeFilters.size > 0) {
-            const severityMap: Record<UIFilter, string> = {
-                "critical": "critical",
-                "warning": "warning",
-                "recommendation": "recommendation"
-            };
-
-            issuesToShow = results.issues.filter((issue: AuditIssue) => {
-                const severityKey = Object.entries(severityMap).find(([, val]) => val === issue.severity)?.[0] as UIFilter | undefined;
-                if (!severityKey || !activeFilters.has(severityKey)) return false;
-
-                if (activeCategories && activeCategories.size > 0 && issue.category) {
-                    return activeCategories.has(issue.category);
-                }
-
-                return true;
-            });
-        } else {
-            issuesToShow = [];
-        }
+        const issuesToShow = getFilteredIssues(results.issues, activeFilters, activeCategories);
 
         if (issuesToShow.length > 0) {
             if (typeof window !== "undefined") {
@@ -147,23 +102,7 @@ export function logWAHResults(
             console.log(`%c${dict.useFocusIssueCommand}`, CONSOLE_COLORS.light);
         }
 
-        if (results.metrics?.ruleTimings?.length) {
-            const topN = metricsConfig?.consoleTopSlowRules ?? 10;
-            const minMs = metricsConfig?.consoleMinRuleMs ?? 0;
-            const timingsData = [...results.metrics.ruleTimings]
-                .filter((t) => t.ms >= minMs)
-                .sort((a, b) => b.ms - a.ms)
-                .slice(0, topN)
-                .map((t) => ({
-                    Rule: t.rule,
-                    ms: t.ms,
-                    Issues: t.issues
-                }));
-            if (timingsData.length > 0) {
-                console.log(`%c⏱️ Performance Metrics (Top ${timingsData.length} slowest rules)`, CONSOLE_COLORS.light);
-                console.table(timingsData);
-            }
-        }
+        logPerformanceMetrics(results.metrics, metricsConfig);
     }
 
     console.log(`%c${getScoreMessage(results.score)}`, CONSOLE_COLORS.normal);

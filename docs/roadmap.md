@@ -46,10 +46,11 @@ Evolve from interactive browser helper into reusable audit platform.
 - Phase 2 (Headless + CLI MVP): completed
 - Phase 3 (Reusable comparison engine): completed
 - Phase 4 (Automation helpers & PR/CI reporting): completed
+- Phase 5 (Base extensibility API): completed in main, planned for v2.0.1 release line
 
 ### Post-2.0 Plan
 
-- v2.0.1: Fase 5 (extensibilidad base y posibles fixes menores de release)
+- v2.0.1: release packaging of the Phase 5 extensibility surface plus minor fixes if needed
 - v2.1+: ecosistema, DevTools extension, policy profiles e integraciones avanzadas
 
 ## Longer-Term (v2.x)

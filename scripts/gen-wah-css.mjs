@@ -31,6 +31,8 @@ const cssFileOrder = [
     { dir: utilityStylesDir, file: "controls.css" },
     { dir: utilityStylesDir, file: "counts-legend.css" },
     { dir: utilityStylesDir, file: "lists-status.css" },
+    { dir: utilityStylesDir, file: "overlay-responsive.css" },
+    { dir: utilityStylesDir, file: "overlay-accessibility.css" },
     { dir: stylesDir, file: "enhancements.css" }
 ];
 
@@ -50,7 +52,7 @@ const css = cssFiles.join("\n\n").replaceAll("`", "\\`");
 const content =
     `// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → reset.css → base fragments → popover base fragments → popover-settings.css → popover-ui.css → popover-export.css → items.css → utility fragments → enhancements.css
+// Order: variables.css → reset.css → base fragments → popover base fragments → popover-settings.css → popover-ui.css → popover-export.css → items.css → utility fragments → overlay responsive/accessibility fragments → enhancements.css
 
 export const wahCss = \`\n${css}\n\`;
 `;

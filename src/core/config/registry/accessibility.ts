@@ -1,4 +1,5 @@
 import { getRuleThreshold, type RegisteredRule } from "./types";
+import { defineStaticRule, defineThresholdRule } from "./helpers";
 import { RULE_IDS } from "../ruleIds";
 import {
     checkAriaDescribedbyTargets,
@@ -34,137 +35,64 @@ import {
 } from "../../rules/accessibility";
 
 export const accessibilityRules: RegisteredRule[] = [
-    {
-        id: RULE_IDS.accessibility.htmlMissingLang,
-        run: () => checkHtmlLangMissing()
-    },
-    {
-        id: RULE_IDS.accessibility.textTooSmall,
-        run: (config) => checkFontSize(
+    defineStaticRule(RULE_IDS.accessibility.htmlMissingLang, checkHtmlLangMissing),
+    defineThresholdRule(
+        RULE_IDS.accessibility.textTooSmall,
+        (config) =>
             getRuleThreshold(config, RULE_IDS.accessibility.textTooSmall)
-            ?? config.accessibility.minFontSize
-        )
-    },
-    {
-        id: RULE_IDS.accessibility.imgMissingAlt,
-        run: () => checkMissingAlt()
-    },
-    {
-        id: RULE_IDS.accessibility.linkMissingAccessibleName,
-        run: () => checkLinksWithoutAccessibleName()
-    },
-    {
-        id: RULE_IDS.accessibility.buttonMissingAccessibleName,
-        run: () => checkButtonsWithoutAccessibleName()
-    },
-    {
-        id: RULE_IDS.accessibility.controlMissingIdOrName,
-        run: () => checkControlsWithoutIdOrName()
-    },
-    {
-        id: RULE_IDS.accessibility.labelMissingFor,
-        run: () => checkLabelsWithoutFor()
-    },
-    {
-        id: RULE_IDS.accessibility.controlMissingLabel,
-        run: () => checkInputsWithoutLabel()
-    },
-    {
-        id: RULE_IDS.accessibility.missingH1,
-        run: () => checkMissingH1()
-    },
-    {
-        id: RULE_IDS.accessibility.headingOrder,
-        run: () => checkHeadingOrder()
-    },
-    {
-        id: RULE_IDS.accessibility.ariaLabelledbyMissingTarget,
-        run: () => checkAriaLabelledbyTargets()
-    },
-    {
-        id: RULE_IDS.accessibility.ariaDescribedbyMissingTarget,
-        run: () => checkAriaDescribedbyTargets()
-    },
-    {
-        id: RULE_IDS.accessibility.positiveTabindex,
-        run: () => checkPositiveTabindex()
-    },
-    {
-        id: RULE_IDS.accessibility.nestedInteractive,
-        run: () => checkNestedInteractiveElements()
-    },
-    {
-        id: RULE_IDS.accessibility.iframeMissingTitle,
-        run: () => checkIframesWithoutTitle()
-    },
-    {
-        id: RULE_IDS.accessibility.videoMissingControls,
-        run: () => checkVideosWithoutControls()
-    },
-    {
-        id: RULE_IDS.accessibility.tableMissingCaption,
-        run: () => checkTablesWithoutCaption()
-    },
-    {
-        id: RULE_IDS.accessibility.thMissingScope,
-        run: () => checkTableHeadersWithoutScope()
-    },
-    {
-        id: RULE_IDS.accessibility.duplicateIds,
-        run: () => checkDuplicateIds()
-    },
-    {
-        id: RULE_IDS.accessibility.vagueLinkText,
-        run: () => checkVagueLinks()
-    },
-    {
-        id: RULE_IDS.accessibility.linkMissingHref,
-        run: () => checkLinksWithoutHref()
-    },
-    {
-        id: RULE_IDS.accessibility.missingSkipLink,
-        run: () => checkMissingSkipLink()
-    },
-    {
-        id: RULE_IDS.accessibility.contrastInsufficient,
-        run: (config) => checkContrastRatio(
+            ?? config.accessibility.minFontSize,
+        checkFontSize
+    ),
+    defineStaticRule(RULE_IDS.accessibility.imgMissingAlt, checkMissingAlt),
+    defineStaticRule(RULE_IDS.accessibility.linkMissingAccessibleName, checkLinksWithoutAccessibleName),
+    defineStaticRule(RULE_IDS.accessibility.buttonMissingAccessibleName, checkButtonsWithoutAccessibleName),
+    defineStaticRule(RULE_IDS.accessibility.controlMissingIdOrName, checkControlsWithoutIdOrName),
+    defineStaticRule(RULE_IDS.accessibility.labelMissingFor, checkLabelsWithoutFor),
+    defineStaticRule(RULE_IDS.accessibility.controlMissingLabel, checkInputsWithoutLabel),
+    defineStaticRule(RULE_IDS.accessibility.missingH1, checkMissingH1),
+    defineStaticRule(RULE_IDS.accessibility.headingOrder, checkHeadingOrder),
+    defineStaticRule(RULE_IDS.accessibility.ariaLabelledbyMissingTarget, checkAriaLabelledbyTargets),
+    defineStaticRule(RULE_IDS.accessibility.ariaDescribedbyMissingTarget, checkAriaDescribedbyTargets),
+    defineStaticRule(RULE_IDS.accessibility.positiveTabindex, checkPositiveTabindex),
+    defineStaticRule(RULE_IDS.accessibility.nestedInteractive, checkNestedInteractiveElements),
+    defineStaticRule(RULE_IDS.accessibility.iframeMissingTitle, checkIframesWithoutTitle),
+    defineStaticRule(RULE_IDS.accessibility.videoMissingControls, checkVideosWithoutControls),
+    defineStaticRule(RULE_IDS.accessibility.tableMissingCaption, checkTablesWithoutCaption),
+    defineStaticRule(RULE_IDS.accessibility.thMissingScope, checkTableHeadersWithoutScope),
+    defineStaticRule(RULE_IDS.accessibility.duplicateIds, checkDuplicateIds),
+    defineStaticRule(RULE_IDS.accessibility.vagueLinkText, checkVagueLinks),
+    defineStaticRule(RULE_IDS.accessibility.linkMissingHref, checkLinksWithoutHref),
+    defineStaticRule(RULE_IDS.accessibility.missingSkipLink, checkMissingSkipLink),
+    defineThresholdRule(
+        RULE_IDS.accessibility.contrastInsufficient,
+        (config) =>
             getRuleThreshold(config, RULE_IDS.accessibility.contrastInsufficient)
             ?? config.accessibility.minContrastRatio
-            ?? 4.5
-        )
-    },
-    {
-        id: RULE_IDS.accessibility.focusNotVisible,
-        run: (config) => checkFocusNotVisible(
-            getRuleThreshold(config, RULE_IDS.accessibility.focusNotVisible) ?? 100
-        )
-    },
-    {
-        id: RULE_IDS.accessibility.lineHeightTooLow,
-        run: (config) => checkLineHeightTooLow(
+            ?? 4.5,
+        checkContrastRatio
+    ),
+    defineThresholdRule(
+        RULE_IDS.accessibility.focusNotVisible,
+        (config) => getRuleThreshold(config, RULE_IDS.accessibility.focusNotVisible) ?? 100,
+        checkFocusNotVisible
+    ),
+    defineThresholdRule(
+        RULE_IDS.accessibility.lineHeightTooLow,
+        (config) =>
             getRuleThreshold(config, RULE_IDS.accessibility.lineHeightTooLow)
             ?? config.accessibility.minLineHeight
-            ?? 1.4
-        )
-    },
-    {
-        id: RULE_IDS.accessibility.clickWithoutKeyboard,
-        run: () => checkClickWithoutKeyboard()
-    },
-    {
-        id: RULE_IDS.accessibility.dialogMissingAccessibleName,
-        run: () => checkDialogMissingAccessibleName()
-    },
-    {
-        id: RULE_IDS.accessibility.modalMissingFocusableElement,
-        run: () => checkModalMissingFocusableElement()
-    },
-    {
-        id: RULE_IDS.accessibility.iconOnlyButtonMissingAccessibleName,
-        run: () => checkIconOnlyButtonMissingAccessibleName()
-    },
-    {
-        id: RULE_IDS.accessibility.invalidControlMissingErrorMessage,
-        run: () => checkInvalidControlMissingErrorMessage()
-    }
+            ?? 1.4,
+        checkLineHeightTooLow
+    ),
+    defineStaticRule(RULE_IDS.accessibility.clickWithoutKeyboard, checkClickWithoutKeyboard),
+    defineStaticRule(RULE_IDS.accessibility.dialogMissingAccessibleName, checkDialogMissingAccessibleName),
+    defineStaticRule(RULE_IDS.accessibility.modalMissingFocusableElement, checkModalMissingFocusableElement),
+    defineStaticRule(
+        RULE_IDS.accessibility.iconOnlyButtonMissingAccessibleName,
+        checkIconOnlyButtonMissingAccessibleName
+    ),
+    defineStaticRule(
+        RULE_IDS.accessibility.invalidControlMissingErrorMessage,
+        checkInvalidControlMissingErrorMessage
+    )
 ];

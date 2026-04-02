@@ -3,10 +3,29 @@ import { getSettings } from "./overlay/config/settings";
 import { ensureViewportMeta, resetViewportMetaPatch } from "./overlay/core/utils";
 import { resetPendingChangesState } from "./overlay/popover/utils";
 import { initI18n } from "./utils/i18n";
+import type { AuditExecutionOptions } from "./core";
 import type { WAHConfig, AuditResult } from "./core/types";
 import { loadConfig } from "./config/loadConfig";
 import { finalizeHeadlessAudit, finalizeInteractiveAudit, shouldSkipAuditDueToHide } from "./runtime/auditFlow";
 import { registerGlobalHandlers, waitForDocumentStable } from "./runtime/lifecycle";
+export type { AuditExecutionOptions } from "./core";
+export { runCoreAudit } from "./core";
+export {
+    assertRegistryContracts,
+    createCoreRuleRegistry,
+    createRulePlugin,
+    createRuleRegistry,
+    extendRuleRegistry,
+    getRegisteredRuleById,
+    validateRegistryContracts
+} from "./core/config/registry";
+export type {
+    EnrichedRegisteredRule,
+    ExtendRuleRegistryOptions,
+    RegisteredRule,
+    RegisteredRuleMetadata,
+    RulePlugin
+} from "./core/config/registry";
 export {
     COMPARISON_CONTRACT_VERSION,
     compareReports,
@@ -14,8 +33,9 @@ export {
     type ComparisonGateOptions,
     type ComparisonGateResult
 } from "./comparison";
+export { buildAuditReport, serializeReportToHTML, serializeReportToJSON, serializeReportToTXT } from "./reporters/auditReport";
 
-export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
+export async function runWAH(userConfig: Partial<WAHConfig> = {}, executionOptions: AuditExecutionOptions = {}) {
     if (typeof window === "undefined" || typeof document === "undefined") {
         return;
     }
@@ -28,7 +48,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     ensureViewportMeta();
 
     registerGlobalHandlers(async () => {
-        await runWAH(userConfig);
+        await runWAH(userConfig, executionOptions);
     });
 
     const settings = getSettings();
@@ -43,7 +63,7 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
         return;
     }
 
-    const results = runCoreAudit(config);
+    const results = runCoreAudit(config, executionOptions);
 
     finalizeInteractiveAudit(results, config, settings.scoringMode);
 
@@ -52,7 +72,10 @@ export async function runWAH(userConfig: Partial<WAHConfig> = {}) {
     return results;
 }
 
-export async function runWAHHeadless(userConfig: Partial<WAHConfig> = {}): Promise<AuditResult | undefined> {
+export async function runWAHHeadless(
+    userConfig: Partial<WAHConfig> = {},
+    executionOptions: AuditExecutionOptions = {}
+): Promise<AuditResult | undefined> {
     if (typeof window === "undefined" || typeof document === "undefined") {
         return undefined;
     }
@@ -72,7 +95,7 @@ export async function runWAHHeadless(userConfig: Partial<WAHConfig> = {}): Promi
         runtimeMode: "headless",
     });
 
-    const results = runCoreAudit(config);
+    const results = runCoreAudit(config, executionOptions);
     finalizeHeadlessAudit(results, config);
 
     return results;

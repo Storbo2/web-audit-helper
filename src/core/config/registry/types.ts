@@ -28,6 +28,16 @@ export interface EnrichedRegisteredRule extends RegisteredRule, RegisteredRuleMe
 
 export type RegisteredRuleMetadataOverride = Partial<Omit<RegisteredRuleMetadata, "category">>;
 
+export interface RulePlugin {
+    name: string;
+    rules: EnrichedRegisteredRule[];
+}
+
+export interface ExtendRuleRegistryOptions {
+    rules?: ReadonlyArray<EnrichedRegisteredRule>;
+    plugins?: ReadonlyArray<RulePlugin>;
+}
+
 const CATEGORY_LABEL: Record<IssueCategory, string> = {
     accessibility: "Accessibility",
     semantic: "Semantic",

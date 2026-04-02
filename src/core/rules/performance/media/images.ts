@@ -1,175 +1,118 @@
 import type { AuditIssue } from "../../../types";
 import { RULE_IDS } from "../../../config/ruleIds";
-import { getCssSelector } from "../../../../utils/dom";
-import { shouldIgnore } from "../../helpers";
-import { isLikelyAboveFoldPriorityImage } from "./shared";
+import {
+    collectImageIssues,
+    createImageIssue,
+    isImageBelowSizeThreshold,
+    isLikelyAboveFoldPriorityImage,
+} from "./shared";
 
 export function checkImageMissingDimensions(): AuditIssue[] {
-    const issues: AuditIssue[] = [];
-
-    document.querySelectorAll("img").forEach((img) => {
-        if (shouldIgnore(img)) return;
+    return collectImageIssues((img) => {
         const hasWidth = img.hasAttribute("width") || img.style.width;
         const hasHeight = img.hasAttribute("height") || img.style.height;
 
-        if (!hasWidth || !hasHeight) {
-            issues.push({
-                rule: RULE_IDS.performance.imageMissingDimensions,
-                message: hasWidth
-                    ? "Image missing height attribute/style"
-                    : hasHeight
-                        ? "Image missing width attribute/style"
-                        : "Image missing width and height attributes/styles",
-                severity: "warning",
-                category: "performance",
-                element: img as HTMLElement,
-                selector: getCssSelector(img)
-            });
+        if (hasWidth && hasHeight) {
+            return undefined;
         }
-    });
 
-    return issues;
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingDimensions,
+            hasWidth
+                ? "Image missing height attribute/style"
+                : hasHeight
+                    ? "Image missing width attribute/style"
+                    : "Image missing width and height attributes/styles",
+            "warning"
+        );
+    });
 }
 
 export function checkImageMissingLazyLoad(): AuditIssue[] {
-    const issues: AuditIssue[] = [];
-
-    document.querySelectorAll("img").forEach((img) => {
-        if (shouldIgnore(img)) return;
-
-        if (isLikelyAboveFoldPriorityImage(img)) return;
+    return collectImageIssues((img) => {
+        if (isLikelyAboveFoldPriorityImage(img)) return undefined;
 
         const loading = (img.getAttribute("loading") || "").toLowerCase();
-        if (loading === "lazy") return;
+        if (loading === "lazy") return undefined;
 
-        const width = img.getAttribute("width");
-        const height = img.getAttribute("height");
-        if (width && height) {
-            const w = parseInt(width, 10);
-            const h = parseInt(height, 10);
-            if (w < 50 || h < 50) return;
-        }
+        if (isImageBelowSizeThreshold(img, 50, 50)) return undefined;
 
-        issues.push({
-            rule: RULE_IDS.performance.imageMissingLazyLoad,
-            message: "Image should use loading='lazy' for optimization",
-            severity: "recommendation",
-            category: "performance",
-            element: img as HTMLElement,
-            selector: getCssSelector(img)
-        });
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingLazyLoad,
+            "Image should use loading='lazy' for optimization",
+            "recommendation"
+        );
     });
-
-    return issues;
 }
 
 export function checkImageMissingAsyncDecode(): AuditIssue[] {
-    const issues: AuditIssue[] = [];
-
-    document.querySelectorAll("img").forEach((img) => {
-        if (shouldIgnore(img)) return;
+    return collectImageIssues((img) => {
         const decoding = (img.getAttribute("decoding") || "").toLowerCase();
-        if (decoding === "async") return;
+        if (decoding === "async") return undefined;
 
-        issues.push({
-            rule: RULE_IDS.performance.imageMissingAsyncDecode,
-            message: "Image should use decoding='async' for improved performance",
-            severity: "recommendation",
-            category: "performance",
-            element: img as HTMLElement,
-            selector: getCssSelector(img)
-        });
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingAsyncDecode,
+            "Image should use decoding='async' for improved performance",
+            "recommendation"
+        );
     });
-
-    return issues;
 }
 
 export function checkImageMissingSrcset(): AuditIssue[] {
-    const issues: AuditIssue[] = [];
-
-    document.querySelectorAll("img").forEach((img) => {
-        if (shouldIgnore(img)) return;
-
+    return collectImageIssues((img) => {
         const hasSrcset = img.hasAttribute("srcset");
-        if (hasSrcset) return;
+        if (hasSrcset) return undefined;
 
-        const width = img.getAttribute("width");
-        const height = img.getAttribute("height");
-        if (width && height) {
-            const w = parseInt(width, 10);
-            const h = parseInt(height, 10);
-            if (w < 100 || h < 100) return;
-        }
+        if (isImageBelowSizeThreshold(img, 100, 100)) return undefined;
 
-        issues.push({
-            rule: RULE_IDS.performance.imageMissingSrcset,
-            message: "Image should use srcset attribute for responsive images",
-            severity: "recommendation",
-            category: "performance",
-            element: img as HTMLElement,
-            selector: getCssSelector(img)
-        });
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingSrcset,
+            "Image should use srcset attribute for responsive images",
+            "recommendation"
+        );
     });
-
-    return issues;
 }
 
 export function checkImageMissingModernFormat(sampleLimit: number = 300): AuditIssue[] {
-    const issues: AuditIssue[] = [];
+    return collectImageIssues((img) => {
+        if (img.closest("picture")) return undefined;
 
-    Array.from(document.querySelectorAll("img"))
-        .slice(0, Math.max(1, sampleLimit))
-        .forEach((img) => {
-            if (shouldIgnore(img)) return;
+        const src = img.getAttribute("src") || "";
+        const srcset = img.getAttribute("srcset") || "";
 
-            if (img.closest("picture")) return;
+        if (srcset && (srcset.includes(".webp") || srcset.includes(".avif"))) {
+            return undefined;
+        }
 
-            const src = img.getAttribute("src") || "";
-            const srcset = img.getAttribute("srcset") || "";
+        if (src.match(/\.(webp|avif)$/i) || !src.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            return undefined;
+        }
 
-            if (srcset && (srcset.includes(".webp") || srcset.includes(".avif"))) {
-                return;
-            }
-
-            if (src.match(/\.(webp|avif)$/i)) {
-                return;
-            }
-
-            if (src.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                issues.push({
-                    rule: RULE_IDS.performance.imageMissingModernFormat,
-                    message: "Image uses legacy format. Consider using <picture> with WebP/AVIF sources for better performance.",
-                    severity: "recommendation",
-                    category: "performance",
-                    element: img as HTMLElement,
-                    selector: getCssSelector(img)
-                });
-            }
-        });
-
-    return issues;
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingModernFormat,
+            "Image uses legacy format. Consider using <picture> with WebP/AVIF sources for better performance.",
+            "recommendation"
+        );
+    }, sampleLimit);
 }
 
 export function checkImageMissingFetchPriority(): AuditIssue[] {
-    const issues: AuditIssue[] = [];
-
-    document.querySelectorAll("img").forEach((img) => {
-        if (shouldIgnore(img)) return;
-
+    return collectImageIssues((img) => {
         const hasFetchPriority = img.hasAttribute("fetchpriority");
-        if (hasFetchPriority) return;
-
-        if (isLikelyAboveFoldPriorityImage(img)) {
-            issues.push({
-                rule: RULE_IDS.performance.imageMissingFetchPriority,
-                message: "Above-the-fold image should have fetchpriority='high' for faster LCP (Largest Contentful Paint).",
-                severity: "recommendation",
-                category: "performance",
-                element: img as HTMLElement,
-                selector: getCssSelector(img)
-            });
+        if (hasFetchPriority || !isLikelyAboveFoldPriorityImage(img)) {
+            return undefined;
         }
-    });
 
-    return issues;
+        return createImageIssue(
+            img,
+            RULE_IDS.performance.imageMissingFetchPriority,
+            "Above-the-fold image should have fetchpriority='high' for faster LCP (Largest Contentful Paint).",
+            "recommendation"
+        );
+    });
 }

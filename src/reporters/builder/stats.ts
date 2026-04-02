@@ -1,7 +1,10 @@
 import type { AuditReportStats, CategoryResult } from "../../core/types";
 import { CORE_RULES_REGISTRY } from "../../core/config/registry";
 
-export function buildReportStatsFromCategories(categories: CategoryResult[]): AuditReportStats {
+export function buildReportStatsFromCategories(
+    categories: CategoryResult[],
+    totalRulesAvailable = CORE_RULES_REGISTRY.length
+): AuditReportStats {
     let recommendations = 0;
     let warnings = 0;
     let failed = 0;
@@ -22,6 +25,6 @@ export function buildReportStatsFromCategories(categories: CategoryResult[]): Au
         failed,
         totalRules: totalRulesTriggered,
         totalRulesTriggered,
-        totalRulesAvailable: CORE_RULES_REGISTRY.length
+        totalRulesAvailable
     };
 }

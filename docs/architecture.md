@@ -76,7 +76,7 @@ src/core/
 
 **Key Functions**:
 
-- `runCoreAudit(config)`: Executes all rules, returns `AuditResult`
+- `runCoreAudit(config, options?)`: Executes all rules and can use an injected rule registry
 - `computeScore(issues)`: Calculates overall score based on severity and multipliers
 - `computeCategoryScores(issues)`: Calculates per-category scores
 
@@ -143,7 +143,7 @@ src/reporters/
 
 **Key Functions**:
 
-- `buildAuditReport(result)`: Creates structured report object
+- `buildAuditReport(result, config?, registry?)`: Creates structured report object and can resolve custom rule metadata
 - `serializeReportToJSON(report)`: Exports as JSON
 - `serializeReportToTXT(report)`: Exports as formatted text
 - `serializeReportToHTML(report)`: Exports as styled HTML

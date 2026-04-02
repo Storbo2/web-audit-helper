@@ -1,28 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { RULE_IDS } from "../../config/ruleIds";
 import { checkFixedElementOverlap } from "../responsive";
 import {
     mockBoundingRect,
-    mockComputedStyleWithOverrides,
     resetTestDom,
     setViewportSize
 } from "./accessibility-responsive.testUtils";
+import {
+    createFixedElement,
+    hasFixedOverlapIssue,
+    mockFixedElementStyles,
+} from "./accessibility-responsive.fixed-overlap.testUtils";
 
 export function registerFixedElementOverlapSuite(): void {
     describe("RWD-04: fixed element overlap", () => {
-        function mockFixedElementStyles(element: Element, zIndex = "10", hidden = false): void {
-            mockComputedStyleWithOverrides((elt, prop) => {
-                if (elt !== element) return undefined;
-                if (prop === "position") return "fixed";
-                if (prop === "backgroundImage") return "none";
-                if (prop === "zIndex") return zIndex;
-                if (hidden && prop === "display") return "none";
-                if (hidden && prop === "visibility") return "hidden";
-                if (hidden && prop === "opacity") return "0";
-                return undefined;
-            });
-        }
-
         beforeEach(() => {
             resetTestDom();
             setViewportSize();
@@ -34,24 +24,18 @@ export function registerFixedElementOverlapSuite(): void {
         });
 
         it("does not flag a small fixed desktop header", () => {
-            const header = document.createElement("header");
-            header.className = "desktop-header";
-            header.textContent = "Site navigation";
-            document.body.appendChild(header);
-
-            mockFixedElementStyles(header);
-            mockBoundingRect(header, {
+            const header = createFixedElement("header", "Site navigation", {
                 top: 0,
                 left: 0,
                 right: 1200,
                 bottom: 140,
                 width: 1200,
                 height: 140
+            }, {
+                className: "desktop-header"
             });
 
-            const issues = checkFixedElementOverlap();
-
-            expect(issues.some(issue => issue.rule === RULE_IDS.responsive.fixedElementOverlap)).toBe(false);
+            expect(hasFixedOverlapIssue(header)).toBe(false);
         });
 
         it("does not flag decorative fixed background with canvas", () => {
@@ -76,55 +60,40 @@ export function registerFixedElementOverlapSuite(): void {
         });
 
         it("does not flag fixed elements hidden from viewport", () => {
-            const hiddenHeader = document.createElement("header");
-            hiddenHeader.className = "mobile-header";
-            hiddenHeader.textContent = "Mobile navigation";
-            hiddenHeader.setAttribute("aria-hidden", "true");
-            document.body.appendChild(hiddenHeader);
-
-            mockFixedElementStyles(hiddenHeader, "10", true);
-            mockBoundingRect(hiddenHeader, {
+            const hiddenHeader = createFixedElement("header", "Mobile navigation", {
                 top: 0,
                 left: 0,
                 right: 1200,
                 bottom: 260,
                 width: 1200,
                 height: 260
+            }, {
+                className: "mobile-header",
+                hidden: true,
+                attributes: { "aria-hidden": "true" }
             });
 
-            const issues = checkFixedElementOverlap();
-
-            expect(issues.some(issue => issue.element === hiddenHeader)).toBe(false);
+            expect(hasFixedOverlapIssue(hiddenHeader)).toBe(false);
         });
 
         it("flags fixed hidden elements when strict visibility mode is enabled", () => {
-            const hiddenHeader = document.createElement("header");
-            hiddenHeader.textContent = "Mobile navigation";
-            hiddenHeader.setAttribute("aria-hidden", "true");
-            document.body.appendChild(hiddenHeader);
-
-            mockFixedElementStyles(hiddenHeader, "10", true);
-            mockBoundingRect(hiddenHeader, {
+            const hiddenHeader = createFixedElement("header", "Mobile navigation", {
                 top: 0,
                 left: 0,
                 right: 1200,
                 bottom: 260,
                 width: 1200,
                 height: 260
+            }, {
+                hidden: true,
+                attributes: { "aria-hidden": "true" }
             });
 
-            const issues = checkFixedElementOverlap(true);
-
-            expect(issues.some(issue => issue.rule === RULE_IDS.responsive.fixedElementOverlap && issue.element === hiddenHeader)).toBe(true);
+            expect(hasFixedOverlapIssue(hiddenHeader, true)).toBe(true);
         });
 
         it("flags intrusive fixed overlays", () => {
-            const overlay = document.createElement("div");
-            overlay.textContent = "Blocking banner";
-            document.body.appendChild(overlay);
-
-            mockFixedElementStyles(overlay);
-            mockBoundingRect(overlay, {
+            const overlay = createFixedElement("div", "Blocking banner", {
                 top: 0,
                 left: 0,
                 right: 1200,
@@ -133,31 +102,26 @@ export function registerFixedElementOverlapSuite(): void {
                 height: 260
             });
 
-            const issues = checkFixedElementOverlap();
-
-            expect(issues.some(issue => issue.rule === RULE_IDS.responsive.fixedElementOverlap && issue.element === overlay)).toBe(true);
+            expect(hasFixedOverlapIssue(overlay)).toBe(true);
         });
 
         it("ignores fixed elements under data-wah-ignore", () => {
             const overlayRoot = document.createElement("div");
             overlayRoot.setAttribute("data-wah-ignore", "");
-            const fixed = document.createElement("div");
-            fixed.textContent = "WAH fixed panel";
-            overlayRoot.appendChild(fixed);
             document.body.appendChild(overlayRoot);
 
-            mockFixedElementStyles(fixed);
-            mockBoundingRect(fixed, {
+            const fixed = createFixedElement("div", "WAH fixed panel", {
                 top: 0,
                 left: 0,
                 right: 1200,
                 bottom: 320,
                 width: 1200,
                 height: 320
+            }, {
+                parent: overlayRoot
             });
 
-            const issues = checkFixedElementOverlap();
-            expect(issues.some(issue => issue.element === fixed)).toBe(false);
+            expect(hasFixedOverlapIssue(fixed)).toBe(false);
         });
     });
 }

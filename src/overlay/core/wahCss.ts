@@ -1,6 +1,6 @@
 // AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Source: src/overlay/styles/*.css files and src/overlay/styles/popover/*.css files
-// Order: variables.css → reset.css → base fragments → popover base fragments → popover-settings.css → popover-ui.css → popover-export.css → items.css → utility fragments → enhancements.css
+// Order: variables.css → reset.css → base fragments → popover base fragments → popover-settings.css → popover-ui.css → popover-export.css → items.css → utility fragments → overlay responsive/accessibility fragments → enhancements.css
 
 export const wahCss = `
 :root {
@@ -737,7 +737,6 @@ export const wahCss = `
     display: none;
 }
 
-
 .wah-pop-body input[type="checkbox"] {
     width: 0.875rem;
     height: 0.875rem;
@@ -823,7 +822,6 @@ export const wahCss = `
 .wah-pop[data-theme="light"] .wah-pop-info {
     opacity: 0.9;
 }
-
 
 @media (max-width: 32.5rem) {
     .wah-pop {
@@ -1503,6 +1501,75 @@ export const wahCss = `
     color: var(--wah-score-good);
 }
 
+@media (max-width: 400px) {
+    #wah-overlay-root {
+        width: calc(100vw - 2rem);
+        font-size: 0.8125rem;
+    }
+
+    .wah-header {
+        padding: 0.5rem;
+    }
+
+    .wah-content {
+        padding: 0.5rem;
+    }
+
+    .wah-filter {
+        gap: 0.25rem;
+    }
+
+    .wah-chip {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .wah-toolbar {
+        gap: 0.25rem;
+    }
+}
+
+[title] {
+    position: relative;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+:focus-visible {
+    outline: 0.125rem solid var(--wah-text);
+    outline-offset: 0.125rem;
+}
+
+@media (prefers-contrast: high) {
+    .wah-chip.is-active {
+        border-width: 0.125rem;
+    }
+
+    :focus-visible {
+        outline-width: 0.1875rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .wah-rerun-btn:hover,
+    .wah-chip:hover,
+    .wah-tool:hover {
+        transform: none;
+    }
+}
+
 .wah-rerun-btn.wah-loading {
     opacity: 0.6;
     cursor: wait;
@@ -1523,10 +1590,7 @@ export const wahCss = `
 
 .wah-loading-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(2px);
     display: flex;
@@ -1605,46 +1669,10 @@ export const wahCss = `
     transform: translateY(0);
 }
 
-.wah-chip:focus-visible,
-.wah-tool:focus-visible,
-.wah-toggle:focus-visible,
-.wah-rerun-btn:focus-visible {
-    outline: 0.125rem solid var(--wah-text);
-    outline-offset: 0.125rem;
-}
-
 .wah-chip.is-active {
     background: rgba(56, 189, 248, 0.2);
     border-color: rgba(56, 189, 248, 0.4);
     transform: scale(1.05);
-}
-
-@media (max-width: 400px) {
-    #wah-overlay-root {
-        width: calc(100vw - 2rem);
-        font-size: 0.8125rem;
-    }
-
-    .wah-header {
-        padding: 0.5rem;
-    }
-
-    .wah-content {
-        padding: 0.5rem;
-    }
-
-    .wah-filter {
-        gap: 0.25rem;
-    }
-
-    .wah-chip {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .wah-toolbar {
-        gap: 0.25rem;
-    }
 }
 
 #wah-overlay-root.wah-collapsed {
@@ -1667,16 +1695,7 @@ export const wahCss = `
     }
 }
 
-[title] {
-    position: relative;
-}
-
 #wah-panel.wah-loading>*:not(.wah-loading-overlay) {
-    opacity: 0.5;
-}
-
-button:disabled {
-    cursor: not-allowed;
     opacity: 0.5;
 }
 
@@ -1686,40 +1705,5 @@ button:disabled {
 
 .wah-score:hover {
     transform: scale(1.05);
-}
-
-:focus-visible {
-    outline: 0.125rem solid var(--wah-text);
-    outline-offset: 0.125rem;
-}
-
-@media (prefers-contrast: high) {
-    .wah-chip.is-active {
-        border-width: 0.125rem;
-    }
-
-    :focus-visible {
-        outline-width: 0.1875rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-
-    .wah-rerun-btn:hover {
-        transform: none;
-    }
-
-    .wah-chip:hover,
-    .wah-tool:hover {
-        transform: none;
-    }
 }
 `;
