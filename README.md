@@ -36,6 +36,17 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 npm install web-audit-helper
 ```
 
+### Dependency Notes (Quick)
+
+WAH is designed so browser usage stays lightweight, while Node-based tooling is enabled only for specific scenarios.
+
+- Embedded/browser audits: use the core browser runtime.
+- CLI headless audits from Node.js: use `jsdom`.
+- Real browser automation from CLI: uses Playwright when `--browser` mode is selected.
+- Local external-auditing demos in this repository may use `http-server`.
+
+Some package scanners may report transitive modules (for example encoding, proxy-agent, or similar utility packages). In WAH, these are typically tied to CLI/testing paths rather than normal in-page browser integration.
+
 ---
 
 ## 📖 Quick Start
