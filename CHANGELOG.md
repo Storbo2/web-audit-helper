@@ -7,6 +7,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-02
+
+### Added
+
+- Additional public-facing examples for SSR/client-only usage, extensibility flows, and CI/report integration.
+
+### Changed
+
+- Documentation refined across README, API reference, architecture guides, exports metadata, roadmap, and command notes.
+- Public API surface hardened for reusable execution/reporting flows and registry-based extensions.
+- Large modules and test files were reorganized into smaller focused units to improve maintainability and navigation.
+
+### Fixed
+
+- Corrected outdated public documentation references around runtime dependencies, exported APIs, and current function signatures.
+
+### Validation
+
+- Typecheck: passing
+- Test suite: passing
+- Build: passing
+
 ## [2.0.0] - 2026-04-01
 
 ### Added

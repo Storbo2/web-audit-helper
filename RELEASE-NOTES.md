@@ -1,6 +1,58 @@
-# WAH v2.0.0 Release Notes
+# WAH Release Notes
 
 <!-- markdownlint-disable MD025 MD024 -->
+
+## WAH v2.0.1 Release Notes
+
+**Release Date**: April 2, 2026  
+**Type**: Patch (Documentation, API Hardening, Modularization)
+
+---
+
+## Overview
+
+Version 2.0.1 focuses on polish and maintainability after the 2.0 platform release.
+
+This patch improves documentation coverage, hardens the reusable public API surface, adds clearer public examples, and restructures oversized files into smaller focused modules.
+
+---
+
+## Highlights
+
+- Documentation refresh across core public guides
+- API hardening for reusable execution, reporting, and extensibility flows
+- More explicit public examples for SSR, CI, and extensibility usage
+- Internal modularization of long files for easier maintenance
+
+---
+
+## Added
+
+- additional public examples for SSR/client-only loading, extensibility patterns, and CI/report outputs
+
+---
+
+## Changed
+
+- refined README, API reference, architecture docs, exports metadata, roadmap, and command notes
+- hardened registry-aware execution/reporting APIs for safer reuse
+- split oversized implementation and test files into smaller focused modules without changing the intended product behavior
+
+---
+
+## Fixed
+
+- corrected stale public documentation around runtime dependency wording, exported helpers, and current function signatures
+
+---
+
+## Validation Status
+
+- Typecheck: passing (`npm run typecheck`)
+- Test suite: passing (`npm test`)
+- Build: passing (`npm run build`)
+
+---
 
 **Release Date**: April 1, 2026  
 **Type**: Major (Reusable Audit Platform)

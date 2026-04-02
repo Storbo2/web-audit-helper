@@ -1,91 +1,111 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Storbo2/web-audit-helper/blob/main/docs/contracts/audit-report-contract.v1.0.0.schema.json",
-  "title": "WAH Audit Report Contract v1.0.0",
-  "type": "object",
-  "required": ["meta", "score", "categories", "stats"],
-  "properties": {
-    "meta": {
-      "type": "object",
-      "required": [
-        "contractVersion",
-        "runId",
-        "targetUrl",
-        "executedAt",
-        "runtimeMode",
-        "wahVersion",
-        "issueCountBySeverity",
-        "categoryScores",
-        "rulesExecuted",
-        "rulesSkipped",
-        "totalAuditMs"
-      ],
-      "properties": {
-        "contractVersion": {
-          "type": "string",
-          "const": "1.0.0"
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/Storbo2/web-audit-helper/blob/main/docs/contracts/audit-report-contract.v1.0.0.schema.json",
+    "title": "WAH Audit Report Contract v1.0.0",
+    "type": "object",
+    "required": [
+        "meta",
+        "score",
+        "categories",
+        "stats"
+    ],
+    "properties": {
+        "meta": {
+            "type": "object",
+            "required": [
+                "contractVersion",
+                "runId",
+                "targetUrl",
+                "executedAt",
+                "runtimeMode",
+                "wahVersion",
+                "issueCountBySeverity",
+                "categoryScores",
+                "rulesExecuted",
+                "rulesSkipped",
+                "totalAuditMs"
+            ],
+            "properties": {
+                "contractVersion": {
+                    "type": "string",
+                    "const": "1.0.0"
+                },
+                "runId": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "targetUrl": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "executedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "runtimeMode": {
+                    "type": "string",
+                    "enum": [
+                        "embedded",
+                        "external"
+                    ]
+                },
+                "wahVersion": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "issueCountBySeverity": {
+                    "type": "object",
+                    "required": [
+                        "critical",
+                        "warning",
+                        "recommendation"
+                    ],
+                    "properties": {
+                        "critical": {
+                            "type": "number"
+                        },
+                        "warning": {
+                            "type": "number"
+                        },
+                        "recommendation": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "categoryScores": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number"
+                    }
+                },
+                "rulesExecuted": {
+                    "type": "number"
+                },
+                "rulesSkipped": {
+                    "type": "number"
+                },
+                "totalAuditMs": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": true
         },
-        "runId": {
-          "type": "string",
-          "minLength": 1
+        "score": {
+            "type": "object"
         },
-        "targetUrl": {
-          "type": "string",
-          "minLength": 1
+        "categories": {
+            "type": "array"
         },
-        "executedAt": {
-          "type": "string",
-          "format": "date-time"
+        "stats": {
+            "type": "object"
         },
-        "runtimeMode": {
-          "type": "string",
-          "enum": ["embedded", "external"]
+        "comparison": {
+            "type": "object"
         },
-        "wahVersion": {
-          "type": "string",
-          "minLength": 1
-        },
-        "issueCountBySeverity": {
-          "type": "object",
-          "required": ["critical", "warning", "recommendation"],
-          "properties": {
-            "critical": { "type": "number" },
-            "warning": { "type": "number" },
-            "recommendation": { "type": "number" }
-          },
-          "additionalProperties": false
-        },
-        "categoryScores": {
-          "type": "object",
-          "additionalProperties": { "type": "number" }
-        },
-        "rulesExecuted": {
-          "type": "number"
-        },
-        "rulesSkipped": {
-          "type": "number"
-        },
-        "totalAuditMs": {
-          "type": "number"
+        "metrics": {
+            "type": "object"
         }
-      },
-      "additionalProperties": true
     },
-    "score": {
-      "type": "object"
-    },
-    "categories": {
-      "type": "array"
-    },
-    "stats": {
-      "type": "object"
-    },
-    "comparison": {
-      "type": "object"
-    },
-    "metrics": {
-      "type": "object"
-    }
-  },
-  "additionalProperties": true
+    "additionalProperties": true
 }

@@ -1,6 +1,6 @@
 {
     "name": "web-audit-helper",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "type": "module",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
     "exports": {
