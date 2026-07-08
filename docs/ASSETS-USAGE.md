@@ -1,4 +1,4 @@
-# Asset Usage Summary - WAH v2.1.0
+# Asset Usage Summary - WAH v2.1.1
 
 ## ✅ Assets Completamente Integrados
 
@@ -65,9 +65,9 @@ mmdc -i docs/assets/diagrams/AUDIT-FLOW.md -o docs/assets/diagrams/audit-flow.pn
 1. Generar los dos PNG de diagramas usando mermaid.live o CLI
 2. Verificar que todos los enlaces en README funcionan
 3. Hacer build y test: `npm run build && npm test`
-4. Commit con mensaje: `docs(assets): add complete visual gallery for v2.1.0`
-5. Push y publish a npm: `git tag v2.1.0 && git push origin main --follow-tags`
+4. Commit con mensaje: `docs(assets): add complete visual gallery for v2.1.1`
+5. Push y publish a npm: `git tag v2.1.1 && git push origin main --follow-tags`
 
 ---
 
-**Estado de documentación:** ✅ Completamente actualizada para v2.1.0
+**Estado de documentación:** ✅ Completamente actualizada para v2.1.1

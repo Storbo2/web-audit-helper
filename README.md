@@ -188,7 +188,7 @@ The complete audit workflow:
 WAH logo available in multiple formats for documentation, presentations, and integrations:
 
 - **Logo (Horizontal)**: Full logo with "WAH" text and tagline – ideal for headers and promotional materials.  
-  ![WAH Full Logo](docs/assets/logos/wah-logo.full.png)
+  ![WAH Full Logo](docs/assets/logos/wah-logo-full.png)
 
 - **Logo (Square)**: Compact square icon for favicons and small spaces.  
   ![WAH Square Logo](docs/assets/logos/wah-logo-square.png)
@@ -204,7 +204,7 @@ CDN:
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@2.1.0/dist/index.mjs';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@2.1.1/dist/index.mjs';
 
   await runWAH();
 </script>
