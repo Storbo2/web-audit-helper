@@ -42,7 +42,7 @@
         "performance"
     ],
     "bin": {
-        "wah": "./dist/wah-cli.mjs"
+        "wah": "dist/wah-cli.mjs"
     },
     "engines": {
         "node": ">=18.0.0"
