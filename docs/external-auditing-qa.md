@@ -140,14 +140,14 @@ Recommended assets to keep with this checklist:
 
 Suggested locations:
 
-- `docs/media/images/external-auditing/`
-- `docs/media/gifs/external-auditing/`
+- `docs/assets/screenshots/external-auditing/`
+- `docs/assets/gifs/external-auditing/`
 
 Current screenshots:
 
-![External overlay success](media/images/external-overlay-success.png)
+![External overlay success](../assets/screenshots/external-overlay-success.png)
 
-![External CSP blocked error](media/images/external-csp-blocked-error.png)
+![External CSP blocked error](../assets/screenshots/external-csp-blocked-error.png)
 
 ![HTML report comparison](media/images/external-report-comparison.png)
 

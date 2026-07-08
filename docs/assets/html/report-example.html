@@ -1,0 +1,202 @@
+
+    <!doctype html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Web Audit Helper Report</title>
+            <style>
+                
+                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 24px; color: #111827; }
+                h1 { margin: 0 0 8px; }
+                .meta, .summary { margin-bottom: 16px; }
+                .comparison { margin: 16px 0 20px; border: 1px solid #d1d5db; border-radius: 8px; padding: 12px; background: #f9fafb; }
+                .comparison h2 { margin: 0 0 8px; font-size: 18px; }
+                .comparison p { margin: 6px 0; }
+                .meta p, .summary p { margin: 4px 0; }
+                .legend { margin: 8px 0 0; color: #374151; font-size: 14px; }
+                .legend .legend-fail { color: #dc2626; font-weight: 600; }
+                .legend .legend-warn { color: #d97706; font-weight: 600; }
+                .category { margin: 24px 0; border-top: 1px solid #e5e7eb; padding-top: 16px; }
+                .cat-score { color: #4b5563; font-weight: 500; }
+                .cat-summary { color: #374151; margin-bottom: 12px; font-size: 14px; }
+                .rule { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+                .status-fail { border-left: 4px solid #dc2626; }
+                .status-warn { border-left: 4px solid #d97706; }
+                .status-recommendation { border-left: 4px solid #6d6d6d; }
+                .rule-header { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+                .rule-id { color: #374151; font-weight: 600; }
+                .rule-title { font-weight: 600; }
+                .status { font-size: 12px; padding: 2px 6px; border-radius: 999px; background: #f3f4f6; color: #374151; }
+                .message { margin: 8px 0 0; }
+                .elements { margin: 8px 0 0 18px; padding: 0; }
+                .elements li { margin: 6px 0; }
+                code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }
+                .fix { margin: 6px 0 0; color: #1f2937; }
+                .note { color: #4b5563; margin-top: 2px; }
+                .omitted { color: #6b7280; font-style: italic; }
+                .empty { color: #6b7280; }
+                footer { margin-top: 24px; border-top: 1px solid #e5e7eb; padding-top: 12px; color: #4b5563; font-size: 12px; }
+                footer p { margin: 4px 0; }
+                @media print { body { margin: 0; } .rule { break-inside: avoid; } }
+            
+            </style>
+        </head>
+        <body>
+            <main>
+                <h1>Web Audit Helper Report</h1>
+                <section class="meta">
+                    <p><strong>URL:</strong> http://192.168.100.14:5510/examples/issues-detection-test.html</p>
+                    <p><strong>Date:</strong> 08-07-2026</p>
+                    <p><strong>Run ID:</strong> run-1783488965478-ae2xp8p5</p>
+                    <p><strong>Runtime Mode:</strong> embedded</p>
+                    <p><strong>WAH Version:</strong> 1.4.9</p>
+                    <p><strong>Viewport:</strong> 1466×1274</p>
+                    <p><strong>Breakpoint:</strong> xl (laptops, desktops)</p>
+                    <p><strong>Scoring Mode:</strong> custom</p>
+                    <p><strong>Applied Filters:</strong> severities: critical, warning | categories: seo</p>
+                </section>
+
+                <section class="summary">
+                    <p><strong>Overall Score:</strong> 89 (Grade B)</p>
+                    <p><strong>Categories:</strong> SEO 89</p>
+                    <p><strong>Stats:</strong> 1 critical, 3 warning, 0 recommendation</p>
+                    <p><strong>Rules executed/skipped:</strong> 77/0</p>
+                    <p><strong>Total audit ms:</strong> 0</p>
+                    <br>
+                    <p class="legend"><span class="legend-fail">CRITICAL = needs fixing</span> <span class="legend-warn">WARNING = improvement recommended</span> <strong>RECOMMENDATION = suggested improvement</strong></p>
+                </section>
+
+                
+
+                
+                <section class="comparison">
+                    <h2>Run Comparison</h2>
+                    <p><strong>Compared against run:</strong> run-1783488908015-kwxemzwk</p>
+                    <p><strong>Baseline executed at:</strong> 2026-07-08T05:35:08.015Z</p>
+                    <p><strong>Score delta:</strong> +39</p>
+                    <p><strong>Severity delta:</strong> critical -10, warning -25, recommendation -26</p>
+                    <p><strong>Added rules:</strong> none</p>
+                    <p><strong>Removed rules:</strong> ACC-01, ACC-02, ACC-03, ACC-04, ACC-05, ACC-06, ACC-07, ACC-10, ACC-11, ACC-12, ACC-13, ACC-14, ACC-15, ACC-16, ACC-17, ACC-18, ACC-19, ACC-20, ACC-21, ACC-22, ACC-23, ACC-24, ACC-25, ACC-26, ACC-28, ACC-29, ACC-30, ACC-31, FORM-01, FORM-02, FORM-03, FORM-04, IMG-01, IMG-02, IMG-03, MEDIA-01, PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, PERF-06, PERF-08, PERF-09, PERF-10, QLT-01, QLT-02, QLT-03, RWD-01, RWD-03, RWD-05, SEC-01, SEC-03, SEM-01, SEM-03, SEM-05, SEM-06, SEM-07, SEO-07, SEO-10, UX-01</p>
+                    <p><strong>Category score delta:</strong></p><ul class="elements"><li><code>accessibility</code>: 0</li><li><code>form</code>: -64</li><li><code>performance</code>: -36</li><li><code>quality</code>: -84</li><li><code>responsive</code>: -80</li><li><code>security</code>: -84</li><li><code>semantic</code>: -68</li><li><code>seo</code>: +41</li></ul>
+                    <p><strong>Total audit ms delta:</strong> 0</p>
+                    
+                </section>
+            
+
+                
+            <section class="category">
+            <h2>SEO <span class="cat-score">(89/100)</span></h2>
+            <div class="cat-summary">1 critical, 3 warning</div>
+            
+                <article class="rule status-fail">
+                    <div class="rule-header">
+                        <span class="icon">⛔</span>
+                        <span class="rule-id">[SEO-01]</span>
+                        <span class="rule-title">Missing title</span>
+                        <span class="status">CRITICAL</span>
+                    </div>
+                    <p class="message">Missing or empty &lt;title&gt;</p>
+                    <p class="fix"><strong>Fix:</strong> Add a descriptive title element inside head.</p>
+                    <p class="help"><strong>Why it matters:</strong> Search engines use the page title as the primary result label; browsers display it in the tab and in bookmarks</p>
+                    <p class="help"><strong>Standard:</strong> HTML spec - title element</p>
+                    <p class="help"><strong>Learn more:</strong> <a href="https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-01.md">https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-01.md</a></p>
+                    
+                    <ul class="elements">
+                        
+                            <li>
+                                <code>html &gt; head &gt; title</code>
+                                <div class="note">Missing or empty &lt;title&gt;</div>
+                            </li>
+                        
+                        
+                    </ul>
+                
+                </article>
+            
+                <article class="rule status-warn">
+                    <div class="rule-header">
+                        <span class="icon">⚠️</span>
+                        <span class="rule-id">[SEO-02]</span>
+                        <span class="rule-title">Missing description</span>
+                        <span class="status">WARNING</span>
+                    </div>
+                    <p class="message">Missing meta description</p>
+                    <p class="fix"><strong>Fix:</strong> Provide a concise meta description that summarizes the page intent.</p>
+                    
+                    <p class="help"><strong>Standard:</strong> Search snippet best practice</p>
+                    <p class="help"><strong>Learn more:</strong> <a href="https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-02.md">https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-02.md</a></p>
+                    
+                    <ul class="elements">
+                        
+                            <li>
+                                <code>html &gt; head &gt; meta:nth-of-type(4)</code>
+                                <div class="note">Missing meta description</div>
+                            </li>
+                        
+                        
+                    </ul>
+                
+                </article>
+            
+                <article class="rule status-warn">
+                    <div class="rule-header">
+                        <span class="icon">⚠️</span>
+                        <span class="rule-id">[SEO-06]</span>
+                        <span class="rule-title">Robots noindex</span>
+                        <span class="status">WARNING</span>
+                    </div>
+                    <p class="message">Meta robots contains &quot;noindex&quot; directive</p>
+                    <p class="fix"><strong>Fix:</strong> Remove noindex if the page should be discoverable by search engines.</p>
+                    
+                    <p class="help"><strong>Standard:</strong> Indexability best practice</p>
+                    <p class="help"><strong>Learn more:</strong> <a href="https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-06.md">https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-06.md</a></p>
+                    
+                    <ul class="elements">
+                        
+                            <li>
+                                <code>html &gt; head &gt; meta:nth-of-type(3)</code>
+                                <div class="note">Meta robots contains &quot;noindex&quot; directive</div>
+                            </li>
+                        
+                        
+                    </ul>
+                
+                </article>
+            
+                <article class="rule status-warn">
+                    <div class="rule-header">
+                        <span class="icon">⚠️</span>
+                        <span class="rule-id">[SEO-09]</span>
+                        <span class="rule-title">Canonical conflict or empty canonical</span>
+                        <span class="status">WARNING</span>
+                    </div>
+                    <p class="message">Canonical link is empty</p>
+                    <p class="fix"><strong>Fix:</strong> Keep a single canonical tag and ensure its href points to the preferred absolute URL.</p>
+                    
+                    <p class="help"><strong>Standard:</strong> Technical SEO consistency</p>
+                    <p class="help"><strong>Learn more:</strong> <a href="https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-09.md">https://github.com/Storbo2/web-audit-helper/blob/main/docs/rules/SEO-09.md</a></p>
+                    
+                    <ul class="elements">
+                        
+                            <li>
+                                <code>html &gt; head &gt; link:nth-of-type(1)</code>
+                                <div class="note">Canonical link is empty</div>
+                            </li>
+                        
+                        
+                    </ul>
+                
+                </article>
+            
+            </section>
+        
+            </main>
+
+            <footer>
+                <p>Generated by Web Audit Helper v1.4.9 (ci)</p>
+                <p>Timestamp: 2026-07-08T05:36:05.478Z</p>
+                <p>User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0</p>
+            </footer>
+        </body>
+    </html>

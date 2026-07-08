@@ -83,13 +83,103 @@ Common use cases:
 - Extensibility: custom registries and plugin-style rules
 - SSR / Next.js: client-only loading with dynamic import
 
+---
+
+## 🎨 Gallery
+
+### Interactive Overlay
+
+**Real-time Issue Detection**  
+The overlay displays audit results with issue counts by severity and category filtering.
+
+![WAH Report](docs/assets/screenshots/hero-screenshot.png)
+
+**Issue Filtering & Navigation**  
+Click issues to focus and scroll to elements in the DOM. Filter by category and severity.
+
+![Issue Filtering](docs/assets/screenshots/issue-filtering.gif)
+
+**Settings & Customization**  
+Adjust scoring mode, language, log verbosity, and hide duration from the settings panel.
+
+![Settings Panel](docs/assets/screenshots/settings-popover.png)
+
+**Quick Demo**  
+See the overlay in action with interactive controls.
+
+![Quick Demo](docs/assets/screenshots/quick-demo.gif)
+
+### Reports & Export
+
+**Export Formats**  
+Generate JSON, HTML, or TXT reports for sharing and CI/CD integration.
+
+![Export Reports](docs/assets/screenshots/export-reports.png)
+
+**HTML Report Preview**  
+Beautifully formatted HTML reports with scoring modes and comparison blocks.
+
+![HTML Report](docs/assets/assets/html/report-example.html)
+
+**Before/After Audit**  
+Compare audit results across runs to track improvements.
+
+![Before/After](docs/assets/screenshots/before-after-audit.png)
+
+### Features in Action
+
+**Console Output**  
+Detailed console diagnostics with grouped issues and timestamps.
+
+![Console Output](docs/assets/screenshots/console.png)
+
+**Rule Focus Highlight**  
+Click rules to highlight affected elements in the DOM.
+
+![Rule Focus](docs/assets/screenshots/rule-focus-highlight.png)
+
+**Hide Overlay**  
+Temporarily hide the overlay for specific durations without losing data.
+
+![Hide Overlay](docs/assets/screenshots/hide-overlay.png)
+
+### Advanced Features
+
+**Scoring Modes**  
+Choose between strict, normal, moderate, soft, or custom scoring.
+
+![Scoring Modes](docs/assets/screenshots/scoring-modes.png)
+
+**CLI Demo**  
+Automate audits from Node.js with Playwright or jsdom.
+
+![CLI Demo](docs/assets/screenshots/cli-demo.gif)
+
+**CI/CD Integration**  
+Integrated failure messages for GitHub Actions and GitLab CI.
+
+![CI/CD](docs/assets/screenshots/cicd-fail-msg.png)
+
+### Documentation
+
+**Architecture Diagram**  
+[System architecture overview](docs/assets/diagrams/architecture.md)
+
+**Audit Flow**  
+[Complete audit workflow](docs/assets/diagrams/audit-flow.md)
+
+**Rule Fix Guide**  
+[Example rule documentation](docs/assets/screenshots/rule-fix-guide-example.png)
+
+---
+
 ### Browser Integration
 
 CDN:
 
 ```html
 <script type="module">
-  import { runWAH } from 'https://unpkg.com/web-audit-helper@2.0.0/dist/index.mjs';
+  import { runWAH } from 'https://unpkg.com/web-audit-helper@2.1.0/dist/index.mjs';
 
   await runWAH();
 </script>

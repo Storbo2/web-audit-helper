@@ -140,14 +140,14 @@ Assets recomendados para esta guia:
 
 Ubicaciones sugeridas:
 
-- `docs/media/images/external-auditing/`
-- `docs/media/gifs/external-auditing/`
+- `docs/assets/screenshots/external-auditing/`
+- `docs/assets/gifs/external-auditing/`
 
 Capturas actuales:
 
-![Overlay externo exitoso](../media/images/external-overlay-success.png)
+![Overlay externo exitoso](../assets/screenshots/external-overlay-success.png)
 
-![Error controlado por CSP bloqueante](../media/images/external-csp-blocked-error.png)
+![Error controlado por CSP bloqueante](../assets/screenshots/external-csp-blocked-error.png)
 
 ![Comparacion en reporte HTML](../media/images/external-report-comparison.png)
 

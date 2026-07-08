@@ -7,6 +7,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-07-08
+
+### Added
+
+- **Visual Documentation Release**:
+  - Interactive gallery in README with screenshots and GIFs for all major features
+  - Architecture diagram (Mermaid) showing system design and module organization
+  - Audit flow diagram (Mermaid) illustrating complete audit workflow
+  - Hero screenshot of WAH overlay in action
+  - Issue filtering and navigation demonstrations
+  - Settings and customization UI showcase
+  - Export reports and HTML report preview examples
+  - Before/After audit comparison visuals
+  - Rule focus highlight and DOM interaction examples
+  - CLI and CI/CD integration examples
+  - Console output diagnostics showcase
+  - Scoring modes comparison guide
+
+### Changed
+
+- README enhanced with scannable gallery section featuring 15+ visual examples
+- Documentation image paths updated from `docs/media/images/` to `docs/assets/screenshots/` structure
+- External auditing QA guides updated with new screenshot locations (EN/ES)
+- Logo assets integrated for use in contributing and changelog documentation
+
+### Improved
+
+- Visual onboarding experience with comprehensive feature demonstrations
+- Documentation accessibility through organized asset gallery
+- Developer discovery of features through visual examples before diving into API
+
+### Validation
+
+- Typecheck: passing
+- Test suite: passing
+- Build: passing
+
 ## [2.0.1] - 2026-04-02
 
 ### Added
