@@ -1,4 +1,8 @@
-# WAH Audit Flow Diagram
+# Audit Flow Diagram
+
+This diagram should be generated as `audit-flow.png` and used in documentation.
+
+**Mermaid code** (can be converted to PNG using tools like mermaid.live or mermaid-cli):
 
 ```mermaid
 graph LR
@@ -63,3 +67,18 @@ graph LR
     style K fill:#bbdefb
     style P fill:#f8bbd0
     style Q fill:#ffe0b2
+```
+
+**How to convert to PNG:**
+
+1. Visit [mermaid.live](https://mermaid.live)
+2. Paste the Mermaid code above
+3. Right-click diagram → Download as PNG
+4. Save as `docs/assets/diagrams/audit-flow.png`
+
+**Alternative (CLI):**
+
+```bash
+npm install -g @mermaid-js/mermaid-cli
+mmdc -i audit-flow.mmd -o audit-flow.png
+```

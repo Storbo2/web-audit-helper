@@ -85,91 +85,116 @@ Common use cases:
 
 ---
 
-## 🎨 Gallery
+## 🎨 Gallery & Features
 
 ### Interactive Overlay
 
-**Real-time Issue Detection**  
-The overlay displays audit results with issue counts by severity and category filtering.
+**Live Overlay**  
+The interactive overlay displays in real-time with issue counts by severity.
 
-![WAH Report](docs/assets/screenshots/hero-screenshot.png)
+![Overlay](docs/assets/screenshots/overlay.png)
 
-**Issue Filtering & Navigation**  
-Click issues to focus and scroll to elements in the DOM. Filter by category and severity.
+**Customizable UI**  
+Modify overlay colors, theming, and appearance to match your workflow.
 
-![Issue Filtering](docs/assets/screenshots/issue-filtering.gif)
+![Custom UI](docs/assets/gifs/custom_ui.gif)
 
-**Settings & Customization**  
-Adjust scoring mode, language, log verbosity, and hide duration from the settings panel.
+**Issue Navigation**  
+Click issues to focus elements in the DOM and scroll to details. Explore findings interactively.
 
-![Settings Panel](docs/assets/screenshots/settings-popover.png)
+![Issue Clicking](docs/assets/gifs/issue_clicking.gif)
 
-**Quick Demo**  
-See the overlay in action with interactive controls.
+**Filter by Category & Severity**  
+Quickly narrow down findings by audit category (Accessibility, SEO, Performance, etc.) or severity level.
 
-![Quick Demo](docs/assets/screenshots/quick-demo.gif)
+![Issue Filters](docs/assets/gifs/issue_filters.gif)
 
-### Reports & Export
+### Settings & Configuration
 
-**Export Formats**  
-Generate JSON, HTML, or TXT reports for sharing and CI/CD integration.
+WAH provides a multi-page settings panel for fine-grained control:
 
-![Export Reports](docs/assets/screenshots/export-reports.png)
+- **Page 1 – Highlight Duration & Console Logs**: Adjust how long elements are highlighted and control log verbosity.
 
-**HTML Report Preview**  
-Beautifully formatted HTML reports with scoring modes and comparison blocks.
+  ![Settings Panel](docs/assets/screenshots/settings.png)
 
-![HTML Report](docs/assets/assets/html/report-example.html)
+- **Page 2 – Language & Scoring Mode**: Choose between English/Spanish and select scoring modes (strict, normal, moderate, soft, custom).
 
-**Before/After Audit**  
-Compare audit results across runs to track improvements.
+  ![Settings Language](docs/assets/screenshots/settings2.png)
 
-![Before/After](docs/assets/screenshots/before-after-audit.png)
+- **Page 3 – Hide & Reset Options**: Temporarily hide the overlay or reset all settings to defaults.
 
-### Features in Action
+  ![Settings Hide](docs/assets/screenshots/settings3.png)
 
-**Console Output**  
-Detailed console diagnostics with grouped issues and timestamps.
+### Console Diagnostics
+
+Detailed console output with grouped issues, timestamps, and actionable insights.
 
 ![Console Output](docs/assets/screenshots/console.png)
 
-**Rule Focus Highlight**  
-Click rules to highlight affected elements in the DOM.
+### External Auditing (Bookmarklet)
 
-![Rule Focus](docs/assets/screenshots/rule-focus-highlight.png)
+**Success State**  
+The overlay works seamlessly on external pages via bookmarklet injection.
 
-**Hide Overlay**  
-Temporarily hide the overlay for specific durations without losing data.
+![External Success](docs/assets/screenshots/external-overlay-success.png)
 
-![Hide Overlay](docs/assets/screenshots/hide-overlay.png)
+**Comparison Reports**  
+Export and compare audit runs side-by-side to track improvements.
 
-### Advanced Features
+![Report Comparison](docs/assets/screenshots/external-report-comparison.png)
 
-**Scoring Modes**  
-Choose between strict, normal, moderate, soft, or custom scoring.
+**Metadata & Runtime Info**  
+Complete audit metadata including runtime mode, execution time, and WAH version.
 
-![Scoring Modes](docs/assets/screenshots/scoring-modes.png)
+![Report Metadata](docs/assets/screenshots/external-report-json-meta.png)
 
-**CLI Demo**  
-Automate audits from Node.js with Playwright or jsdom.
+**CSP Error Handling**  
+Clear error messaging when Content Security Policy blocks external injection.
 
-![CLI Demo](docs/assets/screenshots/cli-demo.gif)
+![CSP Blocked](docs/assets/screenshots/external-csp-blocked-error.png)
 
-**CI/CD Integration**  
-Integrated failure messages for GitHub Actions and GitLab CI.
+### Reports & Exports
 
-![CI/CD](docs/assets/screenshots/cicd-fail-msg.png)
+**HTML Report Preview**  
+Export beautiful HTML reports with full audit details, scoring breakdowns, and comparison blocks. [View example](docs/assets/html/report-example.html)
 
-### Documentation
+### Architecture & Workflow
 
-**Architecture Diagram**  
-[System architecture overview](docs/assets/diagrams/architecture.md)
+**System Architecture**  
+WAH's architecture follows a modular design:
 
-**Audit Flow**  
-[Complete audit workflow](docs/assets/diagrams/audit-flow.md)
+- **DOM Analysis Layer**: Traverses the page structure and computes CSS properties
+- **Rules Engine**: 75+ audit rules organized in 8 categories (Accessibility, SEO, Semantic, Responsive, Security, Quality, Performance, Forms)
+- **Scoring Engine**: Calculates overall scores with 5 configurable modes (strict, normal, moderate, soft, custom)
+- **Output Modes**: Browser overlay, headless console, or exportable reports (JSON, HTML, TXT)
 
-**Rule Fix Guide**  
-[Example rule documentation](docs/assets/screenshots/rule-fix-guide-example.png)
+[See architecture diagram](docs/assets/diagrams/architecture.png)
+
+**Audit Execution Flow**  
+The complete audit workflow:
+
+1. Initialize configuration and load rule registry
+2. Traverse DOM and collect element analysis data
+3. Run all applicable audit rules in parallel or sequence
+4. Collect findings and compute severity breakdown
+5. Calculate overall score and category scores
+6. Output results based on execution context (overlay, console, or file export)
+7. Generate shareable reports with optional comparison blocks
+
+[See audit flow diagram](docs/assets/diagrams/audit-flow.png)
+
+### Branding Assets
+
+WAH logo available in multiple formats for documentation, presentations, and integrations:
+
+- **Logo (Horizontal)**: Full logo with "WAH" text and tagline – ideal for headers and promotional materials.  
+  ![WAH Full Logo](docs/assets/logos/wah-logo.full.png)
+
+- **Logo (Square)**: Compact square icon for favicons and small spaces.  
+  ![WAH Square Logo](docs/assets/logos/wah-logo-square.png)
+
+- **Logo (Square with Text)**: Icon plus "WAH" text – perfect for sidebars and compact layouts.  
+  ![WAH Logo Text](docs/assets/logos/wah-logo-text.png)
 
 ---
 
@@ -206,7 +231,7 @@ await runWAH({
 
 For SSR frameworks, load WAH on the client only. See [SSR / Next.js Guide](docs/ssr-frameworks.md).
 
-### External Auditing (Bookmarklet)
+### External Auditing
 
 WAH includes a generated bookmarklet for already-open pages.
 
