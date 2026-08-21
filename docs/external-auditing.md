@@ -33,7 +33,7 @@ Current external bootstrap error codes:
 1. Build repository artifacts:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 1. Copy `dist/bookmarklet.txt` into a browser bookmark URL.

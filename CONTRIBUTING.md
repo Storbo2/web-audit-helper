@@ -38,7 +38,7 @@ Actual: ACC-02 critical issue reported
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature/your-feature`
 3. **Make your changes** following code style guidelines
-4. **Test your changes**: `npm run typecheck && npm run build`
+4. **Test your changes**: `pnpm run check`
 5. **Add tests** if applicable (in `src/**/__tests__/`)
 6. **Commit with clear messages**: `git commit -m "Add: New rule description"`
 7. **Push to your fork** and create a Pull Request
@@ -155,7 +155,7 @@ describe('ACC-XX: Your rule', () => {
 ### Code Style
 
 - **Language**: TypeScript with strict mode
-- **Format**: Prettier (run `npm run build`)
+- **Build validation**: `pnpm run build`
 - **Naming**: camelCase for functions/variables, PascalCase for types
 - **Comments**: JSDoc for public APIs
 
@@ -174,9 +174,9 @@ export function checkMissingAlt(): AuditIssue[] {
 ### Testing
 
 ```bash
-npm run test        # Run once
-npm run test:watch  # Watch mode
-npm run test:ui     # Interactive UI
+pnpm run test        # Run once
+pnpm run test:watch  # Watch mode
+pnpm run test:ui     # Interactive UI
 ```
 
 Tests should:
@@ -214,21 +214,21 @@ Maintainers follow semantic versioning:
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Type checking
-npm run typecheck
+pnpm run typecheck
 
 # Build
-npm run build
+pnpm run build
 
 # Tests
-npm run test
-npm run test:watch
-npm run test:ui
+pnpm run test
+pnpm run test:watch
+pnpm run test:ui
 
 # Full CI simulation
-npm run typecheck && npm run build && npm run test
+pnpm run check
 ```
 
 ## Project Structure

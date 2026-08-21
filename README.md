@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/web-audit-helper?cacheSeconds=300)](https://www.npmjs.com/package/web-audit-helper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
 
 WAH is a **framework-agnostic JavaScript/TypeScript library** that helps developers audit web pages for accessibility, SEO, semantic HTML, responsive design, security, quality, performance, and form validation.
 
@@ -33,8 +33,14 @@ It provides **real-time DOM analysis**, a **floating visual overlay**, **console
 ## 🚀 Installation
 
 ```bash
-npm install web-audit-helper
+pnpm add web-audit-helper
 ```
+
+You can also install the published package with `npm install web-audit-helper`.
+
+Repository development is standardized on pnpm 11.22 and requires Node.js
+20.19+, 22.13+, or 24+. From the repository root, run `pnpm install`; CI uses
+the committed `pnpm-lock.yaml` in frozen mode.
 
 ### Dependency Notes (Quick)
 
@@ -59,6 +65,7 @@ Some package scanners may report transitive modules (for example encoding, proxy
 - Advanced config: [Configuration](docs/configuration.md)
 - API reference: [API Reference](docs/api.md)
 - Exports and metadata: [Exports and Metadata](docs/exports-metadata.md)
+- Chromium extension: [Chromium Extension Plan](docs/chromium-extension.md)
 - Roadmap: [Product Roadmap](docs/roadmap.md)
 
 ### Which Mode Should I Use?
@@ -238,7 +245,7 @@ WAH includes a generated bookmarklet for already-open pages.
 Quick start:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 1. Copy the single line from `dist/bookmarklet.txt`.
@@ -268,8 +275,8 @@ You can run WAH from Node.js and generate reports directly to files.
 Build first:
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Static/local HTML audit (jsdom engine):
@@ -283,8 +290,8 @@ node dist/wah-cli.mjs examples/issues-detection-test.html --format txt --output 
 Playwright browser audit (real URL):
 
 ```bash
-npx playwright install chromium
-npx http-server . -p 5510 -c-1
+pnpm exec playwright install chromium
+pnpm exec http-server . -p 5510 -c-1
 node dist/wah-cli.mjs http://127.0.0.1:5510/examples/issues-detection-test.html --browser chromium --format json --output dist/out/pw-chromium.json
 ```
 
@@ -316,7 +323,7 @@ GitHub Actions snippet:
 
 ```yaml
 - name: Build WAH
-  run: npm run build
+  run: pnpm run build
 
 - name: Run comparison
   run: |
@@ -333,7 +340,7 @@ GitLab CI snippet:
 ```yaml
 wah_audit:
   script:
-    - npm run build
+    - pnpm run build
     - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
     - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --comparison-ci-json-output dist/out/comparison-ci.json --gitlab-summary-output dist/out/gitlab-summary.md --output dist/out/compare.json
   artifacts:
@@ -628,12 +635,9 @@ For contribution workflow and community translation model, see [Translations Gui
 
 Package not installed, workspace misconfigured, or lockfile inconsistency.
 
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-If needed, reinstall explicitly with `npm install web-audit-helper --save-dev`.
+Run `pnpm install` from the repository root and keep `pnpm-lock.yaml` in sync. If
+the package is missing from a consuming project, install it explicitly with
+`pnpm add --save-dev web-audit-helper`.
 
 ### `ReferenceError: window is not defined`
 
@@ -652,9 +656,12 @@ DOM state may differ between a fresh page load and a later re-audit. Use `__WAH_
 ## 🧪 Testing
 
 ```bash
-npm run test        # Run tests once
-npm run test:watch  # Watch mode
-npm run test:ui     # Interactive UI
+pnpm run test        # Run tests once
+pnpm run test:watch  # Watch mode
+pnpm run test:ui     # Interactive UI
+pnpm run test:coverage # Coverage gate
+pnpm run test:e2e    # Chromium E2E (build first)
+pnpm run test:all    # Typecheck, unit tests, build and E2E
 ```
 
 ---

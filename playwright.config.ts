@@ -29,7 +29,7 @@ export default defineConfig({
     ],
 
     webServer: {
-        command: 'npx http-server . -p 5510 -c-1',
+        command: 'pnpm exec http-server . -p 5510 -c-1',
         url: 'http://127.0.0.1:5510',
         reuseExistingServer: true,
         timeout: 120 * 1000,

@@ -79,6 +79,6 @@ graph LR
 **Alternative (CLI):**
 
 ```bash
-npm install -g @mermaid-js/mermaid-cli
+pnpm add --global @mermaid-js/mermaid-cli
 mmdc -i audit-flow.mmd -o audit-flow.png
 ```

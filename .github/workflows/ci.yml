@@ -15,68 +15,86 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [20.19, 22.13, 24]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Setup Node.js v${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Install pnpm and Node.js ${{ matrix.node-version }}
+        uses: pnpm/setup@v2
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          runtime: node@${{ matrix.node-version }}
+          cache: true
+          install: false
 
-      - name: Verify and install dependencies
-        run: |
-          # Clean install to ensure all native modules are properly resolved
-          npm ci --prefer-offline --no-audit
-          # Verify critical dependencies are present
-          npm list rollup @rollup/rollup-linux-x64-gnu 2>/dev/null || npm ci --prefer-offline
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Type checking
-        run: npm run typecheck
-        continue-on-error: true
+        run: pnpm run typecheck
 
       - name: Run tests
-        run: npm test
+        run: pnpm run test
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
+
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@22.13
+          cache: true
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: pnpm run test:coverage
 
       - name: Upload coverage
-        if: matrix.node-version == '20.x'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage/coverage-final.json
           flags: unittests
           fail_ci_if_error: false
 
-  lint-and-format:
+  e2e:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@v2
         with:
-          node-version: "20.x"
-          cache: "npm"
+          runtime: node@22.13
+          cache: true
+          install: false
 
-      - name: Verify and install dependencies
-        run: |
-          # Clean install to ensure all native modules are properly resolved
-          npm ci --prefer-offline --no-audit
-          # Verify critical dependencies are present
-          npm list rollup @rollup/rollup-linux-x64-gnu 2>/dev/null || npm ci --prefer-offline
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Check TypeScript strict mode
-        run: npm run typecheck
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Run Chromium end-to-end tests
+        run: pnpm run test:e2e
 
   publish:
-    needs: [test-and-build, lint-and-format]
+    needs: [test-and-build, coverage, e2e]
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && !contains(github.event.head_commit.message, '[skip-publish]')) ||
@@ -87,26 +105,34 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js for npm authentication
+        uses: actions/setup-node@v7
         with:
-          node-version: "20.x"
-          cache: "npm"
+          node-version: 22.13
           registry-url: "https://registry.npmjs.org"
-          always-auth: true
 
-      - run: npm ci --prefer-offline --no-audit
-      - run: npm run build
+      - name: Install pnpm
+        uses: pnpm/setup@v2
+        with:
+          cache: true
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm run build
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: pnpm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   notify:
-    needs: [test-and-build, lint-and-format]
+    needs: [test-and-build, coverage, e2e]
     runs-on: ubuntu-latest
     if: always()
 

@@ -1,6 +1,7 @@
 {
     "name": "web-audit-helper",
     "version": "2.1.1",
+    "packageManager": "pnpm@11.22.0",
     "type": "module",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
     "exports": {
@@ -13,7 +14,14 @@
     "main": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "files": [
-        "dist"
+        "dist/bookmarklet.txt",
+        "dist/external-runtime.iife.js",
+        "dist/external-runtime.mjs",
+        "dist/index.cjs",
+        "dist/index.d.cts",
+        "dist/index.d.ts",
+        "dist/index.mjs",
+        "dist/wah-cli.mjs"
     ],
     "sideEffects": false,
     "license": "MIT",
@@ -45,28 +53,15 @@
         "wah": "dist/wah-cli.mjs"
     },
     "engines": {
-        "node": ">=18.0.0"
+        "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
     },
     "peerDependencies": {
-        "playwright": "^1.58.2"
+        "playwright": "^1.62.1"
     },
     "peerDependenciesMeta": {
         "playwright": {
             "optional": true
         }
-    },
-    "devDependencies": {
-        "@playwright/test": "^1.61.1",
-        "@types/jsdom": "^28.0.3",
-        "@types/node": "^26.0.1",
-        "@vitest/coverage-v8": "^4.1.9",
-        "@vitest/ui": "^4.1.9",
-        "http-server": "^14.1.1",
-        "jsdom": "^29.1.1",
-        "tsup": "^8.5.1",
-        "typescript": "^6.0.3",
-        "vite": "^8.1.0",
-        "vitest": "^4.1.9"
     },
     "scripts": {
         "backup": "node scripts/git-backup.mjs",
@@ -83,12 +78,24 @@
         "test:e2e:ui": "playwright test --ui",
         "test:e2e:debug": "playwright test --debug",
         "test:coverage": "vitest run --coverage",
-        "test:all": "npm run test && npm run test:e2e"
-    },
-    "allowScripts": {
-        "esbuild@0.27.7": true
+        "test:all": "pnpm run check && pnpm run test:e2e",
+        "check": "pnpm run typecheck && pnpm run test && pnpm run build",
+        "check:security": "pnpm audit --audit-level moderate"
     },
     "dependencies": {
-        "esbuild": "^0.28.1"
+        "jsdom": "^29.1.1"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.62.1",
+        "@types/jsdom": "^28.0.3",
+        "@types/node": "^26.2.0",
+        "@vitest/coverage-v8": "^4.1.11",
+        "@vitest/ui": "^4.1.11",
+        "esbuild": "^0.28.2",
+        "http-server": "^14.1.1",
+        "tsup": "^8.5.1",
+        "typescript": "^6.0.3",
+        "vite": "^8.2.1",
+        "vitest": "^4.1.11"
     }
 }

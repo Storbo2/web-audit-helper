@@ -80,14 +80,14 @@ Preferred style:
 Run before PR/commit:
 
 ```bash
-npm run build
-npm test -- --run src/reporters/builder.test.ts src/reporters/serializers/serializers.test.ts src/overlay/interactions/highlight.test.ts
+pnpm run build
+pnpm run test -- --run src/reporters/builder.test.ts src/reporters/serializers/serializers.test.ts src/overlay/interactions/highlight.test.ts
 ```
 
 Run broader tests when rule logic changed:
 
 ```bash
-npm test
+pnpm run test
 ```
 
 ## Pull Request Expectations

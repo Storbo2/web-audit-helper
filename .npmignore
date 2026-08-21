@@ -15,4 +15,5 @@ CONTRIBUTING.md
 *.tgz
 *.whl
 .DS_Store
+dist/out/
 .npmrc

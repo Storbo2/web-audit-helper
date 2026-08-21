@@ -15,7 +15,7 @@ Este checklist valida el flujo de auditoria externa de v1.5 bajo escenarios de C
 1. Compilar el proyecto:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 1. Crear bookmarklet desde `dist/bookmarklet.txt`.
@@ -29,7 +29,7 @@ npx http-server . -p 4173 --cors
 
 ## Si falta bookmarklet.txt
 
-`dist/bookmarklet.txt` se genera en el pipeline de build de este repositorio (`npm run build` + script postbuild).
+`dist/bookmarklet.txt` se genera en el pipeline de build de este repositorio (`pnpm run build` + script postbuild).
 
 Si pruebas desde otro repositorio (por ejemplo React/PHP) que no ejecuta los scripts de build de WAH, ese archivo puede no existir ahi.
 

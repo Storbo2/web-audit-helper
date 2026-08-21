@@ -67,6 +67,6 @@ graph TD
 **Alternative (CLI):**
 
 ```bash
-npm install -g @mermaid-js/mermaid-cli
+pnpm add --global @mermaid-js/mermaid-cli
 mmdc -i architecture.mmd -o architecture.png
 ```

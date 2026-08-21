@@ -60,4 +60,4 @@ When proposing a new language:
 1. Add `locales/<lang>/common.json` based on existing locale schema.
 2. Register new locale support in `src/core/types.ts` and `src/utils/i18n.ts`.
 3. Add docs in `docs/<lang>/`.
-4. Verify `npm run typecheck && npm run build && npm run test`.
+4. Verify `pnpm run check`.

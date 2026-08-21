@@ -40,16 +40,16 @@ function readCurrentVersion() {
 
 function runReleaseValidationGate() {
     console.log("[release:tag] Running validation gate: typecheck, test, build...");
-    run("npm", ["run", "typecheck"]);
-    run("npm", ["test"]);
-    run("npm", ["run", "build"]);
+    run("pnpm", ["run", "typecheck"]);
+    run("pnpm", ["run", "test"]);
+    run("pnpm", ["run", "build"]);
 }
 
 const version = process.argv[2];
 
 if (!version || version === "--help" || version === "-h") {
-    console.log("Usage: npm run release:tag -- <version>");
-    console.log("Example: npm run release:tag -- 1.5.4");
+    console.log("Usage: pnpm run release:tag -- <version>");
+    console.log("Example: pnpm run release:tag -- 1.5.4");
     process.exit(version ? 0 : 1);
 }
 
@@ -75,11 +75,11 @@ const branch = getCurrentBranch();
 const tagName = `v${version}`;
 
 console.log(`[release:tag] Updating package version from ${currentVersion} to ${version}...`);
-run("npm", ["version", version, "--no-git-tag-version"]);
+run("pnpm", ["version", version, "--no-git-tag-version"]);
 
 const filesToStage = ["package.json"];
-if (existsSync(resolve(process.cwd(), "package-lock.json"))) {
-    filesToStage.push("package-lock.json");
+if (existsSync(resolve(process.cwd(), "pnpm-lock.yaml"))) {
+    filesToStage.push("pnpm-lock.yaml");
 }
 
 console.log("[release:tag] Creating release commit...");

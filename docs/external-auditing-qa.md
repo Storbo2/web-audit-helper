@@ -15,7 +15,7 @@ This checklist validates the v1.5 external auditing flow under permissive and bl
 1. Build the project:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 1. Create bookmarklet from `dist/bookmarklet.txt`.
@@ -29,7 +29,7 @@ npx http-server . -p 4173 --cors
 
 ## If bookmarklet.txt is missing
 
-`dist/bookmarklet.txt` is created by this repository build pipeline (`npm run build` + postbuild script).
+`dist/bookmarklet.txt` is created by this repository build pipeline (`pnpm run build` + postbuild script).
 
 If you are testing from another project repository that does not run WAH build scripts, the file may not exist there.
 

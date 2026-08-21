@@ -244,7 +244,7 @@ GitHub Actions pattern:
 
 ```yaml
 - name: Build WAH
-  run: npm run build
+  run: pnpm run build
 
 - name: Baseline + comparison
   run: |
@@ -261,7 +261,7 @@ GitLab CI pattern:
 ```yaml
 wah_audit:
   script:
-    - npm run build
+    - pnpm run build
     - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --output dist/out/baseline.json
     - node dist/wah-cli.mjs examples/issues-detection-test.html --format json --compare-with dist/out/baseline.json --gitlab-summary-output dist/out/gitlab-summary.md --comparison-ci-json-output dist/out/comparison-ci.json --output dist/out/compare.json
   artifacts:

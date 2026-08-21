@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function openOverlay(page: any) {
-    await page.goto('/examples/basic.html');
+    await page.goto('/examples/issues-detection-test.html');
     await page.waitForSelector('#wah-overlay-root', { timeout: 15000 });
     await expect(page.locator('#wah-overlay-root')).toBeVisible();
 }
@@ -26,7 +26,7 @@ test.describe('WAH Audit Flow', () => {
         await expect(page.locator('#wah-pop')).toBeVisible();
 
         await page.click('body', { position: { x: 10, y: 400 } });
-        await page.waitForSelector('#wah-pop[hidden]', { timeout: 5000 });
+        await expect(page.locator('#wah-pop')).toBeHidden();
     });
 
     test('applies severity chip filter', async ({ page }) => {

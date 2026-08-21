@@ -55,7 +55,7 @@ Opción 1 - Online (recomendado):
 Opción 2 - CLI:
 
 ```bash
-npm install -g @mermaid-js/mermaid-cli
+pnpm add --global @mermaid-js/mermaid-cli
 mmdc -i docs/assets/diagrams/ARCHITECTURE.md -o docs/assets/diagrams/architecture.png
 mmdc -i docs/assets/diagrams/AUDIT-FLOW.md -o docs/assets/diagrams/audit-flow.png
 ```
@@ -64,7 +64,7 @@ mmdc -i docs/assets/diagrams/AUDIT-FLOW.md -o docs/assets/diagrams/audit-flow.pn
 
 1. Generar los dos PNG de diagramas usando mermaid.live o CLI
 2. Verificar que todos los enlaces en README funcionan
-3. Hacer build y test: `npm run build && npm test`
+3. Hacer build y test: `pnpm run check`
 4. Commit con mensaje: `docs(assets): add complete visual gallery for v2.1.1`
 5. Push y publish a npm: `git tag v2.1.1 && git push origin main --follow-tags`
 
