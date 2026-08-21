@@ -20,6 +20,18 @@ function run(command, args, options = {}) {
     return options.captureOutput ? result.stdout.trim() : "";
 }
 
+function runPackageManager(args) {
+    // On Windows, package managers are commonly exposed through a .cmd shim,
+    // which spawnSync cannot execute directly with shell disabled. Reuse the
+    // CLI entry point that launched this script and execute it with Node.
+    const packageManagerCli = process.env.npm_execpath;
+    if (packageManagerCli) {
+        return run(process.execPath, [packageManagerCli, ...args]);
+    }
+
+    return run("pnpm", args);
+}
+
 function getCurrentBranch() {
     return run("git", ["rev-parse", "--abbrev-ref", "HEAD"], { captureOutput: true });
 }
@@ -40,7 +52,7 @@ function readCurrentVersion() {
 
 function runReleaseValidationGate() {
     console.log("[release:tag] Running validation gate...");
-    run("pnpm", ["run", "check"]);
+    runPackageManager(["run", "check"]);
 }
 
 const version = process.argv[2];
@@ -73,7 +85,7 @@ const branch = getCurrentBranch();
 const tagName = `v${version}`;
 
 console.log(`[release:tag] Updating package version from ${currentVersion} to ${version}...`);
-run("pnpm", ["version", version, "--no-git-tag-version"]);
+runPackageManager(["version", version, "--no-git-tag-version"]);
 
 const filesToStage = ["package.json"];
 if (existsSync(resolve(process.cwd(), "pnpm-lock.yaml"))) {
