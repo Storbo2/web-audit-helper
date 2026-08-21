@@ -1,6 +1,6 @@
 {
     "name": "web-audit-helper",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "packageManager": "pnpm@11.22.0",
     "type": "module",
     "description": "Framework-agnostic web audit overlay for accessibility, SEO, semantic and responsive validation.",
