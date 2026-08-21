@@ -205,6 +205,38 @@ WAH logo available in multiple formats for documentation, presentations, and int
 
 ---
 
+### Chromium Extension (Manifest V3)
+
+Build the local-only extension bundle:
+
+```bash
+pnpm run build:extension
+```
+
+Then open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked**,
+and select `dist/extension`. The popup can run, re-run, and remove the audit
+overlay on the active page. Settings are shared between audited sites through
+`chrome.storage.local`.
+
+Chromium blocks extension injection on protected pages such as `chrome://*` and
+the Chrome Web Store. Local `file://` pages require enabling **Allow access to
+file URLs** in the extension details.
+
+Create an uploadable ZIP after validation with:
+
+```bash
+pnpm run package:extension
+```
+
+See [Chromium Extension Guide](docs/chromium-extension.md) for architecture,
+testing, limitations, and store-readiness work.
+
+The extension integration suite can be run with:
+
+```bash
+pnpm run test:extension:e2e
+```
+
 ### Browser Integration
 
 CDN:
@@ -468,6 +500,7 @@ Full option reference, supported thresholds and presets: [Configuration Guide](d
 Spanish version: [Guia de Configuracion](docs/es/configuration.md)
 Contribution guide: [Contributing](docs/contributing.md)
 Guia de contribucion: [Contribuir](docs/es/contributing.md)
+Publicación de versiones: [GitHub y npm](docs/es/releasing.md)
 
 ---
 
@@ -661,6 +694,7 @@ pnpm run test:watch  # Watch mode
 pnpm run test:ui     # Interactive UI
 pnpm run test:coverage # Coverage gate
 pnpm run test:e2e    # Chromium E2E (build first)
+pnpm run test:extension:e2e # Unpacked Chromium extension E2E
 pnpm run test:all    # Typecheck, unit tests, build and E2E
 ```
 

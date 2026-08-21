@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WAH - Web Audit Helper</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js" defer></script>
+</head>
+<body>
+    <main>
+        <header>
+            <img src="icons/icon-128.png" alt="" width="40" height="40">
+            <div>
+                <h1>Web Audit Helper</h1>
+                <p data-copy="subtitle">Audit the active page locally</p>
+            </div>
+        </header>
+
+        <div class="actions" aria-label="Audit actions">
+            <button class="primary" type="button" data-action="run" data-copy="run">Run audit</button>
+            <button type="button" data-action="rerun" data-copy="rerun">Re-run</button>
+            <button class="danger" type="button" data-action="remove" data-copy="remove">Remove overlay</button>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <p class="privacy" data-copy="privacy">Local only · No telemetry · No remote code</p>
+    </main>
+</body>
+</html>

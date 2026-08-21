@@ -5,7 +5,14 @@ import { resetPendingChangesState } from "../overlay/popover/utils";
 type WAHWindow = Window & {
     __WAH_RESET_HIDE__?: () => void;
     __WAH_RERUN__?: () => Promise<void>;
+    __WAH_FOCUS_ISSUE__?: (index: number) => void;
 };
+
+const cleanupCallbacks = new Set<() => void>();
+
+export function registerWAHCleanup(callback: () => void): void {
+    cleanupCallbacks.add(callback);
+}
 
 export async function waitForDocumentStable(): Promise<void> {
     if (document.readyState !== "complete") {
@@ -18,11 +25,18 @@ export async function waitForDocumentStable(): Promise<void> {
 }
 
 export function cleanupWAH(): void {
+    for (const callback of cleanupCallbacks) callback();
+    cleanupCallbacks.clear();
     document.getElementById("wah-overlay-root")?.remove();
     document.getElementById("wah-pop")?.remove();
     document.getElementById("wah-styles")?.remove();
     resetViewportMetaPatch();
     resetPendingChangesState();
+
+    const wahWindow = window as WAHWindow;
+    delete wahWindow.__WAH_RESET_HIDE__;
+    delete wahWindow.__WAH_RERUN__;
+    delete wahWindow.__WAH_FOCUS_ISSUE__;
 }
 
 export function registerGlobalHandlers(rerunAudit: () => Promise<void>): void {

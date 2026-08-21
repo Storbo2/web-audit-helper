@@ -39,10 +39,8 @@ function readCurrentVersion() {
 }
 
 function runReleaseValidationGate() {
-    console.log("[release:tag] Running validation gate: typecheck, test, build...");
-    run("pnpm", ["run", "typecheck"]);
-    run("pnpm", ["run", "test"]);
-    run("pnpm", ["run", "build"]);
+    console.log("[release:tag] Running validation gate...");
+    run("pnpm", ["run", "check"]);
 }
 
 const version = process.argv[2];

@@ -112,8 +112,6 @@ export function setupPopover({ overlay, catActive, getResults, onChange, scoreEl
         }
     };
 
-    if (!(document as any).__wahGlobalClickListenerAdded) {
-        document.addEventListener("pointerdown", handleGlobalClick, true);
-        (document as any).__wahGlobalClickListenerAdded = true;
-    }
+    document.addEventListener("pointerdown", handleGlobalClick, true);
+    return () => document.removeEventListener("pointerdown", handleGlobalClick, true);
 }

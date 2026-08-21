@@ -1,9 +1,11 @@
+import { getRuntimeStorage } from "../../storage/runtimeStorage";
+
 export type OverlayPos = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-center" | "bottom-center";
 
 const POS_KEY = "wah:position";
 
 export function readSavedPos(): OverlayPos | null {
-    const v = localStorage.getItem(POS_KEY);
+    const v = getRuntimeStorage().getItem(POS_KEY);
     if (
         v === "top-left" || v === "top-right" || v === "bottom-left" || v === "bottom-right" ||
         v === "top-center" || v === "bottom-center"
@@ -40,7 +42,7 @@ function denormalizeFromMobile(overlay: HTMLElement, pos: OverlayPos): OverlayPo
 export function applyPos(overlay: HTMLElement, pos: OverlayPos) {
     const next = normalizeForMobile(pos);
     overlay.dataset.pos = next;
-    localStorage.setItem(POS_KEY, next);
+    getRuntimeStorage().setItem(POS_KEY, next);
 
     overlay.style.removeProperty("left");
     overlay.style.removeProperty("top");
@@ -52,7 +54,7 @@ export function applyPos(overlay: HTMLElement, pos: OverlayPos) {
 export function setupPositionAutoUpdate(overlay: HTMLElement) {
     let lastIsMobile = isMobileWidth();
 
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
         const isMobile = isMobileWidth();
         if (isMobile === lastIsMobile) return;
         lastIsMobile = isMobile;
@@ -60,5 +62,8 @@ export function setupPositionAutoUpdate(overlay: HTMLElement) {
         const current = (overlay.dataset.pos as OverlayPos) ?? readSavedPos() ?? "bottom-right";
         const normalized = !isMobile ? denormalizeFromMobile(overlay, current) : current;
         applyPos(overlay, normalized);
-    });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
 }

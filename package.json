@@ -71,6 +71,11 @@
         "prebuild": "node scripts/gen-wah-css.mjs",
         "build": "tsup --config tsup.config.ts",
         "postbuild": "node scripts/gen-bookmarklet.mjs",
+        "prebuild:extension": "node scripts/gen-wah-css.mjs",
+        "build:extension": "tsup --config tsup.extension.config.ts && node scripts/build-extension.mjs",
+        "test:extension": "node scripts/test-extension.mjs",
+        "test:extension:e2e": "pnpm run build:extension && pnpm run test:extension && playwright test --config playwright.extension.config.ts",
+        "package:extension": "pnpm run build:extension && pnpm run test:extension && node scripts/package-extension.mjs",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:ui": "vitest --ui",
@@ -78,8 +83,8 @@
         "test:e2e:ui": "playwright test --ui",
         "test:e2e:debug": "playwright test --debug",
         "test:coverage": "vitest run --coverage",
-        "test:all": "pnpm run check && pnpm run test:e2e",
-        "check": "pnpm run typecheck && pnpm run test && pnpm run build",
+        "test:all": "pnpm run check && pnpm run test:e2e && pnpm run test:extension:e2e",
+        "check": "pnpm run typecheck && pnpm run test && pnpm run build && pnpm run build:extension && pnpm run test:extension",
         "check:security": "pnpm audit --audit-level moderate"
     },
     "dependencies": {

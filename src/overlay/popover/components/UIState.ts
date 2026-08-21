@@ -1,3 +1,5 @@
+import { getRuntimeStorage } from "../../../storage/runtimeStorage";
+
 export type UITheme = "auto" | "dark" | "light";
 
 export interface UISettings {
@@ -15,16 +17,16 @@ export const UI_DEFAULTS = {
 export const UI_STORAGE_KEY = "wah:ui";
 
 export function saveUISettings(ui: UISettings): void {
-    localStorage.setItem(UI_STORAGE_KEY, JSON.stringify(ui));
+    getRuntimeStorage().setItem(UI_STORAGE_KEY, JSON.stringify(ui));
 }
 
 export function getUISettings(): UISettings {
-    const raw = localStorage.getItem(UI_STORAGE_KEY);
+    const raw = getRuntimeStorage().getItem(UI_STORAGE_KEY);
     return raw ? JSON.parse(raw) as UISettings : UI_DEFAULTS;
 }
 
 export function resetUISettings(): void {
-    localStorage.removeItem(UI_STORAGE_KEY);
+    getRuntimeStorage().removeItem(UI_STORAGE_KEY);
 }
 
 export function getTheme(): UITheme {

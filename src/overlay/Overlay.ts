@@ -14,6 +14,7 @@ import { applyInitialFilterChipState, bindFilterChipListeners } from "./interact
 import { bindRerunHeaderButton, createRerunAuditHandler, type OverlayAuditResult } from "./interactions/rerun";
 import { refreshOverlayView } from "./core/viewRefresh";
 import { bindToggleButton, createToggleOverlayHandler } from "./interactions/toggle";
+import { registerWAHCleanup } from "../runtime/lifecycle";
 
 export function createOverlay(initialResults: OverlayAuditResult, _config: WAHConfig) {
     if (document.getElementById("wah-overlay-root")) return;
@@ -40,7 +41,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
     applyUIToOverlay(overlay);
 
     applyPos(overlay, readSavedPos() ?? (overlay.dataset.pos as OverlayPos) ?? "bottom-right");
-    setupPositionAutoUpdate(overlay);
+    registerWAHCleanup(setupPositionAutoUpdate(overlay));
 
     const header = overlay.querySelector(".wah-header") as HTMLElement;
     if (!header) throw new Error("WAH: .wah-header not found");
@@ -101,7 +102,7 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         closeIssueMenu
     );
 
-    setupPopover({
+    registerWAHCleanup(setupPopover({
         overlay,
         active,
         catActive,
@@ -110,10 +111,10 @@ export function createOverlay(initialResults: OverlayAuditResult, _config: WAHCo
         onRerunAudit: rerunAudit,
         scoreEl,
         results
-    });
+    }));
 
     refresh();
 
-    setupKeyboardShortcuts(overlay, rerunAudit, toggleOverlay);
+    registerWAHCleanup(setupKeyboardShortcuts(overlay, rerunAudit, toggleOverlay));
     setupFocusManagement(overlay);
 }

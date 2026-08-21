@@ -1,24 +1,25 @@
 import type { Locale } from "../../core/types";
 import { LOCALE_STORAGE_KEY } from "../i18nPayloads";
+import { getRuntimeStorage } from "../../storage/runtimeStorage";
 
 export function isLocale(value: string | null | undefined): value is Locale {
     return value === "en" || value === "es";
 }
 
 export function loadStoredLocale(): Locale | null {
-    if (typeof localStorage === "undefined") return null;
-    const value = localStorage.getItem(LOCALE_STORAGE_KEY);
+    if (typeof localStorage === "undefined" && typeof window === "undefined") return null;
+    const value = getRuntimeStorage().getItem(LOCALE_STORAGE_KEY);
     return isLocale(value) ? value : null;
 }
 
 export function persistLocale(locale: Locale): void {
-    if (typeof localStorage === "undefined") return;
-    localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    if (typeof localStorage === "undefined" && typeof window === "undefined") return;
+    getRuntimeStorage().setItem(LOCALE_STORAGE_KEY, locale);
 }
 
 export function clearStoredLocale(): void {
-    if (typeof localStorage === "undefined") return;
-    localStorage.removeItem(LOCALE_STORAGE_KEY);
+    if (typeof localStorage === "undefined" && typeof window === "undefined") return;
+    getRuntimeStorage().removeItem(LOCALE_STORAGE_KEY);
 }
 
 export function detectBrowserLocale(): Locale {
